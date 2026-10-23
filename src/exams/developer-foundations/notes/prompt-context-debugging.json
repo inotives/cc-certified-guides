@@ -1,0 +1,163 @@
+[
+  {
+    "task": "6.1",
+    "knowledge": [
+      "Context is a finite attention budget with diminishing returns: as tokens grow, recall and focus degrade well before the window is full, so the goal is the smallest set of high-signal tokens.",
+      "The Messages API is stateless. Claude sees only the system prompt and messages in the current request, so memory across conversations or sessions is the application's job.",
+      "Server-side context editing (beta header `context-management-2025-06-27`) can clear old tool results (`clear_tool_uses_20250919`) and old thinking blocks (`clear_thinking_20251015`), replacing cleared results with a placeholder.",
+      "Compaction replaces older turns with a summary Claude writes, keeping long conversations or agent tasks inside the window; it can keep recent turns word for word.",
+      "Subagents isolate deep exploration in their own clean context windows and return a condensed summary (often 1,000 to 2,000 tokens) to the lead agent.",
+      "Clearing tool results invalidates the cached prompt prefix; `clear_at_least` makes each clearing free enough tokens to be worth the cache write."
+    ],
+    "skills": [
+      "Diagnose context drift and bloat from a trace, for example a context dominated by stale tool output.",
+      "Choose between tool-result pruning, compaction, note-taking memory and subagents for a given workload.",
+      "Design tools to return concise, filtered, paginated results instead of raw dumps.",
+      "Persist user preferences or task progress outside the context window and inject only what the next request needs.",
+      "Tune context editing (trigger, `keep`, `clear_at_least`) so it works with prompt caching rather than against it."
+    ],
+    "examLens": [
+      "Remove or isolate low-signal tokens; do not just make room for more of them.",
+      "Long back-and-forth favours compaction, milestone-based work favours structured notes, and broad parallel research favours subagents returning summaries.",
+      "If information must survive between requests, the application must store it and send it again."
+    ],
+    "traps": [
+      "A bigger context window or higher `max_tokens` offered as the cure for drift or bloat.",
+      "Subagents that return their full transcripts, which recreates the bloat in the lead agent's context.",
+      "Assuming the model 'remembers' earlier conversations or sessions."
+    ],
+    "links": [
+      {"label": "Effective context engineering for AI agents", "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"},
+      {"label": "Context editing", "url": "https://platform.claude.com/docs/en/build-with-claude/context-editing"},
+      {"label": "Compaction overview", "url": "https://platform.claude.com/docs/en/build-with-claude/compaction"},
+      {"label": "Memory tool", "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool"}
+    ],
+    "cheat": [
+      ["Agent context is mostly old file reads and search output", "Clear or prune processed tool results"],
+      ["Hours-long chat nearing the window limit", "Compaction: summarise older turns, keep recent ones"],
+      ["Lead agent drowning in many deep explorations", "Subagents with clean contexts returning short summaries"],
+      ["Multi-session task keeps redoing finished work", "Structured progress notes or the memory tool, read at session start"],
+      ["Context editing raised costs with caching on", "Set `clear_at_least` so each clearing is worth the cache invalidation"]
+    ]
+  },
+  {
+    "task": "6.2",
+    "knowledge": [
+      "Clear, specific instructions (format, length, audience, purpose) beat vague requests and emphasis such as capitals or 'IMPORTANT'.",
+      "Explaining why an instruction matters helps Claude apply it sensibly to cases the instruction does not spell out.",
+      "Few-shot examples strongly steer output; Anthropic recommends 3 to 5 relevant, diverse examples wrapped in `<example>` tags.",
+      "The system prompt holds stable role and policy; the user turn carries variable input, and untrusted text should be clearly delimited, for example with XML tags.",
+      "For long documents, put the document at the top and the query and instructions at the end, and ask for relevant quotes first.",
+      "Prefilling the last assistant turn is not supported on recent models (it returns a 400); use structured outputs or direct instructions instead."
+    ],
+    "skills": [
+      "Rewrite an ambiguous prompt into one with explicit, testable output constraints.",
+      "Choose and structure few-shot examples that generalise instead of teaching unintended patterns.",
+      "Place each instruction in the right component: system prompt, user turn, tool description or `input_schema`, or application code.",
+      "Phrase format instructions positively and match the prompt's style to the desired output.",
+      "Iterate on prompts against a fixed test set with success criteria, and version the changes.",
+      "Sanitise untrusted input (escape delimiters, limit length, validate) before inserting it into a prompt."
+    ],
+    "examLens": [
+      "Pick the option that makes the instruction more specific or better placed, not louder.",
+      "Tool-specific guidance belongs in the tool definition; hard business rules belong in code.",
+      "Prompt changes are validated against a representative test set, not one reported case at a time."
+    ],
+    "traps": [
+      "Capitals, repetition or 'be careful' presented as a fix for ambiguity.",
+      "Negative-only instructions or 'bad' examples that put the unwanted pattern into the context.",
+      "Changing temperature or model size to solve what is really an instruction-clarity problem."
+    ],
+    "links": [
+      {"label": "Prompt engineering overview", "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview"},
+      {"label": "Prompting best practices", "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"}
+    ],
+    "cheat": [
+      ["Output length or format is inconsistent", "State exact constraints: count, length, format, audience"],
+      ["Examples are all alike and Claude copies them", "3 to 5 diverse examples in `<example>` tags"],
+      ["Long document plus a question", "Document first, question last, quote before answering"],
+      ["'Do not use markdown' is ignored", "Describe the wanted format and write the prompt in that style"],
+      ["Tool misused despite rules buried in the system prompt", "Move guidance to the tool description and schema; enforce rules in code"]
+    ]
+  },
+  {
+    "task": "6.3",
+    "knowledge": [
+      "Structured outputs (JSON outputs via `output_config.format`, and strict tool use with `strict: true`) use constrained decoding to guarantee schema-compliant responses.",
+      "The schema guarantee does not hold when `stop_reason` is `max_tokens` (truncated) or `refusal`; both can return output that does not match the schema.",
+      "Structured outputs support a subset of JSON Schema: numeric constraints such as `minimum` and `maximum`, string length limits and recursive schemas are not supported and return a 400; SDK helpers can move such constraints into descriptions and validate locally.",
+      "Schema-valid is not the same as correct: values can still be wrong, inconsistent or ungrounded.",
+      "Confident, specific wording is not evidence of accuracy; grounding in provided sources and citations reduces hallucination."
+    ],
+    "skills": [
+      "Choose structured outputs or strict tool use when downstream code needs guaranteed JSON.",
+      "Check `stop_reason` before parsing and route `max_tokens` and `refusal` cases separately.",
+      "Add semantic and business-rule validation after parsing, with bounded retries that feed the specific error back.",
+      "Keep unsupported schema constraints out of the wire schema and enforce them in application code.",
+      "Require citations or quotes from provided material and allow Claude to say it does not know."
+    ],
+    "examLens": [
+      "Guarantee format with structured outputs, then verify meaning in code.",
+      "Treat every model output as untrusted until it passes validation, however confident it sounds.",
+      "Failures should stay visible: retry with feedback, escalate or route to review, never silently default."
+    ],
+    "traps": [
+      "Assuming schema-valid JSON means the extracted data is correct.",
+      "Using self-reported confidence or 'are you sure?' as verification.",
+      "Regex extraction or `eval()` of model output as a substitute for structured outputs and validation."
+    ],
+    "links": [
+      {"label": "Structured outputs", "url": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs"},
+      {"label": "Strict tool use", "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/strict-tool-use"},
+      {"label": "Stop reasons and fallback", "url": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons"}
+    ],
+    "cheat": [
+      ["Occasional invalid JSON or missing fields", "Structured outputs or strict tool use"],
+      ["Structured output still fails to parse on long responses", "`stop_reason` is `max_tokens`: raise the limit, check before parsing"],
+      ["Schema-valid but totals do not add up", "Semantic validation in code, then targeted retry or human review"],
+      ["`minimum`/`maximum` in the schema causes a 400", "Remove them from the wire schema and check the range in code"],
+      ["Confident claim with no source in context", "Treat as unverified; require grounding and citations"]
+    ]
+  },
+  {
+    "task": "4.1",
+    "knowledge": [
+      "400 `invalid_request_error` and 413 `request_too_large` mean the request itself must change; retrying it unchanged fails the same way.",
+      "401 `authentication_error` and 403 `permission_error` point to the API key or its permissions, not to the request content or load.",
+      "429 `rate_limit_error` (organisation rate limit), 500 `api_error` and 529 `overloaded_error` (temporary API-wide load) are transient; retry with exponential backoff, honouring `retry-after` when present.",
+      "The official SDKs retry connection errors, 429s and 5xx errors automatically with backoff (twice by default); `max_retries` configures this.",
+      "`stop_reason` values such as `max_tokens` describe successful 200 responses, not errors; when streaming, an `error` event such as `overloaded_error` can arrive after the 200 status.",
+      "Every response carries a request ID (`request-id` header, `request_id` in error bodies) for tracing and support."
+    ],
+    "skills": [
+      "Classify a failure by HTTP status, error `type` and `stop_reason` before choosing a recovery.",
+      "Choose between retry with backoff, fixing the request and falling back to another model or a degraded response.",
+      "Read agent traces to find the failure mode, such as uninformative tool errors causing repeated calls.",
+      "Isolate whether a bad answer comes from the integration layer (serialisation, request assembly, stream handling) or from the model.",
+      "Handle mid-stream error events and truncation explicitly instead of relying on the HTTP status alone."
+    ],
+    "examLens": [
+      "Retry only transient errors (429, 500, 529); fix the request for 400 and 413.",
+      "Check what the model actually received before blaming the model.",
+      "A truncated 200 response is a configuration issue (`max_tokens`), not a failure to retry."
+    ],
+    "traps": [
+      "Retrying non-retryable 4xx errors with backoff.",
+      "Blaming model quality or rewriting the prompt for what is an integration bug.",
+      "Confusing 429 (your organisation's limits), 529 (API-wide load) and 413 (request size)."
+    ],
+    "links": [
+      {"label": "API errors", "url": "https://platform.claude.com/docs/en/api/errors"},
+      {"label": "Rate limits", "url": "https://platform.claude.com/docs/en/api/rate-limits"},
+      {"label": "Stop reasons and fallback", "url": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons"},
+      {"label": "Writing effective tools for agents", "url": "https://www.anthropic.com/engineering/writing-tools-for-agents"}
+    ],
+    "cheat": [
+      ["429 with `retry-after`", "Back off and retry; smooth the request rate"],
+      ["529 during a traffic peak", "Transient overload: back off, retry, fall back if exhausted"],
+      ["400 on every request after a model upgrade", "Fix the request (for example remove a last-turn prefill); do not retry"],
+      ["200 response cut off mid-sentence", "`stop_reason` `max_tokens`: raise the limit or continue"],
+      ["Tool result in the trace reads `[object Object]`", "Integration serialisation bug, not the model"]
+    ]
+  }
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "id": "as-off-01",
+    "scenario": 0,
+    "domain": 2,
+    "task": "2.3",
+    "type": "single",
+    "select": 1,
+    "stem": "An associate asks Claude to summarize a new regulation, and Claude produces a confident summary citing a specific subsection number. Before sending the summary to the compliance team, what is the most appropriate action?",
+    "options": [
+      { "key": "A", "text": "Send it as-is, since Claude expressed high confidence." },
+      { "key": "B", "text": "Verify the cited subsection against the official regulation text before sharing." },
+      { "key": "C", "text": "Ask Claude to rate its own confidence and send it if the rating is high." },
+      { "key": "D", "text": "Reword the summary to sound more formal, then send it." }
+    ],
+    "answer": ["B"],
+    "explanation": "Language models can fabricate specific-looking details such as citation numbers, a hallucination. Validating factual claims, especially citations bound for a compliance audience, against an authoritative source is the diligence step required.",
+    "distractors": {
+      "A": "Self-reported confidence is not a reliable accuracy signal.",
+      "C": "A self-rated confidence score is still not a reliable accuracy signal.",
+      "D": "Reformatting does not address correctness."
+    },
+    "difficulty": 1,
+    "tags": ["official-sample", "hallucination", "fact-checking"]
+  },
+  {
+    "id": "as-off-02",
+    "scenario": 0,
+    "domain": 3,
+    "task": "3.3",
+    "type": "single",
+    "select": 1,
+    "stem": "An associate needs to generate a high volume of short customer-reply drafts where speed and cost matter more than deep reasoning. Which choice best fits the task?",
+    "options": [
+      { "key": "A", "text": "Use the most capable, highest-cost model for every reply to maximize quality." },
+      { "key": "B", "text": "Use a faster, lower-cost model suited to straightforward, high-volume tasks." },
+      { "key": "C", "text": "Disable all product features to reduce cost." },
+      { "key": "D", "text": "Switch to a different AI platform." }
+    ],
+    "answer": ["B"],
+    "explanation": "Aligning model selection with task requirements means matching a faster, lower-cost model to straightforward, high-volume work, reserving the most capable model for complex reasoning.",
+    "distractors": {
+      "A": "Always using the top model wastes the cost and latency budget.",
+      "C": "Disabling features does not address the trade-off.",
+      "D": "Switching platforms does not address the trade-off."
+    },
+    "difficulty": 1,
+    "tags": ["official-sample", "model-selection"]
+  },
+  {
+    "id": "as-off-03",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.2",
+    "type": "single",
+    "select": 1,
+    "stem": "A project manager wants to upload a spreadsheet containing customer names and account numbers so Claude can analyze trends. Organizational policy restricts sharing regulated personal data. What is the most appropriate action?",
+    "options": [
+      { "key": "A", "text": "Upload the file as-is, since the analysis is internal." },
+      { "key": "B", "text": "Remove or anonymize the personal identifiers before uploading, consistent with policy." },
+      { "key": "C", "text": "Upload the file but instruct Claude not to retain it." },
+      { "key": "D", "text": "Skip the analysis entirely." }
+    ],
+    "answer": ["B"],
+    "explanation": "Applying data-sensitivity and privacy safeguards means redacting or anonymizing regulated identifiers before use, so the analysis can proceed without exposing protected data.",
+    "distractors": {
+      "A": "Uploading as-is violates policy.",
+      "C": "Instructing the model not to retain data does not satisfy the policy control.",
+      "D": "Abandoning the task is unnecessary when anonymization enables it."
+    },
+    "difficulty": 1,
+    "tags": ["official-sample", "data-privacy"]
+  }
+]

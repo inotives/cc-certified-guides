@@ -1,0 +1,921 @@
+[
+  {
+    "id": "as-pt-001", "scenario": 0, "domain": 1, "task": "1.1", "type": "single", "select": 1,
+    "stem": "A marketing coordinator types \"Write a product announcement\" into Claude and gets a bland, generic draft that could describe almost any product. What is the most effective next step?",
+    "options": [
+      { "key": "A", "text": "Rewrite the prompt with the product details, target audience, purpose, length and tone." },
+      { "key": "B", "text": "Send the same request again with \"IMPORTANT: make this much better\" added at the start." },
+      { "key": "C", "text": "Ask Claude for ten versions of the announcement and pick whichever sounds the most exciting." },
+      { "key": "D", "text": "Switch to the most capable model available, because generic output shows the model lacks skill." }
+    ],
+    "answer": ["A"],
+    "explanation": "Generic output is the classic sign of missing context: Claude knows nothing about the product, the audience or the goal unless the prompt says so. Treating Claude like a capable new colleague and supplying specifics is the most direct fix.",
+    "distractors": {
+      "B": "Adding emphasis repeats the request louder but supplies none of the missing information.",
+      "C": "Ten versions written without context will be ten generic drafts.",
+      "D": "The problem is the prompt's missing context, not the model's ability, so switching models won't fix it."
+    },
+    "difficulty": 1,
+    "tags": ["prompt-structure", "context"]
+  },
+  {
+    "id": "as-pt-002", "scenario": 0, "domain": 1, "task": "1.1", "type": "single", "select": 1,
+    "stem": "An operations manager asks Claude to \"summarize the vendor contract\" for the leadership team. The summary is accurate but dwells on legal definitions, while leadership cares about cost, renewal dates and termination terms. What would most improve the next attempt?",
+    "options": [
+      { "key": "A", "text": "Ask Claude to make the summary much shorter so that leadership will read all of it." },
+      { "key": "B", "text": "Say who the summary is for and why, and list the points leadership needs covered." },
+      { "key": "C", "text": "Upload the contract again in a different file format so Claude reads it more carefully." },
+      { "key": "D", "text": "Tell Claude to act as a senior corporate lawyer so the summary carries more authority." }
+    ],
+    "answer": ["B"],
+    "explanation": "The summary missed the mark because the prompt never said who it was for or what they needed. Stating the audience, the purpose and the must-cover points lets Claude choose what to emphasise.",
+    "distractors": {
+      "A": "A shorter summary could still focus on the wrong topics.",
+      "C": "The summary was accurate, so the file was read correctly; the problem is focus, not reading.",
+      "D": "A lawyer's role would likely push the summary further toward legal definitions, not business terms."
+    },
+    "difficulty": 2,
+    "tags": ["audience", "context"]
+  },
+  {
+    "id": "as-pt-003", "scenario": 0, "domain": 1, "task": "1.1", "type": "multi", "select": 2,
+    "stem": "A school administrator wants Claude to draft parent newsletters that match the school's established voice and layout. Which TWO prompt additions would most reliably achieve this? (Select TWO.)",
+    "options": [
+      { "key": "A", "text": "Include three or four past newsletters as clearly labelled examples of the voice and layout." },
+      { "key": "B", "text": "Specify the sections, approximate length and tone each newsletter must follow." },
+      { "key": "C", "text": "Write the instructions in capital letters so Claude treats them as strict rules." },
+      { "key": "D", "text": "Ask Claude to work out the school's style from the school's name alone." },
+      { "key": "E", "text": "Keep the prompt as short as possible to give Claude more creative freedom." }
+    ],
+    "answer": ["A", "B"],
+    "explanation": "A few varied, clearly labelled examples are one of the most reliable ways to steer format and tone. Stating the required structure, length and tone explicitly removes guesswork. Together they give Claude both a description and a demonstration of the target.",
+    "distractors": {
+      "C": "Capital letters add emphasis but no information about the voice or layout.",
+      "D": "Claude has no access to the school's newsletters from its name, so it would have to guess.",
+      "E": "A minimal prompt leaves the voice and layout to chance, which is the opposite of what is needed."
+    },
+    "difficulty": 2,
+    "tags": ["examples", "format"]
+  },
+  {
+    "id": "as-pt-004", "scenario": 0, "domain": 1, "task": "1.1", "type": "single", "select": 1,
+    "stem": "An analyst pastes a long market report into a chat and wants Claude to answer one specific question about competitor pricing. How should she structure the prompt?",
+    "options": [
+      { "key": "A", "text": "Put the question first, then the report, then repeat the question twice more for emphasis." },
+      { "key": "B", "text": "Ask the question without the report, since Claude already knows most published market data." },
+      { "key": "C", "text": "Place the report first, clearly labelled, and put the specific question at the end." },
+      { "key": "D", "text": "Split the report across several short chats and ask the same question in each one." }
+    ],
+    "answer": ["C"],
+    "explanation": "Anthropic's guidance for long material is to put the document at the top and the question at the end, with documents clearly labelled. This keeps the question fresh and tells Claude exactly which material to use.",
+    "distractors": {
+      "A": "Repeating the question adds clutter without the benefit of the recommended document-first order.",
+      "B": "Without the report Claude would rely on general knowledge, which may be outdated or wrong for this market.",
+      "D": "Splitting the report means no single chat sees all the evidence needed to answer."
+    },
+    "difficulty": 2,
+    "tags": ["long-documents", "prompt-structure"]
+  },
+  {
+    "id": "as-pt-005", "scenario": 0, "domain": 1, "task": "1.1", "type": "single", "select": 1,
+    "stem": "A team lead asks Claude to \"draft a reply to this customer complaint\". The reply is warm and apologetic but promises a full refund, which the company does not offer in this situation. What was most likely missing from the prompt?",
+    "options": [
+      { "key": "A", "text": "A request for Claude to double-check the spelling, grammar and punctuation of the reply." },
+      { "key": "B", "text": "A role statement asking Claude to act as a friendly support assistant." },
+      { "key": "C", "text": "A longer description of how upset the customer was in their message." },
+      { "key": "D", "text": "The relevant policy and limits, such as what the company can and cannot offer." }
+    ],
+    "answer": ["D"],
+    "explanation": "Claude cannot know your refund policy unless you provide it, so it filled the gap with a plausible but wrong promise. Effective prompts include the constraints the output must respect.",
+    "distractors": {
+      "A": "Spelling checks do nothing about an incorrect commitment.",
+      "B": "The reply was already friendly; a role does not supply the missing policy.",
+      "C": "More detail about the customer's mood would not tell Claude what the company can offer."
+    },
+    "difficulty": 1,
+    "tags": ["constraints", "context"]
+  },
+  {
+    "id": "as-pt-006", "scenario": 0, "domain": 1, "task": "1.1", "type": "single", "select": 1,
+    "stem": "An HR coordinator wants interview questions for a new role. She checks each draft prompt with the test \"would a colleague with very little context know exactly what to produce?\" Which prompt best passes that test?",
+    "options": [
+      { "key": "A", "text": "Write eight behavioural interview questions for a junior analyst on our finance team, focused on Excel reporting and stakeholder communication, each with what a strong answer looks like." },
+      { "key": "B", "text": "Write excellent, highly professional interview questions for an analyst role, and make sure they are really good." },
+      { "key": "C", "text": "You are the best recruiter in the world. Write the interview questions we need for the new analyst." },
+      { "key": "D", "text": "Write interview questions for an analyst, similar to the ones other companies usually use." }
+    ],
+    "answer": ["A"],
+    "explanation": "The colleague test checks whether the prompt carries enough context to act on. Only the first prompt states the number, the type, the role, the team, the focus areas and the expected output. The others rely on vague praise words or assumptions Claude cannot resolve.",
+    "distractors": {
+      "B": "Words like \"excellent\" and \"really good\" are not criteria a colleague could act on.",
+      "C": "A role sets a tone but says nothing about the job, team or format.",
+      "D": "\"Similar to other companies\" invites generic questions unrelated to this team's needs."
+    },
+    "difficulty": 1,
+    "tags": ["colleague-test", "specificity"]
+  },
+  {
+    "id": "as-pt-007", "scenario": 0, "domain": 1, "task": "1.1", "type": "single", "select": 1,
+    "stem": "A communications specialist asks Claude for a press-release draft and adds \"keep it brief\". She gets 120 words with no quotes, but she wanted about 400 words including three spokesperson quotes. What is the best fix?",
+    "options": [
+      { "key": "A", "text": "Stop asking Claude for length and edit every draft up to the right size by hand afterwards." },
+      { "key": "B", "text": "State the target length and the required elements, such as three quotes, explicitly." },
+      { "key": "C", "text": "Wait and try again later, because short answers mean Claude is overloaded." },
+      { "key": "D", "text": "Add \"You are a journalist\" so that Claude picks the usual press-release length." }
+    ],
+    "answer": ["B"],
+    "explanation": "\"Brief\" is open to interpretation, and Claude interpreted it differently from what she meant. Concrete requirements such as a word count and named elements leave no room for a mismatch.",
+    "distractors": {
+      "A": "Claude can follow explicit length instructions, so manual resizing wastes effort.",
+      "C": "The short draft followed the word \"brief\"; it is not a sign of overload.",
+      "D": "A role does not tell Claude the specific length or the three quotes she needs."
+    },
+    "difficulty": 2,
+    "tags": ["specificity", "length"]
+  },
+  {
+    "id": "as-pt-008", "scenario": 0, "domain": 1, "task": "1.2", "type": "single", "select": 1,
+    "stem": "In one message, a marketing manager asks Claude to profile three competitors, analyse their pricing, propose a positioning strategy and write launch emails. Every section comes back shallow, and the emails rely on pricing claims she has not checked. What is the most effective approach?",
+    "options": [
+      { "key": "A", "text": "Add \"be thorough and detailed\" to the same single prompt and run it again." },
+      { "key": "B", "text": "Ask for the same four deliverables, but tell Claude to write at least twice as much for each one." },
+      { "key": "C", "text": "Work in stages and check each stage's output before it is used in the next one." },
+      { "key": "D", "text": "Drop the emails and accept the shallow analysis as a reasonable starting point." }
+    ],
+    "answer": ["C"],
+    "explanation": "Breaking a complex request into substeps is a first-line fix for unhelpful output. Staging also lets her verify the pricing facts before the strategy and emails are built on them.",
+    "distractors": {
+      "A": "Asking for thoroughness doesn't change the overloaded structure of the request.",
+      "B": "More words per section does not add depth or verify the pricing claims.",
+      "D": "Accepting shallow, unchecked analysis leaves the real problem unsolved."
+    },
+    "difficulty": 2,
+    "tags": ["decomposition", "chaining"]
+  },
+  {
+    "id": "as-pt-009", "scenario": 0, "domain": 1, "task": "1.2", "type": "single", "select": 1,
+    "stem": "A policy officer is turning a 60-page regulation into a staff training guide. A colleague suggests chaining: doing the work one step at a time with a review between steps. What is the main benefit of this approach?",
+    "options": [
+      { "key": "A", "text": "Each step is shorter, so she no longer needs to verify the final guide." },
+      { "key": "B", "text": "Chaining guarantees that the final guide will contain no errors at all." },
+      { "key": "C", "text": "Chaining always uses less of her usage allowance than one single long prompt would." },
+      { "key": "D", "text": "She can inspect each result and fix problems before they reach the next step." }
+    ],
+    "answer": ["D"],
+    "explanation": "Chaining exists so you can inspect intermediate outputs, catching errors early before later steps build on them. It improves quality and control but does not remove the need to verify the final product.",
+    "distractors": {
+      "A": "Shorter steps still need checking, and the final guide still needs review.",
+      "B": "No technique guarantees error-free output; chaining reduces errors, it doesn't eliminate them.",
+      "C": "Chaining is about control and quality; it can use more turns, not necessarily less usage."
+    },
+    "difficulty": 1,
+    "tags": ["chaining", "decomposition"]
+  },
+  {
+    "id": "as-pt-010", "scenario": 0, "domain": 1, "task": "1.2", "type": "single", "select": 1,
+    "stem": "A project manager wants a weekly status report. Claude must gather updates from her meeting notes, flag risks, and then write an executive summary, in that order. She does not need to check anything in between. What is the best way to structure the request?",
+    "options": [
+      { "key": "A", "text": "Write one prompt with numbered steps that set out the order and each step's output." },
+      { "key": "B", "text": "Open a separate chat for each step and copy the results between chats by hand." },
+      { "key": "C", "text": "Let Claude decide its own order, since it knows best how to structure a status report." },
+      { "key": "D", "text": "Ask only for the executive summary, since the earlier steps are internal work." }
+    ],
+    "answer": ["A"],
+    "explanation": "When order matters but no intermediate check is needed, numbered steps in a single prompt make the sequence explicit. Separate chats add manual overhead without a review benefit.",
+    "distractors": {
+      "B": "Separate chats only pay off when you need to inspect each step; here they just add copying.",
+      "C": "Leaving the order to Claude risks skipping the risk-flagging step she needs.",
+      "D": "Skipping the explicit steps makes it more likely the summary misses risks hidden in the notes."
+    },
+    "difficulty": 2,
+    "tags": ["numbered-steps", "decomposition"]
+  },
+  {
+    "id": "as-pt-011", "scenario": 0, "domain": 1, "task": "1.2", "type": "single", "select": 1,
+    "stem": "An events lead wants Claude's help planning a 300-person conference: a venue shortlist, a budget, a schedule and attendee communications. Which first step is most effective?",
+    "options": [
+      { "key": "A", "text": "Ask for the finished attendee emails first, because communication is the most visible part." },
+      { "key": "B", "text": "Ask Claude to outline the planning stages and their dependencies, then work through them." },
+      { "key": "C", "text": "Paste every requirement into one message and ask for all four deliverables at once." },
+      { "key": "D", "text": "Ask for the schedule and the budget together and assume any venue will fit both of them." }
+    ],
+    "answer": ["B"],
+    "explanation": "Good decomposition starts by identifying the stages and what depends on what: the budget and venue constrain the schedule, which shapes the emails. Working through the stages in order avoids rework.",
+    "distractors": {
+      "A": "Emails written before the venue and schedule are known will need rewriting.",
+      "C": "Bundling everything into one request tends to produce shallow work on each part.",
+      "D": "Ignoring the venue constraint risks a schedule and budget that don't fit reality."
+    },
+    "difficulty": 2,
+    "tags": ["decomposition", "planning"]
+  },
+  {
+    "id": "as-pt-012", "scenario": 0, "domain": 1, "task": "1.2", "type": "multi", "select": 2,
+    "stem": "A trainer is using Claude to build a new onboarding course and decides to break the work into steps. Which TWO practices make this decomposition most effective? (Select TWO.)",
+    "options": [
+      { "key": "A", "text": "Give each step one clear goal and a defined output that feeds the next step." },
+      { "key": "B", "text": "Review and approve the course outline before asking Claude to write the lessons." },
+      { "key": "C", "text": "Split the work into as many tiny steps as possible, even one sentence at a time." },
+      { "key": "D", "text": "Ask for every lesson, quiz and handout in one message to keep them consistent." },
+      { "key": "E", "text": "Skip checking intermediate outputs, since a final review will catch any problems." }
+    ],
+    "answer": ["A", "B"],
+    "explanation": "Effective steps each have one clear goal and an output the next step uses. Checking the outline before building lessons on it catches structural problems early, which is the main reason to decompose.",
+    "distractors": {
+      "C": "Over-splitting creates overhead and loses the context that ties the course together.",
+      "D": "One giant request is the problem decomposition is meant to solve.",
+      "E": "Skipping intermediate checks lets early errors spread into every later step."
+    },
+    "difficulty": 2,
+    "tags": ["decomposition", "review"]
+  },
+  {
+    "id": "as-pt-013", "scenario": 0, "domain": 1, "task": "1.2", "type": "single", "select": 1,
+    "stem": "A communications manager uses a draft-review-refine chain to prepare a holding statement about a service outage. Claude has produced the first draft. What is the most effective next step in the chain?",
+    "options": [
+      { "key": "A", "text": "Send the draft straight to the chief executive, since Claude wrote it carefully the first time." },
+      { "key": "B", "text": "Ask Claude for five more drafts and then merge the best sentences from each into one statement." },
+      { "key": "C", "text": "Have Claude check the draft against stated criteria, list the issues, then revise it." },
+      { "key": "D", "text": "Ask Claude to rewrite the draft in formal legal language so that it sounds more official." }
+    ],
+    "answer": ["C"],
+    "explanation": "In a draft-review-refine chain, the review step checks the draft against clear criteria such as accuracy, tone and sensitivity, and the refine step fixes what the review found. Skipping the review or multiplying drafts loses that structure.",
+    "distractors": {
+      "A": "Skipping review on a sensitive public statement is risky, however careful the draft looks.",
+      "B": "Merging drafts without criteria produces an inconsistent statement and skips the review.",
+      "D": "Legal language changes the style but doesn't check accuracy or suitability for the audience."
+    },
+    "difficulty": 2,
+    "tags": ["chaining", "draft-review-refine"]
+  },
+  {
+    "id": "as-pt-014", "scenario": 0, "domain": 1, "task": "1.2", "type": "single", "select": 1,
+    "stem": "An analyst chains three steps: extract figures from a quarterly sales spreadsheet, analyse the trends, then write a board summary. The board summary contains a wrong revenue figure. Where should she look first?",
+    "options": [
+      { "key": "A", "text": "The final summary step, by asking Claude to rewrite the summary in a more formal tone." },
+      { "key": "B", "text": "The trend analysis step, because analysis is where models usually make their mistakes." },
+      { "key": "C", "text": "The model choice, by switching to a different model and rerunning all three steps." },
+      { "key": "D", "text": "The extraction step, checking its figures against the spreadsheet itself." }
+    ],
+    "answer": ["D"],
+    "explanation": "In a chain, later steps build on earlier ones, so a wrong figure most likely entered at the step that produced it. Checking the extracted figures against the source is the quickest way to find the root cause.",
+    "distractors": {
+      "A": "Changing the tone does not correct a wrong number.",
+      "B": "The figure is a raw number, so the step that extracted it is the first place to check.",
+      "C": "Rerunning everything on a new model skips diagnosis and may repeat the same error."
+    },
+    "difficulty": 3,
+    "tags": ["chaining", "diagnosis"]
+  },
+  {
+    "id": "as-pt-015", "scenario": 0, "domain": 1, "task": "1.3", "type": "single", "select": 1,
+    "stem": "A sales manager's first draft of a client proposal from Claude is close, but the tone is too formal and the pricing section is missing. What is the best next step?",
+    "options": [
+      { "key": "A", "text": "Reply asking for a conversational tone and a pricing section, keeping the rest." },
+      { "key": "B", "text": "Start a new chat and send exactly the same prompt, hoping for a better draft." },
+      { "key": "C", "text": "Accept the draft as it is, since Claude's first outputs are usually final quality." },
+      { "key": "D", "text": "Reply \"this is wrong, try again\" so Claude knows the draft needs more work." }
+    ],
+    "answer": ["A"],
+    "explanation": "Iteration works best with specific feedback that says what to change and what to keep. A near-miss draft is fixed fastest by targeted follow-up instructions in the same conversation.",
+    "distractors": {
+      "B": "The same prompt gives Claude no new information, so the same gaps are likely.",
+      "C": "First outputs are drafts; this one has known gaps that need fixing.",
+      "D": "Vague criticism doesn't tell Claude which parts to change."
+    },
+    "difficulty": 1,
+    "tags": ["iteration", "feedback"]
+  },
+  {
+    "id": "as-pt-016", "scenario": 0, "domain": 1, "task": "1.3", "type": "single", "select": 1,
+    "stem": "A customer experience lead is about to spend time improving a prompt that summarises weekly customer feedback. What should she do first?",
+    "options": [
+      { "key": "A", "text": "Try as many prompt variations as possible and keep whichever looks best on the day." },
+      { "key": "B", "text": "Define what a good summary must contain and test drafts against that using real feedback." },
+      { "key": "C", "text": "Ask Claude to score each of its own summaries out of ten and keep the highest-scoring one." },
+      { "key": "D", "text": "Turn on every available tool and connector so Claude has the most information possible." }
+    ],
+    "answer": ["B"],
+    "explanation": "Anthropic's guidance is to have clear success criteria and a way to test against them before prompt engineering. Without criteria, there is no reliable way to tell whether a new version is better.",
+    "distractors": {
+      "A": "Picking by feel on the day gives no consistent standard for improvement.",
+      "C": "A self-assigned score is not a reliable measure of quality.",
+      "D": "Extra tools add cost and noise and don't define what a good summary is."
+    },
+    "difficulty": 2,
+    "tags": ["success-criteria", "iteration"]
+  },
+  {
+    "id": "as-pt-017", "scenario": 0, "domain": 1, "task": "1.3", "type": "single", "select": 1,
+    "stem": "A recruiter rewrote her job-ad prompt, changing the role, the examples, the format and the length all at once. The new output is worse, and she can't tell why. What is the best way to continue?",
+    "options": [
+      { "key": "A", "text": "Go back to the original prompt and stop iterating, because iterating clearly made the output worse." },
+      { "key": "B", "text": "Make even more changes so the improvements end up outweighing the problems." },
+      { "key": "C", "text": "Return to the earlier version and change one element at a time, checking each result." },
+      { "key": "D", "text": "Ask Claude which of her changes it disliked most, then remove that one change." }
+    ],
+    "answer": ["C"],
+    "explanation": "Changing one thing at a time shows which change helps or hurts. Bundled changes hide cause and effect, so careful iteration isolates each variable.",
+    "distractors": {
+      "A": "Giving up on iteration discards a useful method because it was applied badly.",
+      "B": "More simultaneous changes make the cause even harder to find.",
+      "D": "Claude's preference is not evidence of which change caused the worse output."
+    },
+    "difficulty": 2,
+    "tags": ["iteration", "one-change-at-a-time"]
+  },
+  {
+    "id": "as-pt-018", "scenario": 0, "domain": 1, "task": "1.3", "type": "single", "select": 1,
+    "stem": "After an hour of iterating, a teacher has a prompt that produces lesson plans in exactly the structure her department wants. Colleagues will need the same structure all term. What is the best next step?",
+    "options": [
+      { "key": "A", "text": "Delete the chat, since the lesson plan she needed today is finished." },
+      { "key": "B", "text": "Retype the prompt from memory each week, adjusting it as she goes." },
+      { "key": "C", "text": "Keep only the final lesson plan and discard the prompt that produced it, since plans can be copied." },
+      { "key": "D", "text": "Save the prompt as a reusable template or put it in shared Project instructions." }
+    ],
+    "answer": ["D"],
+    "explanation": "The value of iteration is a prompt that reliably produces the right output. Saving it as a template or standing instruction keeps results consistent and saves colleagues from repeating the work.",
+    "distractors": {
+      "A": "Deleting the chat throws away the tested prompt.",
+      "B": "Retyping from memory reintroduces the variation she worked to remove.",
+      "C": "The prompt, not one output, is what colleagues need to reuse."
+    },
+    "difficulty": 1,
+    "tags": ["templates", "reuse"]
+  },
+  {
+    "id": "as-pt-019", "scenario": 0, "domain": 1, "task": "1.3", "type": "multi", "select": 2,
+    "stem": "A team lead is reviewing Claude's draft of a quarterly staff newsletter. Which TWO pieces of feedback are most likely to improve the next draft? (Select TWO.)",
+    "options": [
+      { "key": "A", "text": "\"Cut the introduction to two sentences and lead with the sales results.\"" },
+      { "key": "B", "text": "\"Keep the customer story, but replace the jargon with plain language for front-line staff.\"" },
+      { "key": "C", "text": "\"Make it better.\"" },
+      { "key": "D", "text": "\"This isn't what I wanted.\"" },
+      { "key": "E", "text": "\"Try again, but be more creative and more professional.\"" }
+    ],
+    "answer": ["A", "B"],
+    "explanation": "Useful iteration feedback names what to change and what to keep, in terms Claude can act on. Specific instructions about length, order, audience and wording give a clear direction; vague reactions do not.",
+    "distractors": {
+      "C": "\"Better\" has no stated criteria, so Claude must guess what to change.",
+      "D": "It says the draft missed but not how or why.",
+      "E": "\"Creative\" and \"professional\" are vague and can pull in opposite directions."
+    },
+    "difficulty": 1,
+    "tags": ["feedback", "iteration"]
+  },
+  {
+    "id": "as-pt-020", "scenario": 0, "domain": 1, "task": "1.3", "type": "single", "select": 1,
+    "stem": "A product manager tests a prompt for summarising support tickets on one example, and the summary is excellent. When she runs it on 30 real tickets, about a third of the summaries miss the customer's main complaint. What is the best next step?",
+    "options": [
+      { "key": "A", "text": "Review the failed summaries for a common pattern and refine the prompt to address it, then retest." },
+      { "key": "B", "text": "Conclude the prompt is fine, because it worked perfectly on the first example she tried." },
+      { "key": "C", "text": "Ask Claude to summarise each ticket twice and always keep whichever summary is longer." },
+      { "key": "D", "text": "Replace the prompt with a much longer one that lists every complaint type she can think of." }
+    ],
+    "answer": ["A"],
+    "explanation": "One good example does not prove a prompt works; testing on varied real cases reveals where it fails. Looking for the pattern in the failures points to a targeted fix, which should then be retested on the same set.",
+    "distractors": {
+      "B": "A single success says little about how the prompt handles varied tickets.",
+      "C": "Length is not a measure of whether the main complaint was captured.",
+      "D": "A long list written without diagnosing the failures may not fix them and adds clutter."
+    },
+    "difficulty": 3,
+    "tags": ["testing", "iteration"]
+  },
+  {
+    "id": "as-pt-021", "scenario": 0, "domain": 1, "task": "1.3", "type": "single", "select": 1,
+    "stem": "Claude's first draft of a job advert has the right content and tone, but at 600 words it is too long for the jobs board. What is the most efficient way to improve it?",
+    "options": [
+      { "key": "A", "text": "Rewrite the whole advert by hand, starting again from a blank page." },
+      { "key": "B", "text": "Ask Claude to cut it to about 200 words, keeping the benefits section." },
+      { "key": "C", "text": "Start a new chat with a completely new prompt and no reference to the draft." },
+      { "key": "D", "text": "Post it as it is, because length doesn't matter much for job adverts." }
+    ],
+    "answer": ["B"],
+    "explanation": "When most of a draft is right, a targeted follow-up with a concrete length and an instruction on what to keep is the fastest fix. Iteration builds on what works instead of starting over.",
+    "distractors": {
+      "A": "Rewriting by hand discards a draft that is already mostly right.",
+      "C": "Starting over loses the content and tone that already work.",
+      "D": "The jobs board's limit is a real requirement the draft doesn't meet."
+    },
+    "difficulty": 1,
+    "tags": ["iteration", "length"]
+  },
+  {
+    "id": "as-pt-022", "scenario": 0, "domain": 1, "task": "1.4", "type": "single", "select": 1,
+    "stem": "A finance manager uploads three years of expense data and wants Claude to explain why travel costs rose. Which prompting approach best fits this analysis task?",
+    "options": [
+      { "key": "A", "text": "Ask Claude to brainstorm as many creative reasons as possible for rising travel costs." },
+      { "key": "B", "text": "Ask for a polished narrative for the board first, and work out the supporting analysis afterwards." },
+      { "key": "C", "text": "State the question and criteria, and ask Claude to show the figures behind each finding." },
+      { "key": "D", "text": "Ask Claude to search the web for average travel cost trends instead of using the data." }
+    ],
+    "answer": ["C"],
+    "explanation": "Analysis prompts work best with the data, a precise question and clear criteria. Asking Claude to show which figures support each conclusion makes the reasoning checkable before anyone relies on it.",
+    "distractors": {
+      "A": "Brainstorming produces possible reasons, not an analysis of what the data actually shows.",
+      "B": "Writing the narrative before the analysis puts presentation ahead of evidence.",
+      "D": "Industry averages can't explain this company's own cost increase."
+    },
+    "difficulty": 2,
+    "tags": ["analysis", "task-type"]
+  },
+  {
+    "id": "as-pt-023", "scenario": 0, "domain": 1, "task": "1.4", "type": "single", "select": 1,
+    "stem": "A marketing team asks Claude to \"suggest a campaign name\" and gets three safe, similar options. They want a wide range to choose from. What is the best way to prompt for this brainstorming task?",
+    "options": [
+      { "key": "A", "text": "Ask Claude to pick the single best name and explain why it is the right one." },
+      { "key": "B", "text": "Require every name to follow the brand guide word for word before any names are suggested." },
+      { "key": "C", "text": "Ask Claude to check each suggested name against published sources before listing it." },
+      { "key": "D", "text": "Ask for many varied names in different styles, then shortlist them in a separate step." }
+    ],
+    "answer": ["D"],
+    "explanation": "Brainstorming is divergent: ask explicitly for quantity and variety, and hold back judgement until a separate shortlisting step. Claude responds better when you ask directly for more than when you hope it infers it.",
+    "distractors": {
+      "A": "Picking one best name narrows the options before any range has been explored.",
+      "B": "Heavy constraints up front make the ideas more similar, not more varied.",
+      "C": "Fact-checking belongs to research tasks, not to early idea generation."
+    },
+    "difficulty": 1,
+    "tags": ["brainstorming", "task-type"]
+  },
+  {
+    "id": "as-pt-024", "scenario": 0, "domain": 1, "task": "1.4", "type": "single", "select": 1,
+    "stem": "A policy adviser needs an in-depth briefing, with sources, on how several countries regulate shared e-scooters, for a council meeting next week. Which approach best fits this research task?",
+    "options": [
+      { "key": "A", "text": "Use Research with clear success criteria, and ask for claims checked across sources and cited." },
+      { "key": "B", "text": "Ask Claude from its general knowledge with web access turned off, which saves time on sources." },
+      { "key": "C", "text": "Ask Claude to brainstorm the kinds of rules each country might plausibly have in place today." },
+      { "key": "D", "text": "Run one quick web search and treat the first answer it returns as the complete picture." }
+    ],
+    "answer": ["A"],
+    "explanation": "Research is designed for comprehensive, multi-source investigation that produces cited reports. Clear success criteria and cross-source verification fit an in-depth briefing, and the adviser should still check the cited originals before the meeting.",
+    "distractors": {
+      "B": "General knowledge may be out of date and gives no sources to check.",
+      "C": "Brainstorming plausible rules invents content instead of finding real regulations.",
+      "D": "One quick search suits a single fact, not a comparative multi-country briefing."
+    },
+    "difficulty": 2,
+    "tags": ["research", "task-type", "citations"]
+  },
+  {
+    "id": "as-pt-025", "scenario": 0, "domain": 1, "task": "1.4", "type": "multi", "select": 2,
+    "stem": "A communications director uses Claude for two tasks this week: brainstorming taglines for a campaign, and drafting the final press release. Which TWO statements best describe how her prompting should differ between them? (Select TWO.)",
+    "options": [
+      { "key": "A", "text": "For the taglines, ask for many varied options and hold back judgement until a separate review." },
+      { "key": "B", "text": "For the press release, state the audience, purpose, key points and tone, with a house-style example." },
+      { "key": "C", "text": "For the taglines, require every idea to be fact-checked against sources before it is listed." },
+      { "key": "D", "text": "For the press release, ask for as many alternative versions as possible and avoid setting constraints." },
+      { "key": "E", "text": "Use the identical prompt for both tasks, since a consistent approach matters most." }
+    ],
+    "answer": ["A", "B"],
+    "explanation": "Brainstorming is divergent and benefits from quantity, variety and deferred judgement. Drafting is convergent and benefits from a clear audience, purpose, key points, tone and an example of the voice. Adapting the strategy to the task type gets better results from each.",
+    "distractors": {
+      "C": "Fact-checking every tagline idea suppresses the variety that brainstorming needs.",
+      "D": "A final press release needs constraints, not an open-ended stream of versions.",
+      "E": "One prompt for both ignores that the two tasks need opposite approaches."
+    },
+    "difficulty": 3,
+    "tags": ["task-type", "brainstorming", "drafting"]
+  },
+  {
+    "id": "as-pt-026", "scenario": 0, "domain": 1, "task": "1.4", "type": "single", "select": 1,
+    "stem": "A department head asks Claude to draft an all-staff email announcing a new hybrid-working policy. Which addition to the prompt matters most for this drafting task?",
+    "options": [
+      { "key": "A", "text": "A request to make the email as long as possible so that every detail is covered." },
+      { "key": "B", "text": "The audience, the purpose, the key points staff must know, and the tone." },
+      { "key": "C", "text": "An instruction to include several jokes to keep the announcement light." },
+      { "key": "D", "text": "A request for Claude to write supportive quotes from named employees." }
+    ],
+    "answer": ["B"],
+    "explanation": "Drafting prompts work best when they state the audience, the purpose, the key points and the tone. These shape both content and voice for a real readership.",
+    "distractors": {
+      "A": "Maximum length makes an announcement harder to read and doesn't ensure the key points land.",
+      "C": "Jokes may suit some cultures but don't define what staff need to know.",
+      "D": "Invented quotes attributed to real people would be fabricated and misleading."
+    },
+    "difficulty": 1,
+    "tags": ["drafting", "task-type"]
+  },
+  {
+    "id": "as-pt-027", "scenario": 0, "domain": 1, "task": "1.4", "type": "single", "select": 1,
+    "stem": "A strategy analyst asks Claude to weigh a pricing decision with several interacting factors, using figures she has already pasted into the chat. No new information from the web is needed. Which approach best fits this task?",
+    "options": [
+      { "key": "A", "text": "Turn on Research, because complex questions always need many web sources." },
+      { "key": "B", "text": "Use the lowest effort setting so the answer arrives as quickly as possible today." },
+      { "key": "C", "text": "Use thinking or a higher effort level so Claude reasons through the factors." },
+      { "key": "D", "text": "Ask for a brainstorm of fifty pricing ideas instead of an actual analysis." }
+    ],
+    "answer": ["C"],
+    "explanation": "Complex, multi-step reasoning that needs no fresh web information is what thinking and higher effort are for. Research is for gathering many outside sources, which this task doesn't need.",
+    "distractors": {
+      "A": "Research gathers outside sources; it adds time and usage when the data is already in the chat.",
+      "B": "The lowest effort suits routine tasks, not a decision with several interacting factors.",
+      "D": "A brainstorm generates options but doesn't analyse the decision she asked about."
+    },
+    "difficulty": 3,
+    "tags": ["analysis", "thinking", "effort"]
+  },
+  {
+    "id": "as-pt-028", "scenario": 0, "domain": 1, "task": "1.4", "type": "single", "select": 1,
+    "stem": "Before a sales call this afternoon, a product manager wants to know whether a competitor announced a new product this week. What is the best approach?",
+    "options": [
+      { "key": "A", "text": "Ask Claude from its built-in knowledge, since it was trained on a lot of industry news." },
+      { "key": "B", "text": "Ask Claude to brainstorm the products the competitor would most likely launch next." },
+      { "key": "C", "text": "Run a full Research report on the competitor's entire history and long-term strategy." },
+      { "key": "D", "text": "Ask Claude to search the web, then check the cited sources before relying on it." }
+    ],
+    "answer": ["D"],
+    "explanation": "Web search suits simple, current factual questions, and its responses include citations. Checking those sources confirms the answer before it is used in a client conversation.",
+    "distractors": {
+      "A": "Built-in knowledge can't reliably cover this week's news.",
+      "B": "Guessing likely launches doesn't answer what was actually announced.",
+      "C": "A full Research report is far more than a single current fact needs."
+    },
+    "difficulty": 2,
+    "tags": ["research", "web-search", "task-type"]
+  },
+  {
+    "id": "as-pt-029", "scenario": 0, "domain": 7, "task": "7.1", "type": "single", "select": 1,
+    "stem": "In a normal chat with no connectors set up, Claude finishes a meeting summary and says, \"I've emailed this to your team.\" Nobody on the team has received it. What is the most likely explanation?",
+    "options": [
+      { "key": "A", "text": "Claude described an action it cannot take without a connected tool, so nothing was sent." },
+      { "key": "B", "text": "Claude sent the email through a hidden integration, and it is being delayed." },
+      { "key": "C", "text": "The email is sitting in an outbox and will be delivered later in the day." },
+      { "key": "D", "text": "The team's spam filter must have blocked the message Claude sent to them." }
+    ],
+    "answer": ["A"],
+    "explanation": "Claude can hallucinate its own capabilities, for example claiming it sent an email or created an external document. Without a connected tool it has no way to act outside the chat, so the summary must be sent by the user.",
+    "distractors": {
+      "B": "Claude has no access to tools that aren't explicitly connected, so there is no hidden integration.",
+      "C": "There is no outbox; no email was ever created.",
+      "D": "Blaming the spam filter assumes an email was sent when none was."
+    },
+    "difficulty": 1,
+    "tags": ["hallucination", "capabilities"]
+  },
+  {
+    "id": "as-pt-030", "scenario": 0, "domain": 7, "task": "7.1", "type": "single", "select": 1,
+    "stem": "Claude-drafted weekly reports keep leaving out the \"risks\" section. The team's prompt packs nine different requests into one long paragraph. What is the most likely cause, and the best fix?",
+    "options": [
+      { "key": "A", "text": "The model has got worse over time, so the team should switch to a different model." },
+      { "key": "B", "text": "Too many requests are buried in one paragraph; list them as numbered items or split the task." },
+      { "key": "C", "text": "Claude avoids discussing risks, so the team should drop that section from the template." },
+      { "key": "D", "text": "The reports are too short, so the team should ask Claude to make every report longer." }
+    ],
+    "answer": ["B"],
+    "explanation": "When parts of a request are skipped, a common cause is too many asks crammed together. Numbered steps, or breaking the task into substeps, make each requirement explicit and easier to follow.",
+    "distractors": {
+      "A": "Switching models skips diagnosis; the structure of the prompt is the evident cause.",
+      "C": "There is no evidence Claude avoids risks; removing the section hides a required part of the report.",
+      "D": "Longer reports don't guarantee the missing section appears."
+    },
+    "difficulty": 2,
+    "tags": ["diagnosis", "prompt-structure"]
+  },
+  {
+    "id": "as-pt-031", "scenario": 0, "domain": 7, "task": "7.1", "type": "single", "select": 1,
+    "stem": "Claude's summary of an uploaded 80-page HR policy includes a direct quote that does not appear anywhere in the document. Which prompt change best reduces the chance of this happening again?",
+    "options": [
+      { "key": "A", "text": "Ask Claude to write in a more confident tone so the summary sounds authoritative." },
+      { "key": "B", "text": "Ask Claude to use its general knowledge of HR policy to fill in any gaps it finds." },
+      { "key": "C", "text": "Limit Claude to the document, have it quote the passages it uses, and allow \"I don't know\"." },
+      { "key": "D", "text": "Ask Claude for a much shorter summary so that there is less room for any mistakes." }
+    ],
+    "answer": ["C"],
+    "explanation": "Grounding answers in the provided document, asking for the supporting quotes, and allowing Claude to say \"I don't know\" are documented ways to reduce invented content. The quotes can then be checked against the source, since no technique removes hallucinations entirely.",
+    "distractors": {
+      "A": "A confident tone is not evidence of accuracy and can make an error more convincing.",
+      "B": "Filling gaps from general knowledge invites exactly the invented content she saw.",
+      "D": "A shorter summary can still contain invented quotes."
+    },
+    "difficulty": 2,
+    "tags": ["hallucination", "grounding"]
+  },
+  {
+    "id": "as-pt-032", "scenario": 0, "domain": 7, "task": "7.1", "type": "single", "select": 1,
+    "stem": "A marketing analyst's single chat began with campaign planning, then moved through budgeting, a hiring question and a supplier dispute. Claude's latest answers about the supplier mix in details from the earlier topics. What is the most appropriate action?",
+    "options": [
+      { "key": "A", "text": "Keep going in the same chat, but type \"IGNORE EVERYTHING ABOVE\" in capital letters first." },
+      { "key": "B", "text": "Switch to a different model in the same chat and ask the supplier question again." },
+      { "key": "C", "text": "Repeat the supplier question three times so Claude knows it is the priority now." },
+      { "key": "D", "text": "Start a new conversation for the supplier topic, with a summary of what is relevant." }
+    ],
+    "answer": ["D"],
+    "explanation": "Anthropic recommends starting a new conversation for a new topic. A fresh chat with only the relevant facts removes the unrelated earlier material that is bleeding into the answers.",
+    "distractors": {
+      "A": "Shouting an instruction leaves all the earlier content in the conversation.",
+      "B": "A new model in the same chat still sees the same mixed history.",
+      "C": "Repeating the question doesn't remove the unrelated context."
+    },
+    "difficulty": 3,
+    "tags": ["context", "new-conversation"]
+  },
+  {
+    "id": "as-pt-033", "scenario": 0, "domain": 7, "task": "7.1", "type": "multi", "select": 2,
+    "stem": "A customer-service lead's prompt for reply drafts produces responses that vary widely in length and layout from one customer to the next. Which TWO changes most directly address the cause? (Select TWO.)",
+    "options": [
+      { "key": "A", "text": "State the required structure and length, such as greeting, two short paragraphs and sign-off, under 150 words." },
+      { "key": "B", "text": "Provide a few varied example replies that show the desired format and tone." },
+      { "key": "C", "text": "Ask Claude to try harder to be consistent in every reply from now on." },
+      { "key": "D", "text": "Turn on web search so Claude can find better example replies online." },
+      { "key": "E", "text": "Add the word \"CONSISTENT\" in capital letters several times in the prompt." }
+    ],
+    "answer": ["A", "B"],
+    "explanation": "Inconsistent length and layout usually means the format was never specified. Stating the structure and length, and showing a few examples, are the most reliable ways to steer format consistently.",
+    "distractors": {
+      "C": "\"Try harder\" gives no format to be consistent with.",
+      "D": "Replies found online won't match this team's format or policies.",
+      "E": "Emphasis without a defined format still leaves Claude guessing."
+    },
+    "difficulty": 2,
+    "tags": ["diagnosis", "format", "examples"]
+  },
+  {
+    "id": "as-pt-034", "scenario": 0, "domain": 7, "task": "7.1", "type": "single", "select": 1,
+    "stem": "An operations manager has a prompt that triages support tickets well when she pastes them in. She now wants every new ticket in the company's ticketing system processed automatically overnight, with results written back into the system. What is the most appropriate action?",
+    "options": [
+      { "key": "A", "text": "Escalate the integration to a Claude Developer or Architect and share the working prompt." },
+      { "key": "B", "text": "Keep refining the prompt until Claude can connect to the ticketing system by itself." },
+      { "key": "C", "text": "Ask Claude to promise it will run every night, and rely on that commitment from now on for the team." },
+      { "key": "D", "text": "Paste every ticket in by hand each night as the long-term way of running the process." }
+    ],
+    "answer": ["A"],
+    "explanation": "Automated, system-integrated processing is a technical build, not a prompting problem. Associates recognise this boundary and escalate to Claude Developer or Architect colleagues, handing over the tested prompt as a useful starting point.",
+    "distractors": {
+      "B": "No prompt wording gives Claude a connection to a system it isn't integrated with.",
+      "C": "Claude can't schedule itself to run; such a promise would be a hallucinated capability.",
+      "D": "Manual pasting doesn't meet the goal and won't scale."
+    },
+    "difficulty": 2,
+    "tags": ["escalation", "scope"]
+  },
+  {
+    "id": "as-pt-035", "scenario": 0, "domain": 7, "task": "7.1", "type": "single", "select": 1,
+    "stem": "The marketing team complains that Claude's blog drafts keep using old product names. The products were renamed last month, and nobody has updated the prompt. What is the most likely cause, and the best fix?",
+    "options": [
+      { "key": "A", "text": "Claude is deliberately ignoring the team's instructions, so they should report it." },
+      { "key": "B", "text": "Claude lacks the new names; give them in the prompt or in the Project knowledge." },
+      { "key": "C", "text": "The drafts are too long, so they should ask for shorter posts with fewer names." },
+      { "key": "D", "text": "The model is too slow to keep up, so they should switch to a faster model." }
+    ],
+    "answer": ["B"],
+    "explanation": "Claude only knows what it has been given or learned in training, so a renaming it was never told about will not appear. Supplying current reference information where Claude uses it every time fixes the cause.",
+    "distractors": {
+      "A": "Nothing in the prompt mentioned the new names, so there was no instruction to ignore.",
+      "C": "Shorter posts would still use the old names.",
+      "D": "Speed has nothing to do with knowing a recent renaming."
+    },
+    "difficulty": 1,
+    "tags": ["diagnosis", "context", "knowledge"]
+  },
+  {
+    "id": "as-pt-036", "scenario": 0, "domain": 7, "task": "7.2", "type": "single", "select": 1,
+    "stem": "A manager reviews Claude-drafted performance-review summaries and says they are \"too harsh\". What is the best next step for the associate who prepared them?",
+    "options": [
+      { "key": "A", "text": "Ask Claude to make the summaries \"less harsh\", with no further detail." },
+      { "key": "B", "text": "Stop using Claude for this task, since the manager didn't like the output." },
+      { "key": "C", "text": "Turn the feedback into specific instructions, such as opening with strengths, and regenerate." },
+      { "key": "D", "text": "Tell the manager the drafts are fine, because Claude's wording is objective." }
+    ],
+    "answer": ["C"],
+    "explanation": "Vague feedback should be turned into concrete, testable instructions, such as opening with strengths, framing gaps as development goals and avoiding absolute words. That gives Claude a clear target, and the manager still reviews the final summaries.",
+    "distractors": {
+      "A": "\"Less harsh\" is as vague to Claude as it was to the associate.",
+      "B": "One round of feedback is a reason to adjust, not to abandon the task.",
+      "D": "Dismissing the reviewer's feedback ignores the person accountable for the reviews."
+    },
+    "difficulty": 2,
+    "tags": ["feedback", "adjustment"]
+  },
+  {
+    "id": "as-pt-037", "scenario": 0, "domain": 7, "task": "7.2", "type": "single", "select": 1,
+    "stem": "Every week, a content team corrects Claude's drafts in the same way: use British spelling and the official product names. What is the best adjustment to their workflow?",
+    "options": [
+      { "key": "A", "text": "Keep correcting each draft by hand, because the fixes only take a few minutes." },
+      { "key": "B", "text": "Ask a different colleague to write the prompts in the hope they get it right." },
+      { "key": "C", "text": "Mention the rules once in one chat and expect Claude to apply them in every chat from then on." },
+      { "key": "D", "text": "Put these standing rules into the team's Project instructions or a saved template." }
+    ],
+    "answer": ["D"],
+    "explanation": "Recurring feedback belongs in standing instructions so it applies every time without repeated correction. Project instructions apply to every chat in that project, while a rule mentioned in one chat isn't carried into others.",
+    "distractors": {
+      "A": "Repeated manual fixes waste time when the rule could be applied automatically.",
+      "B": "Changing who writes the prompt doesn't capture the rule anywhere lasting.",
+      "C": "Context from one chat isn't shared with other chats unless it is saved in instructions or knowledge."
+    },
+    "difficulty": 2,
+    "tags": ["feedback", "project-instructions"]
+  },
+  {
+    "id": "as-pt-038", "scenario": 0, "domain": 7, "task": "7.2", "type": "single", "select": 1,
+    "stem": "After three rounds of rewording, a prompt that summarises engineering reports for executives still misinterprets several specialist terms. What is the best adjustment?",
+    "options": [
+      { "key": "A", "text": "Change approach: add a short glossary and an example summary, and have an engineer check the next outputs." },
+      { "key": "B", "text": "Keep rewording the same prompt, because the fourth version is likely to work." },
+      { "key": "C", "text": "Ask Claude to sound more confident about the terms in its summaries." },
+      { "key": "D", "text": "Delete the technical sections from the reports before asking for summaries." }
+    ],
+    "answer": ["A"],
+    "explanation": "When repeated rewording fails on the same point, the problem is missing knowledge, not phrasing. Adding a glossary and an example supplies that knowledge, and an expert check confirms the fix before executives rely on it.",
+    "distractors": {
+      "B": "More rewording repeats an approach that has already failed three times.",
+      "C": "Confidence doesn't make the interpretation correct.",
+      "D": "Removing the technical content strips out what executives need summarised."
+    },
+    "difficulty": 3,
+    "tags": ["adjustment", "examples", "human-review"]
+  },
+  {
+    "id": "as-pt-039", "scenario": 0, "domain": 7, "task": "7.2", "type": "single", "select": 1,
+    "stem": "A support team notices that customers reply with more follow-up questions to Claude-drafted emails than to emails written by staff. Reviewing a sample, they find the Claude drafts rarely say what happens next. What is the best adjustment?",
+    "options": [
+      { "key": "A", "text": "Stop tracking follow-up questions, since the comparison makes the drafts look bad." },
+      { "key": "B", "text": "Require a clear \"next steps\" section in the prompt and test it on recent cases." },
+      { "key": "C", "text": "Make every email longer in general, so that more information is always included." },
+      { "key": "D", "text": "Switch to a different model at once, without looking further into the cause." }
+    ],
+    "answer": ["B"],
+    "explanation": "Results data plus a sample review pointed to a specific gap. Adding that requirement to the prompt and testing it on real recent cases is a targeted, measurable adjustment.",
+    "distractors": {
+      "A": "Ignoring the measure hides the problem instead of fixing it.",
+      "C": "Longer emails don't guarantee the next steps are stated.",
+      "D": "The cause is already known and is a prompt gap, so switching models is untargeted."
+    },
+    "difficulty": 2,
+    "tags": ["results", "adjustment"]
+  },
+  {
+    "id": "as-pt-040", "scenario": 0, "domain": 7, "task": "7.2", "type": "multi", "select": 2,
+    "stem": "A training coordinator hears that Claude-generated quizzes are \"too easy\" according to instructors and \"confusing\" according to learners. Which TWO actions represent the best response? (Select TWO.)",
+    "options": [
+      { "key": "A", "text": "Ask instructors and learners for specific examples of easy and confusing questions to find the pattern." },
+      { "key": "B", "text": "Revise the prompt with concrete criteria, such as skill level, question types and a plain-language rule, then test it on a sample." },
+      { "key": "C", "text": "Ignore the learners' feedback, because the instructors are the subject experts." },
+      { "key": "D", "text": "Ask Claude to make the quizzes \"harder and clearer\" and roll them out immediately." },
+      { "key": "E", "text": "Regenerate the same quizzes with the same prompt until the feedback improves." }
+    ],
+    "answer": ["A", "B"],
+    "explanation": "Concrete examples reveal what \"too easy\" and \"confusing\" actually mean, so the fix addresses the real pattern. Translating that into specific criteria and testing on a sample before rollout makes the adjustment measurable.",
+    "distractors": {
+      "C": "Learners are the people taking the quizzes, so their confusion is valid evidence.",
+      "D": "Vague instructions and no testing risk repeating both problems at scale.",
+      "E": "The same prompt will keep producing the same kinds of questions."
+    },
+    "difficulty": 3,
+    "tags": ["feedback", "testing"]
+  },
+  {
+    "id": "as-pt-041", "scenario": 0, "domain": 7, "task": "7.2", "type": "single", "select": 1,
+    "stem": "A Claude-drafted client update gets enthusiastic praise from a senior stakeholder. What should the associate who wrote the prompt do next?",
+    "options": [
+      { "key": "A", "text": "Nothing in particular, since the update has already been delivered and approved by the client." },
+      { "key": "B", "text": "Use a completely different prompt next time, to see whether it does even better." },
+      { "key": "C", "text": "Note what made it work, such as the prompt, examples and structure, and reuse it." },
+      { "key": "D", "text": "Assume every future update will be just as good and stop reviewing them closely." }
+    ],
+    "answer": ["C"],
+    "explanation": "Positive feedback is also a signal to act on. Recording what worked lets the approach be repeated for similar tasks, while normal review continues.",
+    "distractors": {
+      "A": "Doing nothing loses a proven approach.",
+      "B": "Discarding a prompt that just succeeded throws away what is known to work.",
+      "D": "One good result doesn't remove the need to review future outputs."
+    },
+    "difficulty": 1,
+    "tags": ["feedback", "reuse"]
+  },
+  {
+    "id": "as-pt-042", "scenario": 0, "domain": 7, "task": "7.2", "type": "single", "select": 1,
+    "stem": "The legal team has rejected several contract clauses that a procurement associate drafted with Claude, making the same kinds of corrections each time. What is the best way for the associate to adjust?",
+    "options": [
+      { "key": "A", "text": "Stop sending clauses to legal, because their review is slowing procurement down." },
+      { "key": "B", "text": "Ask Claude to confirm that each clause is legally valid, and skip legal review." },
+      { "key": "C", "text": "Keep rewording until legal approves one draft unchanged, then stop sending them." },
+      { "key": "D", "text": "Keep legal review, and add legal's recurring corrections to the drafting instructions." }
+    ],
+    "answer": ["D"],
+    "explanation": "Contract clauses carry legal risk, so qualified human review stays in the loop. Folding the reviewer's recurring corrections back into the instructions reduces rework without removing the safeguard.",
+    "distractors": {
+      "A": "Removing expert review on contracts trades a small delay for serious risk.",
+      "B": "Claude's own confirmation is not a substitute for a qualified legal review.",
+      "C": "One clean approval doesn't make future clauses safe to skip review."
+    },
+    "difficulty": 2,
+    "tags": ["human-review", "feedback"]
+  },
+  {
+    "id": "as-pt-043", "scenario": 0, "domain": 7, "task": "7.3", "type": "single", "select": 1,
+    "stem": "A brand coordinator re-uploads the same brand guide and pastes the same style rules at the start of every new chat. What is the most efficient improvement?",
+    "options": [
+      { "key": "A", "text": "Set up a Project with the guide as knowledge and the rules as its instructions." },
+      { "key": "B", "text": "Paste the full brand guide into every single message rather than once per chat." },
+      { "key": "C", "text": "Upload the guide once to a single chat and use that chat for every task indefinitely." },
+      { "key": "D", "text": "Stop using the brand guide, since uploading it each time takes too much effort." }
+    ],
+    "answer": ["A"],
+    "explanation": "Projects hold knowledge and instructions that apply to every chat inside them, so reused material is set up once. Reused project content also counts less against usage than uploading it again.",
+    "distractors": {
+      "B": "Pasting it into every message multiplies the repetition and uses more of the allowance.",
+      "C": "One endless chat mixes unrelated topics and eventually runs into length limits.",
+      "D": "Dropping the guide sacrifices brand quality to save effort."
+    },
+    "difficulty": 1,
+    "tags": ["efficiency", "projects"]
+  },
+  {
+    "id": "as-pt-044", "scenario": 0, "domain": 7, "task": "7.3", "type": "single", "select": 1,
+    "stem": "An analyst sends twelve short, related questions about one report as twelve separate messages, re-explaining the background each time, and keeps running low on usage. What is the best change?",
+    "options": [
+      { "key": "A", "text": "Switch to the most capable model so each question gets answered faster." },
+      { "key": "B", "text": "Batch the related questions into one well-structured message with context given once." },
+      { "key": "C", "text": "Turn on Research so that Claude can answer all of the questions more thoroughly and accurately." },
+      { "key": "D", "text": "Open a separate new chat for each question, re-uploading the report every time." }
+    ],
+    "answer": ["B"],
+    "explanation": "Anthropic's usage best practices recommend planning the conversation and batching related questions into one message with all the relevant context. That avoids repeating background and saves usage.",
+    "distractors": {
+      "A": "A more capable model doesn't remove the repetition, and may use more of the allowance.",
+      "C": "Research uses usage faster and isn't needed for questions about one report.",
+      "D": "Separate chats repeat the upload and background twelve times."
+    },
+    "difficulty": 2,
+    "tags": ["efficiency", "usage"]
+  },
+  {
+    "id": "as-pt-045", "scenario": 0, "domain": 7, "task": "7.3", "type": "single", "select": 1,
+    "stem": "A team uses Claude to reword short internal notices. They set the highest effort level and leave web search and several connectors on for every chat. Responses are slow and usage runs out early. What is the best optimisation?",
+    "options": [
+      { "key": "A", "text": "Raise the effort level further so each answer is finished in a single attempt." },
+      { "key": "B", "text": "Write much longer prompts so that Claude has more to work with each time." },
+      { "key": "C", "text": "Lower the effort level and turn off the tools this task doesn't need." },
+      { "key": "D", "text": "Move every task the team has into one long shared chat to save setup time." }
+    ],
+    "answer": ["C"],
+    "explanation": "Higher effort means slower answers and more usage, and lower effort suits routine tasks. Unneeded tools such as web search and connectors also consume context, so matching settings to the task saves time and usage.",
+    "distractors": {
+      "A": "More effort makes responses even slower and heavier for a simple task.",
+      "B": "Longer prompts add usage without addressing the settings that cause the slowness.",
+      "D": "One long, mixed chat uses more usage per message and mixes unrelated topics."
+    },
+    "difficulty": 2,
+    "tags": ["efficiency", "effort", "tools"]
+  },
+  {
+    "id": "as-pt-046", "scenario": 0, "domain": 7, "task": "7.3", "type": "multi", "select": 2,
+    "stem": "A project office produces the same weekly status report with Claude and wants to make the workflow faster without lowering quality. Which TWO changes best achieve this? (Select TWO.)",
+    "options": [
+      { "key": "A", "text": "Save a tested prompt template with the report structure and reuse it each week." },
+      { "key": "B", "text": "Keep standing instructions and reference documents in a Project instead of re-pasting them." },
+      { "key": "C", "text": "Skip the human review step, because the template has worked well before." },
+      { "key": "D", "text": "Run Research for every weekly report, whether or not new web sources are needed." },
+      { "key": "E", "text": "Paste the whole of last year's reports into each new chat for extra context." }
+    ],
+    "answer": ["A", "B"],
+    "explanation": "Reusable templates and a Project with standing instructions and knowledge remove repeated setup while keeping the output consistent. Both save effort without cutting the checks that protect quality.",
+    "distractors": {
+      "C": "Removing review saves minutes but lowers quality, which the goal rules out.",
+      "D": "Research uses usage faster and adds time when no new sources are needed.",
+      "E": "Pasting a year of reports wastes context and usage on mostly irrelevant material."
+    },
+    "difficulty": 2,
+    "tags": ["efficiency", "templates", "projects"]
+  },
+  {
+    "id": "as-pt-047", "scenario": 0, "domain": 7, "task": "7.3", "type": "single", "select": 1,
+    "stem": "Across an operations team, many people apply the same fixed procedure with Claude: format each supplier report to a set standard and run it through a quality checklist. Results vary from person to person. Which option best makes this repeatable?",
+    "options": [
+      { "key": "A", "text": "Let each person write their own prompt, so everyone works the way they prefer." },
+      { "key": "B", "text": "Ask one person to remember the procedure and explain it to Claude every time." },
+      { "key": "C", "text": "Have everyone email their reports to a single person who handles all of them." },
+      { "key": "D", "text": "Package the procedure as a shared skill so Claude applies it the same way each time." }
+    ],
+    "answer": ["D"],
+    "explanation": "Skills package instructions and resources so Claude carries out a specialised procedure in a repeatable way, loading them only when relevant. Sharing one skill removes person-to-person variation.",
+    "distractors": {
+      "A": "Individual prompts are the source of the inconsistency.",
+      "B": "Relying on one person's explanation each time is slow and still varies.",
+      "C": "Funnelling everything to one person creates a bottleneck instead of a repeatable process."
+    },
+    "difficulty": 3,
+    "tags": ["efficiency", "skills", "consistency"]
+  },
+  {
+    "id": "as-pt-048", "scenario": 0, "domain": 7, "task": "7.3", "type": "single", "select": 1,
+    "stem": "To speed up the monthly investor update, a colleague proposes skipping the check of figures that Claude pulls from the finance spreadsheets. What is the best response?",
+    "options": [
+      { "key": "A", "text": "Agree, because Claude reads spreadsheets accurately and the check rarely finds anything." },
+      { "key": "B", "text": "Keep the check, and save time elsewhere, for example with a template and a figures checklist." },
+      { "key": "C", "text": "Ask Claude to verify its own figures, and use that self-check in place of a human review." },
+      { "key": "D", "text": "Stop using Claude for the update entirely, since its figures always need checking anyway." }
+    ],
+    "answer": ["B"],
+    "explanation": "Optimisation should remove waste, not the safeguards on high-stakes facts. Investor figures need verification, so the time savings should come from reusable templates and a focused checklist.",
+    "distractors": {
+      "A": "Rare errors in investor figures are still costly, so the check stays.",
+      "C": "Claude's self-check is not an independent verification of the figures.",
+      "D": "Abandoning Claude gives up real efficiency gains when the check is the only extra step."
+    },
+    "difficulty": 3,
+    "tags": ["efficiency", "verification"]
+  }
+]

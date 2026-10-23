@@ -1,0 +1,480 @@
+[
+  {
+    "task": "3.1",
+    "knowledge": [
+      "A regular chat is the default: one conversation for a one-off question, draft or quick analysis. Separate chats do not share context with each other.",
+      "A Project is a self-contained workspace with its own chat history, knowledge files and instructions; its knowledge and instructions apply to every chat inside it.",
+      "Web search finds up-to-date information and cites its sources. Research goes further: it runs many searches that build on each other, can include connected tools, and produces an in-depth, cited report, but takes longer and uses your allowance faster.",
+      "An artifact is substantial, self-contained output, such as a document, deck, dashboard or small interactive tool, that opens beside the chat and can be edited, revisited and shared.",
+      "Features combine: you can run Research inside a Project, and ask for an artifact in any chat or Project.",
+      "Artifacts and skills rely on code execution and file creation being turned on; on work plans an admin may control this."
+    ],
+    "skills": [
+      "Match the feature to the shape of the work: one-off, recurring with shared context, deep multi-source investigation, or a deliverable to reuse.",
+      "Choose web search for a quick current fact and Research for a multi-source, cited report.",
+      "Set up a Project when the same files and guidance would otherwise be pasted into every new chat.",
+      "Ask for an artifact when the output will be edited, shared or reused outside the conversation."
+    ],
+    "examLens": [
+      "\"Uploads the same files every week\" points to a Project.",
+      "\"Comprehensive, cited overview from many sources\" points to Research; \"one current figure or headline\" points to web search.",
+      "\"Something the team will keep editing or share\" points to an artifact."
+    ],
+    "traps": [
+      "Using Research for a simple lookup or a rewording task; it is slower and uses more of your allowance.",
+      "Assuming separate chats share context; only Project knowledge (or memory) carries across.",
+      "Re-uploading the same reference files into every new chat instead of creating a Project."
+    ],
+    "links": [
+      {"label": "Use research on Claude", "url": "https://support.claude.com/en/articles/11088861-use-research-on-claude"},
+      {"label": "When to use web search, extended thinking and Research", "url": "https://support.claude.com/en/articles/11095361-when-should-i-use-web-search-extended-thinking-and-research"},
+      {"label": "What are artifacts?", "url": "https://support.claude.com/en/articles/17153992-what-are-artifacts-and-how-do-i-use-them"}
+    ],
+    "cheat": [
+      ["Quick one-off question or draft", "A regular chat"],
+      ["Same brand guide and FAQs reused in every weekly chat", "A Project with those files as knowledge"],
+      ["Cited market overview drawn from many sources", "Research"],
+      ["Today's exchange rate or a recent headline", "Web search, not Research"],
+      ["A one-pager the team will edit and reuse", "An artifact"]
+    ],
+    "diagrams": [
+      {
+        "kind": "decision", "title": "Which Claude feature fits?",
+        "question": "What does the work look like?",
+        "branches": [
+          {"when": "One-off question, draft or quick analysis", "then": "Regular chat"},
+          {"when": "Recurring work reusing the same files and rules", "then": "Project: knowledge + instructions", "tone": "accent"},
+          {"when": "One current fact or recent news", "then": "Web search, check the citations"},
+          {"when": "Broad question needing many sources and a report", "then": "Research: in-depth, cited", "tone": "sky"},
+          {"when": "Deliverable to edit, share or reuse", "then": "Artifact beside the chat", "tone": "good"}
+        ]
+      },
+      {
+        "kind": "compare", "title": "Web search vs Research",
+        "columns": [
+          {"head": "Web search", "items": ["One or two quick searches", "Current facts and news", "Cites its sources", "Light on your allowance"]},
+          {"head": "Research", "tone": "sky", "items": ["Many searches that build on each other", "Can include connected tools", "In-depth, cited report; takes longer", "Uses your allowance faster"]}
+        ]
+      }
+    ]
+  },
+  {
+    "task": "3.2",
+    "knowledge": [
+      "Claude comes in model tiers; the exam blueprint names three: Haiku, Sonnet and Opus.",
+      "Haiku is the fastest, lowest-cost tier, built for high-volume, straightforward work such as sorting, tagging and pulling out key details.",
+      "Sonnet balances speed and intelligence and suits most everyday work, such as drafting content and analysing data.",
+      "Opus is the most capable of the three, for complex, multi-step reasoning and demanding knowledge work; it is slower and uses more of your allowance.",
+      "The model menu lets you change the model (and effort and thinking) mid-chat; the change applies from the next response.",
+      "Exact versions and which models appear in the menu change over time, and an admin may limit them, so learn the tiers by position, not by version number."
+    ],
+    "skills": [
+      "Describe each tier by its relative speed, cost and capability.",
+      "Read task signals: volume and simplicity suit Haiku, everyday balance suits Sonnet, depth and complexity suit Opus.",
+      "Explain to a colleague why a bigger model is not automatically better for every task."
+    ],
+    "examLens": [
+      "Questions describe tiers by position (fastest and lowest cost vs most capable), not by version.",
+      "\"High volume, simple, speed matters\" means Haiku; \"everyday mix\" means Sonnet; \"complex, high-stakes reasoning\" means Opus."
+    ],
+    "traps": [
+      "Assuming the most capable model is always the best choice.",
+      "Assuming the fastest model can handle deep, multi-step analysis just because it answers quickly.",
+      "Memorising version numbers; they change, and the tier is what matters."
+    ],
+    "links": [
+      {"label": "Change the model, effort and thinking settings", "url": "https://support.claude.com/en/articles/8664678-change-the-model-effort-and-thinking-settings"},
+      {"label": "Choosing the right model", "url": "https://platform.claude.com/docs/en/about-claude/models/choosing-a-model"}
+    ],
+    "cheat": [
+      ["Tag thousands of short comments by topic", "Haiku: fastest, lowest cost"],
+      ["Draft a blog post or analyse a sales table", "Sonnet: balanced everyday choice"],
+      ["Weigh conflicting reports into a board recommendation", "Opus: most capable"],
+      ["Need more depth halfway through a chat", "Switch model or raise effort; applies from the next reply"]
+    ],
+    "diagrams": [
+      {
+        "kind": "compare", "title": "The three model tiers",
+        "columns": [
+          {"head": "Haiku", "tone": "good", "items": ["Fastest, lowest cost", "High-volume, simple tasks", "Sorting, tagging, extracting"]},
+          {"head": "Sonnet", "tone": "sky", "items": ["Balance of speed and intelligence", "Everyday work", "Drafting, data analysis"]},
+          {"head": "Opus", "tone": "accent", "items": ["Most capable of the three", "Complex, multi-step reasoning", "Slower; uses more allowance"]}
+        ]
+      },
+      {
+        "kind": "layers", "title": "Capability vs speed and cost",
+        "layers": [
+          {"label": "Opus", "note": "Deepest reasoning for complex, high-stakes work", "tone": "accent"},
+          {"label": "Sonnet", "note": "Everyday balance of quality and speed", "tone": "sky"},
+          {"label": "Haiku", "note": "Fast and economical for volume", "tone": "good"}
+        ],
+        "axis": {"label": "More capable, slower, costlier", "dir": "up"}
+      }
+    ]
+  },
+  {
+    "task": "3.3",
+    "knowledge": [
+      "Choosing a model balances three things: quality (capability), speed and cost, including how quickly you use your plan's allowance.",
+      "Two sound strategies: start with a smaller, faster model and move up only where it falls short, or start with the most capable and step down once you know the quality you need.",
+      "Test the choice on your real tasks and examples rather than guessing.",
+      "Effort is a separate lever: higher effort gives more thorough answers but is slower and uses more; adjusting effort is often better than switching models.",
+      "Usage also grows with long conversations, large attachments, Research and web search, not only with the model.",
+      "On work plans an admin may limit which models or effort levels are available."
+    ],
+    "skills": [
+      "Identify the requirement that dominates: volume and speed, everyday balance, or depth and accuracy.",
+      "Split a mixed workflow: a fast tier for bulk steps and a capable tier for the hard, high-stakes step.",
+      "Adjust effort or thinking before, or alongside, switching models.",
+      "Run a small trial on real examples and compare quality before committing."
+    ],
+    "examLens": [
+      "Look for the dominant constraint: \"high volume\", \"quickly\", \"budget\" versus \"complex\", \"nuanced\", \"high-stakes\".",
+      "The best answer matches tier to task and reserves the most capable model for the work that needs it.",
+      "Quality falling short on a smaller model is fixed by moving up a tier or raising effort, not by abandoning the task."
+    ],
+    "traps": [
+      "Using the top model at maximum effort for everything \"to be safe\"; it wastes time and allowance.",
+      "Choosing the cheapest model for high-stakes analysis because of cost alone.",
+      "Switching platforms or turning off features to save cost instead of matching the model to the task."
+    ],
+    "links": [
+      {"label": "Choosing the right model", "url": "https://platform.claude.com/docs/en/about-claude/models/choosing-a-model"},
+      {"label": "Change the model, effort and thinking settings", "url": "https://support.claude.com/en/articles/8664678-change-the-model-effort-and-thinking-settings"},
+      {"label": "How do usage and length limits work?", "url": "https://support.claude.com/en/articles/11647753-how-do-usage-and-length-limits-work"}
+    ],
+    "cheat": [
+      ["Hundreds of short, simple items; speed and cost matter", "Faster, lower-cost tier"],
+      ["Bulk sorting first, then a nuanced recommendation", "Fast tier for the bulk, capable tier for the recommendation"],
+      ["Smaller model misses key points in complex documents", "Move up a tier or raise effort, then retest"],
+      ["Allowance runs out on routine edits", "Lower tier or lower effort for routine work"],
+      ["Unsure which tier is enough", "Test on real examples, then adjust"]
+    ],
+    "diagrams": [
+      {
+        "kind": "decision", "title": "Match the model to the task",
+        "question": "What matters most for this task?",
+        "branches": [
+          {"when": "Many short, simple items; speed and cost", "then": "Haiku: fast, low cost", "tone": "good"},
+          {"when": "Everyday drafting and analysis", "then": "Sonnet: balanced", "tone": "sky"},
+          {"when": "Complex, multi-step, high-stakes reasoning", "then": "Opus: most capable", "tone": "accent"},
+          {"when": "A mix of bulk steps and one hard step", "then": "Fast tier for bulk, capable tier for the hard step"},
+          {"when": "Output falls short on the current model", "then": "Raise effort or move up a tier, then retest", "tone": "amber"}
+        ]
+      },
+      {
+        "kind": "flow", "title": "Pick, test, adjust",
+        "steps": [
+          {"label": "Pick a starting tier", "note": "Small first and move up, or capable first and step down"},
+          {"label": "Test on real examples", "note": "Use the actual documents and requests", "tone": "sky"},
+          {"label": "Check quality, speed and usage"},
+          {"label": "Adjust model or effort", "tone": "accent"}
+        ],
+        "loop": "Recheck when the task changes"
+      }
+    ]
+  },
+  {
+    "task": "3.4",
+    "knowledge": [
+      "The context window is Claude's working memory for a single chat; it holds the conversation and attached files, and its size depends on the model.",
+      "Long chats use more of your allowance with each message; when a chat nears its limit Claude can automatically summarise earlier messages and carry on (where code execution is on), but very long chats can still hit limits.",
+      "Start a new chat for a new topic, or when a long chat nears its limits, bringing a short summary of decisions so far.",
+      "Chats don't share context. Persist anything future chats need in a Project's knowledge or instructions, or in memory.",
+      "Memory saves topics as you chat; you can ask Claude to remember, change or forget something, and view or edit memory topics. Each Project keeps its own memory.",
+      "Deleting a chat does not remove memories made from it. Incognito chats are not saved to history or memory and do not use existing memory."
+    ],
+    "skills": [
+      "Decide whether to continue, restart with a summary, or persist information into a Project or memory.",
+      "Ask Claude for a handover summary of decisions, open questions and next steps before starting fresh.",
+      "Move reference material every chat needs into Project knowledge instead of pasting it repeatedly.",
+      "Keep one topic per chat and batch related questions into one message."
+    ],
+    "examLens": [
+      "\"A chat that has run for weeks across topics and is mixing up details\" means summarise and restart.",
+      "\"Needed in every future chat\" means persist: Project knowledge, instructions or memory.",
+      "\"Sensitive one-off that shouldn't be remembered\" means an incognito chat, within policy."
+    ],
+    "traps": [
+      "Running one endless chat for every topic.",
+      "Expecting a new chat to know what an earlier chat concluded without adding it to Project knowledge.",
+      "Deleting a chat to remove something from memory; the memory topic must be edited or deleted itself."
+    ],
+    "links": [
+      {"label": "How do usage and length limits work?", "url": "https://support.claude.com/en/articles/11647753-how-do-usage-and-length-limits-work"},
+      {"label": "Use Claude's chat search and memory", "url": "https://support.claude.com/en/articles/11817273-use-claude-s-chat-search-and-memory-to-build-on-previous-context"},
+      {"label": "Use incognito chats", "url": "https://support.claude.com/en/articles/12260368-use-incognito-chats"}
+    ],
+    "cheat": [
+      ["Chat drifting across topics and mixing up details", "Ask for a summary, start a new chat with it"],
+      ["Decisions every future chat in the Project needs", "Add a summary to Project knowledge"],
+      ["Memory holds an outdated fact", "Tell Claude to update or forget it, or edit the memory topic"],
+      ["Sensitive one-off you don't want saved", "Incognito chat, within your policy"]
+    ],
+    "diagrams": [
+      {
+        "kind": "decision", "title": "Continue, restart or persist?",
+        "question": "What is going on in this chat?",
+        "branches": [
+          {"when": "Same task, chat still focused", "then": "Continue in this chat", "tone": "good"},
+          {"when": "New, unrelated topic", "then": "Start a new chat"},
+          {"when": "Long chat drifting or near its limits", "then": "Get a summary, restart with it", "tone": "amber"},
+          {"when": "Facts or files every future chat needs", "then": "Persist in Project knowledge or instructions", "tone": "accent"},
+          {"when": "A preference to recall across chats", "then": "Ask Claude to remember it (memory)", "tone": "sky"},
+          {"when": "Sensitive one-off you don't want saved", "then": "Incognito chat", "tone": "warn"}
+        ]
+      },
+      {
+        "kind": "compare", "title": "Where information lives",
+        "columns": [
+          {"head": "Chat context", "items": ["This chat only", "Grows with every message", "Gone in a new chat"]},
+          {"head": "Memory", "tone": "sky", "items": ["Topics saved as you chat", "View, edit or forget", "Separate per Project"]},
+          {"head": "Project knowledge", "tone": "accent", "items": ["Files you choose", "Used in every chat of the Project", "Updated by you"]}
+        ]
+      }
+    ]
+  },
+  {
+    "task": "5.1",
+    "knowledge": [
+      "A Project has two main settings: instructions (how Claude should work in every chat here) and knowledge (files and text Claude uses as context in every chat here).",
+      "Claude cannot see the Project's name or description, so anything it needs must go into the instructions or knowledge.",
+      "Project instructions suit project-specific context: role or perspective, audience, workflow steps, output requirements and tone.",
+      "When knowledge grows large, paid plans switch automatically to a retrieval mode that pulls only the relevant parts; clear file names, related content kept together and naming the document in your question all help.",
+      "On Team and Enterprise plans a Project can be shared as Can view (use it and chat) or Can edit (change instructions, knowledge and members).",
+      "Each Project has its own memory, kept separate from other Projects."
+    ],
+    "skills": [
+      "Turn a recurring task into a Project: define its purpose, write instructions, upload the reference files.",
+      "Write instructions that cover role, audience, format and boundaries in short, specific statements.",
+      "Name and organise knowledge files so the right one is easy to find.",
+      "Set sharing permissions: Can view for users, Can edit only for maintainers."
+    ],
+    "examLens": [
+      "\"How Claude should behave\" goes in instructions; \"what Claude should know\" goes in knowledge.",
+      "Guidance written only in the project name or description is invisible to Claude.",
+      "Before rolling a Project out, test it with real requests."
+    ],
+    "traps": [
+      "Putting key guidance in the project description, which Claude never sees.",
+      "Uploading everything \"just in case\"; unrelated or outdated files dilute answers and use more allowance.",
+      "Giving every user Can edit, so instructions drift."
+    ],
+    "links": [
+      {"label": "What are projects?", "url": "https://support.claude.com/en/articles/9517075-what-are-projects"},
+      {"label": "How can I create and manage projects?", "url": "https://support.claude.com/en/articles/9519177-how-can-i-create-and-manage-projects"},
+      {"label": "RAG for projects", "url": "https://support.claude.com/en/articles/11473015-retrieval-augmented-generation-rag-for-projects"}
+    ],
+    "cheat": [
+      ["Tone and role rules ignored, written in the description", "Move them into project instructions"],
+      ["Role, tone, format, escalation rules", "Project instructions"],
+      ["Current policies, guides, approved examples", "Project knowledge"],
+      ["Claude picks the wrong file", "Descriptive file names, remove unrelated files, name the document"],
+      ["Many users, one maintainer", "Users Can view, maintainer Can edit"]
+    ],
+    "diagrams": [
+      {
+        "kind": "flow", "title": "Set up a Project",
+        "steps": [
+          {"label": "Define purpose and audience"},
+          {"label": "Write project instructions", "note": "Role, audience, format, rules; short and specific", "tone": "accent"},
+          {"label": "Add knowledge files", "note": "Current, relevant files with clear names", "tone": "sky"},
+          {"label": "Test with real requests", "note": "Check answers follow the rules and use the right files"},
+          {"label": "Share with the right permission", "note": "Can view for users, Can edit for maintainers", "tone": "good"}
+        ]
+      },
+      {
+        "kind": "compare", "title": "Instructions vs knowledge",
+        "columns": [
+          {"head": "Instructions", "tone": "accent", "items": ["How Claude should behave", "Role, tone, format, rules", "Apply to every chat in the Project", "Keep short and specific"]},
+          {"head": "Knowledge", "tone": "sky", "items": ["What Claude should know", "Policies, guides, examples, data", "Used as context in every chat", "Keep current and clearly named"]}
+        ]
+      }
+    ]
+  },
+  {
+    "task": "5.2",
+    "knowledge": [
+      "An uploaded file is a snapshot: it stays as uploaded until someone replaces it.",
+      "Connectors link Claude to apps such as Google Drive, Gmail and Google Calendar so it can search, read and, with your approval, take actions; answers cite the emails, documents or events used.",
+      "Claude inherits your permissions: it can only reach what your own account can reach in the connected app.",
+      "Connecting a service lets Claude access and potentially change data there, so connect only services you trust and need, and turn off connectors a chat doesn't need.",
+      "Google Docs added through the Drive connector stay synced to the latest version. The Gmail connector sees attachment details but not attachment contents.",
+      "On Team and Enterprise plans an owner enables each connector for the organisation, and each person still signs in individually; custom connectors are added by owners and are a technical job."
+    ],
+    "skills": [
+      "Choose upload or connector: stable reference material is uploaded; a living document comes through the Drive connector.",
+      "Review approval requests before Claude sends, changes or deletes anything.",
+      "Limit scope: share only the files and services the work needs, especially where data is sensitive.",
+      "Escalate requests for a new or custom connector to an admin or a Claude Developer or Architect."
+    ],
+    "examLens": [
+      "\"The file keeps changing and answers go stale\" points to the Drive connector instead of re-uploading.",
+      "\"Connect everything just in case\" is wrong; least access and only trusted services is right.",
+      "A tool with no connector is an escalation, not a do-it-yourself integration."
+    ],
+    "traps": [
+      "Connecting broad accounts full of sensitive data that the task doesn't need.",
+      "Assuming an owner enabling a connector signs everyone in, or that Claude can see more than you can.",
+      "Approving actions such as sending an email without reading the draft and recipients.",
+      "Expecting an uploaded file to update itself when the original changes."
+    ],
+    "links": [
+      {"label": "Use connectors to extend Claude's capabilities", "url": "https://support.claude.com/en/articles/11176164-use-connectors-to-extend-claude-s-capabilities"},
+      {"label": "Use Google Workspace connectors", "url": "https://support.claude.com/en/articles/10166901-use-google-workspace-connectors"},
+      {"label": "Custom connectors using remote MCP", "url": "https://support.claude.com/en/articles/11175166-get-started-with-custom-connectors-using-remote-mcp"}
+    ],
+    "cheat": [
+      ["Price sheet in Drive updated weekly", "Add it through the Drive connector so it stays current"],
+      ["Summary of an emailed attachment lacks detail", "Gmail sees attachment details only; upload the file itself"],
+      ["Admin enabled the Drive connector", "Each person signs in; Claude sees only what that person can"],
+      ["Internal tool has no connector", "Escalate to an admin or Claude Developer"],
+      ["Claude asks to approve sending a reply", "Read the draft and recipients, then approve or edit"]
+    ],
+    "diagrams": [
+      {
+        "kind": "decision", "title": "Upload or connect?",
+        "question": "What kind of knowledge is it?",
+        "branches": [
+          {"when": "Stable reference that rarely changes", "then": "Upload it as Project knowledge"},
+          {"when": "Living document others keep editing", "then": "Add via Drive connector; stays current", "tone": "good"},
+          {"when": "Need to find, summarise or draft email", "then": "Gmail connector; review before sending", "tone": "sky"},
+          {"when": "Source holds sensitive data you don't need", "then": "Don't connect it; share only what's needed", "tone": "warn"},
+          {"when": "Tool not in the connector directory", "then": "Ask an admin or Claude Developer", "tone": "amber"}
+        ]
+      },
+      {
+        "kind": "flow", "title": "Use a connector safely",
+        "steps": [
+          {"label": "Check the connector is approved", "note": "On work plans an owner enables it first"},
+          {"label": "Sign in with your own account", "note": "Claude sees only what you can see", "tone": "sky"},
+          {"label": "Turn it on only where needed", "note": "Unused connectors add noise and use allowance"},
+          {"label": "Review each action before approving", "tone": "accent"},
+          {"label": "Check the cited sources", "tone": "good"}
+        ]
+      }
+    ]
+  },
+  {
+    "task": "5.3",
+    "knowledge": [
+      "Standing instructions apply automatically so you don't repeat them: Instructions for Claude cover all your chats, project instructions cover one Project's chats, and on Team and Enterprise plans organization instructions set by owners cover everyone.",
+      "Organization instructions take precedence over individual instructions when they conflict.",
+      "Skills package a repeatable procedure or house style and load only when relevant; instructions apply to every chat in their scope. Anthropic now recommends skills for consistent tone and format.",
+      "Good instructions are concise (they are read with every message), specific (\"formal English, no contractions\" rather than \"be professional\"), consistent and free of contradictions.",
+      "Explaining why a rule matters, and giving a short example, helps Claude apply it well.",
+      "Instructions cannot override Claude's safety behaviour or your organisation's policies."
+    ],
+    "skills": [
+      "Put each instruction at the right level: personal, project or organisation.",
+      "Rewrite vague rules into concrete, checkable ones.",
+      "Remove contradictions and duplicates across levels.",
+      "Test new instructions on typical requests before relying on them."
+    ],
+    "examLens": [
+      "\"Outputs vary\" with adjectives like \"professional\" or \"short\" means make the rule specific and measurable.",
+      "A rule for one client or team belongs in that Project, not in account-wide instructions.",
+      "A conflict between organisation and personal instructions is resolved in favour of the organisation."
+    ],
+    "traps": [
+      "Vague adjectives with no concrete standard.",
+      "Putting project-specific rules into account-wide instructions, where they leak into every chat.",
+      "Long, contradictory rule lists, or trying to instruct Claude past safety behaviour."
+    ],
+    "links": [
+      {"label": "Understanding Claude's personalization features", "url": "https://support.claude.com/en/articles/10185728-understanding-claude-s-personalization-features"},
+      {"label": "Set organization instructions", "url": "https://support.claude.com/en/articles/14546867-set-organization-preferences"},
+      {"label": "What are skills?", "url": "https://support.claude.com/en/articles/12512176-what-are-skills"}
+    ],
+    "cheat": [
+      ["\"Be professional and concise\" gives mixed results", "Specific rules: formal English, no contractions, under 150 words"],
+      ["One client needs different spelling and terms", "That client's project instructions"],
+      ["Preference for all your own chats", "Instructions for Claude (account-wide)"],
+      ["Org rule conflicts with a personal one", "The organization instruction wins"],
+      ["Multi-step house procedure reused in many places", "A skill that loads when relevant"]
+    ],
+    "diagrams": [
+      {
+        "kind": "layers", "title": "Where standing guidance lives",
+        "layers": [
+          {"label": "Organization instructions", "note": "Set by owners for everyone; win on conflict", "tone": "accent"},
+          {"label": "Instructions for Claude", "note": "Your account-wide preferences, all your chats", "tone": "sky"},
+          {"label": "Project instructions", "note": "Only the chats inside one Project", "tone": "good"},
+          {"label": "Your message", "note": "This request only"}
+        ],
+        "axis": {"label": "Wider reach", "dir": "up"}
+      },
+      {
+        "kind": "compare", "title": "Vague vs effective instructions",
+        "columns": [
+          {"head": "Vague", "tone": "warn", "items": ["Be professional", "Keep it short", "Use our style", "Be engaging"]},
+          {"head": "Effective", "tone": "good", "items": ["Formal English, no contractions", "Under 150 words, three bullets max", "Follow the attached brand guide", "Put the news in the first sentence: readers skim"]}
+        ]
+      }
+    ]
+  },
+  {
+    "task": "5.4",
+    "knowledge": [
+      "Configurations go stale: policies, prices, product details and processes change, and Claude can only use the version of a file it has.",
+      "Replace outdated files instead of adding a new version beside the old one; conflicting versions produce inconsistent answers.",
+      "Remove unused files and keep instructions short; a lean configuration focuses answers and saves allowance.",
+      "Give each shared Project an owner and a review rhythm; only people with Can edit can change its instructions and knowledge.",
+      "Tell users when a shared Project's instructions or knowledge change, and retest with typical requests after each change.",
+      "Review memory too: edit or delete outdated memory topics, or ask Claude to forget them. Turn off connectors the work no longer needs."
+    ],
+    "skills": [
+      "Run a periodic review of files, instructions and connectors against current sources.",
+      "Retest with a small set of standard requests after every change.",
+      "Keep a short change note: what changed, when and by whom.",
+      "Fix the root cause: if answers cite an old policy, replace the file instead of correcting each chat."
+    ],
+    "examLens": [
+      "\"Answers mix old and new figures\" means an outdated file is still in knowledge: remove it.",
+      "\"Correcting Claude in every chat\" is a symptom; the fix is in the Project's knowledge or instructions.",
+      "Changes to a shared Project are tested and announced, not made silently."
+    ],
+    "traps": [
+      "Uploading a new version without removing the old one.",
+      "Correcting Claude chat by chat instead of fixing the Project.",
+      "Changing a shared Project's instructions without testing or telling its users.",
+      "Leaving unused files and connectors in place."
+    ],
+    "links": [
+      {"label": "How can I create and manage projects?", "url": "https://support.claude.com/en/articles/9519177-how-can-i-create-and-manage-projects"},
+      {"label": "How do usage and length limits work?", "url": "https://support.claude.com/en/articles/11647753-how-do-usage-and-length-limits-work"},
+      {"label": "Use Claude's chat search and memory", "url": "https://support.claude.com/en/articles/11817273-use-claude-s-chat-search-and-memory-to-build-on-previous-context"}
+    ],
+    "cheat": [
+      ["Answers mix last year's and this year's policy", "Remove the outdated file, keep one current version"],
+      ["Policy changed today", "Replace the file, update instructions if needed, tell users"],
+      ["Changing a shared Project's output format", "Test on sample requests, then announce the change"],
+      ["Answers slow and pulling in old campaigns", "Remove unused files; keep instructions short"],
+      ["Nobody owns the Project's upkeep", "Named owner, review rhythm, change note"]
+    ],
+    "diagrams": [
+      {
+        "kind": "flow", "title": "Knowledge upkeep cycle",
+        "steps": [
+          {"label": "Trigger: source changes or review date", "tone": "amber"},
+          {"label": "Replace the outdated file", "note": "Remove the old version; don't keep both", "tone": "accent"},
+          {"label": "Update instructions if rules changed"},
+          {"label": "Retest with standard requests", "tone": "sky"},
+          {"label": "Tell users what changed", "tone": "good"}
+        ],
+        "loop": "Repeat at the next review date"
+      },
+      {
+        "kind": "decision", "title": "Answers going wrong: what to fix?",
+        "question": "What does the problem look like?",
+        "branches": [
+          {"when": "Cites old policy or figures", "then": "Replace the outdated knowledge file", "tone": "accent"},
+          {"when": "Two files disagree", "then": "Keep one current version, remove the other"},
+          {"when": "Tone or format off in every chat", "then": "Update the project instructions", "tone": "sky"},
+          {"when": "Recalls something no longer true", "then": "Edit or delete the memory topic"},
+          {"when": "Pulls in unrelated mail or files", "then": "Turn off connectors the work doesn't need", "tone": "warn"}
+        ]
+      }
+    ]
+  }
+]

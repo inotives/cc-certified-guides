@@ -1,0 +1,1198 @@
+[
+  {
+    "id": "s6-001",
+    "scenario": 6,
+    "domain": 4,
+    "task": "4.3",
+    "type": "single",
+    "select": 1,
+    "stem": "Your invoice extractor currently asks Claude to \"respond only with a JSON object matching this structure\" and parses the text reply. About 3% of responses fail to parse: some include a sentence before the JSON, others have trailing commas or unescaped quotes inside vendor names. Downstream ingestion rejects every unparseable record. What is the most effective change?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Strengthen the system prompt with capitalized instructions to output raw JSON only, with no preamble, and append a complete example of a valid invoice JSON object to imitate."
+      },
+      {
+        "key": "B",
+        "text": "Define an extraction tool whose input schema is the invoice JSON schema and read the structured data from the tool_use block in the response."
+      },
+      {
+        "key": "C",
+        "text": "Add a post-processing step that strips any text before the first opening brace and repairs common syntax errors such as trailing commas and unescaped quotes with regular expressions."
+      },
+      {
+        "key": "D",
+        "text": "Lower the temperature to zero and retry any response that fails to parse until a valid JSON object is returned."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Tool use with a JSON schema is the most reliable way to get schema-compliant structured output, because the arguments come back as structured tool input rather than free text, which eliminates JSON syntax errors. This fixes the root cause instead of patching symptoms. The data is then read directly from the tool_use content block.",
+    "distractors": {
+      "A": "Prompt instructions and examples improve compliance probabilistically but cannot guarantee syntactically valid JSON.",
+      "C": "Regex repair is brittle, will miss novel malformations, and can silently corrupt values such as vendor names containing quotes.",
+      "D": "Temperature does not guarantee valid syntax, and blind retries add cost and latency without addressing the cause."
+    },
+    "difficulty": 1,
+    "tags": [
+      "tool-use",
+      "json-schema",
+      "syntax-errors"
+    ]
+  },
+  {
+    "id": "s6-002",
+    "scenario": 6,
+    "domain": 4,
+    "task": "4.3",
+    "type": "single",
+    "select": 1,
+    "stem": "An intake pipeline receives mixed documents (invoices, receipts, and purchase orders) without any reliable type label. You defined three extraction tools, one schema per document type, and send all three with tool_choice set to \"auto\". In about 6% of requests Claude replies with a text description such as \"This appears to be a purchase order for office supplies\" and calls no tool, so nothing reaches the downstream ERP. What configuration change best fixes this?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Force tool_choice to {\"type\": \"tool\", \"name\": \"extract_invoice\"}, since invoices are the most common document type."
+      },
+      {
+        "key": "B",
+        "text": "Merge the three schemas into one large schema with every field optional and force that single tool on every request."
+      },
+      {
+        "key": "C",
+        "text": "Keep \"auto\" but add a system prompt instruction saying that a tool must always be called for every document."
+      },
+      {
+        "key": "D",
+        "text": "Set tool_choice to \"any\" so the model must call one of the extraction tools while still choosing which document schema fits best."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "tool_choice \"any\" guarantees the model calls a tool rather than returning conversational text, while leaving it free to choose the right extraction tool. That is exactly the case of multiple schemas with an unknown document type. With \"auto\", returning text instead of calling a tool is permitted behavior.",
+    "distractors": {
+      "A": "Forcing the invoice tool would push receipts and purchase orders into the wrong schema.",
+      "B": "A merged all-optional schema loses the type-specific structure and makes field placement errors more likely.",
+      "C": "A prompt instruction still leaves text-only replies possible under \"auto\"; the tool_choice setting gives the guarantee."
+    },
+    "difficulty": 2,
+    "tags": [
+      "tool_choice",
+      "any",
+      "multiple-schemas"
+    ]
+  },
+  {
+    "id": "s6-003",
+    "scenario": 6,
+    "domain": 2,
+    "task": "2.3",
+    "type": "single",
+    "select": 1,
+    "stem": "Your contract-processing agent has four tools: extract_contract_metadata, lookup_counterparty, check_sanctions_list, and enrich_clause_risk. The enrichment tools depend on the parties and effective date produced by extract_contract_metadata, but logs show the agent sometimes calls lookup_counterparty first using names it guessed from the document title. How should you ensure metadata extraction always happens first?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Force tool_choice to {\"type\": \"tool\", \"name\": \"extract_contract_metadata\"} on the first request, then let enrichment run in follow-up turns."
+      },
+      {
+        "key": "B",
+        "text": "Set tool_choice to \"any\" on the first request so the agent is required to call one of its tools before producing any text, which guarantees extraction happens first."
+      },
+      {
+        "key": "C",
+        "text": "Reorder the tools array so extract_contract_metadata is listed first, since models prefer the first tool defined."
+      },
+      {
+        "key": "D",
+        "text": "Remove the enrichment tools from the agent and make it return the metadata as text for a separate script to enrich."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Forced tool selection guarantees that a specific named tool is called, which is the documented way to make one extraction run before enrichment steps. Subsequent turns can then use \"auto\" or \"any\" so the agent calls enrichment tools with the verified metadata. This is deterministic rather than relying on the model's ordering preference.",
+    "distractors": {
+      "B": "\"any\" forces some tool call but lets the model pick lookup_counterparty, which is the observed problem.",
+      "C": "Tool order in the array is not a reliable mechanism for controlling which tool gets called.",
+      "D": "Removing the tools and returning text discards the structured output guarantee and over-corrects a sequencing issue."
+    },
+    "difficulty": 1,
+    "tags": [
+      "tool_choice",
+      "forced-tool",
+      "sequencing"
+    ]
+  },
+  {
+    "id": "s6-004",
+    "scenario": 6,
+    "domain": 4,
+    "task": "4.3",
+    "type": "single",
+    "select": 1,
+    "stem": "Your lease extraction schema marks renewal_notice_days as a required integer. Legal reviewers discover that for leases with no renewal clause, the output frequently shows 30 or 60, values that appear nowhere in the document. What schema change most directly prevents these fabricated values?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Keep the field required but add a description telling the model to use 0 when no renewal clause exists, so downstream systems can detect absence."
+      },
+      {
+        "key": "B",
+        "text": "Add a validator that rejects any renewal_notice_days value of 30 or 60 and triggers a retry for those leases."
+      },
+      {
+        "key": "C",
+        "text": "Make renewal_notice_days nullable (or optional) and instruct the model to return null when the document does not state it."
+      },
+      {
+        "key": "D",
+        "text": "Change the field type from integer to string so the model can write a short free-text explanation such as \"no renewal clause\" when the clause is missing."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "When a required field has no source value, the model is pressured to invent something plausible to satisfy the schema. Making the field nullable or optional when documents may not contain the information gives the model a legitimate way to say \"not present\", which prevents fabrication. Null is also unambiguous for downstream systems.",
+    "distractors": {
+      "A": "A sentinel like 0 is indistinguishable from a real zero-day notice period and still forces a value where none exists.",
+      "B": "Blocking common values only shifts fabrication to other numbers and wastes retries on information that is absent.",
+      "D": "A free-text string breaks type consistency for downstream systems and does not clearly signal absence."
+    },
+    "difficulty": 1,
+    "tags": [
+      "nullable",
+      "fabrication",
+      "schema-design"
+    ]
+  },
+  {
+    "id": "s6-005",
+    "scenario": 6,
+    "domain": 4,
+    "task": "4.3",
+    "type": "single",
+    "select": 1,
+    "stem": "A procurement extractor classifies each document's expense_category using an enum of eight values. Analysts find that new expense types such as cloud credits are being forced into \"software\" or \"services\", and that documents with genuinely ambiguous wording get a confident category anyway. What schema change best addresses both problems?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Replace the enum with a free-text string field so the model can describe any category in its own words, and map those descriptions to reporting codes downstream."
+      },
+      {
+        "key": "B",
+        "text": "Add an \"other\" enum value paired with a category_detail string, and an \"unclear\" value for documents whose category is ambiguous."
+      },
+      {
+        "key": "C",
+        "text": "Expand the enum to forty values covering every expense type the finance team has ever recorded."
+      },
+      {
+        "key": "D",
+        "text": "Keep the eight values and add a prompt instruction to choose the closest matching category when no value fits exactly, logging the original wording separately."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "The \"other\" plus detail-string pattern keeps the category extensible without losing the structure that downstream systems rely on, and an \"unclear\" value gives ambiguous cases an honest answer instead of a forced guess. Together they stop both misclassification of new types and false confidence on ambiguous wording. Records marked \"other\" or \"unclear\" can also be routed for review.",
+    "distractors": {
+      "A": "Free text loses the consistent categories downstream reporting depends on and produces inconsistent labels.",
+      "C": "A huge enum still cannot anticipate future categories and does nothing for ambiguous documents.",
+      "D": "Choosing the closest match is the behavior that is causing misclassification in the first place."
+    },
+    "difficulty": 2,
+    "tags": [
+      "enum",
+      "other-detail",
+      "unclear"
+    ]
+  },
+  {
+    "id": "s6-006",
+    "scenario": 6,
+    "domain": 4,
+    "task": "4.3",
+    "type": "single",
+    "select": 1,
+    "stem": "Your schema defines invoice_date and due_date as strings, and every output passes schema validation. However, the downstream accounting system receives values like \"03/04/25\", \"4 March 2025\", and \"2025-03-04\" for documents from different regions and fails to load many of them. What is the most effective fix?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Add explicit normalization rules to the prompt alongside the schema, such as outputting ISO 8601 dates and how to read regional formats."
+      },
+      {
+        "key": "B",
+        "text": "Remove the date fields from the schema and let the downstream accounting system parse dates from the raw document text with its own locale-aware parser."
+      },
+      {
+        "key": "C",
+        "text": "Make both date fields optional so documents with unusual date formats are simply left blank."
+      },
+      {
+        "key": "D",
+        "text": "Add few-shot examples that all use US-format invoices so the model learns to output one consistent date style regardless of the document's region."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "A schema guarantees the field is a string but not how the value is formatted. Including format normalization rules in the prompt alongside the strict schema tells the model how to convert inconsistent source formatting into the one form downstream systems expect. Optionally adding a pattern constraint reinforces it, but the normalization rule is what resolves regional ambiguity.",
+    "distractors": {
+      "B": "Pushing parsing downstream abandons structured extraction and duplicates the ambiguity problem elsewhere.",
+      "C": "Making fields optional throws away dates that are present just because they are formatted differently.",
+      "D": "US-only examples would bias interpretation of non-US dates and could swap day and month."
+    },
+    "difficulty": 1,
+    "tags": [
+      "normalization",
+      "dates",
+      "json-schema"
+    ]
+  },
+  {
+    "id": "s6-007",
+    "scenario": 6,
+    "domain": 4,
+    "task": "4.3",
+    "type": "multi",
+    "select": 2,
+    "stem": "Your team migrated invoice extraction to tool_use with a strict JSON schema (required keys, typed fields, enums). An engineer proposes deleting the downstream validation service because \"the schema now guarantees correct output.\" Which TWO kinds of defects can still occur and still need validation? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "Responses that contain a trailing comma or an unclosed brace and cannot be parsed."
+      },
+      {
+        "key": "B",
+        "text": "Line item amounts that do not add up to the invoice's stated total."
+      },
+      {
+        "key": "C",
+        "text": "A required top-level key such as invoice_number missing from the object entirely."
+      },
+      {
+        "key": "D",
+        "text": "A currency field containing a value that is not in the schema's enum list."
+      },
+      {
+        "key": "E",
+        "text": "The supplier's name placed in the bill_to_company field and the buyer's name in supplier_name."
+      }
+    ],
+    "answer": [
+      "B",
+      "E"
+    ],
+    "explanation": "Strict schemas via tool use eliminate syntax and structural errors, but they do not prevent semantic errors. Values that do not sum to the total and correct-typed values placed in the wrong field both satisfy the schema and still need semantic validation. The validation service should therefore be kept and focused on these checks.",
+    "distractors": {
+      "A": "JSON syntax errors are exactly what tool use with a schema eliminates.",
+      "C": "Missing required keys are structural violations that a strict schema enforces.",
+      "D": "Out-of-enum values are prevented by strict schema enforcement of the allowed values."
+    },
+    "difficulty": 2,
+    "tags": [
+      "semantic-errors",
+      "strict-schema",
+      "validation"
+    ]
+  },
+  {
+    "id": "s6-008",
+    "scenario": 6,
+    "domain": 4,
+    "task": "4.2",
+    "type": "single",
+    "select": 1,
+    "stem": "You extract study metadata (sample_size, study_design, funding_source) from clinical research papers. Papers with a dedicated Methods section extract well, but for papers that mention sample size only in the abstract or a table footnote, or list funding in an acknowledgments paragraph, the extractor returns null even though the information is present. Detailed field descriptions have not helped. What is the most effective next step?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Make sample_size and funding_source required fields so the model cannot return null for them."
+      },
+      {
+        "key": "B",
+        "text": "Retry every extraction that contains a null field, appending the instruction \"this field cannot be null; re-read the paper\" so the model searches the whole document again."
+      },
+      {
+        "key": "C",
+        "text": "Pre-process every paper with a script that detects abstracts, footnotes, and acknowledgments and moves them into a synthetic Methods section before extraction."
+      },
+      {
+        "key": "D",
+        "text": "Add few-shot examples showing correct extraction from papers with varied layouts, such as sample size in a footnote or funding in acknowledgments."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "Few-shot examples are the most effective way to demonstrate correct handling of varied document structures and to address empty or null extraction of fields that are actually present. Examples that show where the information can hide let the model generalize to similar layouts it has not seen. This targets the real cause: the model does not recognize non-standard locations.",
+    "distractors": {
+      "A": "Requiring the fields would cause fabrication in papers that genuinely omit them.",
+      "B": "A generic retry does not show the model where to look and would pressure invented values where data is truly absent.",
+      "C": "Rewriting document structure with a script is brittle and cannot anticipate all the places information appears."
+    },
+    "difficulty": 2,
+    "tags": [
+      "few-shot",
+      "varied-structure",
+      "null-extraction"
+    ]
+  },
+  {
+    "id": "s6-009",
+    "scenario": 6,
+    "domain": 4,
+    "task": "4.2",
+    "type": "single",
+    "select": 1,
+    "stem": "A shipping-manifest extractor handles ambiguous quantities inconsistently: \"approx. 3 pallets\", \"2-3 crates\", and \"see attached\" produce a mix of fabricated integers, nulls, and strings. You decide to add few-shot examples to the prompt. Which example set is most likely to improve consistency and generalize to new phrasings?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Fifteen examples of clean manifests where every quantity is an exact integer, so the model sees the expected output format reinforced many times across varied carriers."
+      },
+      {
+        "key": "B",
+        "text": "One example for each ambiguous phrase seen in production logs, each showing only the expected final JSON so the model can match new phrases to the closest known case."
+      },
+      {
+        "key": "C",
+        "text": "Two to four targeted examples of ambiguous quantities, each showing the chosen output and a brief rationale for why it beats the plausible alternatives."
+      },
+      {
+        "key": "D",
+        "text": "A single long example manifest that contains every ambiguous phrase at once, with its full expected output."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "The most effective few-shot sets are a small number of targeted examples of the ambiguous cases, showing the reasoning for why one output was chosen over plausible alternatives. Explaining the judgment lets the model generalize to novel phrasings rather than only pattern-matching the listed cases. Including one where the correct answer is null (\"see attached\") also teaches when not to invent a value.",
+    "distractors": {
+      "A": "Clean examples demonstrate format but say nothing about how to handle the ambiguous cases that are failing.",
+      "B": "Output-only examples encourage memorizing specific phrases instead of learning the judgment that generalizes.",
+      "D": "Packing every case into one example obscures which decision applies to which situation and dilutes the reasoning."
+    },
+    "difficulty": 3,
+    "tags": [
+      "few-shot",
+      "ambiguity",
+      "generalization"
+    ]
+  },
+  {
+    "id": "s6-010",
+    "scenario": 6,
+    "domain": 4,
+    "task": "4.4",
+    "type": "single",
+    "select": 1,
+    "stem": "Your Pydantic validator rejects an extracted insurance claim because incident_date is after claim_filed_date and the policy_number does not match the required pattern. You want to retry once with the best chance of self-correction. What should the follow-up request contain?",
+    "options": [
+      {
+        "key": "A",
+        "text": "The original claim document, the failed extraction, and the specific validation errors describing which fields failed and why, so the model can re-check them."
+      },
+      {
+        "key": "B",
+        "text": "The original claim document with the original prompt resent unchanged, relying on sampling variation to produce a valid result."
+      },
+      {
+        "key": "C",
+        "text": "Only the failed extraction and a message saying \"validation failed, please fix the output\" without the source document."
+      },
+      {
+        "key": "D",
+        "text": "The original document and a stricter system prompt that warns the model its previous answer was rejected."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Retry-with-error-feedback works by giving the model everything it needs to self-correct: the source document to re-check, its previous output, and the specific validation errors. Specific errors point the model directly at the fields to fix. Generic or context-free retries rarely converge.",
+    "distractors": {
+      "B": "Resending the same prompt gives the model no signal about what was wrong.",
+      "C": "Without the source document the model cannot verify the correct dates or policy number, and the generic message gives no direction.",
+      "D": "A vague warning without the specific errors does not tell the model which fields are wrong or why."
+    },
+    "difficulty": 1,
+    "tags": [
+      "retry",
+      "error-feedback",
+      "validation"
+    ]
+  },
+  {
+    "id": "s6-011",
+    "scenario": 6,
+    "domain": 4,
+    "task": "4.4",
+    "type": "single",
+    "select": 1,
+    "stem": "Your validation-retry loop retries up to three times. Metrics show retries fix 90% of date-format and field-placement failures, but 0% of failures where purchase_order_number is null on vendor invoices. Sampling those invoices shows they say \"per PO on file\" and the PO number exists only in a separate purchase order document that is not sent to the extractor. These documents use 40% of all retry spend. What is the best change?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Increase the retry limit to five for this failure type and add stronger wording to the retry prompt stating that the PO number is mandatory for payment matching."
+      },
+      {
+        "key": "B",
+        "text": "Make purchase_order_number required in the schema so the model is forced to locate it on the first attempt."
+      },
+      {
+        "key": "C",
+        "text": "Stop retrying when the value is absent from the source, accept null, and either supply the PO document or route the record for lookup."
+      },
+      {
+        "key": "D",
+        "text": "Add few-shot examples showing PO numbers correctly extracted from invoices that reference a PO on file, so the model learns where these numbers usually appear."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Retries help with format and structural errors, but they cannot work when the required information is simply not in the provided document. Here the PO number lives in an external document, so the fix is to stop wasting retries, keep the honest null, and either provide the missing source or send the record to a lookup or human step. This keeps retries for failures they can actually fix.",
+    "distractors": {
+      "A": "More retries and stronger wording cannot produce information that is not in the input; they only increase fabrication risk and cost.",
+      "B": "Requiring the field would force the model to invent a PO number.",
+      "D": "Few-shot examples cannot teach extraction of a value that is not present in the document."
+    },
+    "difficulty": 2,
+    "tags": [
+      "retry-limits",
+      "absent-information",
+      "cost"
+    ]
+  },
+  {
+    "id": "s6-012",
+    "scenario": 6,
+    "domain": 4,
+    "task": "4.4",
+    "type": "single",
+    "select": 1,
+    "stem": "Accounts payable reports that some extracted invoices load with a total that does not match the line items. Investigation shows two causes: sometimes the model misreads a line amount, and sometimes the vendor's invoice itself has an arithmetic error. Finance wants extraction errors corrected but vendor errors preserved and flagged, not silently fixed. Which design best meets this?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Have the model output only the line items and compute the invoice total in code, discarding the printed total so arithmetic is always exact and deterministic."
+      },
+      {
+        "key": "B",
+        "text": "Instruct the model to adjust line item amounts when they do not sum to the stated total, so every record loaded into accounts payable is internally consistent."
+      },
+      {
+        "key": "C",
+        "text": "Reject every invoice whose line items do not sum to the stated total and send all of them to manual data entry."
+      },
+      {
+        "key": "D",
+        "text": "Extract stated_total and calculated_total with a conflict_detected flag; retry with feedback on mismatches and route persistent ones to review."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "Extracting calculated_total alongside stated_total creates a self-correction check that exposes discrepancies instead of hiding them. A retry with the specific mismatch fixes misreads, and if the mismatch survives a careful re-read it reflects the source, so conflict_detected preserves it for human review. This separates extraction errors from genuinely inconsistent source data.",
+    "distractors": {
+      "A": "Discarding the stated total hides vendor errors that finance explicitly wants to see.",
+      "B": "Adjusting values to force consistency is fabrication and would silently erase real vendor errors.",
+      "C": "Rejecting everything sends easily correctable misreads to humans and wastes reviewer capacity."
+    },
+    "difficulty": 3,
+    "tags": [
+      "calculated-total",
+      "conflict-detected",
+      "self-correction"
+    ]
+  },
+  {
+    "id": "s6-013",
+    "scenario": 6,
+    "domain": 4,
+    "task": "4.4",
+    "type": "multi",
+    "select": 2,
+    "stem": "You are reviewing a week of validation failures to decide which ones should enter the retry-with-error-feedback loop. Which TWO failure types are most likely to be resolved by a retry that includes the document, the failed output, and the specific errors? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "contract_value was returned as \"$1.2M\" although the validator requires a plain number in USD."
+      },
+      {
+        "key": "B",
+        "text": "governing_law is null because the contract says only \"as set out in the master agreement\", which was not provided."
+      },
+      {
+        "key": "C",
+        "text": "counterparty_tax_id is null; the tax ID appears only in the vendor master file, which is outside the pipeline."
+      },
+      {
+        "key": "D",
+        "text": "The renewal terms were placed in the termination_clause field, and termination_clause text was placed in notes."
+      },
+      {
+        "key": "E",
+        "text": "signature_date is null on unsigned draft contracts that have no signature block at all."
+      }
+    ],
+    "answer": [
+      "A",
+      "D"
+    ],
+    "explanation": "Retries succeed on format mismatches and structural output errors, because the correct information is in the document and the model just needs to present it differently. The \"$1.2M\" normalization and the swapped field placement are both of that kind. Failures where the information is absent from the provided source cannot be fixed by retrying.",
+    "distractors": {
+      "B": "The governing law is in an external master agreement that was not provided, so a retry cannot find it.",
+      "C": "The tax ID exists only in a separate system, so retrying the same document cannot recover it.",
+      "E": "An unsigned draft has no signature date; null is the correct answer, not an error to retry."
+    },
+    "difficulty": 3,
+    "tags": [
+      "retry",
+      "format-errors",
+      "absent-information"
+    ]
+  },
+  {
+    "id": "s6-014",
+    "scenario": 6,
+    "domain": 4,
+    "task": "4.5",
+    "type": "single",
+    "select": 1,
+    "stem": "Your company runs two extraction workloads: (1) a customer-facing upload form where a user submits a W-9 and waits on screen for the parsed fields to confirm, and (2) a nightly job that re-extracts 150,000 archived supplier contracts for a compliance report due the following week. Leadership wants the 50% savings of the Message Batches API. How should you apply it?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Use the Batches API for both workloads and poll frequently so the upload form usually returns within a minute."
+      },
+      {
+        "key": "B",
+        "text": "Use the Batches API for the nightly archive job and keep synchronous calls for the interactive upload form where the user is waiting on screen."
+      },
+      {
+        "key": "C",
+        "text": "Keep synchronous calls for both, because batch results can come back in a different order than they were submitted."
+      },
+      {
+        "key": "D",
+        "text": "Use the Batches API for the upload form, since each request is small, and synchronous calls for the large archive job."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "The Message Batches API offers 50% cost savings but has up to a 24-hour processing window with no latency guarantee. That suits latency-tolerant, non-blocking work like the nightly archive job, and is wrong for a blocking flow where a user is waiting. Matching each workload to the right API captures the savings without breaking the user experience.",
+    "distractors": {
+      "A": "Frequent polling does not change the lack of a latency SLA, so users could wait hours.",
+      "C": "Ordering is not a problem because results are correlated with requests via custom_id.",
+      "D": "This reverses the logic; request size does not matter, the user-facing flow is the latency-critical one."
+    },
+    "difficulty": 1,
+    "tags": [
+      "batch-api",
+      "latency",
+      "workload-matching"
+    ]
+  },
+  {
+    "id": "s6-015",
+    "scenario": 6,
+    "domain": 4,
+    "task": "4.5",
+    "type": "single",
+    "select": 1,
+    "stem": "A Message Batches job of 40,000 policy documents completes with 38,700 successes and 1,300 errors. About 900 errored because the documents exceeded the context limit (multi-hundred-page policies); the rest hit transient errors. Each request was submitted with a custom_id equal to the policy ID. What is the most efficient recovery?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Resubmit only the failed custom_ids, chunking the oversized policies and resending the transient failures unchanged."
+      },
+      {
+        "key": "B",
+        "text": "Resubmit the entire 40,000-document batch so that all results come from a single consistent run with the same prompt and model version."
+      },
+      {
+        "key": "C",
+        "text": "Resubmit only the 1,300 failed documents exactly as they were, since batch errors are usually transient and most succeed on a second attempt."
+      },
+      {
+        "key": "D",
+        "text": "Drop the 1,300 failures from the report, since a 96.75% completion rate is acceptable for a batch job."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "custom_id lets you identify exactly which requests failed and resubmit only those, avoiding paying twice for 38,700 good results. Resubmissions should include the modification that addresses the failure cause: chunking documents that exceeded context limits, while transient failures can be resent as-is. This is targeted, cheap, and actually fixes both failure types.",
+    "distractors": {
+      "B": "Rerunning the whole batch wastes cost and time on documents that already succeeded.",
+      "C": "Oversized documents will fail again for the same reason unless they are chunked.",
+      "D": "Silently dropping failures leaves gaps in a compliance dataset and hides the problem."
+    },
+    "difficulty": 2,
+    "tags": [
+      "batch-api",
+      "custom_id",
+      "chunking"
+    ]
+  },
+  {
+    "id": "s6-016",
+    "scenario": 6,
+    "domain": 4,
+    "task": "4.5",
+    "type": "single",
+    "select": 1,
+    "stem": "Scanned delivery receipts arrive continuously throughout the day. Your contract with a logistics client guarantees extracted data within 36 hours of a receipt's arrival. You want to use the Message Batches API, which can take up to 24 hours to process a batch. What is the least frequent batch submission cadence that still guarantees the SLA for every receipt?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Submit one batch every 24 hours, since the batch processing window is 24 hours."
+      },
+      {
+        "key": "B",
+        "text": "Submit one batch every 36 hours, matching the SLA window exactly."
+      },
+      {
+        "key": "C",
+        "text": "Submit one batch every 12 hours, so the worst case is 12 hours of waiting plus 24 hours of processing."
+      },
+      {
+        "key": "D",
+        "text": "Submit each receipt synchronously as it arrives, since batching cannot guarantee any SLA."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "The worst case is a receipt that arrives just after a submission: it waits a full interval before being submitted, then up to 24 hours for processing. To keep interval plus 24 hours within 36, the interval can be at most 12 hours. Shorter cadences also work but cost more coordination; 12 hours is the least frequent that still guarantees the SLA.",
+    "distractors": {
+      "A": "A 24-hour cadence allows up to 24 hours of waiting plus 24 hours of processing, which is 48 hours.",
+      "B": "A 36-hour cadence allows up to 60 hours worst case, far exceeding the SLA.",
+      "D": "Batching can meet a bounded SLA when the submission cadence accounts for the 24-hour window, so giving up the savings is unnecessary."
+    },
+    "difficulty": 3,
+    "tags": [
+      "batch-api",
+      "sla",
+      "submission-cadence"
+    ]
+  },
+  {
+    "id": "s6-017",
+    "scenario": 6,
+    "domain": 4,
+    "task": "4.5",
+    "type": "single",
+    "select": 1,
+    "stem": "You are about to extract fields from 2 million historical loan applications via the Message Batches API. The prompt and schema were written last week and have only been tried on a handful of hand-picked documents. A previous project needed four full resubmissions because of prompt issues found after the first run. What should you do before submitting the full volume?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Submit the full 2 million documents now, since the 50% batch discount makes any later resubmissions inexpensive."
+      },
+      {
+        "key": "B",
+        "text": "Split the 2 million documents into ten equal batches and fix any prompt issues between batches as they surface, so later batches benefit from earlier fixes."
+      },
+      {
+        "key": "C",
+        "text": "Switch to synchronous calls for the whole job so failures can be caught and fixed one document at a time."
+      },
+      {
+        "key": "D",
+        "text": "Run the prompt on a representative sample covering the real mix of document types, measure validation failures by type, and refine the prompt before the bulk run."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "Refining the prompt on a representative sample before batch-processing large volumes maximizes first-pass success and avoids costly iterative resubmissions. A sample that covers the real variety of documents surfaces schema and instruction problems cheaply. The bulk run then starts from a prompt that has already been validated.",
+    "distractors": {
+      "A": "Even at half price, resubmitting millions of documents multiple times is expensive and slow.",
+      "B": "Using production batches as the test bed means early batches are processed with a known-unvalidated prompt and must be redone.",
+      "C": "Synchronous processing gives up the batch savings and does not replace upfront prompt validation."
+    },
+    "difficulty": 2,
+    "tags": [
+      "batch-api",
+      "sample-refinement",
+      "first-pass-success"
+    ]
+  },
+  {
+    "id": "s6-018",
+    "scenario": 6,
+    "domain": 2,
+    "task": "2.2",
+    "type": "single",
+    "select": 1,
+    "stem": "Your extraction agent calls an MCP tool, lookup_vendor_record, to enrich invoices. Today the tool returns {\"error\": \"Lookup failed\"} whether the vendor registry timed out, the vendor ID was malformed, or the vendor genuinely does not exist. The agent responds by retrying everything, including malformed IDs, and sometimes marks real new vendors as \"registry down.\" What change best enables correct recovery?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Have the tool retry internally five times with exponential backoff and then return an empty vendor object marked as success so the pipeline keeps moving."
+      },
+      {
+        "key": "B",
+        "text": "Return isError with structured metadata (errorCategory, isRetryable, description), and return a successful empty result when no vendor matches."
+      },
+      {
+        "key": "C",
+        "text": "Add a system prompt instruction telling the agent to retry failed lookups at most twice and then skip enrichment, logging the generic error for later analysis."
+      },
+      {
+        "key": "D",
+        "text": "Raise an exception from the tool that terminates the extraction run so an engineer can inspect the failure."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Uniform error messages prevent the agent from choosing the right recovery. Structured metadata lets it retry transient timeouts, stop on non-retryable validation errors, and distinguish access failures from valid empty results, where \"no vendor found\" is a successful query with no match. This avoids wasted retries and false \"registry down\" labels.",
+    "distractors": {
+      "A": "Returning an empty result as success hides real failures and makes outages look like missing vendors.",
+      "C": "A retry cap still gives the agent no way to tell retryable from non-retryable failures.",
+      "D": "Terminating the whole run on a single lookup failure is an anti-pattern when recovery is possible."
+    },
+    "difficulty": 2,
+    "tags": [
+      "mcp",
+      "structured-errors",
+      "isRetryable"
+    ]
+  },
+  {
+    "id": "s6-019",
+    "scenario": 6,
+    "domain": 5,
+    "task": "5.5",
+    "type": "single",
+    "select": 1,
+    "stem": "Your extraction system reports 97% field-level accuracy across 20,000 labeled documents, and the operations lead proposes removing human review entirely. Most of the volume is typed invoices; handwritten delivery notes make up 4% of documents. What should you do before reducing human review?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Approve the change, since 97% exceeds the 95% target and 20,000 labeled documents is a large enough sample for the overall figure to be statistically reliable."
+      },
+      {
+        "key": "B",
+        "text": "Break accuracy down by document type and by field to confirm every segment meets the target before automating any of them."
+      },
+      {
+        "key": "C",
+        "text": "Have the model self-report an overall confidence for each document and remove review only when it reports above 90%."
+      },
+      {
+        "key": "D",
+        "text": "Keep human review on a random 1% of all documents and remove it everywhere else, which provides ongoing quality monitoring at a fraction of the cost."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Aggregate accuracy can mask poor performance on specific document types or fields; a small segment like handwritten notes could be far below target without moving the overall number. Validating accuracy by document type and field before automating ensures consistent performance across all segments. Automation can then be applied only to segments that genuinely qualify.",
+    "distractors": {
+      "A": "A large sample does not help if the aggregate hides a failing segment.",
+      "C": "Uncalibrated self-reported confidence is an unreliable proxy for actual accuracy.",
+      "D": "A 1% uniform sample would rarely include the small handwritten segment and does not validate it before automation."
+    },
+    "difficulty": 2,
+    "tags": [
+      "aggregate-accuracy",
+      "segmentation",
+      "human-review"
+    ]
+  },
+  {
+    "id": "s6-020",
+    "scenario": 6,
+    "domain": 5,
+    "task": "5.5",
+    "type": "single",
+    "select": 1,
+    "stem": "After validation by segment, your team auto-approves extractions whose calibrated field confidence exceeds 0.9; everything else goes to reviewers. Months later, a new supplier invoice template appears and its errors go unnoticed because they are all high-confidence. What ongoing practice would best catch this kind of problem?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Continuously review a stratified random sample of auto-approved high-confidence extractions to measure error rates and detect new patterns."
+      },
+      {
+        "key": "B",
+        "text": "Raise the auto-approval threshold to 0.99 so that fewer extractions skip human review and only the most certain outputs flow downstream unchecked."
+      },
+      {
+        "key": "C",
+        "text": "Rely on downstream teams to report errors they notice, and investigate whenever complaint volume increases."
+      },
+      {
+        "key": "D",
+        "text": "Re-run the original labeled validation set every quarter and confirm that overall and per-field accuracy are still above the targets set at launch."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Stratified random sampling of high-confidence extractions provides ongoing error-rate measurement on the outputs no human otherwise sees, and detects novel error patterns like a new template. Stratifying ensures smaller segments are represented. Without it, confidently wrong outputs flow downstream undetected.",
+    "distractors": {
+      "B": "A higher threshold reduces automation but still never inspects outputs that clear it, so confidently wrong errors remain invisible.",
+      "C": "Waiting for downstream complaints is reactive and misses errors that are never noticed.",
+      "D": "A fixed historical set cannot contain the new template, so it will not reveal the new failure mode."
+    },
+    "difficulty": 2,
+    "tags": [
+      "stratified-sampling",
+      "monitoring",
+      "novel-patterns"
+    ]
+  },
+  {
+    "id": "s6-021",
+    "scenario": 6,
+    "domain": 5,
+    "task": "5.5",
+    "type": "single",
+    "select": 1,
+    "stem": "Your extractor outputs a confidence score per field, and you route fields below 0.8 to reviewers. An audit shows that for payment_terms, fields scored 0.95 are wrong 14% of the time, while for invoice_number, fields scored 0.7 are almost always correct. Reviewers are overloaded with invoice_number checks while payment_terms errors slip through. What is the best fix?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Replace numeric scores with a prompt asking the model to state whether it is \"sure\" or \"unsure\" about each field, which is easier for reviewers to interpret."
+      },
+      {
+        "key": "B",
+        "text": "Lower the global threshold to 0.6 to reduce reviewer load, accepting the payment_terms errors as a known limitation."
+      },
+      {
+        "key": "C",
+        "text": "Calibrate per-field thresholds against a labeled validation set so each field's routing cutoff reflects its actual observed accuracy at each score."
+      },
+      {
+        "key": "D",
+        "text": "Add a prompt instruction telling the model to score payment_terms more conservatively, since its free-text variation makes overconfidence more likely there."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Raw model confidence is not calibrated, and the mismatch differs by field. Calibrating field-level thresholds using a labeled validation set maps scores to real accuracy per field, so review attention goes where errors actually occur. This both reduces wasted invoice_number reviews and catches payment_terms errors.",
+    "distractors": {
+      "A": "A verbal sure/unsure label is still uncalibrated self-reporting and loses resolution.",
+      "B": "Lowering the threshold globally makes the payment_terms problem worse.",
+      "D": "Asking the model to be conservative does not reliably calibrate its scores; calibration needs ground-truth labels."
+    },
+    "difficulty": 3,
+    "tags": [
+      "confidence-calibration",
+      "field-level",
+      "routing"
+    ]
+  },
+  {
+    "id": "s6-022",
+    "scenario": 6,
+    "domain": 5,
+    "task": "5.5",
+    "type": "single",
+    "select": 1,
+    "stem": "Your claims-extraction pipeline processes 10,000 documents a day, but the review team can examine only about 800. Which routing policy makes the best use of this limited reviewer capacity?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Send the first 800 documents received each day to review and auto-approve the rest."
+      },
+      {
+        "key": "B",
+        "text": "Send the 800 longest documents to review, since longer documents contain more fields and more places for an extraction error to occur."
+      },
+      {
+        "key": "C",
+        "text": "Rotate review across claim types each day so that every claim type is fully reviewed at least once a week and drift in any type is caught quickly."
+      },
+      {
+        "key": "D",
+        "text": "Prioritize extractions with low calibrated field confidence and documents whose source content is ambiguous or contradictory, since these are most likely to contain errors."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "Limited reviewer capacity should go to the extractions most likely to be wrong: those with low calibrated confidence and those whose source documents are ambiguous or self-contradictory. This targets human attention at real risk. Order, length, or rotation do not correlate with error likelihood.",
+    "distractors": {
+      "A": "Arrival order has no relationship to extraction risk.",
+      "B": "Length is a weak proxy; a short contradictory document may be riskier than a long clean one.",
+      "C": "Rotating by type ignores which individual extractions are actually risky on any given day."
+    },
+    "difficulty": 1,
+    "tags": [
+      "human-review",
+      "routing",
+      "reviewer-capacity"
+    ]
+  },
+  {
+    "id": "s6-023",
+    "scenario": 6,
+    "domain": 5,
+    "task": "5.5",
+    "type": "multi",
+    "select": 2,
+    "stem": "Leadership wants to move from 100% human review of extracted mortgage documents to reviewing only flagged items. You have a labeled set of 5,000 documents spanning six document types. Which TWO steps should be completed before reducing review? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "Confirm that overall accuracy on the labeled set is above target and use that single number as the go/no-go decision."
+      },
+      {
+        "key": "B",
+        "text": "Ask the model to give each document a 1-10 confidence rating and auto-approve any document it rates 8 or higher."
+      },
+      {
+        "key": "C",
+        "text": "Measure accuracy separately for each document type and each critical field, and keep full review for any segment below target."
+      },
+      {
+        "key": "D",
+        "text": "Review only documents with missing fields, since complete extractions are very unlikely to contain errors."
+      },
+      {
+        "key": "E",
+        "text": "Use the labeled set to calibrate field-level confidence thresholds that decide which extractions are flagged for review."
+      }
+    ],
+    "answer": [
+      "C",
+      "E"
+    ],
+    "explanation": "Before automating, accuracy must be validated by document type and field so no failing segment is hidden by the aggregate. Routing thresholds should be based on field-level confidence calibrated against labeled data, so flags reflect real error likelihood. Together these make the reduced-review design safe.",
+    "distractors": {
+      "A": "A single aggregate number can mask poor performance on specific document types or fields.",
+      "B": "An uncalibrated self-reported document rating is not a reliable basis for skipping review.",
+      "D": "Complete extractions can still be confidently wrong; missing fields are only one error signal."
+    },
+    "difficulty": 2,
+    "tags": [
+      "human-review",
+      "calibration",
+      "segmentation"
+    ]
+  },
+  {
+    "id": "s6-024",
+    "scenario": 6,
+    "domain": 5,
+    "task": "5.1",
+    "type": "single",
+    "select": 1,
+    "stem": "You extract obligations from 150-page master services agreements in a single request. Spot checks show obligations from the first and last 20 pages are captured reliably, but indemnification and data-protection clauses located in the middle of the agreement are frequently missing. The documents fit within the context window. What is the most effective change?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Repeat the extraction instructions at both the beginning and the end of the prompt so the model keeps the full task in view while reading the long agreement."
+      },
+      {
+        "key": "B",
+        "text": "Split the agreement into section-scoped passes that each extract obligations from one part, then merge the structured results."
+      },
+      {
+        "key": "C",
+        "text": "Move to a model with a larger context window so the whole agreement fits with substantial headroom and every page receives more attention."
+      },
+      {
+        "key": "D",
+        "text": "Increase max_tokens so the model has space to list every obligation in the agreement."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "This is the lost-in-the-middle effect: models reliably process the beginning and end of long inputs but may omit content from the middle. Focused section-scoped passes put each part of the agreement where it gets full attention, and merging the structured outputs gives complete coverage. The document already fits, so the issue is attention, not capacity.",
+    "distractors": {
+      "A": "Repeating instructions does not change how the model attends to content buried in the middle of the document.",
+      "C": "A larger window does not fix position effects when the document already fits.",
+      "D": "The output is not being truncated; the clauses are being missed, not cut off."
+    },
+    "difficulty": 2,
+    "tags": [
+      "lost-in-the-middle",
+      "long-documents",
+      "chunking"
+    ]
+  },
+  {
+    "id": "s6-025",
+    "scenario": 6,
+    "domain": 5,
+    "task": "5.1",
+    "type": "single",
+    "select": 1,
+    "stem": "In a multi-turn extraction agent, a parse_document tool returns about 45 properties per page (font metrics, layout coordinates, revision history, embedded object IDs), but extraction only needs the page text, page number, and section heading. On long filings the context fills quickly and later pages are extracted less accurately. What is the best fix?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Trim each tool result to the page text, page number, and section heading before it is added to the conversation context."
+      },
+      {
+        "key": "B",
+        "text": "Summarize each page's full tool output into a short prose description before adding it to the context, preserving the gist while cutting most of the tokens."
+      },
+      {
+        "key": "C",
+        "text": "Switch the agent to the Message Batches API so each page is processed in a separate batch request."
+      },
+      {
+        "key": "D",
+        "text": "Add a system prompt instruction telling the model to ignore font, layout, and revision properties when it reads each parse_document result."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Verbose tool outputs accumulate in context and consume tokens far out of proportion to their relevance. Trimming each result to only the fields extraction needs, before it accumulates, frees context for the content that matters. Instructions to ignore data do not stop it from consuming context.",
+    "distractors": {
+      "B": "Prose summaries risk losing exact text and numbers that extraction depends on.",
+      "C": "Batch processing does not support multi-turn tool calling and does not address the bloated results.",
+      "D": "The irrelevant properties still occupy context even if the model is told to ignore them."
+    },
+    "difficulty": 1,
+    "tags": [
+      "context-trimming",
+      "tool-results",
+      "context-budget"
+    ]
+  },
+  {
+    "id": "s6-026",
+    "scenario": 6,
+    "domain": 5,
+    "task": "5.1",
+    "type": "single",
+    "select": 1,
+    "stem": "Your pipeline runs per-section extraction over long annual reports, then sends all 30 section outputs, concatenated in document order as unlabeled JSON blobs, to a final reconciliation call that produces a company-level record. Reconciled records often miss risk factors and covenants that were correctly extracted from sections in the middle of the report. What is the most effective change to the reconciliation input?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Reverse the order of section outputs on alternating runs so that middle sections sometimes appear near the start."
+      },
+      {
+        "key": "B",
+        "text": "Have each section pass return its full reasoning chain along with the JSON, so the reconciler understands why each value was extracted and can weigh it properly."
+      },
+      {
+        "key": "C",
+        "text": "Put a key-findings summary from all sections at the start of the input and place each section's output under an explicit section header."
+      },
+      {
+        "key": "D",
+        "text": "Remove the per-section passes and run reconciliation directly over the entire raw annual report in one request."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Even aggregated structured results suffer from position effects, so findings in the middle of a long input get dropped. Placing a key-findings summary at the beginning, where attention is reliable, and labeling detailed results with explicit section headers mitigates lost-in-the-middle. The reconciler then sees every important item up front and can navigate to its details.",
+    "distractors": {
+      "A": "Alternating order just moves which sections get lost and makes results nondeterministic.",
+      "B": "Adding verbose reasoning increases input length and makes the middle-loss problem worse.",
+      "D": "Going back to one pass over the raw report reintroduces the same lost-in-the-middle problem at a larger scale."
+    },
+    "difficulty": 3,
+    "tags": [
+      "lost-in-the-middle",
+      "aggregation",
+      "section-headers"
+    ]
+  },
+  {
+    "id": "s6-027",
+    "scenario": 6,
+    "domain": 5,
+    "task": "5.6",
+    "type": "single",
+    "select": 1,
+    "stem": "You extract headcount and revenue figures for each portfolio company from several documents: an investor deck, an annual filing, and a quarterly update. The downstream analytics team complains of \"contradictory\" values, for example headcount 410 in one record and 465 in another. Investigation shows most are figures from different reporting periods, not real conflicts. What change best prevents this misinterpretation?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Keep only the value from the most authoritative document type, the audited annual filing, and discard figures from decks and quarterly updates."
+      },
+      {
+        "key": "B",
+        "text": "Average the values from all documents to produce a single blended figure for each company."
+      },
+      {
+        "key": "C",
+        "text": "Instruct the model to pick the most plausible value whenever documents disagree, using surrounding context such as growth trends to judge which is right."
+      },
+      {
+        "key": "D",
+        "text": "Require each extracted figure to include its reporting period or as-of date and its source document in the output schema."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "Without temporal metadata, values from different periods look like contradictions. Requiring as-of dates (publication or data collection dates) in the structured output lets downstream systems interpret differences correctly, and source attribution lets them trace each value. Real conflicts within the same period then stand out.",
+    "distractors": {
+      "A": "Discarding other documents loses newer data that the quarterly update may hold.",
+      "B": "Averaging figures from different periods produces a number that is true for no period.",
+      "C": "Picking a value arbitrarily hides both temporal differences and genuine conflicts."
+    },
+    "difficulty": 2,
+    "tags": [
+      "provenance",
+      "temporal-data",
+      "as-of-date"
+    ]
+  },
+  {
+    "id": "s6-028",
+    "scenario": 6,
+    "domain": 5,
+    "task": "5.6",
+    "type": "multi",
+    "select": 2,
+    "stem": "A contract package contains an original agreement and three amendments. Payment terms differ: net 30 in the original, net 45 in amendment 2, and an undated side letter mentioning net 60. Today the extractor outputs a single payment_terms value, and the downstream contract system cannot tell where it came from. Which TWO changes to the extraction output best support accurate downstream use? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "Keep a single payment_terms value and have the model choose the one from the most recently dated document."
+      },
+      {
+        "key": "B",
+        "text": "For each extracted value, include its source document, location, and a short verbatim excerpt supporting it."
+      },
+      {
+        "key": "C",
+        "text": "Replace the structured field with a prose summary of how payment terms evolved across the documents."
+      },
+      {
+        "key": "D",
+        "text": "Record every conflicting value with its document's effective date, and set a conflict flag so the conflict is resolved by the downstream reviewer or rules."
+      },
+      {
+        "key": "E",
+        "text": "Drop the undated side letter from the package, since documents without dates cannot be interpreted reliably."
+      }
+    ],
+    "answer": [
+      "B",
+      "D"
+    ],
+    "explanation": "Structured claim-source mappings (document, location, excerpt) preserve provenance so downstream systems and reviewers can verify each value. Conflicting values should be kept and annotated, along with effective dates, rather than resolved arbitrarily, so the downstream reviewer or business rules decide. Together these handle both provenance and the undated, conflicting side letter.",
+    "distractors": {
+      "A": "Silently picking one value hides the conflict, and the undated side letter cannot be ordered reliably anyway.",
+      "C": "Prose summaries lose the structured mappings downstream systems need to integrate.",
+      "E": "Dropping a document discards potentially binding terms; it should be flagged, not removed."
+    },
+    "difficulty": 3,
+    "tags": [
+      "provenance",
+      "conflict-annotation",
+      "claim-source-mapping"
+    ]
+  }
+]

@@ -1,0 +1,535 @@
+[
+  {
+    "task": "4.1",
+    "knowledge": [
+      "Claude can turn messy inputs such as interview notes, emails, survey comments and tickets into a structured list of requirements, grouped by theme, with gaps and conflicts flagged.",
+      "Claude works only from what you give it: context about the team, volumes, pain points and constraints turns a generic answer into a useful analysis.",
+      "Claude can add plausible requirements or details that nobody actually stated, so every requirement should trace back to a source you can check.",
+      "Good first use cases are frequent, text-heavy and easy for a person to check before the output is used.",
+      "Use cases that need live data moving between systems, automation at scale or custom integrations are technical builds: Associates define the need and escalate them to Claude Developers or Architects."
+    ],
+    "skills": [
+      "Ask Claude to extract requirements, cite where each one came from, and list open questions for stakeholders.",
+      "Turn vague requirements (\"fast\", \"easy to use\") into measurable questions to confirm with stakeholders.",
+      "Score candidate use cases on frequency, time spent, risk and ease of review, then start with a low-risk one.",
+      "Write a short brief of the business need and success criteria before handing technical work to a Developer or Architect."
+    ],
+    "examLens": [
+      "A \"best first step\" in a requirements question is usually giving Claude real context or tracing a claim to its source, not accepting the output.",
+      "If the use case needs systems connected or automated at scale, the answer is to define requirements and escalate, not to build it yourself.",
+      "Prefer a frequent, low-risk, easily checked task as a starting point over the most visible high-stakes one."
+    ],
+    "traps": [
+      "Treating a requirement Claude added as fact because it sounds like best practice.",
+      "Asking a generic question (\"Is AI good for customer service?\") and judging Claude by the generic answer.",
+      "Promising a client a technical integration you are not positioned to build."
+    ],
+    "links": [
+      {"label": "My prompt isn’t giving a helpful answer", "url": "https://support.claude.com/en/articles/7996857-my-prompt-isn-t-giving-me-a-helpful-answer"},
+      {"label": "Incorrect or misleading responses", "url": "https://support.claude.com/en/articles/8525154-claude-is-providing-incorrect-or-misleading-responses-what-s-going-on"}
+    ],
+    "cheat": [
+      ["Pile of interview notes, need requirements", "Extract, group by theme, cite sources, flag gaps and conflicts"],
+      ["A requirement nobody mentioned appears", "Ask where it came from; confirm with stakeholders"],
+      ["Vague requirement such as \"fast\"", "Turn it into a measurable question for stakeholders"],
+      ["Several candidate use cases", "Start with frequent, low-risk, easy-to-review work"],
+      ["Use case needs live system integration", "Write the requirements; escalate to a Developer or Architect"]
+    ],
+    "diagrams": [
+      {
+        "kind": "flow", "title": "From raw notes to agreed requirements",
+        "steps": [
+          {"label": "Gather raw inputs", "note": "Interview notes, emails, tickets, survey comments.", "tone": "sky"},
+          {"label": "Claude extracts and groups requirements", "note": "Ask it to cite the source of each requirement."},
+          {"label": "Flag gaps, conflicts and vague terms", "note": "Turn \"fast\" or \"easy\" into questions you can measure."},
+          {"label": "Confirm with stakeholders", "note": "Human checkpoint: drop anything nobody actually asked for.", "tone": "accent"},
+          {"label": "Agreed requirements + success criteria", "tone": "good"}
+        ]
+      },
+      {
+        "kind": "decision", "title": "Do it yourself or escalate?",
+        "question": "What does the use case need?",
+        "branches": [
+          {"when": "Drafting, summarizing or analysis in chat", "then": "Do it yourself in Claude", "tone": "good"},
+          {"when": "Shared context for a team’s recurring task", "then": "Set up a Project or skill yourself", "tone": "good"},
+          {"when": "A connector your organization doesn’t have on", "then": "Request it from your admin", "tone": "sky"},
+          {"when": "Live data between systems or automation at scale", "then": "Write requirements; escalate to a Developer or Architect", "tone": "accent"},
+          {"when": "Final decisions about people with no review", "then": "Redesign so a qualified person decides", "tone": "warn"}
+        ]
+      }
+    ]
+  },
+  {
+    "task": "4.2",
+    "knowledge": [
+      "Web search suits simple, current questions and every web-search answer includes citations; Research runs many searches that build on each other and produces an in-depth report with citations.",
+      "Research takes longer and uses your usage allowance faster than normal chat, so save it for questions that need many sources.",
+      "Cited sources still need checking: the original page may hold context that Claude’s summary left out.",
+      "For process optimization Claude needs the current state: the steps, owners, times, handoffs and pain points.",
+      "Claude cannot see constraints you don’t tell it about, such as a compliance check or a contractual step, so owners must review any proposed cut.",
+      "Large plans work better broken into stages you review one at a time, with the plan’s assumptions listed openly."
+    ],
+    "skills": [
+      "Choose web search for a quick current fact and Research for a cited multi-source report.",
+      "Describe the current process in detail and ask Claude for bottlenecks, redundant steps and options with trade-offs.",
+      "Ask Claude to list the assumptions behind a plan or timeline so you can check them with the team.",
+      "Pilot a proposed change with a small group and compare it with a measured baseline."
+    ],
+    "examLens": [
+      "Before leadership sees a research report, check the key figures against their cited sources.",
+      "A proposed process change is checked with the process owners and piloted before it is rolled out.",
+      "A plan with dates is only as good as the constraints you gave Claude; ask it to state its assumptions."
+    ],
+    "traps": [
+      "Treating a citation as proof without opening it.",
+      "Removing a step Claude calls redundant when it exists for compliance or a contract.",
+      "Asking for a whole project or semester plan in one prompt and accepting it as is."
+    ],
+    "links": [
+      {"label": "Use research on Claude", "url": "https://support.claude.com/en/articles/11088861-use-research-on-claude"},
+      {"label": "When to use web search, extended thinking and Research", "url": "https://support.claude.com/en/articles/11095361-when-should-i-use-web-search-extended-thinking-and-research"}
+    ],
+    "cheat": [
+      ["Quick current fact", "Web search; glance at the citations"],
+      ["In-depth report from many sources", "Research; verify key claims in the cited sources"],
+      ["Slow internal process", "Describe the current steps; ask for bottlenecks and options"],
+      ["Claude says a step is redundant", "Check with the process owner before removing it"],
+      ["Plan with dates and staffing", "Give real constraints; ask Claude to list its assumptions"]
+    ],
+    "diagrams": [
+      {
+        "kind": "decision", "title": "Which research approach?",
+        "question": "What do you need?",
+        "branches": [
+          {"when": "A quick, current fact", "then": "Web search, then glance at the citations", "tone": "sky"},
+          {"when": "Hard reasoning, no fresh information", "then": "Extended thinking or higher effort"},
+          {"when": "A full report from many sources", "then": "Research, then verify key claims in the sources", "tone": "accent"},
+          {"when": "Answers from your own documents", "then": "Upload the files or use a Project", "tone": "good"}
+        ]
+      },
+      {
+        "kind": "flow", "title": "Optimizing a process with Claude",
+        "loop": "adjust and repeat",
+        "steps": [
+          {"label": "Describe the current process", "note": "Steps, owners, times, handoffs and pain points.", "tone": "sky"},
+          {"label": "Claude finds bottlenecks and options", "note": "Ask for trade-offs, not one answer."},
+          {"label": "Owners check hidden constraints", "note": "Compliance checks and contract steps Claude can’t see.", "tone": "amber"},
+          {"label": "Pilot with a small group"},
+          {"label": "Measure against the baseline", "note": "Time per task, rework, errors.", "tone": "good"}
+        ]
+      }
+    ]
+  },
+  {
+    "task": "4.3",
+    "knowledge": [
+      "An artifact is something Claude makes that you would put in front of someone, such as a document, deck, dashboard or small interactive tool; it opens beside the chat and can be edited, revisited and shared.",
+      "With code execution and file creation turned on, Claude can create Excel files with working formulas, Word, PowerPoint and PDF files, and analyse uploaded data with charts.",
+      "Asking for several options with trade-offs against your criteria gives better designs than asking for \"the best\" one.",
+      "Iteration works best with specific feedback and one change at a time, retested on the same real inputs.",
+      "Generated files and calculations still need review: check formulas and spot-check numbers before decisions rest on them.",
+      "A prototype that proves value is the handoff point: running it automatically for everyone or connecting it to other systems is Developer or Architect work."
+    ],
+    "skills": [
+      "Ask for two or three design options scored against stated criteria before choosing.",
+      "Give feedback that says what to keep, what to change and an example of the target tone or format.",
+      "Keep a small set of real past inputs and retest every revision against them.",
+      "Package a prototype, its requirements and test results when escalating it."
+    ],
+    "examLens": [
+      "Prototype in an artifact, test with real users, then iterate; don’t wait for IT to start exploring.",
+      "When a prototype must scale or connect to company systems, escalate it with evidence.",
+      "Specific feedback beats starting over with the same prompt or switching models first."
+    ],
+    "traps": [
+      "Trusting a spreadsheet because Claude \"ran the calculation\".",
+      "Changing several things at once, so you can’t tell which change helped.",
+      "Publishing an internal prototype to customers as if it were a finished product."
+    ],
+    "links": [
+      {"label": "What are artifacts?", "url": "https://support.claude.com/en/articles/17153992-what-are-artifacts-and-how-do-i-use-them"},
+      {"label": "Create and edit files with Claude", "url": "https://support.claude.com/en/articles/12111783-create-and-edit-files-with-claude"}
+    ],
+    "cheat": [
+      ["Need a quick internal tool or mock-up", "Ask Claude for an artifact prototype; test with colleagues"],
+      ["Draft is off-tone", "Specific feedback: keep this, change that, here’s an example"],
+      ["Choosing a design", "Ask for options with trade-offs against your criteria"],
+      ["Claude built a budget spreadsheet", "Check formulas and spot-check known numbers"],
+      ["Prototype must run for all customers", "Escalate with prototype, requirements and test results"]
+    ],
+    "diagrams": [
+      {
+        "kind": "flow", "title": "Design and iterate with Claude",
+        "loop": "until the criteria are met",
+        "steps": [
+          {"label": "Define success criteria", "note": "What does a good result include?", "tone": "sky"},
+          {"label": "Claude drafts options or a prototype", "note": "Several options with trade-offs, often as an artifact."},
+          {"label": "Test on real inputs and users"},
+          {"label": "Give specific feedback", "note": "One change at a time, retested on the same inputs.", "tone": "good"}
+        ]
+      },
+      {
+        "kind": "compare", "title": "Prototype yourself vs escalate",
+        "columns": [
+          {"head": "You build and iterate", "items": ["Drafts, documents and decks", "Artifact prototypes and small tools", "Spreadsheet models (checked)", "Projects and prompts for your team"], "tone": "good"},
+          {"head": "Escalate to Developer / Architect", "items": ["Runs automatically for every customer", "Connects company systems together", "Custom builds and integrations", "Hand over prototype + requirements + results"], "tone": "accent"}
+        ]
+      }
+    ]
+  },
+  {
+    "task": "4.4",
+    "knowledge": [
+      "Augmenting keeps the existing process and adds Claude to a step, such as drafting; redesigning changes the steps themselves because Claude removes a bottleneck.",
+      "Integration starts with mapping the current workflow: steps, owners, inputs, outputs and where quality is checked.",
+      "Human checkpoints belong before anything reaches customers or affects people.",
+      "Shared Projects on Team and Enterprise let a team work from the same instructions and knowledge; skills package repeatable procedures.",
+      "Connectors let Claude read data and take actions in apps such as Google Drive or Gmail; on Team and Enterprise an Owner must enable a connector first, and each person still signs in with their own account.",
+      "Success is measured against a baseline: time per task, rework and error rates."
+    ],
+    "skills": [
+      "Map a workflow and mark where Claude drafts and where a person checks.",
+      "Choose augment for a quick, low-risk win and redesign when a pilot shows the new flow keeps quality.",
+      "Request a disabled connector or feature from the organization’s admin with a business reason.",
+      "Set up a shared Project so a team gets consistent results on a recurring task."
+    ],
+    "examLens": [
+      "The first step in integration is mapping the current process, not picking a model or buying licences.",
+      "Review sits before the output leaves the team, not after customers have it.",
+      "A missing connector on a company plan is requested from the admin, not worked around with personal accounts."
+    ],
+    "traps": [
+      "Replacing the human reviewer entirely because early drafts looked good.",
+      "Letting everyone use their own prompts for the same task and getting inconsistent results.",
+      "Measuring adoption by prompts sent or response length instead of time and quality."
+    ],
+    "links": [
+      {"label": "Use connectors", "url": "https://support.claude.com/en/articles/11176164-use-connectors-to-extend-claude-s-capabilities"},
+      {"label": "What are projects?", "url": "https://support.claude.com/en/articles/9517075-what-are-projects"},
+      {"label": "Usage limit best practices", "url": "https://support.claude.com/en/articles/9797557-usage-limit-best-practices"}
+    ],
+    "cheat": [
+      ["Want a quick, low-risk win", "Augment one step; keep the existing review"],
+      ["Steps exist only to work around a manual bottleneck", "Consider a redesign, proven by a pilot"],
+      ["Claude drafts customer replies", "Human review before sending"],
+      ["Team gets inconsistent results", "Shared Project with instructions and reference files"],
+      ["Connector not available on the company plan", "Ask the Owner/admin to enable it"]
+    ],
+    "diagrams": [
+      {
+        "kind": "flow", "title": "Fitting Claude into a workflow",
+        "steps": [
+          {"label": "Map current steps and owners", "note": "Inputs, outputs, handoffs, where quality is checked.", "tone": "sky"},
+          {"label": "Mark where Claude drafts or analyses"},
+          {"label": "Add human checkpoints", "note": "Before customers see it or it affects a person.", "tone": "warn"},
+          {"label": "Pilot with a small group"},
+          {"label": "Measure against the baseline", "note": "Time per task, rework, error rate.", "tone": "good"}
+        ]
+      },
+      {
+        "kind": "compare", "title": "Augment vs redesign",
+        "columns": [
+          {"head": "Augment", "items": ["Same steps; Claude speeds one of them", "Existing review stays in place", "Low risk, quick win", "Good first move"], "tone": "good"},
+          {"head": "Redesign", "items": ["Steps change because a bottleneck is gone", "Needs a pilot and owner sign-off", "Bigger gains, more change for people", "Keep human checkpoints"], "tone": "accent"}
+        ]
+      }
+    ]
+  },
+  {
+    "task": "4.5",
+    "knowledge": [
+      "Claude’s value: faster drafting, summarizing, analysis and research, consistent first drafts, and time freed for work that needs judgement.",
+      "Claude can produce convincing but incorrect content, including invented quotes or figures, so it is not a single source of truth.",
+      "Claude can also misstate its own capabilities, for example claiming it sent an email; it has no access to tools that are not connected.",
+      "Claude only knows what is in the conversation, the project knowledge or connected tools, and connected tools follow each person’s own permissions.",
+      "Credible business cases rest on measured pilot results and stated limits, not vendor claims or hand-picked demos.",
+      "The person who sends or acts on the output stays responsible for it."
+    ],
+    "skills": [
+      "Explain both what Claude speeds up and what still needs a person.",
+      "Present pilot results with a baseline, the review steps used, and known limits.",
+      "Correct stakeholder misconceptions about what Claude can see or do.",
+      "Respond to an error by showing the verification step that prevents a repeat."
+    ],
+    "examLens": [
+      "The best stakeholder message is balanced: real gains plus the checks that stay in place.",
+      "Overpromising (headcount cuts, \"always accurate\") is always a distractor.",
+      "After an incident, explain and strengthen review rather than abandon Claude or blame it."
+    ],
+    "traps": [
+      "Saying a newer or larger model removes the need to check facts.",
+      "Assuming Claude knows internal policies or systems it was never given.",
+      "Building a case on the best outputs from a demo."
+    ],
+    "links": [
+      {"label": "Incorrect or misleading responses", "url": "https://support.claude.com/en/articles/8525154-claude-is-providing-incorrect-or-misleading-responses-what-s-going-on"},
+      {"label": "Claude falsely claiming it sent emails", "url": "https://support.claude.com/en/articles/8241188-claude-is-producing-links-that-don-t-work-and-falsely-claiming-that-it-has-sent-emails-or-produced-external-documents-what-s-going-on"}
+    ],
+    "cheat": [
+      ["\"Can Claude replace our fact-checkers?\"", "It speeds drafting; facts still need human checking"],
+      ["Pitching Claude to leadership", "Pilot data vs baseline, plus limits and review steps"],
+      ["\"Claude knows our systems, right?\"", "Only what is shared or connected, within your permissions"],
+      ["Stakeholder upset after a wrong fact", "Acknowledge; show the added verification step"],
+      ["Claude says it emailed the client", "Check; it can’t act in tools that aren’t connected"]
+    ],
+    "diagrams": [
+      {
+        "kind": "compare", "title": "What to tell stakeholders",
+        "columns": [
+          {"head": "Claude does well", "items": ["Drafts and rewrites", "Summaries of provided documents", "Research with citations", "Options and trade-offs"], "tone": "good"},
+          {"head": "Claude’s limits", "items": ["Can be confidently wrong", "Knows only what is shared or connected", "Output varies between runs", "May misstate what it did"], "tone": "warn"},
+          {"head": "So the workflow keeps", "items": ["Human review of key facts", "A named owner for decisions", "Measured pilot results"], "tone": "accent"}
+        ]
+      },
+      {
+        "kind": "flow", "title": "Building a credible case",
+        "steps": [
+          {"label": "Pick one pilot task", "tone": "sky"},
+          {"label": "Measure the baseline", "note": "Time, quality and rework today."},
+          {"label": "Run the pilot with review"},
+          {"label": "Report gains and limits", "note": "Include errors caught and the checks that stay.", "tone": "good"},
+          {"label": "Propose the next step", "tone": "accent"}
+        ]
+      }
+    ]
+  },
+  {
+    "task": "6.1",
+    "knowledge": [
+      "Anthropic’s Usage Policy applies to everyone who uses Claude. It has universal usage standards, requirements for high-risk use cases, and additional use-case guidelines.",
+      "Prohibited uses include fraud and predatory practices, deceptive campaigns, disinformation, surveillance, and compromising people’s privacy, among others.",
+      "High-risk uses such as legal, medical, financial, insurance, housing, employment and education decisions need a qualified person who reviews the AI output before it is acted on, and disclosure to the affected person that AI was used.",
+      "Internal drafting, research and summaries that are not the final recommendation, and business operations not deciding about a specific person, fall outside the high-risk category.",
+      "Chatbots that face consumers must tell users they are talking to AI.",
+      "Low-stakes tasks such as brainstorming, formatting and internal drafts are good fits with normal review."
+    ],
+    "skills": [
+      "Sort a request into low-stakes, high-risk or not allowed.",
+      "Redesign a high-risk request so Claude assists and a qualified person decides.",
+      "Offer a legitimate alternative when declining an inappropriate request.",
+      "Recognize when a customer-facing build needs AI disclosure and a Developer or Architect."
+    ],
+    "examLens": [
+      "Decisions about a specific person’s job, loan, housing, grades or health: human in the loop and disclosure, never full automation.",
+      "Fake reviews, impersonation and covert profiling are inappropriate whatever the business reason.",
+      "The right answer rarely bans Claude outright; it scopes Claude to a safe role."
+    ],
+    "traps": [
+      "Fully automating a decision about people because the model seems accurate.",
+      "Hiding that a chatbot is AI to improve engagement.",
+      "Treating every task touching a regulated industry as high-risk, even internal research."
+    ],
+    "links": [
+      {"label": "Usage Policy", "url": "https://www.anthropic.com/legal/aup"}
+    ],
+    "cheat": [
+      ["Brainstorm names for a team offsite", "Fine; normal review"],
+      ["Decide who gets laid off from performance data", "Not automated; qualified people decide, Claude only organizes"],
+      ["Website chatbot with a human persona", "Must disclose it is AI; escalate the build"],
+      ["Write fake customer reviews", "Decline; draft requests for genuine reviews instead"],
+      ["Summarize insurance regulations for internal staff", "Fine; not a decision about a person; check facts"]
+    ],
+    "diagrams": [
+      {
+        "kind": "decision", "title": "Is this use case appropriate?",
+        "question": "What is the task?",
+        "branches": [
+          {"when": "Brainstorming, formatting, internal drafts", "then": "Go ahead with normal review", "tone": "good"},
+          {"when": "Internal research or summaries, no decision on a person", "then": "Go ahead; check the facts", "tone": "good"},
+          {"when": "Decision about a person: job, loan, housing, grades", "then": "Qualified human decides + disclose AI use", "tone": "amber"},
+          {"when": "Chatbot talking to customers", "then": "Disclose it is AI; escalate the build", "tone": "sky"},
+          {"when": "Deception, fraud or covert surveillance", "then": "Don’t do it; raise it with your manager", "tone": "warn"}
+        ]
+      },
+      {
+        "kind": "compare", "title": "High-risk use: two requirements",
+        "columns": [
+          {"head": "Human in the loop", "items": ["A qualified person reviews the output", "They can change it before it is acted on", "They stay responsible for the decision"], "tone": "amber"},
+          {"head": "Disclosure", "items": ["Tell the affected person AI was used", "Consumer chatbots say they are AI", "Follow any stricter company rule"], "tone": "sky"}
+        ]
+      }
+    ]
+  },
+  {
+    "task": "6.2",
+    "knowledge": [
+      "On commercial products such as Team and Enterprise, Anthropic by default does not train on your inputs and outputs; on consumer plans (Free, Pro, Max) chats may be used for training if the user allows it in the model-improvement setting.",
+      "Incognito chats aren’t saved to history or memory and aren’t used for training, but they are still kept for a period, and on Team and Enterprise they are included in organization data exports.",
+      "Telling Claude to \"forget\" or \"not retain\" data does not satisfy a policy control; the control is what you share in the first place.",
+      "Connectors inherit your permissions: Claude can reach what you can reach in that service, no more, and can take actions there.",
+      "Data minimization: share only the fields the task needs; remove, mask or aggregate identifiers; use placeholders and fill real details in afterwards.",
+      "Client contracts and regulations can restrict third-party processing no matter how secure the tool is."
+    ],
+    "skills": [
+      "Check the data’s classification and whether the tool is approved for it before uploading.",
+      "Strip or anonymize identifiers while keeping what the analysis needs.",
+      "Draft with placeholders, then add personal details outside Claude.",
+      "Ask the data owner or privacy team when the classification is unclear."
+    ],
+    "examLens": [
+      "Regulated personal data: anonymize or remove first; don’t upload as is and don’t abandon the task.",
+      "\"Incognito\", \"delete the chat\" and \"tell Claude not to remember\" are not substitutes for policy.",
+      "A personal account is never the answer for company or client data."
+    ],
+    "traps": [
+      "Believing incognito means nothing is kept anywhere.",
+      "Assuming internal-only analysis makes regulated data safe to upload.",
+      "Uploading a whole file when three columns would do."
+    ],
+    "links": [
+      {"label": "Is my data used for training? (commercial)", "url": "https://privacy.claude.com/en/articles/7996868-is-my-data-used-for-model-training"},
+      {"label": "Is my data used for training? (consumer)", "url": "https://privacy.claude.com/en/articles/10023580-is-my-data-used-for-model-training"},
+      {"label": "Use incognito chats", "url": "https://support.claude.com/en/articles/12260368-use-incognito-chats"}
+    ],
+    "cheat": [
+      ["Spreadsheet with names and account numbers", "Remove or anonymize identifiers first, per policy"],
+      ["\"I’ll use incognito for the confidential file\"", "Incognito still keeps data for a period; follow policy"],
+      ["Letters needing ID numbers", "Draft with placeholders; add the details afterwards"],
+      ["Client contract restricts third-party processing", "Get permission first; don’t upload"],
+      ["Worried Drive connector exposes others’ files", "Claude sees only what you can access"]
+    ],
+    "diagrams": [
+      {
+        "kind": "decision", "title": "Data class → what to do",
+        "question": "How is the data classified?",
+        "branches": [
+          {"when": "Public", "then": "Use it; still check facts", "tone": "good"},
+          {"when": "Internal", "then": "Approved work account only", "tone": "sky"},
+          {"when": "Confidential (client, contracts)", "then": "Only if policy and agreements allow; share the minimum", "tone": "amber"},
+          {"when": "Regulated personal (health, IDs, accounts)", "then": "Remove or anonymize first, or don’t use it", "tone": "warn"},
+          {"when": "Not sure", "then": "Ask the data owner before uploading", "tone": "accent"}
+        ]
+      },
+      {
+        "kind": "flow", "title": "Before you upload",
+        "steps": [
+          {"label": "Check the data’s classification", "tone": "sky"},
+          {"label": "Is this tool approved for that class?", "note": "If not, stop and ask."},
+          {"label": "Keep only the fields the task needs"},
+          {"label": "Mask or anonymize identifiers", "note": "Use placeholders; add real details afterwards.", "tone": "amber"},
+          {"label": "Upload in the approved workspace", "tone": "good"}
+        ]
+      }
+    ]
+  },
+  {
+    "task": "6.3",
+    "knowledge": [
+      "On Team and Enterprise, Owners and Primary Owners control capabilities such as web search, connectors, code execution, skills, memory, project sharing and artifact sharing.",
+      "Organization instructions apply to every chat in the organization and take precedence over individual instructions when they conflict.",
+      "Only Owners (or Enterprise custom roles with permission) can add custom connectors to the organization, and custom connectors can reach services not verified by Anthropic.",
+      "A disabled feature is a governance decision: request it through the proper channel instead of working around it.",
+      "Using a personal account for work data bypasses the organization’s controls and data terms.",
+      "When policy is silent or unclear, ask the policy owner first; report mistakes promptly through the incident process."
+    ],
+    "skills": [
+      "Request a feature or connector from the admin with a clear business reason.",
+      "Follow labelling and review rules even under time pressure.",
+      "Route new use cases and third-party tools through governance review.",
+      "Report a data-handling mistake promptly and honestly."
+    ],
+    "examLens": [
+      "Workarounds (personal accounts, shared logins, unapproved connectors) are always wrong.",
+      "Unclear policy: ask before acting, and don’t ask Claude to interpret your company’s policy for you.",
+      "A mistake is reported, not quietly deleted."
+    ],
+    "traps": [
+      "Assuming something is allowed because the policy doesn’t mention it.",
+      "Skipping a required AI-use label because the draft was heavily edited.",
+      "Thinking your personal instructions override the organization’s instructions."
+    ],
+    "links": [
+      {"label": "Roles and permissions", "url": "https://support.claude.com/en/articles/9267276-roles-and-permissions"},
+      {"label": "Set organization instructions", "url": "https://support.claude.com/en/articles/14546867-set-organization-preferences"},
+      {"label": "Custom connectors (security notes)", "url": "https://support.claude.com/en/articles/11175166-get-started-with-custom-connectors-using-remote-mcp"}
+    ],
+    "cheat": [
+      ["Admin turned off web search", "Request it with a business reason"],
+      ["Org and personal instructions conflict", "Organization instructions win"],
+      ["Found an unverified third-party connector", "Route it to the Owner/IT for review"],
+      ["Policy silent on a new use", "Ask the policy owner before going ahead"],
+      ["Pasted personal data by mistake", "Report it promptly via the incident process"]
+    ],
+    "diagrams": [
+      {
+        "kind": "layers", "title": "Rules that shape your Claude use",
+        "axis": {"label": "broader rules first", "dir": "down"},
+        "layers": [
+          {"label": "Laws and regulations", "tone": "warn"},
+          {"label": "Anthropic Usage Policy", "note": "Applies to everyone who uses Claude.", "tone": "amber"},
+          {"label": "Your company’s AI policy and admin settings", "note": "Owners turn features and connectors on or off.", "tone": "accent"},
+          {"label": "Organization instructions", "note": "Win over individual instructions when they conflict.", "tone": "sky"},
+          {"label": "Project and personal instructions", "tone": "plain"}
+        ]
+      },
+      {
+        "kind": "decision", "title": "Blocked or unsure?",
+        "question": "What is the situation?",
+        "branches": [
+          {"when": "A feature is turned off by your admin", "then": "Request it with a business reason", "tone": "sky"},
+          {"when": "Policy says nothing about a new use", "then": "Ask the policy owner first", "tone": "accent"},
+          {"when": "A new third-party connector or tool", "then": "Route it to Owner/IT review", "tone": "amber"},
+          {"when": "You broke a rule by mistake", "then": "Report it promptly", "tone": "good"},
+          {"when": "Tempted to use a personal account", "then": "Don’t: it bypasses company controls", "tone": "warn"}
+        ]
+      }
+    ]
+  },
+  {
+    "task": "6.4",
+    "knowledge": [
+      "Claude can reflect biases from its training or from the inputs you give it, so outputs about people need checking for unfair patterns.",
+      "Accountability stays with people: whoever sends or acts on an output owns it, not the AI.",
+      "Transparency means telling people when AI shaped content or decisions that affect them, as policy requires, and never presenting AI output deceptively.",
+      "Over-reliance erodes skills and judgement; people should be able to explain and check the work they hand in.",
+      "Workflow changes affect colleagues, so be open about how roles will change and involve the people affected.",
+      "Biased, inaccurate or harmful outputs can be reported with the thumbs-down button or to Anthropic’s user-safety address."
+    ],
+    "skills": [
+      "Remove irrelevant personal details from inputs and set job-related criteria before Claude assesses people.",
+      "Spot and correct stereotyped or one-sided wording.",
+      "Disclose AI use honestly when asked or when policy requires it.",
+      "Own and fix an error rather than blame the tool."
+    ],
+    "examLens": [
+      "A pattern in outputs that tracks something irrelevant (school, name, age) is a bias signal: fix the inputs and criteria and keep people reviewing.",
+      "\"The AI did it\" is never an acceptable answer to an error.",
+      "Honest disclosure beats hiding AI use, even when it is awkward."
+    ],
+    "traps": [
+      "Assuming AI is neutral because it has no opinions.",
+      "Quietly reusing a biased output after editing a few words.",
+      "Rolling out workflow changes without telling the people whose work changes."
+    ],
+    "links": [
+      {"label": "Usage Policy", "url": "https://www.anthropic.com/legal/aup"},
+      {"label": "Incorrect or misleading responses", "url": "https://support.claude.com/en/articles/8525154-claude-is-providing-incorrect-or-misleading-responses-what-s-going-on"}
+    ],
+    "cheat": [
+      ["Shortlist favours a few universities", "Possible bias: job-related criteria, human review of all candidates"],
+      ["Error in an AI-drafted client report", "Own it, correct it, strengthen the review step"],
+      ["Student asks if feedback was AI-written", "Be honest; explain the teacher reviewed it"],
+      ["Stereotyped description in an output", "Don’t use it; fix it and report with thumbs-down"],
+      ["Juniors paste output they can’t explain", "Require them to check and explain the reasoning"]
+    ],
+    "diagrams": [
+      {
+        "kind": "compare", "title": "Responsible vs risky habits",
+        "columns": [
+          {"head": "Responsible", "items": ["A named person owns the final decision", "Disclose AI use where it matters", "Check outputs about people for bias", "Report harmful outputs"], "tone": "good"},
+          {"head": "Risky", "items": ["\"The AI decided\"", "AI work passed off as human expertise", "Assume the AI is neutral", "Quietly reuse a biased output"], "tone": "warn"}
+        ]
+      },
+      {
+        "kind": "flow", "title": "Using Claude on decisions about people",
+        "steps": [
+          {"label": "Remove irrelevant personal details", "note": "Names, photos, ages and schools unless job-related.", "tone": "sky"},
+          {"label": "Set clear, job-related criteria"},
+          {"label": "Claude drafts or organizes"},
+          {"label": "A person reviews for unfair patterns", "tone": "amber"},
+          {"label": "A person decides and owns it", "tone": "good"}
+        ]
+      }
+    ]
+  }
+]

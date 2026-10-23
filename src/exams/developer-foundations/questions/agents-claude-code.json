@@ -1,0 +1,1603 @@
+[
+  {
+    "id": "dv-a-001",
+    "scenario": 0,
+    "domain": 1,
+    "task": "1.1",
+    "type": "single",
+    "select": 1,
+    "stem": "A finance team wants Claude to process supplier invoices. Every invoice goes through the same three steps: extract the fields, validate them against the matching purchase order, then post the result to the ERP system. Auditors require each run to follow the same path so it can be reproduced. Which architecture best fits this requirement?",
+    "options": [
+      {
+        "key": "A",
+        "text": "A workflow that chains the three steps in fixed code, with a programmatic validation check between each step."
+      },
+      {
+        "key": "B",
+        "text": "An autonomous agent that is given all three capabilities as tools and decides for itself which order to call them in."
+      },
+      {
+        "key": "C",
+        "text": "A supervisor agent that delegates each of the three steps to its own specialist subagent and merges what they return."
+      },
+      {
+        "key": "D",
+        "text": "A single agent with a long system prompt describing the steps, retried automatically whenever a posting fails."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "When the steps are known in advance and the path must be predictable and auditable, a workflow is the right choice: code, not the model, controls the sequence. Prompt chaining with programmatic gates between steps gives reproducible runs and clear failure points. Agents are worth their extra cost and unpredictability only when the path cannot be fixed ahead of time.",
+    "distractors": {
+      "B": "Letting the model choose the order adds unpredictability to a process whose order never changes and must be reproducible.",
+      "C": "A supervisor hierarchy is over-engineered for three fixed sequential steps and still leaves the ordering to model judgement.",
+      "D": "A prompt that describes the steps is guidance the model may not follow, so it cannot guarantee the same path on every run."
+    },
+    "difficulty": 1,
+    "tags": [
+      "workflow-vs-agent",
+      "prompt-chaining"
+    ]
+  },
+  {
+    "id": "dv-a-002",
+    "scenario": 0,
+    "domain": 1,
+    "task": "1.1",
+    "type": "single",
+    "select": 1,
+    "stem": "A developer is building an internal IT helpdesk assistant. Requests range from password resets to diagnosing intermittent VPN failures, and the number of lookups needed varies widely: some need one call, others need several rounds of checking logs, device records, and network status before the cause is clear. Which design is most appropriate?",
+    "options": [
+      {
+        "key": "A",
+        "text": "A fixed prompt chain that always runs every diagnostic step in the same order for each request it receives."
+      },
+      {
+        "key": "B",
+        "text": "A single model call that receives every log and record up front and answers in one response."
+      },
+      {
+        "key": "C",
+        "text": "An agent that chooses its next lookup from each result, with tool access scoped to the helpdesk systems and a cap on iterations."
+      },
+      {
+        "key": "D",
+        "text": "A routing classifier that maps each request to one canned answer from the existing knowledge base."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "The number and order of steps cannot be predicted in advance, which is exactly the condition that justifies an agent. The model decides the next lookup based on what it has learned so far. Scoping its tools and capping iterations keeps the added autonomy bounded and the cost predictable.",
+    "distractors": {
+      "A": "Running every diagnostic for every request wastes calls on simple cases and still cannot adapt when a result points somewhere unexpected.",
+      "B": "Loading all data up front is costly, often impossible, and gives no way to follow up on what the first findings reveal.",
+      "D": "Canned answers handle the easy requests but cannot diagnose novel, multi-step problems such as an intermittent VPN failure."
+    },
+    "difficulty": 2,
+    "tags": [
+      "workflow-vs-agent",
+      "agent-criteria"
+    ]
+  },
+  {
+    "id": "dv-a-003",
+    "scenario": 0,
+    "domain": 1,
+    "task": "1.1",
+    "type": "single",
+    "select": 1,
+    "stem": "A supervisor agent splits a market-analysis request across three researcher subagents. Logs show the subagents running many of the same searches and returning overlapping findings, while one region in the request is not covered by any of them. What is the most effective fix?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Add a fourth researcher subagent so that there is enough capacity to cover the region that was missed."
+      },
+      {
+        "key": "B",
+        "text": "Have the supervisor give each subagent an explicit objective, a distinct scope and an output format."
+      },
+      {
+        "key": "C",
+        "text": "Let the subagents read each other's intermediate results so they can notice and avoid duplicated work."
+      },
+      {
+        "key": "D",
+        "text": "Switch the subagents to a larger model so they make better choices about which searches to run."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Duplicate work and coverage gaps are symptoms of vague delegation. A supervisor should decompose the task and tell each worker exactly what its objective and boundaries are and what to return. Clear task descriptions are the main lever for coordinating subagents.",
+    "distractors": {
+      "A": "More workers with the same vague instructions add cost and are likely to add more overlap, not fill the gap.",
+      "C": "Shared intermediate state adds coupling and coordination overhead without fixing the unclear task boundaries that cause the overlap.",
+      "D": "A stronger model cannot infer a division of labour that the supervisor never specified."
+    },
+    "difficulty": 2,
+    "tags": [
+      "supervisor",
+      "delegation",
+      "subagents"
+    ]
+  },
+  {
+    "id": "dv-a-004",
+    "scenario": 0,
+    "domain": 1,
+    "task": "1.1",
+    "type": "single",
+    "select": 1,
+    "stem": "In a coding agent, the main agent delegates \"find every caller of the deprecated billing API\" to a subagent. The subagent returns the full contents of every file it searched, and after a few such delegations the main agent's context is nearly full and its later edits get worse. What change best addresses this?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Stop using a subagent and have the main agent run the searches itself so the results stay in one place."
+      },
+      {
+        "key": "B",
+        "text": "Give the subagent a larger context window so it can hold all of the file contents it collects while working."
+      },
+      {
+        "key": "C",
+        "text": "Have the main agent periodically restart from an empty context and then repeat its earlier delegations."
+      },
+      {
+        "key": "D",
+        "text": "Instruct the subagent to return only a condensed result: file paths, line numbers and a note per call."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "The value of a subagent is that its exploration happens in its own context, and only a distilled result comes back. Returning raw file contents throws that benefit away and floods the main agent's context. A compact, structured summary keeps the main context focused on the edits.",
+    "distractors": {
+      "A": "Running the searches in the main agent puts all of the raw exploration into the main context, which makes the problem worse.",
+      "B": "The subagent's context is not what is filling up; the main agent's context fills because of what the subagent returns.",
+      "C": "Restarting loses the main agent's working state and simply repeats the same flood of returned content."
+    },
+    "difficulty": 3,
+    "tags": [
+      "subagents",
+      "context-isolation"
+    ]
+  },
+  {
+    "id": "dv-a-005",
+    "scenario": 0,
+    "domain": 1,
+    "task": "1.1",
+    "type": "multi",
+    "select": 2,
+    "stem": "A team is deciding whether to have its main agent delegate parts of a large code-audit task to subagents. Which TWO are genuine benefits of using subagents for this kind of task? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "Each subagent works in its own context, so its exploration does not crowd the main agent's context."
+      },
+      {
+        "key": "B",
+        "text": "Subagents automatically see the main agent's full conversation history, so no briefing is needed."
+      },
+      {
+        "key": "C",
+        "text": "Independent parts of the audit can run in parallel instead of one after another."
+      },
+      {
+        "key": "D",
+        "text": "Splitting work across subagents reliably lowers the total number of tokens the task uses."
+      },
+      {
+        "key": "E",
+        "text": "Subagents make the overall result deterministic, because each one handles a smaller piece."
+      }
+    ],
+    "answer": [
+      "A",
+      "C"
+    ],
+    "explanation": "Subagents run in separate contexts and return only their results, which keeps the main agent's context focused. Independent subtasks can also run concurrently, cutting wall-clock time on broad tasks. Both benefits come with extra cost and coordination, so they pay off when the work is broad and separable.",
+    "distractors": {
+      "B": "A subagent starts with a fresh context; anything it needs must be passed in its task prompt.",
+      "D": "Multi-agent setups usually use more tokens in total, trading cost for parallelism and context isolation.",
+      "E": "Each subagent is still a model call, so splitting the work does not make the output deterministic."
+    },
+    "difficulty": 2,
+    "tags": [
+      "subagents",
+      "parallelism",
+      "context-isolation"
+    ]
+  },
+  {
+    "id": "dv-a-006",
+    "scenario": 0,
+    "domain": 1,
+    "task": "1.1",
+    "type": "single",
+    "select": 1,
+    "stem": "A support platform receives refund requests, technical questions and account-change requests. Each category needs a different prompt and a different set of tools, and the categories are easy to tell apart. Which workflow pattern fits best?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Evaluator-optimizer, where one model drafts a reply and a second model critiques it repeatedly until it passes."
+      },
+      {
+        "key": "B",
+        "text": "Routing, where an initial step classifies the request and sends it to a handler built for that category."
+      },
+      {
+        "key": "C",
+        "text": "Parallelization, where every handler processes each request at once and the results are merged."
+      },
+      {
+        "key": "D",
+        "text": "A fully autonomous agent that holds the tools for all three categories in a single prompt."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Routing fits when inputs fall into distinct categories that are better handled separately. Classifying first lets each downstream handler use a focused prompt and only the tools it needs. Optimizing for one category then does not hurt the others.",
+    "distractors": {
+      "A": "Evaluator-optimizer improves output quality through iteration; it does not separate different kinds of request.",
+      "C": "Running every handler on every request wastes calls and produces irrelevant results that then have to be discarded.",
+      "D": "One prompt holding every tool loses the focus that separate handlers provide and gives the model more chances to pick the wrong tool."
+    },
+    "difficulty": 1,
+    "tags": [
+      "routing",
+      "workflow-patterns"
+    ]
+  },
+  {
+    "id": "dv-a-007",
+    "scenario": 0,
+    "domain": 1,
+    "task": "1.1",
+    "type": "single",
+    "select": 1,
+    "stem": "A team rebuilt its single coding agent as a multi-agent system in which five subagents each edit different parts of one tightly coupled module at the same time. The new system costs several times more and often produces changes that conflict with each other. What is the most likely explanation?",
+    "options": [
+      {
+        "key": "A",
+        "text": "The subagents need a larger model, because smaller models cannot coordinate edits within a shared module."
+      },
+      {
+        "key": "B",
+        "text": "The supervisor should add more subagents, so that each one handles a smaller and simpler part of the module."
+      },
+      {
+        "key": "C",
+        "text": "The subagents need a shared vector database so they can retrieve one another's edits while they are working."
+      },
+      {
+        "key": "D",
+        "text": "The task is tightly interdependent, so it suits a single agent better than parallel subagents."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "Multi-agent systems pay off on broad work that splits into independent pieces. Changes to one tightly coupled module depend on each other, so parallel agents lack the shared, up-to-date context that coherent edits need, and the token overhead buys nothing. A single agent, or subagents used only for independent read-only investigation, fits this work better.",
+    "distractors": {
+      "A": "Model size does not fix the structural problem of parallel agents editing interdependent code without shared context.",
+      "B": "Finer splitting increases coordination overhead and the number of conflicting edits.",
+      "C": "Bolting on retrieval adds infrastructure but does not give agents the synchronized, complete context that tightly coupled edits require."
+    },
+    "difficulty": 3,
+    "tags": [
+      "multi-agent-tradeoffs",
+      "subagents"
+    ]
+  },
+  {
+    "id": "dv-a-008",
+    "scenario": 0,
+    "domain": 1,
+    "task": "1.1",
+    "type": "single",
+    "select": 1,
+    "stem": "A localization team uses Claude to translate marketing copy. Reviewers can state clear criteria (tone, length limits, glossary terms), and drafts measurably improve when that feedback is applied. The team wants this improvement loop automated. Which pattern best fits?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Routing, which sends each piece of copy to a translator prompt that is specialized for its language."
+      },
+      {
+        "key": "B",
+        "text": "A supervisor hierarchy with one translator subagent per paragraph and a merger agent at the end."
+      },
+      {
+        "key": "C",
+        "text": "Evaluator-optimizer, where one call drafts and another evaluates against the criteria and returns feedback for revision."
+      },
+      {
+        "key": "D",
+        "text": "A single call made at a lower temperature so that the first draft follows the glossary more closely."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Evaluator-optimizer fits when there are clear evaluation criteria and iterative refinement measurably improves the result. One step generates and another critiques against the criteria, looping until the output passes or a limit is reached. That automates the reviewer feedback loop the team already relies on.",
+    "distractors": {
+      "A": "Routing chooses a handler but adds no feedback loop, so it cannot apply the review criteria iteratively.",
+      "B": "Splitting by paragraph fragments tone and consistency and still has no step that checks the draft against the criteria.",
+      "D": "Temperature changes do not enforce glossary terms or length limits, and the result is still a single unchecked draft."
+    },
+    "difficulty": 2,
+    "tags": [
+      "evaluator-optimizer",
+      "workflow-patterns"
+    ]
+  },
+  {
+    "id": "dv-a-009",
+    "scenario": 0,
+    "domain": 1,
+    "task": "1.1",
+    "type": "single",
+    "select": 1,
+    "stem": "An assistant uses a three-level hierarchy: a top supervisor, domain managers, and worker subagents. It handles complex cross-department requests well, but simple questions such as \"what is the office Wi-Fi password policy?\" now take 40 seconds and cost far more than before. What is the best change?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Add a lightweight routing step that answers simple requests directly and only escalates multi-domain work to the hierarchy."
+      },
+      {
+        "key": "B",
+        "text": "Remove the hierarchy and send every request, simple or complex, to a single agent that has every tool."
+      },
+      {
+        "key": "C",
+        "text": "Keep the hierarchy for everything but replace all agents at every level with the smallest available model."
+      },
+      {
+        "key": "D",
+        "text": "Cache the supervisor's system prompt so that each hop through the hierarchy is cheaper to process."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Hierarchies add latency and cost at every hop, which is justified only when the request needs coordination across domains. Routing simple requests to a direct path keeps them fast and cheap while preserving the hierarchy where it adds value. Match the architecture's complexity to each request.",
+    "distractors": {
+      "B": "Flattening everything gives up the coordination that complex cross-department requests clearly benefit from.",
+      "C": "A smaller model trims per-call cost but keeps every hop, and it risks the quality of the complex requests.",
+      "D": "Prompt caching reduces some input cost but leaves the number of sequential model calls, and therefore the latency, unchanged."
+    },
+    "difficulty": 3,
+    "tags": [
+      "supervisor",
+      "routing",
+      "cost-latency"
+    ]
+  },
+  {
+    "id": "dv-a-010",
+    "scenario": 0,
+    "domain": 1,
+    "task": "1.2",
+    "type": "single",
+    "select": 1,
+    "stem": "A developer wants to embed an agent in an existing Python service. The agent must read and edit files in a repository and run shell commands, and the developer does not want to implement the tool loop, file tools, or context management. Which option fits best?",
+    "options": [
+      {
+        "key": "A",
+        "text": "The Client SDK, writing file and shell tools by hand and a loop that executes each tool call and returns the result."
+      },
+      {
+        "key": "B",
+        "text": "The Claude Agent SDK, which provides Claude Code's built-in tools, agent loop and context management as a library."
+      },
+      {
+        "key": "C",
+        "text": "The Claude Code CLI in interactive mode, with a developer copying its suggested edits into the service."
+      },
+      {
+        "key": "D",
+        "text": "The Message Batches API, submitting each step of the task as a separate request and stitching the results."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "The Agent SDK exposes the same tools, agent loop and context management that power Claude Code, programmable from Python or TypeScript. That gives file editing and shell execution out of the box inside the developer's own process. The Client SDK is the lower-level choice when you want to write the loop yourself.",
+    "distractors": {
+      "A": "The Client SDK works but means building exactly the loop and tools the developer wants to avoid writing.",
+      "C": "Interactive CLI use is a manual workflow, not an agent embedded in the service.",
+      "D": "Batch processing is for asynchronous bulk requests and offers no agent loop or tool execution."
+    },
+    "difficulty": 1,
+    "tags": [
+      "agent-sdk",
+      "client-sdk"
+    ]
+  },
+  {
+    "id": "dv-a-011",
+    "scenario": 0,
+    "domain": 1,
+    "task": "1.2",
+    "type": "single",
+    "select": 1,
+    "stem": "An agent built with the Claude Agent SDK runs shell commands in a build environment. Security requires that any command containing `rm -rf` is never executed, no matter how the model reasons about it. What is the most reliable way to meet this requirement?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Register a `PreToolUse` hook that inspects each shell command and returns a deny decision when it matches."
+      },
+      {
+        "key": "B",
+        "text": "Add a clearly worded rule to the system prompt stating that destructive commands such as `rm -rf` are forbidden."
+      },
+      {
+        "key": "C",
+        "text": "Register a `PostToolUse` hook that checks each shell command and logs an alert whenever a match is found."
+      },
+      {
+        "key": "D",
+        "text": "Lower the model temperature so that the agent is less likely to produce unexpected or risky commands."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Hooks run your code deterministically at fixed points in the agent loop. A `PreToolUse` hook sees the tool call before it executes and can deny it, so the block applies regardless of what the model decides. This is the standard way to turn a must-never-happen rule into a guarantee.",
+    "distractors": {
+      "B": "A prompt instruction is probabilistic guidance; the model can still emit the command, so it is not a guarantee.",
+      "C": "A `PostToolUse` hook fires after the tool has already run, which is too late to prevent the deletion.",
+      "D": "Temperature has no enforcement effect; a lower value can still produce the forbidden command."
+    },
+    "difficulty": 2,
+    "tags": [
+      "hooks",
+      "PreToolUse",
+      "deterministic-control"
+    ]
+  },
+  {
+    "id": "dv-a-012",
+    "scenario": 0,
+    "domain": 1,
+    "task": "1.2",
+    "type": "single",
+    "select": 1,
+    "stem": "A regulated company needs an audit record of every tool call its Agent SDK agent makes, including the input and the result, written to its own logging system. Which approach best guarantees a complete record?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Instruct the agent in its system prompt to summarize every tool it used at the end of its final answer."
+      },
+      {
+        "key": "B",
+        "text": "Parse the agent's final text response afterwards and extract mentions of tools from the prose."
+      },
+      {
+        "key": "C",
+        "text": "Ask the agent to call a dedicated `log_action` tool after each action it takes during the task."
+      },
+      {
+        "key": "D",
+        "text": "Register a `PostToolUse` hook that writes each tool's input and result to the logging system."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "A `PostToolUse` hook is invoked by the SDK after every tool call, with the tool input and output available, independent of model behaviour. That makes the audit trail complete and deterministic. Anything that depends on the model choosing to report its actions can miss entries.",
+    "distractors": {
+      "A": "A model-written summary can omit or misdescribe calls, so it does not guarantee completeness.",
+      "B": "Prose in the final answer is not a reliable record of every call made during the run.",
+      "C": "A logging tool only records what the model remembers to log, which makes the record probabilistic."
+    },
+    "difficulty": 2,
+    "tags": [
+      "hooks",
+      "PostToolUse",
+      "audit"
+    ]
+  },
+  {
+    "id": "dv-a-013",
+    "scenario": 0,
+    "domain": 1,
+    "task": "1.2",
+    "type": "single",
+    "select": 1,
+    "stem": "A developer writes a custom agent loop on the Messages API. The loop sends a request, prints any text in the response, and then exits. In testing, the agent announces \"Let me check the order status\" and stops without ever producing an answer. What is the most likely fix?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Increase `max_tokens` so that Claude has room to finish its answer before the response is cut off."
+      },
+      {
+        "key": "B",
+        "text": "Add an instruction to the system prompt telling Claude to give its final answer in the first response."
+      },
+      {
+        "key": "C",
+        "text": "While `stop_reason` is `tool_use`, run the tool, send back a `tool_result` with the matching ID, and call again."
+      },
+      {
+        "key": "D",
+        "text": "Set `tool_choice` so that the model must call the order tool and then answer within one response."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "A response with `stop_reason` of `tool_use` means Claude is waiting for the application to run the tool. The loop must execute it, append the assistant turn, send a user turn containing a `tool_result` block that references the `tool_use_id`, and call the API again, repeating until Claude stops for another reason. Exiting after the first response breaks the loop.",
+    "distractors": {
+      "A": "The response was not truncated; Claude stopped deliberately to request a tool call.",
+      "B": "Claude cannot answer about live order status without the tool result, so a prompt change cannot fix this.",
+      "D": "Forcing a tool call still requires the application to run it and return the result in a later request."
+    },
+    "difficulty": 3,
+    "tags": [
+      "custom-loop",
+      "stop_reason",
+      "tool_result"
+    ]
+  },
+  {
+    "id": "dv-a-014",
+    "scenario": 0,
+    "domain": 1,
+    "task": "1.2",
+    "type": "single",
+    "select": 1,
+    "stem": "A small team wants an agent that runs multi-hour research tasks with code execution and web access. They do not want to build or operate container infrastructure, sandboxing, or a session store, and they are comfortable with Anthropic running the agent loop. Which deployment model best fits?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Self-host the Agent SDK in long-running containers that the team provisions and monitors itself."
+      },
+      {
+        "key": "B",
+        "text": "Run the Claude Code CLI on a developer laptop, triggered by a nightly cron job that calls `claude -p` with the task."
+      },
+      {
+        "key": "C",
+        "text": "Claude Managed Agents, where a hosted harness runs the agent loop and sessions run in a managed sandbox."
+      },
+      {
+        "key": "D",
+        "text": "Write a custom tool loop on the Messages API and host the code-execution sandbox on a team server."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Claude Managed Agents is the Anthropic-hosted option: a hosted harness runs the agent loop, and sessions run in an Anthropic-managed cloud sandbox. It targets long-running work with minimal infrastructure for the team to operate. Self-hosting the Agent SDK gives more control but leaves containers, isolation and persistence to the team.",
+    "distractors": {
+      "A": "Self-hosting is exactly the container and operations burden the team wants to avoid.",
+      "B": "A laptop cron job is fragile, unsandboxed and not a deployment model for production workloads.",
+      "D": "A custom loop plus a self-hosted sandbox means building the most infrastructure of all the choices."
+    },
+    "difficulty": 2,
+    "tags": [
+      "managed-agents",
+      "deployment",
+      "hosting"
+    ]
+  },
+  {
+    "id": "dv-a-015",
+    "scenario": 0,
+    "domain": 1,
+    "task": "1.2",
+    "type": "multi",
+    "select": 2,
+    "stem": "A team is self-hosting the Claude Agent SDK to serve agent tasks for its users. Which TWO statements about this deployment model are correct? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "The SDK runs a Claude Code process that needs a shell and working directory, so each agent should run in a sandboxed container."
+      },
+      {
+        "key": "B",
+        "text": "The SDK is a stateless HTTP client, so it can run in any serverless function with no file system."
+      },
+      {
+        "key": "C",
+        "text": "With an ephemeral pattern, a container is created for each user task and destroyed when the task completes."
+      },
+      {
+        "key": "D",
+        "text": "Self-hosting means Anthropic executes the tools, while the team's servers only relay messages."
+      },
+      {
+        "key": "E",
+        "text": "A hybrid pattern keeps one container running permanently for every user, even while they are idle."
+      }
+    ],
+    "answer": [
+      "A",
+      "C"
+    ],
+    "explanation": "The Agent SDK supervises a Claude Code subprocess that owns a shell, a working directory and session files, so production deployments run it inside sandboxed containers. Common patterns include ephemeral containers per task, long-running containers, and hybrid containers that spin down when idle and rehydrate session state on startup.",
+    "distractors": {
+      "B": "The SDK needs a process with a shell and file system, which a bare stateless function does not provide.",
+      "D": "When self-hosting, tools run in the team's own environment; that is the defining difference from a hosted model.",
+      "E": "Hybrid containers spin down during idle periods and restore state from a session store when the user returns."
+    },
+    "difficulty": 3,
+    "tags": [
+      "agent-sdk",
+      "hosting",
+      "self-hosted"
+    ]
+  },
+  {
+    "id": "dv-a-016",
+    "scenario": 0,
+    "domain": 1,
+    "task": "1.2",
+    "type": "single",
+    "select": 1,
+    "stem": "A multi-tenant SaaS product runs Agent SDK agents on shared hosts. Engineers notice that an agent sometimes follows instructions from a `CLAUDE.md` and project settings that exist on the host machine but were never meant for customer agents. What is the best fix?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Add a system prompt line telling the agent to ignore any instructions that come from CLAUDE.md files."
+      },
+      {
+        "key": "B",
+        "text": "Delete the host's CLAUDE.md files once and rely on engineers not to recreate them on those hosts."
+      },
+      {
+        "key": "C",
+        "text": "Move the host CLAUDE.md content into a `.claude/rules/` directory so that it only loads for matching file paths."
+      },
+      {
+        "key": "D",
+        "text": "Run each tenant in its own file system and pass `settingSources: []` so filesystem settings are not loaded."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "When `settingSources` is omitted, `query()` reads the same filesystem settings as the CLI, including CLAUDE.md files and project settings. Passing an empty list limits the agent to what you configure in code, and isolating each tenant's file system stops host-level files leaking in. Configuration, not instructions, controls what gets loaded.",
+    "distractors": {
+      "A": "A prompt line is probabilistic and does not stop the files from being loaded into context.",
+      "B": "A one-off cleanup is not a control; any file recreated later will be picked up again.",
+      "C": "Path-scoped rules still load from the file system, so this changes when they load, not whether tenants see them."
+    },
+    "difficulty": 3,
+    "tags": [
+      "agent-sdk",
+      "settingSources",
+      "multi-tenant"
+    ]
+  },
+  {
+    "id": "dv-a-017",
+    "scenario": 0,
+    "domain": 1,
+    "task": "1.2",
+    "type": "single",
+    "select": 1,
+    "stem": "A developer builds an Agent SDK agent that answers questions about a codebase. It should be able to search and read files but must never modify them or run shell commands. What is the most appropriate way to enforce this?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Configure the agent's tool permissions so read-only tools such as `Read`, `Grep` and `Glob` are allowed and edit and shell tools are denied."
+      },
+      {
+        "key": "B",
+        "text": "Tell the agent in its system prompt that it is a read-only assistant and must not change any files."
+      },
+      {
+        "key": "C",
+        "text": "Run the agent normally and use version control to revert any file changes it makes afterwards."
+      },
+      {
+        "key": "D",
+        "text": "Give the agent every built-in tool but set a low turn limit so it has little time to edit anything."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Least privilege is enforced through configuration: allow only the tools the task needs and deny the ones it must never use. The SDK then refuses those calls regardless of what the model attempts. A read-only Q&A agent needs only the search and read tools.",
+    "distractors": {
+      "B": "A system prompt instruction can be ignored, so it does not enforce read-only behaviour.",
+      "C": "Reverting after the fact accepts the damage and cannot undo side effects such as shell commands.",
+      "D": "A turn limit bounds run length; it does not stop a write that happens within the allowed turns."
+    },
+    "difficulty": 1,
+    "tags": [
+      "agent-sdk",
+      "permissions",
+      "least-privilege"
+    ]
+  },
+  {
+    "id": "dv-a-018",
+    "scenario": 0,
+    "domain": 1,
+    "task": "1.2",
+    "type": "single",
+    "select": 1,
+    "stem": "An Agent SDK agent can issue customer refunds. Product requires that a human operator approve each refund in the company's web UI, seeing the amount before it runs, while other tools proceed automatically. Which mechanism fits best?",
+    "options": [
+      {
+        "key": "A",
+        "text": "List the refund tool among the auto-approved tools so it runs immediately, and then notify the operator afterwards."
+      },
+      {
+        "key": "B",
+        "text": "Use the SDK's `canUseTool` callback to route refund calls to the operator UI and return their allow or deny."
+      },
+      {
+        "key": "C",
+        "text": "Instruct the agent to ask the end user for confirmation in the chat before calling the refund tool."
+      },
+      {
+        "key": "D",
+        "text": "Run the whole agent in plan mode so that it describes each refund and never actually executes one."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "The `canUseTool` callback handles permission requests at runtime that static rules do not settle. The application can present the pending refund, including its input, to an operator and return their decision. That gives a human-in-the-loop gate for one sensitive tool while other tools run unattended.",
+    "distractors": {
+      "A": "Auto-approving the tool removes the approval step entirely; a notice after the fact is not an approval.",
+      "C": "Asking the end user in chat is model-driven and is not the operator approval the requirement specifies.",
+      "D": "Plan mode stops all execution, so approved refunds could never actually be issued."
+    },
+    "difficulty": 2,
+    "tags": [
+      "agent-sdk",
+      "canUseTool",
+      "human-in-the-loop"
+    ]
+  },
+  {
+    "id": "dv-a-019",
+    "scenario": 0,
+    "domain": 1,
+    "task": "1.2",
+    "type": "single",
+    "select": 1,
+    "stem": "In an Agent SDK app, a developer adds a `PreToolUse` hook that returns `allow` for every `Edit` call to speed things up. However, edits to `.env` files are still refused, because the project's settings include a deny rule for them. What explains this behaviour?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Hooks only run for shell commands, so the hook is never called for the `Edit` tool."
+      },
+      {
+        "key": "B",
+        "text": "A hook returning `allow` does not bypass deny rules, which are evaluated regardless of the hook result."
+      },
+      {
+        "key": "C",
+        "text": "The hook must return `allow` from a `PostToolUse` handler to override settings-file rules."
+      },
+      {
+        "key": "D",
+        "text": "Deny rules are ignored whenever hooks are registered, so the refusal must be coming from the model's own judgement."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "The SDK runs hooks first, and a hook can deny a call outright. A hook that returns `allow`, however, does not skip the deny and ask rules, which are still evaluated. Deny rules therefore remain an effective guardrail even when hooks are permissive.",
+    "distractors": {
+      "A": "`PreToolUse` hooks can match any tool, including `Edit`, not only shell commands.",
+      "C": "`PostToolUse` runs after execution and cannot grant permission for a call that was refused.",
+      "D": "Registering hooks does not disable permission rules; the deny rule is precisely what blocks the edit."
+    },
+    "difficulty": 3,
+    "tags": [
+      "hooks",
+      "permissions",
+      "agent-sdk"
+    ]
+  },
+  {
+    "id": "dv-a-020",
+    "scenario": 0,
+    "domain": 1,
+    "task": "1.2",
+    "type": "single",
+    "select": 1,
+    "stem": "An Agent SDK agent has spent a long session analysing a legacy system. The developer now wants to try two different refactoring strategies starting from that same analysis, without either attempt changing the original session's history. What should they do?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Start two brand-new sessions and paste a short written summary of the analysis into each of their first prompts."
+      },
+      {
+        "key": "B",
+        "text": "Resume the original session twice in a row and ask for each strategy one after the other."
+      },
+      {
+        "key": "C",
+        "text": "Export the session transcript to a file and attach that file as context to a new request."
+      },
+      {
+        "key": "D",
+        "text": "Fork the session for each strategy, so each branch starts from the shared history independently."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "Forking creates a new session that starts from a copy of an existing session's history, leaving the original untouched. Each strategy gets the full analysis context and evolves independently. Resuming continues the same session, so both attempts would pile into one history.",
+    "distractors": {
+      "A": "A summary loses most of the detailed context that the long analysis built up.",
+      "B": "Resuming appends to the same history, so the second strategy would see and be influenced by the first.",
+      "C": "Re-sending a transcript as an attachment is a manual workaround for what forking already provides."
+    },
+    "difficulty": 1,
+    "tags": [
+      "agent-sdk",
+      "sessions",
+      "fork"
+    ]
+  },
+  {
+    "id": "dv-a-021",
+    "scenario": 0,
+    "domain": 1,
+    "task": "1.3",
+    "type": "single",
+    "select": 1,
+    "stem": "An application gives Claude a `get_weather` tool through the Messages API. Claude responds with a `tool_use` block requesting the weather for Lisbon. What should the application do next?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Wait, because Anthropic's servers will call the weather service and append the result to the conversation."
+      },
+      {
+        "key": "B",
+        "text": "Display the tool request to the end user and ask them to type in the current weather for Lisbon."
+      },
+      {
+        "key": "C",
+        "text": "Run its own weather lookup and send the result back in a `tool_result` block on the next request."
+      },
+      {
+        "key": "D",
+        "text": "Start a new conversation that includes the weather data in the system prompt and ask again."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "For tools you define, Claude only requests the call; your application executes it. The result goes back as a `tool_result` block in the next user turn, and Claude continues from there. This request, execute, return cycle is the core of every tool-use loop.",
+    "distractors": {
+      "A": "User-defined tools run in your application; Anthropic does not call your services for you.",
+      "B": "The tool exists so the application can fetch the data, not to push the lookup onto the user.",
+      "D": "Restarting discards the conversation and skips the standard way of returning tool output."
+    },
+    "difficulty": 1,
+    "tags": [
+      "tool-use-loop",
+      "tool_result"
+    ]
+  },
+  {
+    "id": "dv-a-022",
+    "scenario": 0,
+    "domain": 1,
+    "task": "1.3",
+    "type": "single",
+    "select": 1,
+    "stem": "A long-running support agent makes dozens of tool calls per session. Late in a session it becomes slow and less accurate, and traces show that most of its context is old, already-processed tool results. Which approach best manages this?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Use compaction or tool-result clearing so older turns are summarized or stale results removed while recent context is kept."
+      },
+      {
+        "key": "B",
+        "text": "Switch to a model with a larger context window so that every tool result from the session can be retained."
+      },
+      {
+        "key": "C",
+        "text": "End the session as soon as context is half full and start a new session with no history at all."
+      },
+      {
+        "key": "D",
+        "text": "Move every tool result into the system prompt, because the system prompt does not count against the context."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Context is a finite resource, and stale tool results dilute the model's attention. Compaction replaces older turns with a summary, and context editing can clear tool results that are no longer needed, so the agent keeps what matters and drops what does not. This is the standard context-window management pattern for long agent runs.",
+    "distractors": {
+      "B": "A bigger window postpones the problem and still fills attention with irrelevant old results.",
+      "C": "Starting from nothing throws away the state the agent needs to finish the customer's issue.",
+      "D": "The system prompt is part of the context window, so moving results there saves nothing."
+    },
+    "difficulty": 2,
+    "tags": [
+      "context-window",
+      "compaction",
+      "context-editing"
+    ]
+  },
+  {
+    "id": "dv-a-023",
+    "scenario": 0,
+    "domain": 1,
+    "task": "1.3",
+    "type": "single",
+    "select": 1,
+    "stem": "A developer wants an API-based agent to remember a user's project conventions and past decisions across separate conversations, with the data stored in the company's own infrastructure. Which approach fits best?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Rely on Claude to remember earlier conversations, since the API keeps a history for each API key."
+      },
+      {
+        "key": "B",
+        "text": "Raise the temperature so the model generalizes better from what it saw in earlier conversations."
+      },
+      {
+        "key": "C",
+        "text": "Fine-tune a new model version every week on the transcripts of each user's past conversations."
+      },
+      {
+        "key": "D",
+        "text": "Use the memory tool, where Claude reads and writes memory files and the application stores them."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "The Messages API is stateless, so cross-conversation memory has to be built in. The memory tool lets Claude request reads and writes of memory files, which your application executes against storage you control. That gives persistent, inspectable memory that stays inside your infrastructure.",
+    "distractors": {
+      "A": "The API does not retain conversation history between requests; each call contains only what you send.",
+      "B": "Temperature controls sampling randomness and has nothing to do with remembering past sessions.",
+      "C": "Weekly fine-tuning is heavy, slow to reflect new decisions, and not how per-user memory is built for agents."
+    },
+    "difficulty": 1,
+    "tags": [
+      "memory",
+      "memory-tool"
+    ]
+  },
+  {
+    "id": "dv-a-024",
+    "scenario": 0,
+    "domain": 1,
+    "task": "1.3",
+    "type": "single",
+    "select": 1,
+    "stem": "A documentation agent loads the full text of all 300 product manuals into its context at the start of every task, even though a typical question touches two or three manuals. Responses are slow and sometimes cite the wrong manual. What is the best redesign?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Keep loading every manual but put them in XML tags so that the agent can tell the documents apart."
+      },
+      {
+        "key": "B",
+        "text": "Give the agent lightweight references, such as titles and paths, plus tools to load manuals only when needed."
+      },
+      {
+        "key": "C",
+        "text": "Split the 300 manuals across ten subagents and ask all ten of them every incoming question in parallel, then merge."
+      },
+      {
+        "key": "D",
+        "text": "Shorten every manual to one paragraph and load all of those summaries into each request."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Just-in-time retrieval keeps lightweight identifiers in context and lets the agent pull in full content only when it is relevant. That keeps context small and focused, which improves both speed and accuracy. Loading everything up front fills attention with irrelevant material.",
+    "distractors": {
+      "A": "Tags help structure the content but do not address the cost and distraction of loading 300 manuals.",
+      "C": "Querying ten subagents for every question multiplies cost to work around a retrieval problem.",
+      "D": "Lossy one-paragraph summaries drop the details that most questions actually need."
+    },
+    "difficulty": 2,
+    "tags": [
+      "context-engineering",
+      "just-in-time-retrieval"
+    ]
+  },
+  {
+    "id": "dv-a-025",
+    "scenario": 0,
+    "domain": 1,
+    "task": "1.3",
+    "type": "single",
+    "select": 1,
+    "stem": "A two-person team is building its first Claude feature: a tool-calling assistant with three tools and a simple loop. One developer proposes adopting a full agent framework from day one. What is the most sensible guidance?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Start with direct API calls, since the loop is small, and adopt a framework later if its features are needed."
+      },
+      {
+        "key": "B",
+        "text": "Adopt the largest framework available from the start, because tool calling with Claude is not possible without one."
+      },
+      {
+        "key": "C",
+        "text": "Build a framework of their own first so that future agents can share one common abstraction layer."
+      },
+      {
+        "key": "D",
+        "text": "Avoid tool calling and paste all the needed data into the prompt so no loop is needed."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Many patterns take only a few lines of code with the API directly, and starting simple keeps prompts and behaviour visible. Frameworks can speed up development but add abstraction layers that can obscure prompts and responses. Adopt one when its specific capabilities, such as orchestration or state persistence, are actually needed, and understand what it does underneath.",
+    "distractors": {
+      "B": "Tool calling works directly through the API and SDKs; no framework is required.",
+      "C": "Building an in-house framework before the first feature is over-engineering.",
+      "D": "Pasting data gives up live tool access and fails as soon as the data changes or grows."
+    },
+    "difficulty": 1,
+    "tags": [
+      "frameworks",
+      "simplicity"
+    ]
+  },
+  {
+    "id": "dv-a-026",
+    "scenario": 0,
+    "domain": 1,
+    "task": "1.3",
+    "type": "multi",
+    "select": 2,
+    "stem": "A team is evaluating agent frameworks such as LangGraph, Strands and PydanticAI for a multi-step workflow. Which TWO are sound reasons to adopt such a framework? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "The workflow needs explicit, stateful orchestration, such as a graph of steps with checkpointing, that the framework provides."
+      },
+      {
+        "key": "B",
+        "text": "The team wants type-validated structured outputs and dependency injection without writing that plumbing itself."
+      },
+      {
+        "key": "C",
+        "text": "A framework removes the need to understand or inspect the prompts that are sent to the model."
+      },
+      {
+        "key": "D",
+        "text": "A framework guarantees lower token costs than calling the API directly for the same task."
+      },
+      {
+        "key": "E",
+        "text": "Claude models can only use tools when they are called through an agent framework."
+      }
+    ],
+    "answer": [
+      "A",
+      "B"
+    ],
+    "explanation": "Frameworks earn their place when they supply capabilities you would otherwise build, such as LangGraph's graph-based stateful orchestration with persistence or PydanticAI's type-validated outputs. The choice should follow the workflow's needs. Developers still need to understand the prompts and calls the framework makes on their behalf.",
+    "distractors": {
+      "C": "Abstraction that hides prompts makes debugging harder; developers still need to inspect what is sent.",
+      "D": "Frameworks do not inherently reduce tokens and can add overhead.",
+      "E": "Tool use is a core API capability available without any framework."
+    },
+    "difficulty": 2,
+    "tags": [
+      "frameworks",
+      "langgraph",
+      "pydanticai",
+      "strands"
+    ]
+  },
+  {
+    "id": "dv-a-027",
+    "scenario": 0,
+    "domain": 1,
+    "task": "1.3",
+    "type": "single",
+    "select": 1,
+    "stem": "An agent built on a third-party framework keeps choosing the wrong tool, even though the tool descriptions in the developer's code look clear. The framework assembles prompts internally. What should the developer do first?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Rewrite the whole agent without the framework immediately, assuming that the abstraction is at fault."
+      },
+      {
+        "key": "B",
+        "text": "Add more tools with narrower purposes so that the model has more precise choices to pick from."
+      },
+      {
+        "key": "C",
+        "text": "Trace the actual requests the framework sends to Claude to see the final prompt and tool definitions."
+      },
+      {
+        "key": "D",
+        "text": "Switch to a larger model on the assumption that it will interpret the existing tools more accurately."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Frameworks can obscure the prompts and tool definitions that actually reach the model, so the first diagnostic step is to inspect the real requests. That shows whether descriptions were altered, truncated or merged with other instructions. Fixes should follow evidence rather than assumptions.",
+    "distractors": {
+      "A": "A rewrite may be warranted later, but doing it before diagnosing the cause is costly and may not fix the issue.",
+      "B": "Adding tools before understanding the problem increases the chance of wrong selection.",
+      "D": "A larger model cannot fix tool definitions that are malformed in the request actually sent."
+    },
+    "difficulty": 3,
+    "tags": [
+      "frameworks",
+      "debugging",
+      "observability"
+    ]
+  },
+  {
+    "id": "dv-a-028",
+    "scenario": 0,
+    "domain": 1,
+    "task": "1.3",
+    "type": "single",
+    "select": 1,
+    "stem": "A coding agent is migrating 200 test files to a new framework over several hours. Its context is compacted several times along the way, and after each compaction it loses track of which files are done and redoes some of them. What pattern best fixes this?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Disable compaction so that the agent always keeps its complete history of every migration it performed."
+      },
+      {
+        "key": "B",
+        "text": "Ask the agent to recall the list of completed files from memory whenever it starts a new batch of work."
+      },
+      {
+        "key": "C",
+        "text": "Split the migration so that each test file is handled by a different subagent with no shared record."
+      },
+      {
+        "key": "D",
+        "text": "Have the agent keep a progress file outside its context, updating it as files are done and reading it after compaction."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "Structured note-taking persists key state outside the context window, where compaction cannot discard it. The agent records progress as it works and re-reads the file to reorient after its context is summarized. This is a standard pattern for long-horizon tasks.",
+    "distractors": {
+      "A": "Without compaction, a multi-hour run will exhaust the context window.",
+      "B": "Recalling from context is exactly what fails once compaction has summarized away the details.",
+      "C": "Without a shared record nobody tracks overall progress, and 200 subagents add heavy overhead."
+    },
+    "difficulty": 2,
+    "tags": [
+      "memory",
+      "note-taking",
+      "long-horizon"
+    ]
+  },
+  {
+    "id": "dv-a-029",
+    "scenario": 0,
+    "domain": 1,
+    "task": "1.3",
+    "type": "single",
+    "select": 1,
+    "stem": "In a custom tool-use loop, a `fetch_report` tool times out. The application catches the exception but sends back an empty `tool_result`, and the agent keeps calling the same tool with the same arguments until the request budget runs out. Which change best fixes this?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Remove the `fetch_report` tool so the agent can no longer get stuck calling it repeatedly."
+      },
+      {
+        "key": "B",
+        "text": "Return a `tool_result` marked as an error that explains the timeout, and enforce a maximum number of loop iterations."
+      },
+      {
+        "key": "C",
+        "text": "Retry the tool silently inside the application, as many times as it takes until it succeeds, without telling Claude about it."
+      },
+      {
+        "key": "D",
+        "text": "Add a system prompt line asking the agent not to call the same tool more than twice in a row."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Claude can only adapt to a failure it can see; an informative error result lets it retry differently, use another approach, or report the problem. A hard cap on loop iterations is the deterministic backstop against runaway loops. Together they make the loop resilient and bounded.",
+    "distractors": {
+      "A": "Removing the tool breaks every request that legitimately needs the report.",
+      "C": "Unbounded silent retries can hang the request and hide the failure from both Claude and the user.",
+      "D": "A prompt instruction is probabilistic and does not guarantee the loop ever terminates."
+    },
+    "difficulty": 2,
+    "tags": [
+      "tool-use-loop",
+      "error-handling",
+      "max-iterations"
+    ]
+  },
+  {
+    "id": "dv-a-030",
+    "scenario": 0,
+    "domain": 1,
+    "task": "1.3",
+    "type": "single",
+    "select": 1,
+    "stem": "A code review service must check each pull request for security issues, performance problems and style violations. The three checks are independent of each other, and results are needed quickly. Which pattern fits best?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Parallelization: run three focused checks concurrently and combine their findings into one review."
+      },
+      {
+        "key": "B",
+        "text": "A single prompt asking for all three kinds of review at once, retried whenever the output is incomplete."
+      },
+      {
+        "key": "C",
+        "text": "A sequential chain where the style check only starts after the security and performance checks finish."
+      },
+      {
+        "key": "D",
+        "text": "An autonomous agent that decides on each run which of the three checks are worth performing."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Independent subtasks can run in parallel, and giving each check its own focused call tends to improve attention to that aspect. Concurrency also meets the latency requirement. A final step aggregates the three sets of findings.",
+    "distractors": {
+      "B": "One prompt covering everything divides attention across concerns and still needs retries when it misses some.",
+      "C": "Sequencing independent checks adds latency for no benefit.",
+      "D": "All three checks are always required, so letting a model skip some adds risk without any gain."
+    },
+    "difficulty": 1,
+    "tags": [
+      "parallelization",
+      "workflow-patterns"
+    ]
+  },
+  {
+    "id": "dv-a-031",
+    "scenario": 0,
+    "domain": 3,
+    "task": "3.1",
+    "type": "single",
+    "select": 1,
+    "stem": "A developer wants Claude Code to know their personal sandbox URL and preferred test accounts when working in a shared repository. Teammates should not see these instructions, and they must not be committed. Where should they go?",
+    "options": [
+      {
+        "key": "A",
+        "text": "In the project's `CLAUDE.md` at the repository root, under a heading labelled as personal notes."
+      },
+      {
+        "key": "B",
+        "text": "In `CLAUDE.local.md` in the project root, which is meant for personal project preferences and kept out of git."
+      },
+      {
+        "key": "C",
+        "text": "In the shared `.claude/settings.json` file, added as a custom key that holds the URL and test accounts."
+      },
+      {
+        "key": "D",
+        "text": "In a `.claude/rules/` file that has no `paths` field, so that it is only loaded when it is actually relevant to the task."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "`CLAUDE.local.md` holds personal, project-specific instructions such as sandbox URLs and preferred test data, and it should be listed in `.gitignore`. It loads alongside the shared project CLAUDE.md but only affects the developer who has it. Shared files are for team-wide conventions.",
+    "distractors": {
+      "A": "The project CLAUDE.md is committed and shared with the whole team.",
+      "C": "settings.json configures behaviour such as permissions; it is not where instructions for Claude go, and the shared file is committed.",
+      "D": "Rules files live in the project's `.claude/` directory and are shared; a rule without `paths` also loads unconditionally."
+    },
+    "difficulty": 1,
+    "tags": [
+      "claude-md",
+      "memory-hierarchy"
+    ]
+  },
+  {
+    "id": "dv-a-032",
+    "scenario": 0,
+    "domain": 3,
+    "task": "3.1",
+    "type": "single",
+    "select": 1,
+    "stem": "A monorepo's root CLAUDE.md has grown long with API-specific conventions that only matter when editing files under `src/api/`. The team wants those conventions applied when relevant without loading them in every session. What is the best approach?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Move the conventions into an imported file using an `@` reference from the root CLAUDE.md file."
+      },
+      {
+        "key": "B",
+        "text": "Delete the conventions and rely on auto memory to relearn them as Claude works in the API code."
+      },
+      {
+        "key": "C",
+        "text": "Move them into the user-level `~/.claude/CLAUDE.md` file on each developer's own machine instead."
+      },
+      {
+        "key": "D",
+        "text": "Move them into a `.claude/rules/` file whose `paths` frontmatter matches `src/api/**`."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "Rules files in `.claude/rules/` can declare `paths` in frontmatter, and a path-scoped rule loads only when Claude works with matching files. That keeps API conventions out of unrelated sessions while applying them automatically where they matter. Rules without `paths` load unconditionally.",
+    "distractors": {
+      "A": "Imported files load together with the CLAUDE.md that imports them, so imports do not reduce context cost.",
+      "B": "Auto memory is Claude's own notes and is not a reliable substitute for documented team conventions.",
+      "C": "User-level memory is personal and not shared through the repository, and it would load in every project."
+    },
+    "difficulty": 2,
+    "tags": [
+      "rules",
+      "claude-md",
+      "context-cost"
+    ]
+  },
+  {
+    "id": "dv-a-033",
+    "scenario": 0,
+    "domain": 3,
+    "task": "3.1",
+    "type": "single",
+    "select": 1,
+    "stem": "A platform team runs Claude Code from a CI job to triage failing builds. A dashboard must show each tool call and message as it happens, rather than waiting for the final answer. How should they invoke Claude Code?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Run `claude -p` with `--output-format stream-json` and parse each event as it arrives."
+      },
+      {
+        "key": "B",
+        "text": "Run `claude -p` with `--output-format json` and poll the output file once every few seconds."
+      },
+      {
+        "key": "C",
+        "text": "Start an interactive `claude` session inside the CI runner and screen-scrape its terminal output."
+      },
+      {
+        "key": "D",
+        "text": "Run `claude -p` with plain text output and split the text on blank lines to detect each event."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Headless mode (`claude -p`) runs non-interactively, and `--output-format stream-json` emits newline-delimited JSON events as the run progresses. That is what a live dashboard needs. The `json` format returns a single result object at the end.",
+    "distractors": {
+      "B": "The `json` format produces one result when the run finishes, so polling shows nothing until then.",
+      "C": "Interactive mode is for humans; scraping a terminal is fragile and unsuitable for CI.",
+      "D": "Plain text has no reliable event boundaries and does not expose tool calls as structured data."
+    },
+    "difficulty": 1,
+    "tags": [
+      "headless",
+      "stream-json",
+      "ci"
+    ]
+  },
+  {
+    "id": "dv-a-034",
+    "scenario": 0,
+    "domain": 3,
+    "task": "3.1",
+    "type": "single",
+    "select": 1,
+    "stem": "A repository's CLAUDE.md says \"Never edit files in `db/migrations/`.\" Claude Code follows this most of the time, but occasionally edits a migration during large refactors. The team needs the restriction to hold every time. What should they do?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Repeat the instruction in capital letters near the top of CLAUDE.md and again at the very end of the file."
+      },
+      {
+        "key": "B",
+        "text": "Move the instruction into a skill so that Claude loads it only when a migration is mentioned in the prompt."
+      },
+      {
+        "key": "C",
+        "text": "Add a `PreToolUse` hook that blocks edit tools whenever the target path falls under `db/migrations/`."
+      },
+      {
+        "key": "D",
+        "text": "Turn on auto memory so that Claude records the rule as a learning after it breaks it the first time."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Claude treats CLAUDE.md as context, not enforced configuration, so instructions there are followed probabilistically. A `PreToolUse` hook runs deterministically before each tool call and can block it regardless of what Claude decides. Requirements that must always hold belong in hooks or permission rules.",
+    "distractors": {
+      "A": "Emphasis may improve adherence but still leaves the rule probabilistic.",
+      "B": "A skill is still instructions the model may or may not follow, and it might not load during a refactor at all.",
+      "D": "Auto memory records learnings after the fact and does not prevent the edit."
+    },
+    "difficulty": 3,
+    "tags": [
+      "hooks",
+      "claude-md",
+      "enforcement"
+    ]
+  },
+  {
+    "id": "dv-a-035",
+    "scenario": 0,
+    "domain": 3,
+    "task": "3.1",
+    "type": "multi",
+    "select": 2,
+    "stem": "A team is organizing Claude Code configuration across user, project and organization levels. Which TWO statements about `settings.json` scopes are correct? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "Managed settings deployed by the organization take precedence over every other settings level."
+      },
+      {
+        "key": "B",
+        "text": "`.claude/settings.local.json` holds personal overrides for one project and is kept out of version control."
+      },
+      {
+        "key": "C",
+        "text": "User settings in `~/.claude/settings.json` override the same key set in shared project settings."
+      },
+      {
+        "key": "D",
+        "text": "Command-line arguments have the lowest precedence and are overridden by every settings file."
+      },
+      {
+        "key": "E",
+        "text": "`~/.claude/settings.json` applies only to the project in which it was created."
+      }
+    ],
+    "answer": [
+      "A",
+      "B"
+    ],
+    "explanation": "Precedence runs, highest first: managed settings, command-line arguments, project local, shared project, user. Managed settings therefore win, which makes them the place for organization-wide enforcement. The project-local settings file is for one developer's overrides and should not be committed.",
+    "distractors": {
+      "C": "Shared project settings rank above user settings, so the project value wins.",
+      "D": "Command-line arguments rank just below managed settings, above all project and user files.",
+      "E": "The user settings file applies to that user in every project on the machine."
+    },
+    "difficulty": 2,
+    "tags": [
+      "settings",
+      "precedence"
+    ]
+  },
+  {
+    "id": "dv-a-036",
+    "scenario": 0,
+    "domain": 3,
+    "task": "3.1",
+    "type": "single",
+    "select": 1,
+    "stem": "A developer opens Claude Code for the first time in an existing repository that has no CLAUDE.md. They want Claude to start with the project's build commands, test instructions and conventions without writing everything by hand. What should they do first?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Run `/compact` so that Claude summarizes the repository into a CLAUDE.md file at the project root."
+      },
+      {
+        "key": "B",
+        "text": "Create an empty CLAUDE.md file and let auto memory fill it in over the next few working sessions."
+      },
+      {
+        "key": "C",
+        "text": "Run `/init`, which analyses the codebase and generates a starter CLAUDE.md, then refine it."
+      },
+      {
+        "key": "D",
+        "text": "Copy a CLAUDE.md file from a different repository and then adjust the names inside it by hand."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "`/init` analyses the codebase and generates a starting CLAUDE.md with the build commands, test instructions and conventions it discovers. The developer then refines it with knowledge Claude could not infer. If a CLAUDE.md already exists, `/init` suggests improvements instead of overwriting it.",
+    "distractors": {
+      "A": "`/compact` summarizes the current conversation to free context; it does not create CLAUDE.md.",
+      "B": "Auto memory stores Claude's own notes separately; it does not populate CLAUDE.md for the team.",
+      "D": "Another repository's conventions are likely wrong for this one and miss its real commands."
+    },
+    "difficulty": 1,
+    "tags": [
+      "init",
+      "claude-md"
+    ]
+  },
+  {
+    "id": "dv-a-037",
+    "scenario": 0,
+    "domain": 3,
+    "task": "3.1",
+    "type": "single",
+    "select": 1,
+    "stem": "A team has a multi-step release procedure: bump versions, update the changelog, tag, and push. They want to run it on demand as `/release` from Claude Code, and Claude must never start it on its own initiative. What is the best way to set this up?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Describe the full procedure in the project CLAUDE.md so that Claude always knows how to do a release."
+      },
+      {
+        "key": "B",
+        "text": "Create a `Stop` hook that runs the release script automatically at the end of each session so it is never forgotten."
+      },
+      {
+        "key": "C",
+        "text": "Define a release subagent and tell Claude in CLAUDE.md to delegate releases to it when appropriate."
+      },
+      {
+        "key": "D",
+        "text": "Create a skill at `.claude/skills/release/SKILL.md` with `disable-model-invocation: true` in its frontmatter."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "A skill directory creates a slash command such as `/release`, with the procedure loaded only when it runs. Setting `disable-model-invocation: true` means only the user can trigger it, which suits workflows with side effects. Custom commands have been merged into skills, so this is the current way to package an on-demand procedure.",
+    "distractors": {
+      "A": "CLAUDE.md content loads in every session, costing context, and gives no on-demand command or invocation control.",
+      "B": "A `Stop` hook would run the release automatically and repeatedly, the opposite of on-demand.",
+      "C": "Delegation to a subagent is decided by Claude, which does not prevent it from starting a release by itself."
+    },
+    "difficulty": 2,
+    "tags": [
+      "skills",
+      "slash-commands",
+      "invocation-control"
+    ]
+  },
+  {
+    "id": "dv-a-038",
+    "scenario": 0,
+    "domain": 3,
+    "task": "3.1",
+    "type": "single",
+    "select": 1,
+    "stem": "During a long refactor, a developer is tired of approving every file edit and shell command in Claude Code, but they still want potentially risky actions reviewed before they run rather than allowing everything. Which permission mode best fits?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Auto mode, in which a separate classifier model reviews actions instead of prompting the developer."
+      },
+      {
+        "key": "B",
+        "text": "Bypass permissions mode, in which every action runs without any review or confirmation."
+      },
+      {
+        "key": "C",
+        "text": "Plan mode, in which Claude explores and proposes changes but does not make any edits."
+      },
+      {
+        "key": "D",
+        "text": "Accept edits mode, which auto-approves file edits and common filesystem commands but still prompts for other shell commands."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "In auto mode a second model, the classifier, reviews actions instead of the developer, which removes most prompts while still screening risky actions. It sits between manual approval and bypassing checks entirely. That matches a long refactor where prompts are slowing work down.",
+    "distractors": {
+      "B": "Bypassing permissions removes all review, which the developer explicitly does not want.",
+      "C": "Plan mode prevents edits, so the refactor itself cannot proceed.",
+      "D": "Accept edits approves edits and common filesystem commands without any review, while other shell commands still prompt, so it neither removes most prompts nor screens risky actions."
+    },
+    "difficulty": 3,
+    "tags": [
+      "auto-mode",
+      "permission-modes"
+    ]
+  }
+]

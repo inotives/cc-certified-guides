@@ -1,0 +1,1448 @@
+[
+  {
+    "id": "dv-d-001",
+    "scenario": 0,
+    "domain": 5,
+    "task": "5.1",
+    "type": "single",
+    "select": 1,
+    "stem": "A developer is budgeting a migration of a document-summarization service to a newer Claude model. Their spreadsheet estimates token counts by dividing each document's word count by a fixed ratio they measured last year on an older model. Which approach gives the most reliable token estimate for the new deployment?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Keep the measured ratio, because tokens map to words the same way for every Claude model."
+      },
+      {
+        "key": "B",
+        "text": "Call the token counting endpoint with the model ID you plan to deploy, using representative documents."
+      },
+      {
+        "key": "C",
+        "text": "Count characters instead of words and divide by four, since a character-based ratio is model independent."
+      },
+      {
+        "key": "D",
+        "text": "Send each document with a very small `max_tokens` and read the output token count from the response."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Tokens are model-specific units, and newer Claude models can use a different tokenizer that produces noticeably more tokens for the same text. The token counting endpoint returns an estimate for the exact model you name, so counting representative inputs against the target model ID is the reliable basis for budgeting. Word or character heuristics carried over from another model can be materially wrong.",
+    "distractors": {
+      "A": "Tokenizers can change between model generations, so a ratio measured on an older model does not transfer.",
+      "C": "A characters-per-token rule of thumb is still a heuristic and does not reflect the target model's tokenizer.",
+      "D": "Output token counts say nothing about the input size, and this approach pays for real requests to get a worse estimate."
+    },
+    "difficulty": 2,
+    "tags": [
+      "tokens",
+      "tokenizer",
+      "token-counting"
+    ]
+  },
+  {
+    "id": "dv-d-002",
+    "scenario": 0,
+    "domain": 5,
+    "task": "5.1",
+    "type": "single",
+    "select": 1,
+    "stem": "A support chatbot appends every turn to `messages`, and also sends a long system prompt and a dozen tool definitions. After very long sessions, requests start failing with a \"prompt is too long\" error even though the newest user message is short. What is the most likely cause?",
+    "options": [
+      {
+        "key": "A",
+        "text": "The latest user message exceeds a separate per-message size limit that applies independently of the context window."
+      },
+      {
+        "key": "B",
+        "text": "The model's temperature drifts upward over a long session, which inflates the size of the prompt."
+      },
+      {
+        "key": "C",
+        "text": "Tool definitions are free and do not count, so the system prompt alone must be over the limit."
+      },
+      {
+        "key": "D",
+        "text": "The accumulated system prompt, tool definitions and full message history now exceed the context window."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "Everything in the request counts toward the context window: the system prompt, every message including tool results, and the tool definitions. In a chat that resends the full history, the input grows every turn until it alone exceeds the window, at which point the API rejects the request. The fix is context management such as trimming, summarizing or compacting older turns.",
+    "distractors": {
+      "A": "The limit that matters is the total context window across the whole request, not the size of the newest message.",
+      "B": "Sampling settings do not change between turns on their own and have no effect on how many tokens the prompt contains.",
+      "C": "Tool definitions do count toward the context window, so excluding them misdiagnoses the growth."
+    },
+    "difficulty": 1,
+    "tags": [
+      "context-window",
+      "conversation-history"
+    ]
+  },
+  {
+    "id": "dv-d-003",
+    "scenario": 0,
+    "domain": 5,
+    "task": "5.1",
+    "type": "single",
+    "select": 1,
+    "stem": "A ticket-triage service sends the same ticket to a current Claude model twice and occasionally gets two different category labels back, such as \"billing\" one time and \"payments\" the next. The team needs consistent labels from a fixed set of eight categories. What is the most effective way to improve consistency?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Constrain the output to the eight allowed labels with a structured or enumerated response format, add a few labelled examples, and measure label agreement across repeated runs in an eval."
+      },
+      {
+        "key": "B",
+        "text": "Set `temperature` to 0 on every request, because zero temperature guarantees that the model returns identical output for identical input."
+      },
+      {
+        "key": "C",
+        "text": "Pass a fixed `seed` value in the request so the model samples the same sequence of tokens each time."
+      },
+      {
+        "key": "D",
+        "text": "Increase `max_tokens` so the model has room to settle on a single label before it stops generating."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Generation samples from a probability distribution, so identical inputs can yield different outputs; the robust remedy is to narrow what the model may produce and show it what correct output looks like. An enumerated output format removes near-synonym labels, examples clarify the boundaries between categories, and an eval that repeats runs measures whether consistency actually improved. Newer Claude models also reject sampling parameters, so consistency has to come from the prompt and output design.",
+    "distractors": {
+      "B": "Low temperature never guaranteed identical output, and current Claude models return an error for sampling parameters such as `temperature`.",
+      "C": "The Messages API has no `seed` parameter, so this relies on a feature that does not exist.",
+      "D": "Output length is not the cause of label variance; the model can already emit one label well within the limit."
+    },
+    "difficulty": 3,
+    "tags": [
+      "non-determinism",
+      "sampling",
+      "structured-output"
+    ]
+  },
+  {
+    "id": "dv-d-004",
+    "scenario": 0,
+    "domain": 5,
+    "task": "5.1",
+    "type": "single",
+    "select": 1,
+    "stem": "A code-review prompt asks Claude to output \"VERDICT: approve or reject\" on the first line, followed by a justification. Reviewers notice the justifications often read like after-the-fact rationalizations and sometimes contradict the code. Thinking is disabled for this request. Which change best addresses the root cause?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Add \"be accurate\" and \"double-check your verdict before writing it\" to the system prompt for every review."
+      },
+      {
+        "key": "B",
+        "text": "Lower `max_tokens` so the justification is shorter and has less room to drift."
+      },
+      {
+        "key": "C",
+        "text": "Ask for the analysis first and the verdict last, or enable thinking, so reasoning comes first."
+      },
+      {
+        "key": "D",
+        "text": "Run the review twice and keep whichever verdict has the longer justification."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "The model generates text one token at a time, each conditioned only on what came before. When the verdict is emitted first, it is produced before any reasoning exists, and the justification can only rationalize it. Putting the analysis ahead of the verdict, or letting the model think first, lets the decision be conditioned on the reasoning.",
+    "distractors": {
+      "A": "Generic accuracy instructions do not change the order in which tokens are generated, so the verdict still precedes the reasoning.",
+      "B": "Shortening the output treats a symptom and can truncate the justification without making the verdict better grounded.",
+      "D": "Justification length is not a signal of correctness, and both runs still decide before reasoning."
+    },
+    "difficulty": 2,
+    "tags": [
+      "next-token-generation",
+      "reasoning-order"
+    ]
+  },
+  {
+    "id": "dv-d-005",
+    "scenario": 0,
+    "domain": 5,
+    "task": "5.1",
+    "type": "single",
+    "select": 1,
+    "stem": "A developer asks Claude, with instructions only, to convert free-text incident notes into the company's in-house incident summary format, which has specific section names and terse phrasing. The content is accurate, but the structure and tone vary from note to note. What is the most effective next step?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Switch to a larger model tier, since formatting consistency mainly depends on model size."
+      },
+      {
+        "key": "B",
+        "text": "Write the format rules again in capital letters so the model treats them as stricter."
+      },
+      {
+        "key": "C",
+        "text": "Raise the effort level so the model spends more tokens deliberating over the format."
+      },
+      {
+        "key": "D",
+        "text": "Add three to five varied example summaries, wrapped in example tags, to the prompt."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "This is a zero-shot prompt asking for an unusual house style, which is exactly where multi-shot prompting helps most. A few relevant, diverse examples are one of the most reliable ways to steer format, tone and structure, and wrapping them in tags keeps them distinct from the instructions.",
+    "distractors": {
+      "A": "A bigger model still has to guess an unseen house style; examples address the actual gap more cheaply.",
+      "B": "Shouting the same rules adds no new information about what the target output looks like.",
+      "C": "More deliberation does not supply the missing picture of the desired format, and it increases cost and latency."
+    },
+    "difficulty": 1,
+    "tags": [
+      "multi-shot",
+      "few-shot",
+      "prompting"
+    ]
+  },
+  {
+    "id": "dv-d-006",
+    "scenario": 0,
+    "domain": 5,
+    "task": "5.1",
+    "type": "single",
+    "select": 1,
+    "stem": "To teach a product-description style, a developer adds a single example: a 40-word description of a red waterproof hiking boot. New outputs now match the tone, but many descriptions are about 40 words regardless of the product and keep mentioning waterproofing or the colour red. What is the best fix?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Remove the example and return to a zero-shot prompt, since examples always reduce output quality."
+      },
+      {
+        "key": "B",
+        "text": "Replace it with several examples that vary in product, length and features but share the target style."
+      },
+      {
+        "key": "C",
+        "text": "Keep the single example but add a rule that says \"never mention waterproofing or colours\"."
+      },
+      {
+        "key": "D",
+        "text": "Move the example out of the prompt and into an assistant prefill so the model treats it as its own earlier output."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "With a single-shot prompt, the model cannot tell which features of the one example are the pattern and which are incidental, so it copies its length and specifics. Several diverse examples that differ in surface details but share the target style let the model generalize the intended pattern. Diversity in examples is what prevents this kind of over-imitation.",
+    "distractors": {
+      "A": "Examples are valuable for style; the problem is that one example over-constrains, not that examples are harmful.",
+      "C": "Patching specific leaked details leaves the underlying over-imitation in place, and the next incidental detail will leak too.",
+      "D": "Prefill is not a place for teaching examples, and newer models reject a prefilled final assistant turn."
+    },
+    "difficulty": 2,
+    "tags": [
+      "single-shot",
+      "multi-shot",
+      "example-diversity"
+    ]
+  },
+  {
+    "id": "dv-d-007",
+    "scenario": 0,
+    "domain": 5,
+    "task": "5.1",
+    "type": "single",
+    "select": 1,
+    "stem": "An assistant receives a mix of trivial requests, like \"what's our office address?\", and hard ones, like debugging a failing multi-step data pipeline. The developer wants Claude to reason deeply only when it helps, without hand-tuning a reasoning budget per request, on a model that supports adaptive thinking. Which configuration fits best?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Use adaptive thinking and set an effort level, letting the model decide per request whether and how much to think."
+      },
+      {
+        "key": "B",
+        "text": "Enable manual extended thinking with a large fixed `budget_tokens` on every request so hard questions are never under-served."
+      },
+      {
+        "key": "C",
+        "text": "Disable thinking entirely and add \"think step by step\" to the system prompt for every request."
+      },
+      {
+        "key": "D",
+        "text": "Raise `temperature` on hard requests so the model explores more possible reasoning paths."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "With adaptive thinking, Claude evaluates each request and decides whether to think and how much, which suits workloads that mix trivial and complex inputs. Effort is the primary control over that posture, so the developer sets one intent rather than tuning a token budget per request. Simple questions can get a direct answer with no thinking block at all.",
+    "distractors": {
+      "B": "A fixed large budget wastes tokens and latency on trivial requests, and newer models deprecate or reject manual budgets in favour of adaptive thinking.",
+      "C": "This applies the same visible reasoning to every request, including trivial ones, instead of letting the model allocate reasoning where it helps.",
+      "D": "Sampling temperature is not a reasoning-depth control, and current models reject sampling parameters."
+    },
+    "difficulty": 2,
+    "tags": [
+      "adaptive-thinking",
+      "effort",
+      "extended-thinking"
+    ]
+  },
+  {
+    "id": "dv-d-008",
+    "scenario": 0,
+    "domain": 5,
+    "task": "5.1",
+    "type": "single",
+    "select": 1,
+    "stem": "An internal agent handles short, tightly scoped tasks such as renaming a field across three files. Output quality is already acceptable, but each run is slower and uses more tokens than the team wants, including verbose explanations and extra tool calls. Which change most directly addresses this while keeping the same model?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Lower `max_tokens` substantially so the model is forced to stop sooner."
+      },
+      {
+        "key": "B",
+        "text": "Turn on fast mode so each run finishes sooner, which should also reduce what each run costs overall."
+      },
+      {
+        "key": "C",
+        "text": "Lower the effort level, which cuts tokens across text, tool calls and thinking."
+      },
+      {
+        "key": "D",
+        "text": "Add a prompt line asking the model to be brief, and leave every other setting unchanged."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Effort controls how many tokens Claude spends across the whole response, including text, tool calls and any thinking, and lower effort also means fewer and terser tool calls. For short, scoped tasks where quality is already sufficient, lowering effort is the direct lever to cut latency and cost on the same model. Prompt guidance can complement it but is not the primary control.",
+    "distractors": {
+      "A": "A hard output cap truncates work mid-task instead of making the model scope its work more efficiently.",
+      "B": "Fast mode raises output speed at premium pricing, so it increases cost rather than reducing token usage.",
+      "D": "A brevity instruction is a weaker, indirect lever than effort, and it does not reduce extra tool calls reliably."
+    },
+    "difficulty": 2,
+    "tags": [
+      "effort",
+      "latency",
+      "token-efficiency"
+    ]
+  },
+  {
+    "id": "dv-d-009",
+    "scenario": 0,
+    "domain": 5,
+    "task": "5.1",
+    "type": "multi",
+    "select": 2,
+    "stem": "A team is evaluating fast mode for an interactive coding assistant on a supported model, where users complain that long code generations take too long to finish. Which TWO statements about fast mode are accurate? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "It increases output tokens per second at premium pricing, and is requested with a speed setting on the request."
+      },
+      {
+        "key": "B",
+        "text": "Its main benefit is a much shorter time to first token, so it is ideal for shaving the initial wait."
+      },
+      {
+        "key": "C",
+        "text": "It can be combined with the Message Batches API to get both faster output and the batch discount."
+      },
+      {
+        "key": "D",
+        "text": "The response `usage` reports which speed actually served the request, which you can log for cost tracking."
+      },
+      {
+        "key": "E",
+        "text": "It lowers the per-token price, because the model finishes generating sooner and uses less compute."
+      }
+    ],
+    "answer": [
+      "A",
+      "D"
+    ],
+    "explanation": "Fast mode delivers higher output tokens per second at premium pricing and is opted into per request with a speed setting. The response `usage` includes a speed field showing whether fast or standard speed was used, which is useful for tracking cost. Its benefit is focused on output throughput, which matches the complaint about long generations.",
+    "distractors": {
+      "B": "The documented speed benefit is in output tokens per second, not time to first token.",
+      "C": "Fast mode is not available with the Message Batches API.",
+      "E": "Fast mode is priced at a premium over standard rates, not at a discount."
+    },
+    "difficulty": 3,
+    "tags": [
+      "fast-mode",
+      "latency",
+      "pricing"
+    ]
+  },
+  {
+    "id": "dv-d-010",
+    "scenario": 0,
+    "domain": 5,
+    "task": "5.1",
+    "type": "single",
+    "select": 1,
+    "stem": "A developer enables thinking and sees only a short summarized thinking block plus a brief answer in each response. However, the billed output token count is much higher than the number of tokens visible in the response. What explains the difference?",
+    "options": [
+      {
+        "key": "A",
+        "text": "The SDK double-counts streamed output, so the billing figure should be halved."
+      },
+      {
+        "key": "B",
+        "text": "Thinking is billed as output for the full reasoning generated, not the shorter summary shown."
+      },
+      {
+        "key": "C",
+        "text": "The API bills input and output tokens at the same combined count, so the input is included in output."
+      },
+      {
+        "key": "D",
+        "text": "Summarized thinking is billed at the cache write rate, which is reported as extra output tokens."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "The tokens Claude spends reasoning are billed as output tokens even when the thinking text is summarized or not returned. The visible summary is shorter than the reasoning actually generated, so billed output exceeds what you can count in the response. Cost models for thinking-enabled workloads must account for this.",
+    "distractors": {
+      "A": "There is no double-counting in the SDK; the gap is real billed thinking output.",
+      "C": "Input and output are reported and billed separately in `usage`, not merged into the output figure.",
+      "D": "Cache write pricing applies to cached input prefixes, not to thinking output."
+    },
+    "difficulty": 1,
+    "tags": [
+      "thinking",
+      "billing",
+      "output-tokens"
+    ]
+  },
+  {
+    "id": "dv-d-011",
+    "scenario": 0,
+    "domain": 5,
+    "task": "5.2",
+    "type": "single",
+    "select": 1,
+    "stem": "A developer's prototype hard-codes the Anthropic API key as a string literal in the Python file that constructs the SDK client, and the repository is about to be shared with a contractor. What is the best way to supply the key?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Base64-encode the key in the source file so it is not readable at a glance."
+      },
+      {
+        "key": "B",
+        "text": "Append the key to the request URL as a query parameter so it is never stored in code."
+      },
+      {
+        "key": "C",
+        "text": "Move the key into a comment block so the interpreter ignores it but developers can still copy it when needed."
+      },
+      {
+        "key": "D",
+        "text": "Read it from the `ANTHROPIC_API_KEY` environment variable via a secret store, and rotate the key."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "The official SDKs read the API key from configuration, defaulting to the `ANTHROPIC_API_KEY` environment variable, so the key never needs to live in source control. Populating that variable from a secret manager or an untracked env file keeps credentials out of the repo, and a key that was already committed should be rotated.",
+    "distractors": {
+      "A": "Encoding is not encryption; anyone with the repo can decode the key trivially.",
+      "B": "The SDK sends credentials as a request header, and putting secrets in URLs leaks them into logs.",
+      "C": "A key in a comment is still committed to the repository and fully exposed."
+    },
+    "difficulty": 1,
+    "tags": [
+      "sdk",
+      "authentication",
+      "secrets"
+    ]
+  },
+  {
+    "id": "dv-d-012",
+    "scenario": 0,
+    "domain": 5,
+    "task": "5.2",
+    "type": "single",
+    "select": 1,
+    "stem": "A service wraps every official-SDK call in its own loop that retries up to five times on any exception. During a rate-limit spike, logs show far more requests hitting the API than the loop alone should produce, prolonging the 429s. What is the most likely cause and fix?",
+    "options": [
+      {
+        "key": "A",
+        "text": "The SDK already retries 429s and transient errors with backoff, so the loops multiply; tune `max_retries` instead."
+      },
+      {
+        "key": "B",
+        "text": "The SDK is missing a retry feature, so the custom loop should be raised to ten attempts with no delay."
+      },
+      {
+        "key": "C",
+        "text": "The 429s come from a wrong API key, so the fix is to regenerate the key and keep the loop as is."
+      },
+      {
+        "key": "D",
+        "text": "Rate limits apply per SDK client object, so creating a fresh client instance on every retry will avoid hitting them."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "The official SDKs automatically retry connection errors, 408, 409, 429 and 5xx responses a small number of times by default with exponential backoff. Wrapping that in another retry loop multiplies attempts and keeps pressure on the rate limit. Configure the SDK's `max_retries` (or disable it deliberately if you own retry logic), but do not stack both.",
+    "distractors": {
+      "B": "The SDK does provide retries, and retrying faster with no delay makes rate limiting worse.",
+      "C": "An invalid key produces authentication errors, not rate-limit errors.",
+      "D": "Rate limits apply to the organization and key, not to a client object, so new clients do not escape them."
+    },
+    "difficulty": 2,
+    "tags": [
+      "sdk",
+      "retries",
+      "rate-limits"
+    ]
+  },
+  {
+    "id": "dv-d-013",
+    "scenario": 0,
+    "domain": 5,
+    "task": "5.2",
+    "type": "single",
+    "select": 1,
+    "stem": "A batch-style script makes non-streaming SDK calls with a very large `max_tokens` to generate long reports. The SDK raises an error before sending, saying the request is expected to take longer than about ten minutes. What is the recommended fix?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Downgrade to an older SDK version that does not perform this check."
+      },
+      {
+        "key": "B",
+        "text": "Lower `max_tokens` below what the reports need so the check passes."
+      },
+      {
+        "key": "C",
+        "text": "Use streaming for these long generations, collecting the final message from the stream."
+      },
+      {
+        "key": "D",
+        "text": "Call the REST endpoint with a raw HTTP client that has no timeout configured, so the request can run indefinitely."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "The SDKs guard against long non-streaming requests because idle HTTP connections can be dropped by networks before the response arrives. Streaming keeps the connection active, and the SDK's stream helpers can accumulate and return the final message. Overriding the timeout is possible, but streaming is the recommended approach for long generations.",
+    "distractors": {
+      "A": "Avoiding the guard does not remove the dropped-connection risk it exists to prevent.",
+      "B": "Shrinking `max_tokens` below the needed size truncates the reports instead of solving the transport problem.",
+      "D": "Bypassing the SDK loses its retries and typed responses, and an idle long request still risks being dropped."
+    },
+    "difficulty": 2,
+    "tags": [
+      "sdk",
+      "timeouts",
+      "streaming"
+    ]
+  },
+  {
+    "id": "dv-d-014",
+    "scenario": 0,
+    "domain": 5,
+    "task": "5.2",
+    "type": "single",
+    "select": 1,
+    "stem": "A team designing a chat UI plans to open a WebSocket connection directly to the Claude Messages API so tokens appear as they are generated. A reviewer says the design misunderstands how the API streams. Which statement is correct?",
+    "options": [
+      {
+        "key": "A",
+        "text": "The Messages API only returns complete responses, so token-by-token display has to be simulated client-side."
+      },
+      {
+        "key": "B",
+        "text": "The Messages API streams over HTTP using server-sent events when `stream` is enabled, which the SDKs wrap."
+      },
+      {
+        "key": "C",
+        "text": "The Messages API streams only over WebSockets, so the reviewer is wrong and the design is fine."
+      },
+      {
+        "key": "D",
+        "text": "Streaming requires polling the API every few hundred milliseconds for newly generated tokens."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Setting `stream: true` on a Messages API request returns the response incrementally as server-sent events over a regular HTTP connection. The official SDKs provide streaming helpers that parse those events. WebSockets may still be useful between your own backend and browser, but they are not how the API itself streams.",
+    "distractors": {
+      "A": "The API supports real incremental streaming, so there is no need to fake it.",
+      "C": "The documented streaming transport is server-sent events over HTTP, not WebSockets.",
+      "D": "Server-sent events push data over one open connection; there is no polling protocol."
+    },
+    "difficulty": 1,
+    "tags": [
+      "streaming",
+      "sse",
+      "websockets"
+    ]
+  },
+  {
+    "id": "dv-d-015",
+    "scenario": 0,
+    "domain": 5,
+    "task": "5.2",
+    "type": "single",
+    "select": 1,
+    "stem": "A browser-based tutoring app streams Claude's answers to students. Students must also be able to send \"stop\" or a quick follow-up while an answer is still streaming, and the server sometimes pushes notifications unrelated to the current answer. The API key must stay secret. Which architecture fits best?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Keep a WebSocket between browser and your backend for two-way messages; the backend streams from the Claude API over SSE, relays the deltas, and aborts the upstream request on stop."
+      },
+      {
+        "key": "B",
+        "text": "Have the browser call the Claude API directly with the SDK's browser mode enabled so stop requests reach the model fastest."
+      },
+      {
+        "key": "C",
+        "text": "Use plain non-streaming HTTP requests from the browser to your backend and poll every second for the finished answer."
+      },
+      {
+        "key": "D",
+        "text": "Open a WebSocket from your backend to the Claude API so stop signals can be sent to the model mid-generation."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "The browser-to-server channel needs bidirectional, full-duplex messaging for stop signals, follow-ups and server pushes, which is what WebSockets provide. The backend holds the key, consumes the Claude API's server-sent event stream, relays deltas over the socket, and cancels the upstream HTTP request when the user stops. This separates the client protocol choice from how the API itself streams.",
+    "distractors": {
+      "B": "Calling the API from the browser exposes the secret API key, which is why browser use is disabled by default in the SDK.",
+      "C": "Polling for finished answers loses incremental display and makes stop and follow-up interactions sluggish.",
+      "D": "The Claude API streams over server-sent events rather than WebSockets, and stopping is done by aborting the request."
+    },
+    "difficulty": 3,
+    "tags": [
+      "websockets",
+      "sse",
+      "architecture"
+    ]
+  },
+  {
+    "id": "dv-d-016",
+    "scenario": 0,
+    "domain": 5,
+    "task": "5.2",
+    "type": "single",
+    "select": 1,
+    "stem": "A developer wrote their own server-sent-events parser for streaming responses. It builds the reply by concatenating the `text` field of every `content_block_delta` event. When tools are enabled, the app never receives the arguments Claude produced for tool calls. What is the best fix?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Disable streaming whenever tools are present, since tool calls cannot be streamed at all."
+      },
+      {
+        "key": "B",
+        "text": "Wait for the final `message_stop` event, which carries the complete arguments for every tool call as one JSON field."
+      },
+      {
+        "key": "C",
+        "text": "Add a system prompt telling Claude to write tool arguments into its normal text output."
+      },
+      {
+        "key": "D",
+        "text": "Handle delta types per content block, accumulating partial JSON for tool input, or use the SDK's stream helper."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "Streamed tool-use blocks deliver their input as partial JSON fragments in a different delta type from text deltas, so a parser that only reads `text` drops them. Handling each delta type by content block index, or relying on the SDK stream helper that accumulates the final message, captures the full tool input. Using the SDK avoids re-implementing this event handling by hand.",
+    "distractors": {
+      "A": "Tool use can be streamed; the parser just ignores the delta type that carries tool input.",
+      "B": "The stop event marks the end of the stream and does not repeat the full tool arguments.",
+      "C": "Moving structured tool arguments into free text abandons the tool-use protocol instead of parsing it correctly."
+    },
+    "difficulty": 3,
+    "tags": [
+      "streaming",
+      "tool-use",
+      "sse-events"
+    ]
+  },
+  {
+    "id": "dv-d-017",
+    "scenario": 0,
+    "domain": 5,
+    "task": "5.2",
+    "type": "single",
+    "select": 1,
+    "stem": "A metering job processes raw streaming events and adds up the `usage.output_tokens` value from every `message_delta` event it sees for a response. Billing reconciliation shows the job sometimes over-reports output tokens compared with the console. What is the most likely cause?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Output tokens should be read from `content_block_delta` events, which carry per-token counts."
+      },
+      {
+        "key": "B",
+        "text": "The console excludes thinking tokens from its totals, so the job is correct and the console is under-reporting."
+      },
+      {
+        "key": "C",
+        "text": "The usage counts in `message_delta` events are cumulative, so summing them double-counts output."
+      },
+      {
+        "key": "D",
+        "text": "Streaming is billed at a different output rate, so the job must apply a streaming discount."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "The token counts in a `message_delta` event's `usage` are cumulative for the response, not per-event increments. When a stream contains more than one such event, adding them together over-counts. The job should take the last cumulative value, or use the final message's `usage` that the SDK accumulates.",
+    "distractors": {
+      "A": "Content deltas carry generated content, not per-event token counts for billing.",
+      "B": "Thinking tokens are billed as output, so the discrepancy is not explained by the console omitting them.",
+      "D": "Streaming does not change the per-token price; it only changes how the response is delivered."
+    },
+    "difficulty": 3,
+    "tags": [
+      "streaming",
+      "usage",
+      "metering"
+    ]
+  },
+  {
+    "id": "dv-d-018",
+    "scenario": 0,
+    "domain": 5,
+    "task": "5.2",
+    "type": "single",
+    "select": 1,
+    "stem": "A job-queue worker catches every exception from the official SDK and re-queues the job for another attempt. Jobs with a malformed request or a revoked API key now loop indefinitely, consuming worker capacity. What is the best change?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Add a fixed one-minute sleep before every re-queue so failing jobs consume capacity more slowly."
+      },
+      {
+        "key": "B",
+        "text": "Branch on the SDK's typed error classes: retry rate-limit, overload and connection errors; fail fast on bad-request and auth errors."
+      },
+      {
+        "key": "C",
+        "text": "Parse the error message text with regular expressions to decide which failures look temporary."
+      },
+      {
+        "key": "D",
+        "text": "Disable all SDK retries so that every failure surfaces immediately to the worker loop."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "The SDKs raise distinct, typed exceptions mapped from HTTP status codes, such as authentication errors, bad-request errors, rate-limit errors and connection errors. Retrying only transient categories and failing fast on errors that will never succeed stops poison jobs from looping. Typed errors are more reliable than inspecting message strings.",
+    "distractors": {
+      "A": "A slower loop is still an infinite loop for requests that can never succeed.",
+      "C": "Error message text is not a stable contract; the typed classes and status codes are.",
+      "D": "Turning off SDK retries removes useful backoff for transient errors and does nothing to classify permanent ones."
+    },
+    "difficulty": 2,
+    "tags": [
+      "sdk",
+      "error-handling",
+      "retries"
+    ]
+  },
+  {
+    "id": "dv-d-019",
+    "scenario": 0,
+    "domain": 5,
+    "task": "5.2",
+    "type": "single",
+    "select": 1,
+    "stem": "A developer needs to report an intermittent API failure to Anthropic support and wants to make future investigations of individual failing calls easier. Using the official Python SDK, what should they log for each request?",
+    "options": [
+      {
+        "key": "A",
+        "text": "The request ID the SDK exposes from the response's request-id header, together with the error details."
+      },
+      {
+        "key": "B",
+        "text": "The full API key used for the request, so support can look up the account's traffic."
+      },
+      {
+        "key": "C",
+        "text": "A locally generated UUID only, since the API does not return any request identifier."
+      },
+      {
+        "key": "D",
+        "text": "The complete raw prompt for every request, which support uses as the primary lookup key for finding failed calls."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Each API response carries a request ID header, and the SDK exposes it on response objects (for example `_request_id` in Python). Logging it alongside the error lets you and Anthropic support locate the exact request. It is the stable, non-sensitive identifier designed for this purpose.",
+    "distractors": {
+      "B": "API keys are secrets and must never be written to logs or shared with anyone.",
+      "C": "The API does return a request identifier, so a local-only ID cannot be matched to Anthropic's records.",
+      "D": "Prompts are not a lookup key and may contain sensitive data that should not be logged wholesale."
+    },
+    "difficulty": 1,
+    "tags": [
+      "sdk",
+      "request-id",
+      "debugging"
+    ]
+  },
+  {
+    "id": "dv-d-020",
+    "scenario": 0,
+    "domain": 5,
+    "task": "5.2",
+    "type": "single",
+    "select": 1,
+    "stem": "After enabling thinking and tools, a TypeScript service crashes intermittently on `response.content[0].text` because the property is undefined. The service previously worked with plain text responses. What is the most robust fix?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Wrap the access in a try/catch and return an empty string when it fails."
+      },
+      {
+        "key": "B",
+        "text": "Disable thinking and tools so the first content block is always text again."
+      },
+      {
+        "key": "C",
+        "text": "Cast the response to `any` so the compiler stops flagging the property access."
+      },
+      {
+        "key": "D",
+        "text": "Iterate over `response.content` and handle each block by its `type`."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "A response's `content` is an array of typed blocks, and with thinking or tools the first block may be a thinking or tool-use block rather than text. The SDK's typed response models make each block's `type` explicit, so the robust pattern is to iterate and handle blocks by type. Assuming a fixed position breaks as soon as response shapes vary.",
+    "distractors": {
+      "A": "Swallowing the error silently loses the real answer whenever text is not the first block.",
+      "B": "Removing features to fit a fragile parser sacrifices capability instead of fixing the parsing.",
+      "C": "Disabling type checking hides the problem from the compiler while the runtime crash remains."
+    },
+    "difficulty": 2,
+    "tags": [
+      "sdk",
+      "typed-responses",
+      "content-blocks"
+    ]
+  },
+  {
+    "id": "dv-d-021",
+    "scenario": 0,
+    "domain": 5,
+    "task": "5.2",
+    "type": "single",
+    "select": 1,
+    "stem": "A streaming integration treats an HTTP 200 status as proof that the whole response will succeed, and only checks for errors before the stream begins. During periods of high load, some users see answers that stop partway with no error shown. What is the most likely gap?",
+    "options": [
+      {
+        "key": "A",
+        "text": "The model ran out of context and silently truncated its output without ever signalling a stop reason to the client."
+      },
+      {
+        "key": "B",
+        "text": "Streaming responses cannot fail after starting, so the browser must be dropping the connection."
+      },
+      {
+        "key": "C",
+        "text": "The stream can carry an error event such as an overload after it starts, which the code never handles."
+      },
+      {
+        "key": "D",
+        "text": "A 200 status means the request was queued, and the client should poll for the rest of the answer."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Errors can arrive inside the event stream after the initial 200 response, for example an overloaded error during high usage. Code that only checks status before streaming will silently stop when such an event arrives. Handle error events in the stream (the SDKs surface them as exceptions) and decide whether to retry or show a clear message.",
+    "distractors": {
+      "A": "Running into a limit ends with an explicit stop reason, so it would not be silent if the code inspected it.",
+      "B": "The API documents error events that can occur mid-stream, so a failure after starting is possible.",
+      "D": "The Messages API does not use a queued-then-poll model for streaming responses."
+    },
+    "difficulty": 2,
+    "tags": [
+      "streaming",
+      "error-handling",
+      "overloaded"
+    ]
+  },
+  {
+    "id": "dv-d-022",
+    "scenario": 0,
+    "domain": 5,
+    "task": "5.2",
+    "type": "multi",
+    "select": 2,
+    "stem": "A team is moving a proof-of-concept that calls the Messages API with hand-built HTTP requests into a production service. Which TWO practices best reflect sound engineering with the official SDK? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "Configure timeouts and `max_retries` deliberately on the client instead of relying on ad-hoc loops around each call."
+      },
+      {
+        "key": "B",
+        "text": "Keep calling the REST endpoint with hand-built JSON, since typed SDK models add no value beyond convenience."
+      },
+      {
+        "key": "C",
+        "text": "Ship the API key inside the web front end and enable the SDK's browser mode to cut server round trips."
+      },
+      {
+        "key": "D",
+        "text": "Keep the API key server-side in configuration or a secret store and let the SDK read it at startup."
+      },
+      {
+        "key": "E",
+        "text": "Disable SDK retries and retry every failure, including 400 errors, immediately in a tight loop."
+      }
+    ],
+    "answer": [
+      "A",
+      "D"
+    ],
+    "explanation": "The SDKs wrap the REST API with configurable timeouts, automatic retries with backoff, typed request and response models, and authentication handled through client configuration. Production code should tune those features centrally and keep credentials on the server, read from configuration or a secret store.",
+    "distractors": {
+      "B": "Typed models catch shape errors early and the SDK supplies retries, streaming helpers and error classes that hand-built calls lack.",
+      "C": "Shipping the key to browsers exposes it to every user, which is why browser use is off by default.",
+      "E": "Retrying permanent errors immediately wastes capacity and can worsen rate limiting."
+    },
+    "difficulty": 1,
+    "tags": [
+      "sdk",
+      "engineering-practice",
+      "configuration"
+    ]
+  },
+  {
+    "id": "dv-d-023",
+    "scenario": 0,
+    "domain": 5,
+    "task": "5.3",
+    "type": "single",
+    "select": 1,
+    "stem": "A platform routes millions of inbound messages a day into one of fifteen queues. Each message is short, the routing rules are clear, and the router must respond within a tight real-time latency budget at the lowest feasible cost. Which model tier is the best starting point?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Opus at its highest effort level, so routing is as accurate as possible."
+      },
+      {
+        "key": "B",
+        "text": "Haiku, validated against a labelled routing eval set before rollout."
+      },
+      {
+        "key": "C",
+        "text": "Opus with fast mode, since fast mode makes it the cheapest option."
+      },
+      {
+        "key": "D",
+        "text": "Sonnet with a large fixed thinking budget on every request."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Haiku is positioned for high-volume, latency-sensitive tasks such as classification, extraction and routing, with the lowest latency and price in the lineup. Starting efficiency-first and confirming accuracy on an eval set fits a clear, high-volume routing task. Upgrade only if the eval shows a real capability gap.",
+    "distractors": {
+      "A": "The most capable tier at maximum effort adds latency and cost the simple routing task does not need.",
+      "C": "Fast mode raises output speed at premium pricing, so it makes Opus more expensive, not cheaper.",
+      "D": "A large thinking budget on every short routing request adds latency and output cost for little benefit."
+    },
+    "difficulty": 1,
+    "tags": [
+      "model-selection",
+      "haiku",
+      "latency"
+    ]
+  },
+  {
+    "id": "dv-d-024",
+    "scenario": 0,
+    "domain": 5,
+    "task": "5.3",
+    "type": "single",
+    "select": 1,
+    "stem": "A developer-tools company is building an in-editor assistant for everyday code generation and explanation. It needs strong coding ability but also responsive, interactive latency for thousands of concurrent users, and cost matters. Which starting choice best balances these needs?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Sonnet, the speed-and-intelligence balance, confirmed with an eval of representative coding tasks."
+      },
+      {
+        "key": "B",
+        "text": "Opus for every request, because the most capable model is always the right answer for a coding product."
+      },
+      {
+        "key": "C",
+        "text": "Haiku for every request, because interactive tools should always use the fastest model available."
+      },
+      {
+        "key": "D",
+        "text": "Whichever model has the largest context window, since window size decides coding quality."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Sonnet is positioned as the best combination of speed and intelligence for everyday coding, agent and enterprise workloads. An interactive assistant with many users needs that balance more than peak capability or minimum latency. Validating with representative tasks confirms the choice before committing.",
+    "distractors": {
+      "B": "Opus is slower and more expensive, which is unnecessary overhead for everyday interactive coding at scale.",
+      "C": "Choosing purely on speed ignores the quality bar for code generation and may fail harder requests.",
+      "D": "Context window size is one capability, not a proxy for coding quality or a latency and cost tradeoff."
+    },
+    "difficulty": 2,
+    "tags": [
+      "model-selection",
+      "sonnet",
+      "tradeoffs"
+    ]
+  },
+  {
+    "id": "dv-d-025",
+    "scenario": 0,
+    "domain": 5,
+    "task": "5.3",
+    "type": "single",
+    "select": 1,
+    "stem": "A report-generation feature runs on the most capable model tier at a high effort level. Its eval scores sit well above the acceptance threshold, but monthly costs are now double the budget. Which is the best first step to cut cost without breaking quality?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Switch straight to the smallest model tier in production and watch user complaints for regressions."
+      },
+      {
+        "key": "B",
+        "text": "Lower `max_tokens` by half on every request so each report is cheaper to produce."
+      },
+      {
+        "key": "C",
+        "text": "Add \"keep reports concise to save cost\" to the system prompt and change nothing else."
+      },
+      {
+        "key": "D",
+        "text": "Eval lower effort on the same model and a smaller tier; adopt the cheapest that clears the bar."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "With a comfortable quality margin, the right move is to measure cheaper configurations against the same eval rather than guess. Lowering effort on the same model is often a better lever than switching models, and a smaller tier may also clear the bar. Choosing the cheapest configuration that meets the threshold cuts cost with evidence that quality holds.",
+    "distractors": {
+      "A": "Downgrading without evaluation risks a silent quality regression that users discover first.",
+      "B": "A hard cap can truncate reports mid-section instead of making the model work more efficiently.",
+      "C": "A prompt nudge is an unmeasured, indirect lever compared with evaluating effort and model choices."
+    },
+    "difficulty": 2,
+    "tags": [
+      "cost-quality-tradeoff",
+      "effort",
+      "evals"
+    ]
+  },
+  {
+    "id": "dv-d-026",
+    "scenario": 0,
+    "domain": 5,
+    "task": "5.3",
+    "type": "multi",
+    "select": 2,
+    "stem": "A team's production app uses a pinned Claude model ID. A newer model generation is released with better benchmark results, and product wants to adopt it quickly. Which TWO practices best protect production during the upgrade? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "Keep production on the current pinned model ID until the new model has passed your own evaluation."
+      },
+      {
+        "key": "B",
+        "text": "Point production at whatever alias resolves to the newest model so upgrades arrive automatically."
+      },
+      {
+        "key": "C",
+        "text": "Run your eval suite and follow the model's migration guide for breaking request and behaviour changes."
+      },
+      {
+        "key": "D",
+        "text": "Reuse existing prompts and parameters unchanged, since newer models are backward compatible."
+      },
+      {
+        "key": "E",
+        "text": "Rely on public benchmark gains as sufficient evidence to switch production traffic all at once."
+      }
+    ],
+    "answer": [
+      "A",
+      "C"
+    ],
+    "explanation": "A model ID identifies a fixed snapshot, so pinning it keeps production behaviour stable while you evaluate. New releases can introduce breaking changes, such as parameters that now return errors, and shifts in behaviour, so running your own evals and working through the migration guide is how you find them before users do.",
+    "distractors": {
+      "B": "Auto-advancing to the newest model can introduce breaking changes into production without any evaluation.",
+      "D": "New releases can reject previously valid parameters or change behaviour, so unchanged requests may fail.",
+      "E": "Public benchmarks do not measure your prompts, data and edge cases, so they cannot replace your own evals."
+    },
+    "difficulty": 2,
+    "tags": [
+      "model-upgrades",
+      "version-pinning",
+      "breaking-changes"
+    ]
+  },
+  {
+    "id": "dv-d-027",
+    "scenario": 0,
+    "domain": 5,
+    "task": "5.3",
+    "type": "single",
+    "select": 1,
+    "stem": "A team upgrades its summarizer to a newer Claude model. Quality improves, but the monthly bill rises noticeably more than the per-token price difference predicted, even though request volume and prompts are unchanged. What is the most likely explanation, and the right response?",
+    "options": [
+      {
+        "key": "A",
+        "text": "The newer model ignores `max_tokens`, so the fix is to set a much lower cap on every request."
+      },
+      {
+        "key": "B",
+        "text": "Prompt caching is disabled on newer models, so cached prefixes are now billed at full input price."
+      },
+      {
+        "key": "C",
+        "text": "The new model's tokenizer can produce more tokens for the same text, so recount representative prompts with the new model ID and update the cost model."
+      },
+      {
+        "key": "D",
+        "text": "Billing is now based on characters rather than tokens, which costs more for long documents."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Newer Claude models can use a different tokenizer that yields more tokens for the same text, so token counts measured on the old model understate cost. Counting representative prompts with the token counting endpoint for the new model ID, and reading real `usage` data, gives an accurate cost model. Token counts should never be carried across model generations without re-measuring.",
+    "distractors": {
+      "A": "`max_tokens` is still respected; the extra cost comes from more tokens for the same input and output text.",
+      "B": "Prompt caching remains available on current models, so this does not explain the increase.",
+      "D": "Billing remains token-based; the change is in how text maps to tokens."
+    },
+    "difficulty": 3,
+    "tags": [
+      "model-upgrades",
+      "tokenizer",
+      "cost-modeling"
+    ]
+  },
+  {
+    "id": "dv-d-028",
+    "scenario": 0,
+    "domain": 5,
+    "task": "5.3",
+    "type": "single",
+    "select": 1,
+    "stem": "A shared client library sends `thinking: {\"type\": \"adaptive\"}` on every request. One team configured it with an older model that supports only manual extended thinking, and every request now fails with a 400 `invalid_request_error`. What is the best fix?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Retry the requests with backoff, since a 400 error usually clears up after a short wait."
+      },
+      {
+        "key": "B",
+        "text": "Choose the thinking config per model: a token budget on the older model, or move to an adaptive-capable model."
+      },
+      {
+        "key": "C",
+        "text": "Add a beta header to the request that turns on adaptive thinking for every model generation, including older ones."
+      },
+      {
+        "key": "D",
+        "text": "Raise `max_tokens` on that team's requests so the older model has room for adaptive thinking."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Adaptive thinking is supported only on newer models; models that support only extended thinking reject `type: \"adaptive\"` with a 400 error. The library should select the thinking configuration per model, using `budget_tokens` where only extended thinking exists, or the team should move to a model that supports adaptive thinking. Model capability support is part of model selection.",
+    "distractors": {
+      "A": "A 400 invalid-request error is deterministic and will fail identically on every retry.",
+      "C": "No header adds adaptive thinking to models that lack it; the feature depends on the model.",
+      "D": "The error is about an unsupported thinking type, not about running out of output room."
+    },
+    "difficulty": 2,
+    "tags": [
+      "adaptive-thinking",
+      "model-capabilities",
+      "errors"
+    ]
+  },
+  {
+    "id": "dv-d-029",
+    "scenario": 0,
+    "domain": 5,
+    "task": "5.4",
+    "type": "single",
+    "select": 1,
+    "stem": "After enabling prompt caching, a team's cost dashboard shows input tokens per request dropping to near zero, and finance asks whether the model is now processing almost no context. The dashboard only reads `usage.input_tokens`. What should the team explain and change?",
+    "options": [
+      {
+        "key": "A",
+        "text": "`input_tokens` now counts only tokens after the last cache breakpoint; total input also includes cache reads and writes, so sum all three fields."
+      },
+      {
+        "key": "B",
+        "text": "Caching compresses the prompt, so the model really does see fewer tokens and the dashboard is correct."
+      },
+      {
+        "key": "C",
+        "text": "Cached tokens are free and not reported anywhere, so the dashboard should simply add a note."
+      },
+      {
+        "key": "D",
+        "text": "The dashboard should switch to `output_tokens`, which now includes cached input as well."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "With caching, `input_tokens` reflects only tokens after the last cache breakpoint. Tokens read from the cache appear in `cache_read_input_tokens` and tokens written to it in `cache_creation_input_tokens`; total input is the sum of the three. Each is billed at a different rate, so tracking them separately is also needed for accurate cost reporting.",
+    "distractors": {
+      "B": "Caching does not shrink what the model processes; it reuses a previously processed prefix.",
+      "C": "Cache reads and writes are reported in `usage` and are billed, cache reads at a reduced rate.",
+      "D": "Output tokens measure generated output only and never include cached input."
+    },
+    "difficulty": 2,
+    "tags": [
+      "usage",
+      "prompt-caching",
+      "token-tracking"
+    ]
+  },
+  {
+    "id": "dv-d-030",
+    "scenario": 0,
+    "domain": 5,
+    "task": "5.4",
+    "type": "single",
+    "select": 1,
+    "stem": "A team puts `cache_control` on a long, static system prompt, but every response shows `cache_read_input_tokens` of 0 and a fresh cache write each time. The system prompt begins with \"Current time: <timestamp>\" followed by the static instructions. What is the most likely cause?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Caching only works for user messages, so the breakpoint must move into the conversation."
+      },
+      {
+        "key": "B",
+        "text": "The requests are sent too quickly in succession for the cache entry to finish writing."
+      },
+      {
+        "key": "C",
+        "text": "Cache reads only start after the same prompt has been written to the cache several times."
+      },
+      {
+        "key": "D",
+        "text": "The timestamp changes the cached prefix on every request; move it after the cached block."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "A cache hit requires the prefix up to the breakpoint to be identical across requests. A per-request timestamp at the start of the system prompt changes that prefix every time, so each request writes a new entry and never reads one. Keep stable content first, place the breakpoint on the last block that stays identical, and put dynamic values after it.",
+    "distractors": {
+      "A": "System prompts and tool definitions are commonly cached; the problem is the changing content.",
+      "B": "Request timing is not the issue here; an identical prefix sent within the cache lifetime would hit.",
+      "C": "A single write is enough for subsequent identical prefixes to read from the cache."
+    },
+    "difficulty": 1,
+    "tags": [
+      "prompt-caching",
+      "cache-misses",
+      "prefix"
+    ]
+  },
+  {
+    "id": "dv-d-031",
+    "scenario": 0,
+    "domain": 5,
+    "task": "5.4",
+    "type": "single",
+    "select": 1,
+    "stem": "An app caches its tool definitions, a large static system prompt and a growing conversation. To personalize behaviour, the developer starts adding one user-specific tool to the tools list on each request. Cache costs jump because nearly every request now writes a new cache. What is the best explanation and fix?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Personalized content cannot be cached at all, so the developer should disable caching for these users."
+      },
+      {
+        "key": "B",
+        "text": "The system prompt is too long to cache, so it should be split across several smaller cache breakpoints."
+      },
+      {
+        "key": "C",
+        "text": "Tools come first in the cache prefix, so changing them invalidates everything; keep the tool set stable and put per-user context later."
+      },
+      {
+        "key": "D",
+        "text": "The conversation breakpoint is the issue, so caching should be limited to the tools list only."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Cache prefixes are built in the order tools, then system, then messages, and a change at one level invalidates that level and everything after it. Modifying tool definitions per user therefore invalidates the whole cache on every request. Keeping a stable tool set and moving per-user context into later content preserves the cached tools and system prompt.",
+    "distractors": {
+      "A": "Per-user content can follow a shared cached prefix; disabling caching gives up savings unnecessarily.",
+      "B": "Prompt length is not the issue; the changing tool definitions at the start of the prefix are.",
+      "D": "The conversation breakpoint is not causing the misses, and dropping it loses incremental conversation caching."
+    },
+    "difficulty": 3,
+    "tags": [
+      "prompt-caching",
+      "cache-invalidation",
+      "tools"
+    ]
+  },
+  {
+    "id": "dv-d-032",
+    "scenario": 0,
+    "domain": 5,
+    "task": "5.4",
+    "type": "single",
+    "select": 1,
+    "stem": "A developer adds `cache_control` to a short system prompt used by a high-volume classifier. Requests succeed, but both `cache_creation_input_tokens` and `cache_read_input_tokens` are always 0. No errors are returned. What is the most likely reason?",
+    "options": [
+      {
+        "key": "A",
+        "text": "The cached prefix is below the model's minimum cacheable length, so caching is skipped silently."
+      },
+      {
+        "key": "B",
+        "text": "Prompt caching must first be enabled at the organization level in the Console before `cache_control` has any effect."
+      },
+      {
+        "key": "C",
+        "text": "Classification requests are excluded from caching because their outputs are very short."
+      },
+      {
+        "key": "D",
+        "text": "The `cache_control` marker is valid only on the final user message and is ignored elsewhere."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Each model has a minimum cacheable prompt length, and prompts shorter than it are processed without caching even when marked with `cache_control`, with no error returned. Seeing both cache fields at 0 is the documented signal that nothing was cached. The fix is to cache a longer stable prefix, such as tools plus instructions, or accept that this prompt is too short to benefit.",
+    "distractors": {
+      "B": "Caching is enabled per request with `cache_control`; there is no organization-level switch to flip first.",
+      "C": "Output length does not affect whether an input prefix is cached.",
+      "D": "Breakpoints can be placed on tools, system content and messages, not only the final user message."
+    },
+    "difficulty": 3,
+    "tags": [
+      "prompt-caching",
+      "minimum-length",
+      "usage"
+    ]
+  },
+  {
+    "id": "dv-d-033",
+    "scenario": 0,
+    "domain": 5,
+    "task": "5.4",
+    "type": "single",
+    "select": 1,
+    "stem": "A product manager asks for a monthly cost forecast for a new feature that uses a cached system prompt, adaptive thinking and variable-length answers. Which approach produces the most trustworthy cost model?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Multiply expected requests by the size of the system prompt in tokens and the base input price."
+      },
+      {
+        "key": "B",
+        "text": "Run representative traffic, record each `usage` category (cache reads, cache writes, uncached input, and output including thinking), then apply each category's rate and project by volume."
+      },
+      {
+        "key": "C",
+        "text": "Estimate total words per answer, convert at a fixed words-per-token ratio and apply the input price."
+      },
+      {
+        "key": "D",
+        "text": "Use the cost of a single test request and multiply it by the expected monthly request count."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Each `usage` category is billed differently: cache reads at a fraction of base input price, cache writes at a premium, uncached input at base price, and output, including thinking tokens, at the higher output rate. Measuring these on representative traffic captures cache hit rates and variable thinking and answer lengths. Projecting each category by volume yields a forecast grounded in real behaviour.",
+    "distractors": {
+      "A": "This ignores output and thinking tokens, which are priced higher, and treats cached reads as full-price input.",
+      "C": "Word ratios are heuristic, and pricing output at the input rate understates the larger output cost.",
+      "D": "A single request cannot represent cache hit rates or the variation in thinking and answer lengths."
+    },
+    "difficulty": 2,
+    "tags": [
+      "cost-modeling",
+      "usage",
+      "pricing"
+    ]
+  },
+  {
+    "id": "dv-d-034",
+    "scenario": 0,
+    "domain": 5,
+    "task": "5.4",
+    "type": "multi",
+    "select": 2,
+    "stem": "A long-running agent conversation adds many tool calls and results per turn. The developer notices cache hits drop in turns that add a large number of content blocks, and wants to keep reusing the cached conversation. Which TWO cache check-pointing practices are correct? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "Place `cache_control` on the last block whose prefix stays identical across the requests that should share the cache."
+      },
+      {
+        "key": "B",
+        "text": "Add an extra breakpoint partway through a turn that adds many blocks, so a prior cache entry stays within the lookback window."
+      },
+      {
+        "key": "C",
+        "text": "Put the breakpoint on a block containing a per-request timestamp so each request refreshes the cache."
+      },
+      {
+        "key": "D",
+        "text": "Toggle fast mode on and off between turns, since the speed setting does not affect cached prefixes."
+      },
+      {
+        "key": "E",
+        "text": "Expect cache reads to cost more than base input, so checkpoint only when the conversation is very short."
+      }
+    ],
+    "answer": [
+      "A",
+      "B"
+    ],
+    "explanation": "Cache writes happen at breakpoints, and a later request finds an earlier entry only if it lies within a limited lookback window of blocks behind its breakpoint. Placing breakpoints on the last stable block, and adding intermediate checkpoints when a single turn adds many blocks, keeps earlier entries reachable. This is how check-pointing preserves cache reuse in long agent conversations.",
+    "distractors": {
+      "C": "A changing block makes the prefix hash differ on every request, so the cache is written but never read.",
+      "D": "Switching speed settings invalidates cached system and message content, breaking reuse.",
+      "E": "Cache reads are billed at a fraction of the base input price, so long conversations benefit most."
+    },
+    "difficulty": 3,
+    "tags": [
+      "prompt-caching",
+      "cache-checkpointing",
+      "agents"
+    ]
+  }
+]

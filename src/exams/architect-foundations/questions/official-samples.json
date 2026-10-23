@@ -1,0 +1,218 @@
+[
+  {
+    "id": "off-01", "scenario": 1, "domain": 1, "task": "1.4", "type": "single", "select": 1,
+    "stem": "Production data shows that in 12% of cases, your agent skips get_customer entirely and calls lookup_order using only the customer's stated name, occasionally leading to misidentified accounts and incorrect refunds. What change would most effectively address this reliability issue?",
+    "options": [
+      {"key": "A", "text": "Add a programmatic prerequisite that blocks lookup_order and process_refund calls until get_customer has returned a verified customer ID."},
+      {"key": "B", "text": "Enhance the system prompt to state that customer verification via get_customer is mandatory before any order operations."},
+      {"key": "C", "text": "Add few-shot examples showing the agent always calling get_customer first, even when customers volunteer order details."},
+      {"key": "D", "text": "Implement a routing classifier that analyzes each request and enables only the subset of tools appropriate for that request type."}
+    ],
+    "answer": ["A"],
+    "explanation": "When a specific tool sequence is required for critical business logic (like verifying customer identity before processing refunds), programmatic enforcement provides deterministic guarantees that prompt-based approaches cannot.",
+    "distractors": {
+      "B": "Relies on probabilistic LLM compliance, which is insufficient when errors have financial consequences.",
+      "C": "Few-shot examples still rely on probabilistic compliance rather than a guarantee.",
+      "D": "Addresses tool availability rather than tool ordering, which is not the actual problem."
+    },
+    "difficulty": 2, "tags": ["official-sample", "programmatic-enforcement"]
+  },
+  {
+    "id": "off-02", "scenario": 1, "domain": 2, "task": "2.1", "type": "single", "select": 1,
+    "stem": "Production logs show the agent frequently calls get_customer when users ask about orders (e.g., \"check my order #12345\"), instead of calling lookup_order. Both tools have minimal descriptions (\"Retrieves customer information\" / \"Retrieves order details\") and accept similar identifier formats. What's the most effective first step to improve tool selection reliability?",
+    "options": [
+      {"key": "A", "text": "Add few-shot examples to the system prompt demonstrating correct tool selection patterns, with 5-8 examples showing order-related queries routing to lookup_order."},
+      {"key": "B", "text": "Expand each tool's description to include input formats it handles, example queries, edge cases, and boundaries explaining when to use it versus similar tools."},
+      {"key": "C", "text": "Implement a routing layer that parses user input before each turn and pre-selects the appropriate tool based on detected keywords and identifier patterns."},
+      {"key": "D", "text": "Consolidate both tools into a single lookup_entity tool that accepts any identifier and internally determines which backend to query."}
+    ],
+    "answer": ["B"],
+    "explanation": "Tool descriptions are the primary mechanism LLMs use for tool selection. When descriptions are minimal, models lack the context to differentiate between similar tools. Expanding them directly addresses this root cause with a low-effort, high-leverage fix.",
+    "distractors": {
+      "A": "Few-shot examples add token overhead without fixing the underlying description problem.",
+      "C": "A keyword routing layer is over-engineered and bypasses the LLM's natural language understanding.",
+      "D": "Consolidation is a valid architectural choice but more effort than a first step warrants when descriptions are the immediate problem."
+    },
+    "difficulty": 1, "tags": ["official-sample", "tool-descriptions"]
+  },
+  {
+    "id": "off-03", "scenario": 1, "domain": 5, "task": "5.2", "type": "single", "select": 1,
+    "stem": "Your agent achieves 55% first-contact resolution, well below the 80% target. Logs show it escalates straightforward cases (standard damage replacements with photo evidence) while attempting to autonomously handle complex situations requiring policy exceptions. What's the most effective way to improve escalation calibration?",
+    "options": [
+      {"key": "A", "text": "Add explicit escalation criteria to your system prompt with few-shot examples demonstrating when to escalate versus resolve autonomously."},
+      {"key": "B", "text": "Have the agent self-report a confidence score (1-10) before each response and automatically route requests to humans when confidence falls below a threshold."},
+      {"key": "C", "text": "Deploy a separate classifier model trained on historical tickets to predict which requests need escalation before the main agent begins processing."},
+      {"key": "D", "text": "Implement sentiment analysis to detect customer frustration levels and automatically escalate when negative sentiment exceeds a threshold."}
+    ],
+    "answer": ["A"],
+    "explanation": "Explicit escalation criteria with few-shot examples directly address the root cause: unclear decision boundaries. This is the proportionate first response before adding infrastructure.",
+    "distractors": {
+      "B": "LLM self-reported confidence is poorly calibrated — the agent is already incorrectly confident on hard cases.",
+      "C": "Over-engineered: requires labeled data and ML infrastructure when prompt optimization hasn't been tried.",
+      "D": "Solves a different problem; sentiment doesn't correlate with case complexity."
+    },
+    "difficulty": 2, "tags": ["official-sample", "escalation"]
+  },
+  {
+    "id": "off-04", "scenario": 2, "domain": 3, "task": "3.2", "type": "single", "select": 1,
+    "stem": "You want to create a custom /review slash command that runs your team's standard code review checklist. This command should be available to every developer when they clone or pull the repository. Where should you create this command file?",
+    "options": [
+      {"key": "A", "text": "In the .claude/commands/ directory in the project repository"},
+      {"key": "B", "text": "In ~/.claude/commands/ in each developer's home directory"},
+      {"key": "C", "text": "In the CLAUDE.md file at the project root"},
+      {"key": "D", "text": "In a .claude/config.json file with a commands array"}
+    ],
+    "answer": ["A"],
+    "explanation": "Project-scoped custom slash commands are stored in .claude/commands/ within the repository. They are version-controlled and automatically available to all developers when they clone or pull the repo.",
+    "distractors": {
+      "B": "~/.claude/commands/ is for personal commands that aren't shared via version control.",
+      "C": "CLAUDE.md is for project instructions and context, not command definitions.",
+      "D": "Describes a configuration mechanism that doesn't exist in Claude Code."
+    },
+    "difficulty": 1, "tags": ["official-sample", "slash-commands"]
+  },
+  {
+    "id": "off-05", "scenario": 2, "domain": 3, "task": "3.4", "type": "single", "select": 1,
+    "stem": "You've been assigned to restructure the team's monolithic application into microservices. This will involve changes across dozens of files and requires decisions about service boundaries and module dependencies. Which approach should you take?",
+    "options": [
+      {"key": "A", "text": "Enter plan mode to explore the codebase, understand dependencies, and design an implementation approach before making changes."},
+      {"key": "B", "text": "Start with direct execution and make changes incrementally, letting the implementation reveal the natural service boundaries."},
+      {"key": "C", "text": "Use direct execution with comprehensive upfront instructions detailing exactly how each service should be structured."},
+      {"key": "D", "text": "Begin in direct execution mode and only switch to plan mode if you encounter unexpected complexity during implementation."}
+    ],
+    "answer": ["A"],
+    "explanation": "Plan mode is designed for complex tasks involving large-scale changes, multiple valid approaches, and architectural decisions — exactly what monolith-to-microservices restructuring requires. It enables safe codebase exploration and design before committing to changes.",
+    "distractors": {
+      "B": "Risks costly rework when dependencies are discovered late.",
+      "C": "Assumes you already know the right structure without exploring the code.",
+      "D": "Ignores that the complexity is already stated in the requirements, not something that might emerge later."
+    },
+    "difficulty": 1, "tags": ["official-sample", "plan-mode"]
+  },
+  {
+    "id": "off-06", "scenario": 2, "domain": 3, "task": "3.3", "type": "single", "select": 1,
+    "stem": "Your codebase has distinct areas with different coding conventions: React components use functional style with hooks, API handlers use async/await with specific error handling, and database models follow a repository pattern. Test files are spread throughout the codebase alongside the code they test (e.g., Button.test.tsx next to Button.tsx), and you want all tests to follow the same conventions regardless of location. What's the most maintainable way to ensure Claude automatically applies the correct conventions when generating code?",
+    "options": [
+      {"key": "A", "text": "Create rule files in .claude/rules/ with YAML frontmatter specifying glob patterns to conditionally apply conventions based on file paths"},
+      {"key": "B", "text": "Consolidate all conventions in the root CLAUDE.md file under headers for each area, relying on Claude to infer which section applies"},
+      {"key": "C", "text": "Create skills in .claude/skills/ for each code type that include the relevant conventions in their SKILL.md files"},
+      {"key": "D", "text": "Place a separate CLAUDE.md file in each subdirectory containing that area's specific conventions"}
+    ],
+    "answer": ["A"],
+    "explanation": ".claude/rules/ with glob patterns (e.g., **/*.test.tsx) lets conventions apply automatically based on file paths regardless of directory location, which is essential for test files spread throughout the codebase.",
+    "distractors": {
+      "B": "Relies on inference rather than explicit matching, making it unreliable.",
+      "C": "Skills need manual invocation or rely on Claude choosing to load them — not deterministic, path-based application.",
+      "D": "CLAUDE.md files are directory-bound and can't easily handle files spread across many directories."
+    },
+    "difficulty": 2, "tags": ["official-sample", "path-rules"]
+  },
+  {
+    "id": "off-07", "scenario": 3, "domain": 1, "task": "1.2", "type": "single", "select": 1,
+    "stem": "After running the system on the topic \"impact of AI on creative industries,\" you observe that each subagent completes successfully: the web search agent finds relevant articles, the document analysis agent summarizes papers correctly, and the synthesis agent produces coherent output. However, the final reports cover only visual arts, completely missing music, writing, and film production. The coordinator's logs show it decomposed the topic into \"AI in digital art creation,\" \"AI in graphic design,\" and \"AI in photography.\" What is the most likely root cause?",
+    "options": [
+      {"key": "A", "text": "The synthesis agent lacks instructions for identifying coverage gaps in the findings it receives from other agents."},
+      {"key": "B", "text": "The coordinator agent's task decomposition is too narrow, resulting in subagent assignments that don't cover all relevant domains of the topic."},
+      {"key": "C", "text": "The web search agent's queries are not comprehensive enough and need to be expanded to cover more creative industry sectors."},
+      {"key": "D", "text": "The document analysis agent is filtering out sources related to non-visual creative industries due to overly restrictive relevance criteria."}
+    ],
+    "answer": ["B"],
+    "explanation": "The coordinator's logs reveal the root cause directly: it decomposed \"creative industries\" into only visual-arts subtasks. The subagents executed their assigned tasks correctly — the problem is what they were assigned.",
+    "distractors": {
+      "A": "Blames a downstream agent that is working correctly within its assigned scope.",
+      "C": "The search agent searched exactly what it was assigned; the assignment was the problem.",
+      "D": "No evidence of filtering; the missing sectors were never requested."
+    },
+    "difficulty": 1, "tags": ["official-sample", "decomposition"]
+  },
+  {
+    "id": "off-08", "scenario": 3, "domain": 5, "task": "5.3", "type": "single", "select": 1,
+    "stem": "The web search subagent times out while researching a complex topic. You need to design how this failure information flows back to the coordinator agent. Which error propagation approach best enables intelligent recovery?",
+    "options": [
+      {"key": "A", "text": "Return structured error context to the coordinator including the failure type, the attempted query, any partial results, and potential alternative approaches."},
+      {"key": "B", "text": "Implement automatic retry logic with exponential backoff within the subagent, returning a generic \"search unavailable\" status only after all retries are exhausted."},
+      {"key": "C", "text": "Catch the timeout within the subagent and return an empty result set marked as successful."},
+      {"key": "D", "text": "Propagate the timeout exception directly to a top-level handler that terminates the entire research workflow."}
+    ],
+    "answer": ["A"],
+    "explanation": "Structured error context gives the coordinator what it needs to decide whether to retry with a modified query, try an alternative approach, or proceed with partial results.",
+    "distractors": {
+      "B": "The generic status hides valuable context from the coordinator, preventing informed decisions.",
+      "C": "Suppresses the error by marking failure as success, preventing recovery and risking incomplete output.",
+      "D": "Terminates the whole workflow unnecessarily when recovery strategies could succeed."
+    },
+    "difficulty": 1, "tags": ["official-sample", "error-propagation"]
+  },
+  {
+    "id": "off-09", "scenario": 3, "domain": 2, "task": "2.3", "type": "single", "select": 1,
+    "stem": "The synthesis agent frequently needs to verify specific claims while combining findings. Currently it returns control to the coordinator, which invokes the web search agent, then re-invokes synthesis — adding 2-3 round trips per task and 40% latency. 85% of these verifications are simple fact-checks (dates, names, statistics) and 15% require deeper investigation. What's the most effective approach to reduce overhead while maintaining reliability?",
+    "options": [
+      {"key": "A", "text": "Give the synthesis agent a scoped verify_fact tool for simple lookups, while complex verifications continue delegating to the web search agent through the coordinator."},
+      {"key": "B", "text": "Have the synthesis agent accumulate all verification needs and return them as a batch to the coordinator at the end of its pass, which then sends them all to the web search agent at once."},
+      {"key": "C", "text": "Give the synthesis agent access to all web search tools so it can handle any verification need directly without round-trips through the coordinator."},
+      {"key": "D", "text": "Have the web search agent proactively cache extra context around each source during initial research, anticipating what the synthesis agent might need to verify."}
+    ],
+    "answer": ["A"],
+    "explanation": "Least privilege: give the synthesis agent only what it needs for the 85% common case while preserving the existing coordination pattern for complex cases.",
+    "distractors": {
+      "B": "Batching creates blocking dependencies since later synthesis steps may depend on earlier verified facts.",
+      "C": "Over-provisions the synthesis agent, violating separation of concerns.",
+      "D": "Speculative caching cannot reliably predict what will need verification."
+    },
+    "difficulty": 2, "tags": ["official-sample", "least-privilege"]
+  },
+  {
+    "id": "off-10", "scenario": 5, "domain": 3, "task": "3.6", "type": "single", "select": 1,
+    "stem": "Your pipeline script runs claude \"Analyze this pull request for security issues\" but the job hangs indefinitely. Logs indicate Claude Code is waiting for interactive input. What's the correct approach to run Claude Code in an automated pipeline?",
+    "options": [
+      {"key": "A", "text": "Add the -p flag: claude -p \"Analyze this pull request for security issues\""},
+      {"key": "B", "text": "Set the environment variable CLAUDE_HEADLESS=true before running the command"},
+      {"key": "C", "text": "Redirect stdin from /dev/null: claude \"Analyze this pull request for security issues\" < /dev/null"},
+      {"key": "D", "text": "Add the --batch flag: claude --batch \"Analyze this pull request for security issues\""}
+    ],
+    "answer": ["A"],
+    "explanation": "The -p (or --print) flag is the documented way to run Claude Code non-interactively: it processes the prompt, prints to stdout and exits without waiting for input.",
+    "distractors": {
+      "B": "CLAUDE_HEADLESS is not a real Claude Code environment variable.",
+      "C": "A Unix workaround that doesn't properly address Claude Code's command syntax.",
+      "D": "There is no --batch flag in Claude Code."
+    },
+    "difficulty": 1, "tags": ["official-sample", "ci", "cli-flags"]
+  },
+  {
+    "id": "off-11", "scenario": 5, "domain": 4, "task": "4.5", "type": "single", "select": 1,
+    "stem": "Your team wants to reduce API costs for automated analysis. Real-time Claude calls power two workflows: (1) a blocking pre-merge check that must complete before developers can merge, and (2) a technical debt report generated overnight for review the next morning. Your manager proposes switching both to the Message Batches API for its 50% cost savings. How should you evaluate this proposal?",
+    "options": [
+      {"key": "A", "text": "Use batch processing for the technical debt reports only; keep real-time calls for pre-merge checks."},
+      {"key": "B", "text": "Switch both workflows to batch processing with status polling to check for completion."},
+      {"key": "C", "text": "Keep real-time calls for both workflows to avoid batch result ordering issues."},
+      {"key": "D", "text": "Switch both to batch processing with a timeout fallback to real-time if batches take too long."}
+    ],
+    "answer": ["A"],
+    "explanation": "The Message Batches API saves 50% but can take up to 24 hours with no latency SLA — unsuitable for blocking pre-merge checks, ideal for overnight reports.",
+    "distractors": {
+      "B": "Relying on batches often finishing quickly isn't acceptable for a blocking workflow.",
+      "C": "Misconception — batch results are correlated with custom_id, so ordering isn't a problem.",
+      "D": "Adds complexity when the simple answer is matching each API to its latency need."
+    },
+    "difficulty": 1, "tags": ["official-sample", "batch-api"]
+  },
+  {
+    "id": "off-12", "scenario": 5, "domain": 4, "task": "4.6", "type": "single", "select": 1,
+    "stem": "A pull request modifies 14 files across the stock tracking module. Your single-pass review analyzing all files together produces inconsistent results: detailed feedback for some files but superficial comments for others, obvious bugs missed, and contradictory feedback — flagging a pattern as problematic in one file while approving identical code elsewhere in the same PR. How should you restructure the review?",
+    "options": [
+      {"key": "A", "text": "Split into focused passes: analyze each file individually for local issues, then run a separate integration-focused pass examining cross-file data flow."},
+      {"key": "B", "text": "Require developers to split large PRs into smaller submissions of 3-4 files before the automated review runs."},
+      {"key": "C", "text": "Switch to a higher-tier model with a larger context window to give all 14 files adequate attention in one pass."},
+      {"key": "D", "text": "Run three independent review passes on the full PR and only flag issues that appear in at least two of the three runs."}
+    ],
+    "answer": ["A"],
+    "explanation": "Splitting reviews into focused passes addresses the root cause — attention dilution. Per-file analysis ensures consistent depth, and a separate integration pass catches cross-file issues.",
+    "distractors": {
+      "B": "Shifts the burden to developers without improving the system.",
+      "C": "Larger context windows don't solve attention quality issues.",
+      "D": "Consensus voting suppresses real bugs that are only caught intermittently."
+    },
+    "difficulty": 2, "tags": ["official-sample", "multi-pass-review"]
+  }
+]

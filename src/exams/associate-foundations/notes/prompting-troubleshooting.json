@@ -1,0 +1,419 @@
+[
+  {
+    "task": "1.1",
+    "knowledge": [
+      "Treat Claude like a brilliant but new colleague: it has no context about you, your task, your customers or your organisation unless you give it.",
+      "A strong business prompt states the task, the background, who the output is for, why it matters, the format you want and any limits (length, tone, what to include or avoid).",
+      "Explaining the reason behind a request gives Claude your goal, so it can make better choices you did not spell out.",
+      "Examples are one of the most reliable ways to steer format, tone and structure. A few (about 3 to 5) varied, clearly labelled examples work better than one.",
+      "Even one sentence of role, such as \"You are an HR adviser writing for new managers\", focuses tone and perspective.",
+      "With long material, such as a contract or report, put the document first and your question at the end, and label each document clearly."
+    ],
+    "skills": [
+      "Rewrite a vague one-line request into a prompt that names the goal, audience, format and constraints.",
+      "Apply the colleague test: would a co-worker with little context know exactly what to produce?",
+      "Add a template or a few examples when the output must match a house format or voice.",
+      "Ask directly for the depth you want (\"give five options, each with pros and cons\") instead of hoping Claude infers it."
+    ],
+    "examLens": [
+      "Generic or off-target output usually means missing context. The best answer adds specifics (audience, purpose, format, policy), not emphasis.",
+      "When the output must match a set format or voice, the best answer supplies examples or a template.",
+      "Options that repeat the request louder (capitals, \"IMPORTANT\", \"make it better\") are distractors."
+    ],
+    "traps": [
+      "Assuming Claude knows your company, policies, products or internal jargon.",
+      "Using fuzzy words like \"brief\", \"professional\" or \"good\" instead of concrete criteria such as a word count or required sections.",
+      "Giving a single example and getting near copies of it; use a few varied examples."
+    ],
+    "links": [
+      {"label": "Prompting best practices", "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"},
+      {"label": "My prompt isn't giving me a helpful answer", "url": "https://support.claude.com/en/articles/7996857-my-prompt-isn-t-giving-me-a-helpful-answer"}
+    ],
+    "cheat": [
+      ["Output is generic and bland", "Add context: audience, purpose, key facts, format and length"],
+      ["Output must match the house style", "Give 3 to 5 varied, clearly labelled examples or a template"],
+      ["Draft promises something the company can't offer", "Include the relevant policy and limits in the prompt"],
+      ["Question about a long pasted report", "Report first, clearly labelled; the question at the end"],
+      ["\"Keep it brief\" gave the wrong length", "State the exact target length and required elements"]
+    ],
+    "diagrams": [
+      {
+        "kind": "layers", "title": "Building blocks of an effective prompt",
+        "layers": [
+          {"label": "Role", "note": "One sentence sets perspective and tone, e.g. HR adviser for new managers.", "tone": "sky"},
+          {"label": "Context and why", "note": "Background, audience, and the goal behind the request.", "tone": "accent"},
+          {"label": "Task", "note": "Exactly what to produce, with numbered steps if order matters."},
+          {"label": "Format and limits", "note": "Length, structure, tone, and what to include or avoid."},
+          {"label": "Examples", "note": "3 to 5 varied, labelled samples when format or voice matters.", "tone": "good"}
+        ]
+      },
+      {
+        "kind": "compare", "title": "Vague prompt vs effective prompt",
+        "columns": [
+          {"head": "Vague", "tone": "warn", "items": ["\"Write interview questions\"", "Assumes Claude knows your team", "\"Make it professional\"", "No length or format"]},
+          {"head": "Effective", "tone": "good", "items": ["\"8 questions for a junior finance analyst\"", "States team, role and purpose", "Concrete tone and must-haves", "Length, structure and an example"]}
+        ]
+      }
+    ]
+  },
+  {
+    "task": "1.2",
+    "knowledge": [
+      "Breaking a complex request into smaller steps is one of the first fixes Anthropic suggests when a prompt isn't giving a helpful answer.",
+      "Chaining means running a task as a sequence of steps, so you can inspect each intermediate result before it feeds the next step.",
+      "A common chain is draft, then review against clear criteria, then refine.",
+      "When order matters but you don't need to check in between, numbered steps inside one prompt are enough.",
+      "Each step should have one clear goal and a defined output. Errors caught early don't spread into later steps.",
+      "Planning the conversation up front, and batching simple related questions together, saves time and usage."
+    ],
+    "skills": [
+      "Spot natural stages in a big request, such as gather facts, analyse, draft, then review.",
+      "Decide where a human check is needed between steps, especially before figures or claims are reused.",
+      "Choose between one prompt with numbered steps and a chain of separate turns.",
+      "Trace a wrong final result back to the step where it first appeared."
+    ],
+    "examLens": [
+      "A request that bundles research, analysis and writing and returns shallow output: the answer is to split it into stages and review between them.",
+      "If the final output has a wrong fact, check the earliest step that produced it, not the final wording.",
+      "\"Be more thorough\" or \"write more\" added to the same giant prompt is a distractor."
+    ],
+    "traps": [
+      "Asking for every deliverable in one message and expecting depth on each.",
+      "Splitting work into so many tiny steps that the overhead outweighs the benefit.",
+      "Skipping checks on intermediate outputs and hoping a final review catches everything."
+    ],
+    "links": [
+      {"label": "Prompting best practices (chain complex prompts)", "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"},
+      {"label": "My prompt isn't giving me a helpful answer", "url": "https://support.claude.com/en/articles/7996857-my-prompt-isn-t-giving-me-a-helpful-answer"}
+    ],
+    "cheat": [
+      ["One giant request returns shallow work", "Split into stages and review each output before the next"],
+      ["Steps must happen in order, no checks needed", "One prompt with numbered steps"],
+      ["Need to check figures before they are used", "Chain the steps and verify the figures in between"],
+      ["Final report has a wrong number", "Check the earliest step that produced that number"],
+      ["Polishing an important draft", "Draft, review against criteria, then refine"]
+    ],
+    "diagrams": [
+      {
+        "kind": "flow", "title": "Chaining a board report",
+        "steps": [
+          {"label": "Extract the key figures", "note": "One goal: pull the numbers from the source spreadsheet.", "tone": "sky"},
+          {"label": "You check the figures", "note": "Compare with the source before anything builds on them.", "tone": "warn"},
+          {"label": "Analyse the trends", "note": "Uses only the checked figures."},
+          {"label": "Draft the board summary", "note": "Audience, length and format stated in the prompt."},
+          {"label": "Review against criteria", "note": "Accuracy, tone, completeness; then refine.", "tone": "good"}
+        ]
+      },
+      {
+        "kind": "decision", "title": "One prompt or a chain?",
+        "question": "What does the request look like?",
+        "branches": [
+          {"when": "Simple task with one clear output", "then": "A single well-structured prompt"},
+          {"when": "Steps in a set order, no checks needed", "then": "One prompt with numbered steps"},
+          {"when": "Later steps depend on facts you must verify", "then": "Chain the steps and review in between", "tone": "accent"},
+          {"when": "Several unrelated deliverables at once", "then": "Separate stages, each with its own goal", "tone": "accent"},
+          {"when": "Several simple related questions", "then": "Batch them in one message"}
+        ]
+      }
+    ]
+  },
+  {
+    "task": "1.3",
+    "knowledge": [
+      "Treat Claude's first output as a draft: expect to review it and refine.",
+      "Before iterating, decide what \"good\" looks like (success criteria) and check each draft against it, using real examples of your work.",
+      "Useful feedback is specific: what is wrong, what to keep and what to change (\"cut the intro to two sentences, keep the case study\").",
+      "Change one thing at a time so you know which change helped or hurt.",
+      "Test a prompt on several varied real cases, not just one, before relying on it.",
+      "When a prompt works, save it as a reusable template or standing instruction so the result can be repeated."
+    ],
+    "skills": [
+      "Write success criteria for a task before tweaking the prompt.",
+      "Turn a vague reaction (\"not quite right\") into a concrete follow-up instruction.",
+      "Run small, one-change experiments and compare the results.",
+      "Check a prompt across a varied sample and look for the pattern in the failures."
+    ],
+    "examLens": [
+      "The best next step after a near-miss draft is targeted feedback in the same chat, not starting over or accepting it.",
+      "Iterating without criteria, or changing many things at once, is the realistic mistake to reject.",
+      "A prompt that worked on one example is not proven; test it on a varied set of real cases."
+    ],
+    "traps": [
+      "Saying \"try again\" or \"this is wrong\" with no detail.",
+      "Changing role, examples, format and length all at once, then not knowing what caused the result.",
+      "Resending the same prompt in a new chat and hoping for a better draft."
+    ],
+    "links": [
+      {"label": "Prompt engineering overview", "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview"},
+      {"label": "My prompt isn't giving me a helpful answer", "url": "https://support.claude.com/en/articles/7996857-my-prompt-isn-t-giving-me-a-helpful-answer"}
+    ],
+    "cheat": [
+      ["Draft is close but off in tone or content", "Specific feedback: what to keep, what to change"],
+      ["Don't know if the prompt is good enough", "Define success criteria and test real samples"],
+      ["Many edits at once made it worse", "Go back and change one element at a time"],
+      ["Works on one example, fails on others", "Test a varied set, find the pattern, then refine"],
+      ["Found a prompt that works", "Save it as a template or standing instruction"]
+    ],
+    "diagrams": [
+      {
+        "kind": "flow", "title": "The iteration loop",
+        "loop": "repeat until the criteria are met",
+        "steps": [
+          {"label": "Define success criteria", "note": "What must a good output contain? Write it down first.", "tone": "sky"},
+          {"label": "Run the prompt on real examples", "note": "Several varied cases, not one."},
+          {"label": "Compare output with the criteria", "note": "Name the specific gap, e.g. missing pricing section."},
+          {"label": "Change one thing", "note": "Context, format, example or step order; one at a time.", "tone": "accent"},
+          {"label": "Save what works", "note": "Reusable template or standing instruction.", "tone": "good"}
+        ]
+      },
+      {
+        "kind": "compare", "title": "Feedback that helps vs feedback that doesn't",
+        "columns": [
+          {"head": "Unhelpful", "tone": "warn", "items": ["\"Make it better\"", "\"This isn't what I wanted\"", "\"Be more creative and professional\""]},
+          {"head": "Helpful", "tone": "good", "items": ["\"Cut the intro to two sentences\"", "\"Keep the case study; drop the jargon\"", "\"Lead with the sales results\""]}
+        ]
+      }
+    ]
+  },
+  {
+    "task": "1.4",
+    "knowledge": [
+      "Analysis: give the data or document, the exact question and the criteria. For multi-step reasoning or detailed document analysis, thinking or a higher effort level helps.",
+      "Research: set clear success criteria and ask Claude to check claims across several sources. Web search suits simple current facts; Research suits in-depth, multi-source reports with citations.",
+      "Always review the sources Claude cites; the originals may hold context the summary left out.",
+      "Drafting: state the audience, purpose, key points, requirements and tone, and show an example of the voice you want.",
+      "Brainstorming: ask explicitly for many varied ideas, hold back judgement, then shortlist against criteria in a separate step.",
+      "Complex reasoning that needs no fresh web information calls for thinking or effort, not Research."
+    ],
+    "skills": [
+      "Name the task type before writing the prompt and pick the matching strategy.",
+      "Separate idea generation from evaluation when brainstorming.",
+      "Choose between web search, Research and thinking based on whether you need current facts, many sources or deeper reasoning.",
+      "For analysis, ask Claude to show which figures or passages each conclusion rests on."
+    ],
+    "examLens": [
+      "Match the strategy to the task: divergent (brainstorming) wants quantity and variety; convergent (analysis, drafting) wants criteria and constraints.",
+      "Sourced, in-depth briefings point to Research plus verification of the citations; a single current fact points to web search.",
+      "Distractors apply the wrong mode, such as fact-checking every brainstorm idea or brainstorming an analysis question."
+    ],
+    "traps": [
+      "Using one generic prompt style for every kind of task.",
+      "Asking for \"the best idea\" when the goal is a wide set of options.",
+      "Relying on Claude's built-in knowledge for current events instead of web search with checked sources."
+    ],
+    "links": [
+      {"label": "When to use web search, extended thinking and Research", "url": "https://support.claude.com/en/articles/11095361-when-should-i-use-web-search-extended-thinking-and-research"},
+      {"label": "Prompting best practices", "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"}
+    ],
+    "cheat": [
+      ["Explain a trend in your own data", "Analysis: data + question + criteria; show the reasoning"],
+      ["In-depth sourced briefing", "Research with success criteria; check the citations"],
+      ["One current fact", "Web search, then check the cited source"],
+      ["Customer or staff communication", "Drafting: audience, purpose, key points, tone, example"],
+      ["Need fresh ideas", "Brainstorm many varied options, shortlist separately"]
+    ],
+    "diagrams": [
+      {
+        "kind": "decision", "title": "Match the prompting strategy to the task",
+        "question": "What kind of task is it?",
+        "branches": [
+          {"when": "Analysis of your data or documents", "then": "Give data, question and criteria; ask for the reasoning", "tone": "sky"},
+          {"when": "Research needing many sources", "then": "Research mode, success criteria, check the citations", "tone": "accent"},
+          {"when": "A simple current fact", "then": "Web search, then check the cited source"},
+          {"when": "Drafting for a real audience", "then": "Audience, purpose, key points, tone, example", "tone": "good"},
+          {"when": "Brainstorming", "then": "Ask for many varied ideas; judge in a later step", "tone": "amber"}
+        ]
+      },
+      {
+        "kind": "compare", "title": "Diverge vs converge",
+        "columns": [
+          {"head": "Brainstorming (diverge)", "tone": "amber", "items": ["Ask for quantity and variety", "Few constraints at first", "Judge later, in a separate step"]},
+          {"head": "Analysis and drafting (converge)", "tone": "sky", "items": ["Clear question or audience", "Criteria, format and limits", "Show reasoning or sources"]}
+        ]
+      }
+    ]
+  },
+  {
+    "task": "7.1",
+    "knowledge": [
+      "Most weak outputs trace to a cause: generic means missing context; wrong format means format not stated; missed parts mean too many asks at once; wrong facts mean no source or no verification.",
+      "Claude can hallucinate: confident but wrong details, invented quotes, or confusion about current events. Don't treat it as a single source of truth.",
+      "Claude can also hallucinate its abilities, for example claiming it sent an email or created an external document. It cannot use tools that aren't connected.",
+      "To reduce invented details: let Claude say \"I don't know\", ask it to quote the passages it relies on, and limit it to the documents you provided. Then check.",
+      "If a chat has drifted across many topics, start a new conversation for the new topic.",
+      "Not every problem is a prompt problem. Some need a different feature or model, and work that needs a technical build should go to a Claude Developer or Architect."
+    ],
+    "skills": [
+      "Describe the symptom precisely before changing anything.",
+      "Map the symptom to its most likely cause and apply the matching fix.",
+      "Recognise a claimed action that Claude could not actually have taken.",
+      "Spot when the fix is beyond prompting and escalate it."
+    ],
+    "examLens": [
+      "\"Most likely cause\" questions reward the specific, checkable cause (missing context, too many asks, no source) over blaming the model.",
+      "If Claude claims it did something outside the chat with no connected tool, the answer is that it did not happen.",
+      "Needs like automatic overnight processing or system integration point to escalation, not more prompt tweaking."
+    ],
+    "traps": [
+      "Trusting a confident tone as evidence of accuracy.",
+      "Switching models first, before checking what the prompt was missing.",
+      "Adding capital letters or repeating the instruction instead of fixing the cause."
+    ],
+    "links": [
+      {"label": "Claude falsely claiming it sent emails or made documents", "url": "https://support.claude.com/en/articles/8241188-claude-is-producing-links-that-don-t-work-and-falsely-claiming-that-it-has-sent-emails-or-produced-external-documents-what-s-going-on"},
+      {"label": "Incorrect or misleading responses", "url": "https://support.claude.com/en/articles/8525154-claude-is-providing-incorrect-or-misleading-responses-what-s-going-on"},
+      {"label": "Reduce hallucinations", "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations"}
+    ],
+    "cheat": [
+      ["Claude says it emailed the team, nothing is connected", "It didn't happen; Claude can't act without a connected tool"],
+      ["Summary contains a quote not in the document", "Limit to the document, ask for quotes, allow \"I don't know\""],
+      ["Parts of a long request are skipped", "Too many asks at once: number them or split into steps"],
+      ["Answers mix details from earlier topics", "Start a new conversation for the new topic"],
+      ["Need automatic, integrated processing", "Escalate to a Claude Developer or Architect"]
+    ],
+    "diagrams": [
+      {
+        "kind": "decision", "title": "Symptom → likely cause → fix",
+        "question": "What is wrong with the output?",
+        "branches": [
+          {"when": "Generic, could be for any company", "then": "Missing context: add audience, facts, purpose"},
+          {"when": "Wrong length or inconsistent layout", "then": "State length and structure; add examples"},
+          {"when": "Parts of the request ignored", "then": "Too many asks: numbered steps or a chain"},
+          {"when": "Invented quote, figure or citation", "then": "Ground in sources, ask for quotes, then verify", "tone": "warn"},
+          {"when": "Claims it sent or saved something", "then": "Hallucinated ability: check, act yourself", "tone": "warn"},
+          {"when": "Needs a system integration", "then": "Escalate to a Claude Developer or Architect", "tone": "accent"}
+        ]
+      },
+      {
+        "kind": "flow", "title": "Diagnose before you fix",
+        "steps": [
+          {"label": "Compare output with your criteria", "tone": "sky"},
+          {"label": "Name the specific gap", "note": "\"Risks section missing\", not \"it's bad\"."},
+          {"label": "Find the most likely cause", "note": "Context, format, scope, sources, or not a prompt problem."},
+          {"label": "Apply one targeted fix", "tone": "accent"},
+          {"label": "Retest on real examples", "tone": "good"}
+        ]
+      }
+    ]
+  },
+  {
+    "task": "7.2",
+    "knowledge": [
+      "Feedback comes from your own review, from stakeholders (\"too long\", \"too harsh\") and from results, such as follow-up questions a template keeps causing.",
+      "Turn vague feedback into specific, testable instructions before regenerating.",
+      "Ask for concrete examples behind feedback so you can find the pattern rather than guess.",
+      "Feedback that keeps recurring belongs in standing instructions, such as a Project's instructions, so it applies every time. Context isn't shared between separate chats unless it is saved there.",
+      "If several rewordings haven't helped, change approach: add context or examples, decompose the task, use a different feature, or bring in an expert.",
+      "Keep human review where stakes are high, and fold the reviewer's recurring corrections back into the prompt."
+    ],
+    "skills": [
+      "Translate a stakeholder's reaction into concrete prompt changes.",
+      "Test a revised prompt on a sample before rolling it out to everyone.",
+      "Recognise when it is time to stop rewording and change approach.",
+      "Record what worked so it can be reused."
+    ],
+    "examLens": [
+      "The best response to feedback is specific, testable change, not \"make it less harsh\" or giving up on the task.",
+      "Recurring corrections point to standing instructions or a template, not repeated manual edits.",
+      "When repeated rewording fails, the answer changes the approach (examples, glossary, expert check)."
+    ],
+    "traps": [
+      "Passing vague feedback straight to Claude.",
+      "Rolling out a revised prompt without testing it.",
+      "Telling Claude a rule in one chat and expecting it in every other chat.",
+      "Dropping human review because the drafts have improved."
+    ],
+    "links": [
+      {"label": "My prompt isn't giving me a helpful answer", "url": "https://support.claude.com/en/articles/7996857-my-prompt-isn-t-giving-me-a-helpful-answer"},
+      {"label": "Prompt engineering overview", "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview"}
+    ],
+    "cheat": [
+      ["Stakeholder says \"too harsh\"", "Turn it into specific instructions, then regenerate"],
+      ["Same correction every week", "Put it in standing or Project instructions"],
+      ["Three rewordings, same failure", "Change approach: examples, glossary, expert check"],
+      ["Results show a gap, e.g. missing next steps", "Add the requirement and test on recent cases"],
+      ["Conflicting feedback from two groups", "Ask both for examples, find the pattern, revise and test"]
+    ],
+    "diagrams": [
+      {
+        "kind": "flow", "title": "From feedback to a better result",
+        "steps": [
+          {"label": "Collect the feedback", "note": "Your review, stakeholders, measured results.", "tone": "sky"},
+          {"label": "Ask for concrete examples", "note": "Which outputs, and what exactly was wrong?"},
+          {"label": "Turn it into specific instructions", "note": "\"Open with strengths\" beats \"be less harsh\".", "tone": "accent"},
+          {"label": "Test on a sample", "note": "Before rolling out to the whole team."},
+          {"label": "Make lasting fixes standing", "note": "Project instructions or a saved template.", "tone": "good"}
+        ]
+      },
+      {
+        "kind": "layers", "title": "When rewording isn't enough",
+        "axis": {"label": "bigger change", "dir": "down"},
+        "layers": [
+          {"label": "Reword with specifics", "note": "Concrete criteria instead of vague asks.", "tone": "good"},
+          {"label": "Add context or examples", "note": "Glossary, sample outputs, source documents."},
+          {"label": "Restructure the task", "note": "Break it into steps with checks in between."},
+          {"label": "Change feature, model or effort", "note": "E.g. Research for sourced work, thinking for hard reasoning."},
+          {"label": "Escalate", "note": "Subject expert, or a Claude Developer or Architect for technical builds.", "tone": "accent"}
+        ]
+      }
+    ]
+  },
+  {
+    "task": "7.3",
+    "knowledge": [
+      "Plan the conversation: give all the relevant context in one well-structured message and batch related questions together.",
+      "Keep reused documents and standing instructions in a Project instead of re-pasting them; reused project content also counts less against usage.",
+      "Start a new conversation for a new topic; long conversations, large attachments, tools and higher effort all use more of your allowance.",
+      "Match effort to the task: lower effort or no extended thinking for routine work, more for complex reasoning. A faster, lower-cost model suits simple, high-volume work.",
+      "Turn off web search and connectors you don't need for a task; tools use a lot of context.",
+      "Skills package a repeatable procedure so Claude applies it the same way whenever it's relevant. Efficiency never replaces checking what matters."
+    ],
+    "skills": [
+      "Spot repeated manual effort (re-uploading, re-explaining, re-correcting) and remove it.",
+      "Choose the lightest setup that still meets the quality bar.",
+      "Build reusable templates for recurring outputs.",
+      "Keep verification steps when streamlining a workflow."
+    ],
+    "examLens": [
+      "Re-uploading or re-explaining the same material each time points to a Project with knowledge and instructions.",
+      "Routine work running slowly with every tool and maximum effort switched on: lower effort and turn off unneeded tools.",
+      "\"Optimisations\" that remove human checks on important facts are distractors."
+    ],
+    "traps": [
+      "Using Research or maximum effort for everything \"to be safe\".",
+      "One endless chat for every topic.",
+      "Removing the review step because a template worked before."
+    ],
+    "links": [
+      {"label": "Usage limit best practices", "url": "https://support.claude.com/en/articles/9797557-usage-limit-best-practices"},
+      {"label": "How do usage and length limits work?", "url": "https://support.claude.com/en/articles/11647753-how-do-usage-and-length-limits-work"}
+    ],
+    "cheat": [
+      ["Same brand guide re-uploaded every chat", "Project: guide in knowledge, rules in instructions"],
+      ["Many small related questions, one at a time", "Batch them in one well-structured message"],
+      ["Simple rewording is slow and uses a lot", "Lower effort; turn off unneeded tools"],
+      ["Same procedure run by many people", "Package it as a skill or a shared template"],
+      ["Proposal to skip fact-checking to save time", "Keep the check; streamline elsewhere"]
+    ],
+    "diagrams": [
+      {
+        "kind": "compare", "title": "Wasteful vs efficient habits",
+        "columns": [
+          {"head": "Wasteful", "tone": "warn", "items": ["Re-paste the same guide each chat", "One question per message", "Max effort and every tool on", "One endless chat for all topics"]},
+          {"head": "Efficient", "tone": "good", "items": ["Project knowledge and instructions", "Batch related questions", "Effort and tools matched to task", "New chat for a new topic"]}
+        ]
+      },
+      {
+        "kind": "decision", "title": "Where to save effort",
+        "question": "What is slowing the workflow down?",
+        "branches": [
+          {"when": "Re-explaining the same context", "then": "Project with knowledge and instructions"},
+          {"when": "Rewriting the same prompt", "then": "Saved template, or a skill for a procedure"},
+          {"when": "Routine task feels slow and heavy", "then": "Lower effort; turn off unneeded tools"},
+          {"when": "Chat has grown long and mixed", "then": "Start a new chat for the new topic"},
+          {"when": "Tempted to skip checking key facts", "then": "Keep the check; streamline elsewhere", "tone": "warn"}
+        ]
+      }
+    ]
+  }
+]

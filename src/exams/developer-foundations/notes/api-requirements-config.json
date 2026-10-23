@@ -1,0 +1,165 @@
+[
+  {
+    "task": "2.1",
+    "knowledge": [
+      "Business requirements (\"answer while the customer is on the line\", \"legal must approve\") have to be translated into functional requirements (what the system does) and infrastructure or non-functional requirements (latency, throughput, availability, residency, cost).",
+      "Latency need decides the API: interactive work uses synchronous Messages API calls, usually streamed; latency-tolerant, high-volume work fits the Message Batches API at 50% of standard prices.",
+      "Data residency is an infrastructure setting, not a prompt: the Claude API has the `inference_geo` parameter (for example `\"us\"`) and workspace geo, and cloud platforms offer regional or multi-region endpoints instead of a global one.",
+      "Large, repeated prefixes (manuals, tool definitions) are a cost and latency lever through prompt caching; cache reads cost a fraction of base input price, and on most models they don't count toward input-token rate limits.",
+      "Human review is a workflow requirement enforced by the application (draft state plus approval gate), not something a prompt can guarantee.",
+      "Availability targets call for retries with backoff on transient errors (429, 500, 529) and, where needed, a fallback route such as the same model on another platform."
+    ],
+    "skills": [
+      "Classify each line of a brief as functional or non-functional and name the Claude design choice it implies.",
+      "Split a mixed workload into realtime and batch paths by latency tolerance.",
+      "Pick the residency control that matches the deployment: `inference_geo` on the Claude API, or regional or multi-region endpoints on a cloud platform.",
+      "Estimate whether a cost envelope is reachable using caching, batching and model tier before committing to a design.",
+      "Turn \"a human must approve\" into a blocking state in the workflow, with audit logging."
+    ],
+    "examLens": [
+      "Choose the option that meets the stated requirement with a platform control, not a prompt instruction.",
+      "Interactive latency means realtime plus streaming; anything that can wait hours means batch.",
+      "Mandatory approvals and residency rules are enforced in infrastructure or code, never by asking the model."
+    ],
+    "traps": [
+      "Prompt-level fixes for infrastructure requirements, such as telling Claude to keep data in the EU.",
+      "Over-engineering, such as stuffing an entire knowledge base into every request to \"meet\" a quality requirement.",
+      "Using batch for anything a user is waiting on, or realtime for a huge non-urgent backlog."
+    ],
+    "links": [
+      {"label": "Data residency", "url": "https://platform.claude.com/docs/en/build-with-claude/data-residency"},
+      {"label": "Rate limits", "url": "https://platform.claude.com/docs/en/api/rate-limits"},
+      {"label": "Message Batches API", "url": "https://platform.claude.com/docs/en/build-with-claude/batch-processing"}
+    ],
+    "cheat": [
+      ["User is waiting on screen", "Realtime Messages API with streaming"],
+      ["Inference must stay in one geography", "`inference_geo` on the Claude API, or a regional or multi-region endpoint on a cloud platform"],
+      ["Same long prefix on every request and a tight budget", "Prompt caching on the stable prefix"],
+      ["\"A human must approve before it is sent\"", "Blocking approval step enforced in the application"],
+      ["Occasional 529s and a high availability target", "Backoff retries plus a fallback route"]
+    ]
+  },
+  {
+    "task": "2.2",
+    "knowledge": [
+      "Claude systems follow the usual life cycle: plan, build, test, deploy, operate, maintain and retire; model and prompt changes are releases like any code change.",
+      "Model IDs are pinned versions, but models move through legacy, deprecated and retired states; deprecated models get a recommended replacement and a retirement date, and requests to retired models fail.",
+      "Anthropic gives at least 60 days' notice before retiring publicly released models, and you can audit API usage to find where a deprecated model is still used.",
+      "Regression testing on a model or prompt change means running a fixed evaluation set against the new configuration and comparing with the current baseline.",
+      "Operational signals come from responses: `stop_reason` (for example `max_tokens` for truncation), error rates by type, latency, and usage fields including cache tokens.",
+      "Retirement includes revoking API keys and deleting or archiving stored data such as Files API uploads, which persist in the workspace until deleted."
+    ],
+    "skills": [
+      "Plan a model migration: inventory usages, run regression evals, then roll out in stages before the retirement date.",
+      "Design a canary or percentage rollout with metrics and a quick rollback path.",
+      "Version prompts and models together so any incident can be traced to a configuration and rolled back.",
+      "Pick the right production metric for a symptom, such as the `max_tokens` stop rate for cut-off answers.",
+      "List decommissioning steps for a retired Claude service."
+    ],
+    "examLens": [
+      "Test before deploy: evaluate a new model or prompt against a baseline before production traffic sees it.",
+      "When a regression follows a known change, roll back first, then investigate and extend the test suite.",
+      "Prefer gradual rollout with measurable gates over big-bang switches."
+    ],
+    "traps": [
+      "Waiting for retirement to force a migration, which turns it into an outage.",
+      "Assuming a pinned ID lives forever, or switching to a moving alias to \"avoid\" migrations.",
+      "Patching downstream code to tolerate a regression instead of rolling back the change that caused it."
+    ],
+    "links": [
+      {"label": "Model deprecations", "url": "https://platform.claude.com/docs/en/about-claude/model-deprecations"},
+      {"label": "Define success and build evaluations", "url": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests"},
+      {"label": "Handling stop reasons", "url": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons"}
+    ],
+    "cheat": [
+      ["Upgrading to a newer model", "Run the eval set against both models and compare first"],
+      ["Model deprecation announced", "Audit usage, evaluate the replacement, stage the rollout before retirement"],
+      ["Error spike right after a prompt release", "Roll back to the previous version, add failing cases to the regression suite"],
+      ["Answers cut off mid-sentence", "Monitor the rate of `stop_reason` = `max_tokens`"],
+      ["Decommissioning a bot", "Revoke keys, delete or archive files and logs per policy"]
+    ]
+  },
+  {
+    "task": "2.3",
+    "knowledge": [
+      "The Messages API is stateless: each request carries the `system` prompt and the full `messages` history of `user` and `assistant` turns, made of typed content blocks (text, image, document, tool_use, tool_result, thinking).",
+      "`stop_reason` explains why generation stopped: `end_turn`, `max_tokens`, `stop_sequence`, `tool_use`, `pause_turn`, `refusal` or `model_context_window_exceeded`.",
+      "On `tool_use`, your code runs the tool and replies with a user message whose `tool_result` blocks come first and reference the `tool_use_id`; thinking blocks from that assistant turn must be passed back unmodified.",
+      "Streaming uses server-sent events (`message_start`, `content_block_start`/`delta`/`stop`, `message_delta`, `message_stop`, plus `ping` and `error`); tool input arrives as partial JSON in `input_json_delta`, and errors can arrive after an HTTP 200.",
+      "Prompt caching matches an exact prefix in the order `tools`, `system`, `messages`; a change at one level invalidates it and everything after it. The default lifetime is 5 minutes (refreshed on each hit), with a 1-hour option, and usage reports `cache_creation_input_tokens` and `cache_read_input_tokens`.",
+      "The Message Batches API processes requests independently at 50% of standard prices: results arrive when all finish or after 24 hours, can come back in any order (match by `custom_id`), stay available for 29 days, and don't support `stream`."
+    ],
+    "skills": [
+      "Build a correct tool-use loop, including result ordering and preserving thinking blocks.",
+      "Write a streaming handler that accumulates deltas and handles in-stream `error` events.",
+      "Diagnose cache misses from usage fields and restructure prompts so that changing content sits after the cached prefix.",
+      "Choose between realtime and batch for a workload and design batch polling and result matching.",
+      "Send images as content blocks (base64, URL or Files API `file_id`), placed before the question.",
+      "Call Claude through Amazon Bedrock, Google Cloud or Microsoft Foundry using the platform's auth and model identifiers, and check platform-specific feature support."
+    ],
+    "examLens": [
+      "Read `stop_reason` before trusting a response; `tool_use` and `max_tokens` both mean the turn isn't a finished answer.",
+      "For cost on repeated context, cache the stable prefix; for cost on latency-tolerant volume, batch.",
+      "On third-party platforms, assume the same Messages model but check feature availability, authentication and model ID format."
+    ],
+    "traps": [
+      "Non-existent parameters presented as fixes, such as a stream mode that returns whole JSON or a vision flag.",
+      "Assuming server-side memory of earlier turns or uploaded files scoped per end user.",
+      "Matching batch results by position instead of `custom_id`, or putting variable content such as timestamps before a cache breakpoint."
+    ],
+    "links": [
+      {"label": "Messages API", "url": "https://platform.claude.com/docs/en/api/messages"},
+      {"label": "Streaming messages", "url": "https://platform.claude.com/docs/en/build-with-claude/streaming"},
+      {"label": "Prompt caching", "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"},
+      {"label": "Message Batches API", "url": "https://platform.claude.com/docs/en/build-with-claude/batch-processing"}
+    ],
+    "cheat": [
+      ["Chatbot forgets earlier turns", "Resend full history; the API is stateless"],
+      ["`stop_reason` is `tool_use`", "Run the tool, reply with `tool_result` (first in content) citing the `tool_use_id`"],
+      ["`cache_read_input_tokens` stays at 0", "Something early in the prefix changes each request; move it after the breakpoint"],
+      ["Batch results land on the wrong records", "Join on `custom_id`; order is not guaranteed"],
+      ["Stream dies mid-way with no HTTP error", "Handle `error` events inside the SSE stream"]
+    ]
+  },
+  {
+    "task": "2.6",
+    "knowledge": [
+      "Claude Code settings precedence, highest first: managed settings, command-line `--settings`, `.claude/settings.local.json` (personal, kept out of git), `.claude/settings.json` (shared, committed), then `~/.claude/settings.json` (user).",
+      "CLAUDE.md files (managed, `~/.claude/CLAUDE.md`, `./CLAUDE.md` or `./.claude/CLAUDE.md`, and `CLAUDE.local.md`) are loaded as context, not enforced configuration; use permission rules or hooks to block actions.",
+      "Keep CLAUDE.md concise (about 200 lines per file is the target); move area-specific guidance into path-scoped `.claude/rules/` or skills. `@path` imports organise files but still load into context.",
+      "Each Claude model ID is a pinned snapshot; from the 4.6 generation on, dateless IDs are the snapshot itself. Moving aliases exist for some earlier dated models and for Claude Code shorthands like `opus`, which change over time.",
+      "Plugin dependencies are declared in `plugin.json` `dependencies`; without a version constraint they follow each new release, while a semantic-version range such as `~2.1.0` keeps users on tested versions.",
+      "Prompts are configuration: version them in source control and log prompt version and model ID with every request."
+    ],
+    "skills": [
+      "Place a setting in the right file for its scope: team, personal per project, user-wide or organisation policy.",
+      "Pin a model for an app (full model ID) or for Claude Code (`model` setting or `ANTHROPIC_DEFAULT_*_MODEL`), and restrict choices with `availableModels`.",
+      "Convert a CLAUDE.md \"never do X\" rule into an enforced deny permission or PreToolUse hook.",
+      "Restructure a bloated CLAUDE.md into a short root file plus path-scoped rules.",
+      "Add version constraints to plugin dependencies and widen them only after testing."
+    ],
+    "examLens": [
+      "Shared and committed configuration goes in `.claude/settings.json` and `CLAUDE.md`; personal goes in `.claude/settings.local.json` and `CLAUDE.local.md`.",
+      "If something must be enforced, it belongs in settings, permissions or hooks, not in CLAUDE.md prose.",
+      "Reproducibility comes from pinning model IDs, prompt versions and dependency versions together."
+    ],
+    "traps": [
+      "Treating a dateless model ID as an evergreen alias, or a Claude Code alias like `opus` as fixed.",
+      "Splitting CLAUDE.md with imports and expecting the context cost to drop.",
+      "Invented settings keys or files, such as an `instructions` key in `settings.json`."
+    ],
+    "links": [
+      {"label": "Claude Code settings", "url": "https://code.claude.com/docs/en/settings"},
+      {"label": "How Claude remembers your project (CLAUDE.md)", "url": "https://code.claude.com/docs/en/memory"},
+      {"label": "Model IDs and versioning", "url": "https://platform.claude.com/docs/en/about-claude/models/model-ids-and-versions"},
+      {"label": "Plugin dependencies", "url": "https://code.claude.com/docs/en/plugins/dependencies"}
+    ],
+    "cheat": [
+      ["Team-wide permissions and hooks", "Commit `.claude/settings.json`"],
+      ["Personal per-project override", "`.claude/settings.local.json` or `CLAUDE.local.md`"],
+      ["CLAUDE.md rule ignored but must be enforced", "Deny permission rule or PreToolUse hook"],
+      ["Must stay on one approved model", "Pin the full model ID, not an alias"],
+      ["Dependency release broke your plugin", "Semver range in `plugin.json` `dependencies`"]
+    ]
+  }
+]

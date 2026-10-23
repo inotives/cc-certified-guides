@@ -1,0 +1,2583 @@
+[
+  {
+    "id": "as-wg-001",
+    "scenario": 0,
+    "domain": 4,
+    "task": "4.1",
+    "type": "single",
+    "select": 1,
+    "stem": "An operations manager has 40 pages of stakeholder interview notes about a new employee-onboarding process and wants a requirements list for the steering group. Which approach makes the best use of Claude?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Ask Claude to write the final requirements specification and send it to the steering group, since the notes are already complete."
+      },
+      {
+        "key": "B",
+        "text": "Upload the notes and ask Claude to extract the requirements, group them by theme, cite the interview behind each, and flag conflicts and gaps to confirm with stakeholders."
+      },
+      {
+        "key": "C",
+        "text": "Ask Claude what onboarding requirements companies usually have and use that list instead of the notes."
+      },
+      {
+        "key": "D",
+        "text": "Ask Claude for a one-paragraph summary of the notes and use it as the requirements list."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Claude is strong at turning unstructured notes into structured requirements, but it works best when asked to trace each item to its source and surface conflicts. Confirming the result with stakeholders keeps people in charge of what the process must do.",
+    "distractors": {
+      "A": "Skipping stakeholder confirmation lets missed or invented requirements go straight to decision-makers.",
+      "C": "A generic list ignores the real stakeholder input the organization has already collected.",
+      "D": "A short summary loses the individual, traceable requirements the steering group needs."
+    },
+    "difficulty": 2,
+    "tags": [
+      "requirements",
+      "stakeholders"
+    ]
+  },
+  {
+    "id": "as-wg-002",
+    "scenario": 0,
+    "domain": 4,
+    "task": "4.1",
+    "type": "single",
+    "select": 1,
+    "stem": "A marketing lead has a list of eight possible Claude use cases for the team and wants to choose where to start. What is the most appropriate first choice?",
+    "options": [
+      {
+        "key": "A",
+        "text": "The most visible use case, letting Claude set campaign prices that go live automatically each morning."
+      },
+      {
+        "key": "B",
+        "text": "Whichever use case looked most impressive in a vendor demonstration."
+      },
+      {
+        "key": "C",
+        "text": "All eight at once, so the team sees the full benefit as quickly as possible."
+      },
+      {
+        "key": "D",
+        "text": "A frequent, text-heavy task whose output a team member can easily check before it is used."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "Good first use cases are frequent enough to matter, low in risk, and easy for a person to review. Starting there builds evidence and confidence before moving to higher-stakes work.",
+    "distractors": {
+      "A": "A high-stakes, unreviewed task is the riskiest place to start, not the best.",
+      "B": "A demo shows what is possible, not what fits the team’s work, risk or ability to review.",
+      "C": "Launching everything at once makes it hard to learn, measure or contain problems."
+    },
+    "difficulty": 1,
+    "tags": [
+      "use-case-selection"
+    ]
+  },
+  {
+    "id": "as-wg-003",
+    "scenario": 0,
+    "domain": 4,
+    "task": "4.1",
+    "type": "single",
+    "select": 1,
+    "stem": "Claude’s requirements list for a new expense-approval process includes \"must integrate with the payroll system\", but none of the interviewed stakeholders remembers asking for it. What is the best next step?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Ask Claude to point to where in the notes the requirement came from, and confirm it with stakeholders before keeping it."
+      },
+      {
+        "key": "B",
+        "text": "Keep the requirement, because Claude probably knows industry best practice better than the stakeholders who were interviewed."
+      },
+      {
+        "key": "C",
+        "text": "Discard the whole list and redo the analysis by hand."
+      },
+      {
+        "key": "D",
+        "text": "Send the requirement to IT so they can start building the payroll integration right away."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Claude can introduce requirements that sound sensible but have no source. Tracing each item back to the input and confirming it with stakeholders keeps the requirements grounded in what people actually need.",
+    "distractors": {
+      "B": "Claude can add plausible details that nobody stated, so an untraceable requirement should not be accepted on trust.",
+      "C": "One questionable item calls for checking that item, not throwing away useful work.",
+      "D": "Starting a technical build on an unconfirmed requirement wastes effort and may build the wrong thing."
+    },
+    "difficulty": 2,
+    "tags": [
+      "requirements",
+      "hallucination"
+    ]
+  },
+  {
+    "id": "as-wg-004",
+    "scenario": 0,
+    "domain": 4,
+    "task": "4.1",
+    "type": "single",
+    "select": 1,
+    "stem": "A project manager’s draft requirements for a customer portal say the portal must be \"fast\" and \"easy to use\". How can Claude best help before the requirements are signed off?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Ask Claude to choose specific target numbers for speed and usability and record them as final requirements."
+      },
+      {
+        "key": "B",
+        "text": "Leave the wording as it is, since everyone understands what fast and easy mean."
+      },
+      {
+        "key": "C",
+        "text": "Ask Claude to flag vague requirements and suggest measurable versions for stakeholders to confirm."
+      },
+      {
+        "key": "D",
+        "text": "Ask Claude to make the requirements longer and more formal so they look complete."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Ambiguous requirements are a classic source of rework. Claude can spot them and propose measurable alternatives, but stakeholders must confirm the targets because the decision belongs to them.",
+    "distractors": {
+      "A": "Claude does not know the stakeholders’ expectations, so its numbers should be proposals, not final decisions.",
+      "B": "Vague terms mean different things to different people and cause disputes later.",
+      "D": "More formal wording does not make an ambiguous requirement testable."
+    },
+    "difficulty": 2,
+    "tags": [
+      "requirements",
+      "ambiguity"
+    ]
+  },
+  {
+    "id": "as-wg-005",
+    "scenario": 0,
+    "domain": 4,
+    "task": "4.1",
+    "type": "single",
+    "select": 1,
+    "stem": "A consultant is helping a client analyze a use case: each night, figures from the client’s sales system should flow automatically into a Claude-written report emailed to 200 regional managers. What is the most appropriate role for the consultant?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Build a custom connector to the sales system over the weekend and switch on the nightly emails."
+      },
+      {
+        "key": "B",
+        "text": "Tell the client that Claude cannot be used for reporting of any kind."
+      },
+      {
+        "key": "C",
+        "text": "Use Claude to document the business need, report content and success criteria, and escalate the technical integration to a Claude Developer or Architect."
+      },
+      {
+        "key": "D",
+        "text": "Promise the client the automated reports will be live next week to secure the engagement."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Associates translate business needs into clear requirements and recognize when a solution needs technical implementation. Automated data flows between systems at scale belong to Claude Developers and Architects, and a good requirements brief makes that handoff effective.",
+    "distractors": {
+      "A": "Building and running a production integration is technical work that Associates escalate rather than build themselves.",
+      "B": "The use case is feasible with the right technical build, so ruling it out entirely is wrong.",
+      "D": "Promising a delivery date for a build you cannot own sets the client up for disappointment."
+    },
+    "difficulty": 3,
+    "tags": [
+      "escalation",
+      "scoping"
+    ]
+  },
+  {
+    "id": "as-wg-006",
+    "scenario": 0,
+    "domain": 4,
+    "task": "4.1",
+    "type": "single",
+    "select": 1,
+    "stem": "A customer-service team lead asks Claude, \"Is AI good for customer service?\" and gets a generic answer that doesn’t help. What is the most effective next step?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Describe the team’s size, ticket types, volumes, pain points and constraints, then ask Claude to suggest and rank use cases with their risks."
+      },
+      {
+        "key": "B",
+        "text": "Ask the same question again in a new chat until a better answer appears."
+      },
+      {
+        "key": "C",
+        "text": "Switch to the most capable model, because a generic answer means the model was too weak."
+      },
+      {
+        "key": "D",
+        "text": "Ask Claude to make its answer much longer and more detailed."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Claude can only analyze the situation it is given, so treat it like a capable new colleague who lacks your context. Concrete details about the team and its constraints turn a generic reply into a useful use-case analysis.",
+    "distractors": {
+      "B": "Repeating a context-free question tends to produce the same generic answer.",
+      "C": "The problem is missing context, which a more capable model cannot guess.",
+      "D": "A longer answer to a vague question is still generic."
+    },
+    "difficulty": 1,
+    "tags": [
+      "context",
+      "use-case-analysis"
+    ]
+  },
+  {
+    "id": "as-wg-007",
+    "scenario": 0,
+    "domain": 4,
+    "task": "4.1",
+    "type": "multi",
+    "select": 2,
+    "stem": "An HR operations lead is screening ideas for the department’s first Claude use cases. Which TWO characteristics make an idea a strong candidate? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "The task is repetitive and text-heavy, and the team does it every week."
+      },
+      {
+        "key": "B",
+        "text": "The task makes final decisions about individual employees with no one reviewing them."
+      },
+      {
+        "key": "C",
+        "text": "A team member can easily review the output before it is used."
+      },
+      {
+        "key": "D",
+        "text": "The task needs real-time data moving between three internal systems."
+      },
+      {
+        "key": "E",
+        "text": "Nobody on the team can tell whether the output is right or wrong."
+      }
+    ],
+    "answer": [
+      "A",
+      "C"
+    ],
+    "explanation": "Strong starting use cases combine frequent, time-consuming work with output that is easy to check. Decisions about people, technical integrations and uncheckable output all carry risks that make them poor first choices.",
+    "distractors": {
+      "B": "Final decisions about people need a qualified human reviewer, so this is a poor starting point.",
+      "D": "Real-time integration between systems is a technical build to escalate, not a first Associate use case.",
+      "E": "Output nobody can check cannot be safely used, however fast it is produced."
+    },
+    "difficulty": 2,
+    "tags": [
+      "use-case-selection"
+    ]
+  },
+  {
+    "id": "as-wg-008",
+    "scenario": 0,
+    "domain": 4,
+    "task": "4.2",
+    "type": "single",
+    "select": 1,
+    "stem": "A communications manager needs a thorough report on how five competitors have positioned their sustainability messaging over the past year, with sources. Which approach best fits?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Ask Claude in a plain chat with web search off, relying on what it already knows."
+      },
+      {
+        "key": "B",
+        "text": "Use Claude’s Research feature, then check the cited sources behind the key claims."
+      },
+      {
+        "key": "C",
+        "text": "Ask Claude to write the report from its best guesses and add sources later."
+      },
+      {
+        "key": "D",
+        "text": "Run one quick web search on a single competitor and generalize the result to all five."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Research runs many searches that build on each other and produces an in-depth report with citations, which suits a comprehensive multi-source question. The citations still need checking, because the originals may hold context the summary left out.",
+    "distractors": {
+      "A": "Without searching, Claude cannot gather current information and the report would lack sources.",
+      "C": "Guessed content with sources added afterwards invites invented claims and mismatched citations.",
+      "D": "One search on one competitor cannot support a comprehensive comparison."
+    },
+    "difficulty": 1,
+    "tags": [
+      "research",
+      "citations"
+    ]
+  },
+  {
+    "id": "as-wg-009",
+    "scenario": 0,
+    "domain": 4,
+    "task": "4.2",
+    "type": "single",
+    "select": 1,
+    "stem": "An operations lead wants Claude’s help to speed up a nine-step invoice-approval process that regularly takes two weeks. What is the best first step?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Ask Claude to design an ideal invoice process from scratch, without describing how the current one works."
+      },
+      {
+        "key": "B",
+        "text": "Tell Claude to cut the process to four steps and adopt whatever it proposes."
+      },
+      {
+        "key": "C",
+        "text": "Automate all nine steps with Claude so no one has to touch invoices again."
+      },
+      {
+        "key": "D",
+        "text": "Describe the current steps, owners, times and handoffs, and ask Claude to find bottlenecks and options."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "Process optimization starts with an accurate picture of the current state. With the steps, owners and times in front of it, Claude can spot bottlenecks and propose options that people can then evaluate.",
+    "distractors": {
+      "A": "A design that ignores the current process misses its real constraints and pain points.",
+      "B": "Fixing the answer in advance and adopting it unchecked skips the analysis and the owners’ review.",
+      "C": "Full automation of approvals removes controls and is a technical build, not a first step."
+    },
+    "difficulty": 2,
+    "tags": [
+      "process-optimization"
+    ]
+  },
+  {
+    "id": "as-wg-010",
+    "scenario": 0,
+    "domain": 4,
+    "task": "4.2",
+    "type": "single",
+    "select": 1,
+    "stem": "A project manager asks Claude for a product-launch plan and gets a detailed timeline with dates and owners. The manager never told Claude about team availability or other deadlines. What should the manager do before sharing the plan?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Share it as is, since such a detailed plan shows that Claude has already considered everything relevant."
+      },
+      {
+        "key": "B",
+        "text": "Ask Claude to add even more detail so the plan looks more thorough."
+      },
+      {
+        "key": "C",
+        "text": "Delete the dates and send the plan out undated."
+      },
+      {
+        "key": "D",
+        "text": "Give Claude the real constraints, ask it to list its assumptions, and review them with the team."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "A plan is only as good as the constraints Claude was given. Asking Claude to state its assumptions makes them visible so the team can correct them before anyone relies on the dates.",
+    "distractors": {
+      "A": "Detail is not accuracy; the timeline was built without key constraints.",
+      "B": "More detail on top of unchecked assumptions makes the plan look more reliable than it is.",
+      "C": "Removing dates avoids the problem rather than fixing it, and the team still needs a schedule."
+    },
+    "difficulty": 2,
+    "tags": [
+      "planning",
+      "assumptions"
+    ]
+  },
+  {
+    "id": "as-wg-011",
+    "scenario": 0,
+    "domain": 4,
+    "task": "4.2",
+    "type": "single",
+    "select": 1,
+    "stem": "A Research report from Claude cites a market-growth figure that is central to a recommendation going to the leadership team. What should the analyst do first?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Nothing more, because a cited figure has already been verified by Claude."
+      },
+      {
+        "key": "B",
+        "text": "Open the cited source and confirm the figure and its context."
+      },
+      {
+        "key": "C",
+        "text": "Ask Claude whether it is sure about the figure and keep it if it says yes."
+      },
+      {
+        "key": "D",
+        "text": "Remove the citation so the slide looks cleaner for leadership."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Research results include citations so you can verify them. For a figure that drives a leadership decision, checking the original source guards against misread numbers or missing context.",
+    "distractors": {
+      "A": "A citation shows where Claude looked, not that it summarized the source correctly.",
+      "C": "Claude’s own confirmation is not an independent check.",
+      "D": "Removing the source makes the claim harder to check and hides where it came from."
+    },
+    "difficulty": 1,
+    "tags": [
+      "research",
+      "verification"
+    ]
+  },
+  {
+    "id": "as-wg-012",
+    "scenario": 0,
+    "domain": 4,
+    "task": "4.2",
+    "type": "single",
+    "select": 1,
+    "stem": "An educator wants Claude’s help planning a full semester course, including learning outcomes, units, weekly lessons and assessments. Which approach is most effective?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Ask for the whole semester in one prompt and use whatever Claude produces."
+      },
+      {
+        "key": "B",
+        "text": "Let Claude choose the learning outcomes so the plan reflects best practice."
+      },
+      {
+        "key": "C",
+        "text": "Work in stages: agree the learning outcomes first, then the unit outline, then weekly plans, reviewing each stage before the next."
+      },
+      {
+        "key": "D",
+        "text": "Ask Claude to write the assessments first, then fit the outcomes around them."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Breaking a large planning task into stages lets you check each layer before building on it. Early decisions such as learning outcomes shape everything else, so they deserve review first.",
+    "distractors": {
+      "A": "One huge request is hard to review and errors in early decisions spread through everything.",
+      "B": "Learning outcomes are the educator’s professional decision and frame everything else.",
+      "D": "Starting from assessments reverses the logic of planning and risks misaligned outcomes."
+    },
+    "difficulty": 2,
+    "tags": [
+      "planning",
+      "decomposition"
+    ]
+  },
+  {
+    "id": "as-wg-013",
+    "scenario": 0,
+    "domain": 4,
+    "task": "4.2",
+    "type": "multi",
+    "select": 2,
+    "stem": "Claude has proposed a redesigned customer-onboarding process that removes three steps, including a document check it judged redundant. Which TWO actions should come before rolling it out? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "Roll it out company-wide straight away, since Claude’s analysis was thorough."
+      },
+      {
+        "key": "B",
+        "text": "Pilot the new process with a small group and measure time and quality against the current baseline."
+      },
+      {
+        "key": "C",
+        "text": "Remove the document check immediately because Claude called it redundant."
+      },
+      {
+        "key": "D",
+        "text": "Ask the process owners whether any removed step, such as the document check, exists for compliance or contract reasons."
+      },
+      {
+        "key": "E",
+        "text": "Skip measuring results because the time savings are obvious."
+      }
+    ],
+    "answer": [
+      "B",
+      "D"
+    ],
+    "explanation": "Claude can suggest improvements, but it only knows what it was told, so process owners must check for hidden constraints. A measured pilot then shows whether the new process keeps quality before wider rollout.",
+    "distractors": {
+      "A": "Skipping a pilot risks spreading an untested change everywhere at once.",
+      "C": "Claude cannot see compliance or contract reasons it was never told about.",
+      "E": "Without a baseline comparison, you cannot show the change helped or catch quality losses."
+    },
+    "difficulty": 3,
+    "tags": [
+      "process-optimization",
+      "pilot"
+    ]
+  },
+  {
+    "id": "as-wg-014",
+    "scenario": 0,
+    "domain": 4,
+    "task": "4.3",
+    "type": "single",
+    "select": 1,
+    "stem": "A marketing manager wants a simple internal tool that helps colleagues pick the right brand template for a request. What is the most appropriate way to start?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Ask Claude for a small interactive prototype as an artifact, try it with colleagues, and refine it."
+      },
+      {
+        "key": "B",
+        "text": "Wait until IT has capacity to scope the tool formally."
+      },
+      {
+        "key": "C",
+        "text": "Build a full application connected to the company’s HR and finance systems before anyone has tried it."
+      },
+      {
+        "key": "D",
+        "text": "Write a 50-page specification before trying anything."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Artifacts let Claude create small interactive tools, documents and dashboards that open beside the chat and can be shared. Prototyping and iterating with real users is the fastest way to learn whether an idea is worth scaling.",
+    "distractors": {
+      "B": "A quick prototype tests the idea now, and IT can be involved later if it must scale.",
+      "C": "Connecting company systems is a technical build to escalate, and far beyond what a first test needs.",
+      "D": "A long spec before any testing delays learning what colleagues actually need."
+    },
+    "difficulty": 1,
+    "tags": [
+      "prototype",
+      "artifacts"
+    ]
+  },
+  {
+    "id": "as-wg-015",
+    "scenario": 0,
+    "domain": 4,
+    "task": "4.3",
+    "type": "single",
+    "select": 1,
+    "stem": "Claude’s first draft of a welcome email sequence for new customers is accurate but sounds stiff and formal. What is the most effective next step?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Say what to keep and what to change about the tone, with a short example of the voice you want."
+      },
+      {
+        "key": "B",
+        "text": "Start a new chat with exactly the same prompt and hope the next draft comes out sounding much better."
+      },
+      {
+        "key": "C",
+        "text": "Accept the draft, because accuracy matters more than tone."
+      },
+      {
+        "key": "D",
+        "text": "Switch to a different model before giving any feedback."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Specific feedback is the core of iteration: name what works, what to change, and show an example. Examples are one of the most reliable ways to steer tone and format.",
+    "distractors": {
+      "B": "The same prompt without feedback is likely to reproduce the same tone.",
+      "C": "Tone matters for customer emails, and it is easy to fix with feedback.",
+      "D": "The issue is unclear tone direction, which feedback fixes more directly than a model change."
+    },
+    "difficulty": 1,
+    "tags": [
+      "iteration",
+      "feedback"
+    ]
+  },
+  {
+    "id": "as-wg-016",
+    "scenario": 0,
+    "domain": 4,
+    "task": "4.3",
+    "type": "single",
+    "select": 1,
+    "stem": "A team’s Claude-built prototype for drafting renewal reminders works well. Leadership now wants it to run automatically for every customer, pulling data from the CRM and sending emails. What should the Associate do?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Connect the CRM through a personal account and set up the automatic sending without involving anyone."
+      },
+      {
+        "key": "B",
+        "text": "Publish the prototype publicly so customers can use it themselves."
+      },
+      {
+        "key": "C",
+        "text": "Escalate to a Claude Developer or Architect with the prototype, requirements and test results."
+      },
+      {
+        "key": "D",
+        "text": "Keep running it by hand for every customer and tell leadership automation is impossible."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Associates prove value with prototypes and then recognize when a solution needs technical implementation. Automated, system-connected, customer-facing workflows belong with Developers and Architects, and the prototype and test evidence make the handoff stronger.",
+    "distractors": {
+      "A": "Running a customer-facing automated build through a personal setup bypasses both technical and governance controls.",
+      "B": "An internal prototype is not a finished, governed customer product.",
+      "D": "Automation is feasible with the right technical build; the Associate should hand it over, not rule it out."
+    },
+    "difficulty": 2,
+    "tags": [
+      "escalation",
+      "prototype"
+    ]
+  },
+  {
+    "id": "as-wg-017",
+    "scenario": 0,
+    "domain": 4,
+    "task": "4.3",
+    "type": "single",
+    "select": 1,
+    "stem": "A learning and development lead asks Claude for \"the best design\" for a new-manager training program and gets one design. How can the lead get more value from Claude for this decision?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Accept the single design, since Claude has already identified the best option for the organization."
+      },
+      {
+        "key": "B",
+        "text": "Ask Claude to pick the winner without saying what matters to the organization."
+      },
+      {
+        "key": "C",
+        "text": "Ask Claude to make the single design longer and more detailed."
+      },
+      {
+        "key": "D",
+        "text": "Give the decision criteria and ask for two or three alternative designs with their trade-offs."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "Design decisions improve when you compare options against clear criteria. Claude can quickly generate alternatives and trade-offs, while the lead applies the organization’s priorities to choose.",
+    "distractors": {
+      "A": "Without stated criteria, Claude’s \"best\" is a guess about what matters to the organization.",
+      "B": "Leaving out the criteria hands the judgement to Claude without the information it needs.",
+      "C": "More detail on one option does not help compare alternatives."
+    },
+    "difficulty": 2,
+    "tags": [
+      "solution-design",
+      "options"
+    ]
+  },
+  {
+    "id": "as-wg-018",
+    "scenario": 0,
+    "domain": 4,
+    "task": "4.3",
+    "type": "single",
+    "select": 1,
+    "stem": "Claude created an Excel budget model with working formulas from a department’s cost data. The finance partner will use it to set next year’s budget. What should happen before the model is relied on?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Nothing more, because Claude ran real code to build the spreadsheet and its formulas."
+      },
+      {
+        "key": "B",
+        "text": "Check the key formulas and spot-check totals against figures you know."
+      },
+      {
+        "key": "C",
+        "text": "Check only that the formatting and labels look professional."
+      },
+      {
+        "key": "D",
+        "text": "Ask Claude to confirm in writing that every formula is correct."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Claude can create spreadsheets with working formulas, but generated work still needs review before decisions rest on it. Checking formulas and comparing results with known figures catches logic and data errors.",
+    "distractors": {
+      "A": "Correctly running code can still apply the wrong logic or misread the data.",
+      "C": "Good formatting says nothing about whether the calculations are right.",
+      "D": "Claude’s own assurance is not an independent check of its work."
+    },
+    "difficulty": 2,
+    "tags": [
+      "files",
+      "verification"
+    ]
+  },
+  {
+    "id": "as-wg-019",
+    "scenario": 0,
+    "domain": 4,
+    "task": "4.3",
+    "type": "multi",
+    "select": 2,
+    "stem": "A team is refining a Claude-supported process for producing its weekly status report. Which TWO practices make each round of iteration more reliable? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "Change the prompt, the files and the model all at once to save time."
+      },
+      {
+        "key": "B",
+        "text": "Judge each version by how confident and polished it sounds."
+      },
+      {
+        "key": "C",
+        "text": "Agree on what a good report must include before comparing versions."
+      },
+      {
+        "key": "D",
+        "text": "Delete earlier versions so the team only sees the latest one."
+      },
+      {
+        "key": "E",
+        "text": "Keep a few past weeks’ inputs and retest each revised prompt against them."
+      }
+    ],
+    "answer": [
+      "C",
+      "E"
+    ],
+    "explanation": "Iteration is reliable when there is a clear standard to judge against and a fixed set of test inputs. That makes it possible to tell whether a change really improved the output.",
+    "distractors": {
+      "A": "Changing several things together hides which change made the difference.",
+      "B": "Confident wording is not a measure of accuracy or completeness.",
+      "D": "Earlier versions are needed to compare and to roll back if a change makes things worse."
+    },
+    "difficulty": 3,
+    "tags": [
+      "iteration",
+      "success-criteria"
+    ]
+  },
+  {
+    "id": "as-wg-020",
+    "scenario": 0,
+    "domain": 4,
+    "task": "4.4",
+    "type": "single",
+    "select": 1,
+    "stem": "A support analyst spends six hours a week compiling a ticket-trends report from exports, which a manager then reviews. The team wants a quick, low-risk improvement. Which approach best fits?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Redesign the whole support operation around Claude before trying anything smaller."
+      },
+      {
+        "key": "B",
+        "text": "Claude drafts the report; the analyst checks it and the manager still reviews it."
+      },
+      {
+        "key": "C",
+        "text": "Let Claude produce and publish the report automatically, removing both reviews."
+      },
+      {
+        "key": "D",
+        "text": "Leave the process unchanged, because reports are too important for AI."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Augmenting keeps the existing workflow and its checks while Claude speeds up one step. It is the natural choice for a quick, low-risk win.",
+    "distractors": {
+      "A": "A full redesign is a big, risky change when a simple augmentation meets the goal.",
+      "C": "Removing all review raises risk and is not a low-risk first step.",
+      "D": "A reviewed draft keeps quality while saving time, so avoiding Claude entirely gives up an easy gain."
+    },
+    "difficulty": 1,
+    "tags": [
+      "augment",
+      "workflow"
+    ]
+  },
+  {
+    "id": "as-wg-021",
+    "scenario": 0,
+    "domain": 4,
+    "task": "4.4",
+    "type": "single",
+    "select": 1,
+    "stem": "A recruitment team wants to bring Claude into its candidate-communications workflow. What is the best first step?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Map the current steps and owners, then mark where Claude drafts and where a person checks."
+      },
+      {
+        "key": "B",
+        "text": "Choose which Claude model to use for every task."
+      },
+      {
+        "key": "C",
+        "text": "Buy licences for everyone and tell the team to use Claude in whatever way each person prefers."
+      },
+      {
+        "key": "D",
+        "text": "Ask Claude to send all candidate emails automatically from now on."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Integration starts with understanding the current workflow. Mapping steps and owners shows where Claude adds value and where human checkpoints are needed.",
+    "distractors": {
+      "B": "Model choice comes after you know which tasks Claude will do.",
+      "C": "Unstructured use gives inconsistent results and no clear review points.",
+      "D": "Automating messages to candidates before mapping the workflow skips the human checkpoints."
+    },
+    "difficulty": 1,
+    "tags": [
+      "workflow-mapping"
+    ]
+  },
+  {
+    "id": "as-wg-022",
+    "scenario": 0,
+    "domain": 4,
+    "task": "4.4",
+    "type": "single",
+    "select": 1,
+    "stem": "A customer-relations team uses Claude to draft replies to complaints. Where should the human review step sit in this workflow?",
+    "options": [
+      {
+        "key": "A",
+        "text": "After replies are sent, by reading a sample at the end of each month."
+      },
+      {
+        "key": "B",
+        "text": "Nowhere, once the prompt has been tested on a few complaints."
+      },
+      {
+        "key": "C",
+        "text": "Only when a customer complains about the reply they received."
+      },
+      {
+        "key": "D",
+        "text": "Before each reply is sent to the customer."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "Human checkpoints belong before output reaches customers or affects people. A reviewer at that point can catch errors and tone problems while they can still be fixed.",
+    "distractors": {
+      "A": "Monthly sampling lets errors reach customers before anyone sees them.",
+      "B": "A few good tests do not guarantee every reply will be accurate and appropriate.",
+      "C": "Waiting for a second complaint means review happens after the harm is done."
+    },
+    "difficulty": 1,
+    "tags": [
+      "human-review",
+      "workflow"
+    ]
+  },
+  {
+    "id": "as-wg-023",
+    "scenario": 0,
+    "domain": 4,
+    "task": "4.4",
+    "type": "single",
+    "select": 1,
+    "stem": "A grants team’s process has a writer type up notes from an intake call, an editor reformat them into a template, and then the writer drafts the proposal. When is redesigning this workflow, rather than adding Claude to one step, most appropriate?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Whenever Claude is available, because a redesign always gives bigger gains than augmenting a single step."
+      },
+      {
+        "key": "B",
+        "text": "When the team resists Claude, so the new process forces adoption."
+      },
+      {
+        "key": "C",
+        "text": "When the extra steps only work around manual effort Claude removes, and a pilot shows quality holds."
+      },
+      {
+        "key": "D",
+        "text": "When the team wants to remove the editor’s review to save time."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Redesign fits when existing steps only exist because of a bottleneck that Claude removes. A pilot shows that the new flow keeps quality before the team commits to it.",
+    "distractors": {
+      "A": "Redesign has more risk and change for people; it is not automatically better.",
+      "B": "Using a redesign to force adoption ignores whether the change actually improves the work.",
+      "D": "Dropping review is not a reason to redesign and lowers quality control."
+    },
+    "difficulty": 3,
+    "tags": [
+      "redesign",
+      "workflow"
+    ]
+  },
+  {
+    "id": "as-wg-024",
+    "scenario": 0,
+    "domain": 4,
+    "task": "4.4",
+    "type": "single",
+    "select": 1,
+    "stem": "A team on the company’s Claude Team plan wants Claude to read documents from Google Drive, but the Drive connector is not available to them. What is the most appropriate action?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Connect Google Drive through a personal Claude account and do the team’s work there instead."
+      },
+      {
+        "key": "B",
+        "text": "Download the whole shared drive and upload it to a personal account."
+      },
+      {
+        "key": "C",
+        "text": "Build a custom connector to Google Drive and add it yourself."
+      },
+      {
+        "key": "D",
+        "text": "Ask the organization’s Owner or admin to enable the connector, explaining the business need."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "On Team and Enterprise plans an Owner must enable a connector for the organization before members can use it. Requesting it through the admin keeps the workflow within the organization’s governance.",
+    "distractors": {
+      "A": "A personal account bypasses the organization’s controls and data terms.",
+      "B": "Moving company files into a personal account is a policy and data-handling breach.",
+      "C": "Adding custom connectors to the organization is an Owner decision, not a member workaround."
+    },
+    "difficulty": 2,
+    "tags": [
+      "connectors",
+      "admin"
+    ]
+  },
+  {
+    "id": "as-wg-025",
+    "scenario": 0,
+    "domain": 4,
+    "task": "4.4",
+    "type": "single",
+    "select": 1,
+    "stem": "Five account managers each use Claude for the same weekly client summary, but with their own prompts and reference files, so the summaries vary widely. What is the most effective improvement?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Let each manager keep their own approach, since the variety shows creativity and initiative."
+      },
+      {
+        "key": "B",
+        "text": "Require everyone to switch to the most capable model."
+      },
+      {
+        "key": "C",
+        "text": "Set up a shared Project with agreed instructions and the reference documents."
+      },
+      {
+        "key": "D",
+        "text": "Email the best prompt around once and hope people use it."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Shared Projects give a team the same instructions and knowledge in every chat, which is the main lever for consistent results on a recurring task. It also gives one place to update when things change.",
+    "distractors": {
+      "A": "Client summaries should be consistent, and separate setups cause the variation.",
+      "B": "A stronger model does not make different prompts and files produce consistent results.",
+      "D": "A one-off email doesn’t keep instructions and reference files shared and up to date."
+    },
+    "difficulty": 2,
+    "tags": [
+      "projects",
+      "consistency"
+    ]
+  },
+  {
+    "id": "as-wg-026",
+    "scenario": 0,
+    "domain": 4,
+    "task": "4.4",
+    "type": "multi",
+    "select": 2,
+    "stem": "Three months after adding Claude to the proposal-writing workflow, a manager wants to know whether the change is working. Which TWO measures are most useful? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "Average time per proposal compared with the baseline before Claude."
+      },
+      {
+        "key": "B",
+        "text": "The number of prompts the team sent to Claude."
+      },
+      {
+        "key": "C",
+        "text": "The average length of Claude’s responses."
+      },
+      {
+        "key": "D",
+        "text": "How often reviewers have to send drafts back for corrections."
+      },
+      {
+        "key": "E",
+        "text": "How many staff have heard of Claude."
+      }
+    ],
+    "answer": [
+      "A",
+      "D"
+    ],
+    "explanation": "An integration is judged by outcomes against a baseline: time per task and quality, shown by rework or error rates. Usage and awareness counts don’t tell you whether the workflow actually improved.",
+    "distractors": {
+      "B": "Activity counts show usage, not whether the work got faster or better.",
+      "C": "Longer responses say nothing about quality or time saved.",
+      "E": "Awareness does not show whether the workflow improved."
+    },
+    "difficulty": 2,
+    "tags": [
+      "measurement",
+      "workflow"
+    ]
+  },
+  {
+    "id": "as-wg-027",
+    "scenario": 0,
+    "domain": 4,
+    "task": "4.5",
+    "type": "single",
+    "select": 1,
+    "stem": "A communications director asks whether Claude can replace the team’s fact-checking step for press releases. What is the most accurate response?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Claude speeds up drafting and can flag claims to check, but it can state wrong facts confidently, so human fact-checking stays."
+      },
+      {
+        "key": "B",
+        "text": "Yes, Claude is accurate enough that fact-checking is no longer needed."
+      },
+      {
+        "key": "C",
+        "text": "No, Claude is too unreliable to help with press releases at all."
+      },
+      {
+        "key": "D",
+        "text": "Yes, as long as the team uses the most capable model."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Communicating value honestly means naming both the gains and the limits. Claude can hallucinate facts, so for public statements a human fact-check remains part of the workflow.",
+    "distractors": {
+      "B": "Claude can produce convincing but incorrect content, so this overpromises.",
+      "C": "This undersells real value in drafting and in flagging claims to check.",
+      "D": "No model choice removes the need to verify facts in public statements."
+    },
+    "difficulty": 1,
+    "tags": [
+      "limitations",
+      "stakeholders"
+    ]
+  },
+  {
+    "id": "as-wg-028",
+    "scenario": 0,
+    "domain": 4,
+    "task": "4.5",
+    "type": "single",
+    "select": 1,
+    "stem": "An operations manager is preparing to ask leadership to expand Claude use across the department. What makes the strongest case?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Marketing claims from AI vendors about typical productivity gains."
+      },
+      {
+        "key": "B",
+        "text": "Pilot results against a baseline, plus the review steps used and the limits found."
+      },
+      {
+        "key": "C",
+        "text": "A promise that Claude will let the department cut a fixed share of its headcount next year."
+      },
+      {
+        "key": "D",
+        "text": "A demo built from the best outputs the team has seen so far."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Credible business cases rest on measured results from real work, together with an honest account of limits and safeguards. That lets leadership weigh benefits and risks accurately.",
+    "distractors": {
+      "A": "Generic vendor claims are not evidence about this department’s work.",
+      "C": "An unsupported headline promise overstates what has been shown.",
+      "D": "Hand-picked outputs hide errors and give a misleading picture of quality."
+    },
+    "difficulty": 2,
+    "tags": [
+      "business-case",
+      "stakeholders"
+    ]
+  },
+  {
+    "id": "as-wg-029",
+    "scenario": 0,
+    "domain": 4,
+    "task": "4.5",
+    "type": "single",
+    "select": 1,
+    "stem": "A department head assumes Claude already knows the company’s internal pricing rules because \"it has access to everything.\" How should the Associate explain this?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Claude automatically learns company systems once employees start using it."
+      },
+      {
+        "key": "B",
+        "text": "Claude can see any internal system as long as the company is on a paid plan."
+      },
+      {
+        "key": "C",
+        "text": "Claude only knows what is shared in the chat or project knowledge, or reachable through connected tools within the user’s own permissions."
+      },
+      {
+        "key": "D",
+        "text": "Claude knows the rules but may choose not to reveal them."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Setting accurate expectations includes explaining where Claude’s knowledge comes from. It has no access to tools or systems that are not connected, and connectors follow each person’s own permissions.",
+    "distractors": {
+      "A": "Claude does not gain access to internal systems that are not shared or connected.",
+      "B": "A plan does not give Claude access to systems that aren’t connected.",
+      "D": "This misdescribes Claude; it cannot know rules it was never given."
+    },
+    "difficulty": 2,
+    "tags": [
+      "limitations",
+      "context"
+    ]
+  },
+  {
+    "id": "as-wg-030",
+    "scenario": 0,
+    "domain": 4,
+    "task": "4.5",
+    "type": "single",
+    "select": 1,
+    "stem": "After a Claude-drafted summary with a wrong figure reached a client, a sceptical director wants to stop all Claude use. What is the most constructive response?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Say the problem was the user, not Claude, and change nothing."
+      },
+      {
+        "key": "B",
+        "text": "Acknowledge the error, explain the cause, and show the fact-check step now added for client work."
+      },
+      {
+        "key": "C",
+        "text": "Agree to stop all Claude use in the department, since one error proves AI can’t be trusted with client work."
+      },
+      {
+        "key": "D",
+        "text": "Promise that switching to a newer model means that kind of mistake will never happen again."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Stakeholders need both honesty about limits and confidence that risks are controlled. Showing the added verification step addresses the cause without overpromising or abandoning the benefits.",
+    "distractors": {
+      "A": "Blaming a person without fixing the process leaves the same gap open.",
+      "C": "Stopping all use throws away proven value when a review step can control the risk.",
+      "D": "No model removes hallucinations entirely, so this overpromises."
+    },
+    "difficulty": 3,
+    "tags": [
+      "stakeholders",
+      "incident"
+    ]
+  },
+  {
+    "id": "as-wg-031",
+    "scenario": 0,
+    "domain": 4,
+    "task": "4.5",
+    "type": "single",
+    "select": 1,
+    "stem": "A colleague tells their manager that Claude confirmed it \"sent the summary to the client.\" The team has no email connector turned on. How should the Associate explain what happened?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Claude sent it through its own email service, so the client should have it."
+      },
+      {
+        "key": "B",
+        "text": "The email was probably caught by the client’s spam filter."
+      },
+      {
+        "key": "C",
+        "text": "Claude only says it has done something when the action succeeded."
+      },
+      {
+        "key": "D",
+        "text": "Claude can wrongly claim to have taken an action; without a connected email tool it could not send anything, so the summary should be checked and sent manually."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "Claude can hallucinate its own capabilities, for example claiming it sent an email. Explaining this limit helps colleagues check whether an action really happened rather than trusting the claim.",
+    "distractors": {
+      "A": "Claude has no access to tools that are not connected, so it could not have sent the email.",
+      "B": "This assumes the email exists, when no email tool was connected to send it.",
+      "C": "Claude can misstate its own capabilities, so its claims about actions need checking."
+    },
+    "difficulty": 3,
+    "tags": [
+      "limitations",
+      "capability-hallucination"
+    ]
+  },
+  {
+    "id": "as-wg-032",
+    "scenario": 0,
+    "domain": 4,
+    "task": "4.5",
+    "type": "multi",
+    "select": 2,
+    "stem": "An Associate is preparing a one-page briefing about Claude for department heads. Which TWO statements are accurate to include? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "Claude gives identical answers every time you ask the same question."
+      },
+      {
+        "key": "B",
+        "text": "Claude can produce convincing but incorrect details, so important facts need checking."
+      },
+      {
+        "key": "C",
+        "text": "Claude automatically knows the company’s latest internal policies."
+      },
+      {
+        "key": "D",
+        "text": "Claude removes the need for subject-matter experts to review work."
+      },
+      {
+        "key": "E",
+        "text": "Claude can use company files and tools only when they are shared or connected, within each user’s permissions."
+      }
+    ],
+    "answer": [
+      "B",
+      "E"
+    ],
+    "explanation": "A good briefing sets realistic expectations: Claude can be confidently wrong and only works with what it is given or connected to. Overstating consistency, knowledge or independence leads to misuse.",
+    "distractors": {
+      "A": "Output can vary between runs, so this overstates consistency.",
+      "C": "Claude only knows what it is given or can reach through connected tools.",
+      "D": "Experts are still needed to check facts and judgement, especially for high-stakes work."
+    },
+    "difficulty": 2,
+    "tags": [
+      "limitations",
+      "stakeholders"
+    ]
+  },
+  {
+    "id": "as-wg-033",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.1",
+    "type": "single",
+    "select": 1,
+    "stem": "An HR director wants Claude to decide which employees to include in a restructuring, based on performance data, and notify them automatically. What is the most appropriate response?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Use Claude only to organize the information, with qualified people making each decision."
+      },
+      {
+        "key": "B",
+        "text": "Proceed as planned, since Claude will apply the criteria consistently."
+      },
+      {
+        "key": "C",
+        "text": "Proceed as planned, but ask Claude to explain its reasoning in each notification it sends to staff."
+      },
+      {
+        "key": "D",
+        "text": "Refuse to use Claude for any HR work at all."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Employment decisions are a high-risk use under Anthropic’s Usage Policy, requiring a qualified human who reviews and can change the output before it is acted on. Claude can assist, but people must decide and stay accountable.",
+    "distractors": {
+      "B": "Automated employment decisions about individuals need a qualified human in the loop, not full automation.",
+      "C": "An explanation does not replace a qualified person reviewing and owning each decision.",
+      "D": "Claude can still help with organizing and drafting; a blanket ban gives up appropriate uses."
+    },
+    "difficulty": 2,
+    "tags": [
+      "high-risk",
+      "employment"
+    ]
+  },
+  {
+    "id": "as-wg-034",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.1",
+    "type": "single",
+    "select": 1,
+    "stem": "Which of these requests is the most appropriate for Claude with only normal light review?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Brainstorming theme ideas for an internal team offsite."
+      },
+      {
+        "key": "B",
+        "text": "Deciding whether a specific patient needs urgent medical treatment."
+      },
+      {
+        "key": "C",
+        "text": "Approving or rejecting an individual’s loan application on its own."
+      },
+      {
+        "key": "D",
+        "text": "Writing product reviews posted as if from real customers."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Low-stakes internal tasks such as brainstorming are good fits for Claude with ordinary review. Decisions about individuals in areas such as health or credit, and deceptive content, need far more control or are not appropriate.",
+    "distractors": {
+      "B": "A medical decision about a person is high-risk and needs a qualified human.",
+      "C": "Credit decisions about individuals are high-risk and need qualified human review.",
+      "D": "Fake reviews are deceptive and not an appropriate use at all."
+    },
+    "difficulty": 1,
+    "tags": [
+      "low-risk",
+      "appropriate-use"
+    ]
+  },
+  {
+    "id": "as-wg-035",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.1",
+    "type": "single",
+    "select": 1,
+    "stem": "A marketing team wants to launch a Claude-powered chat assistant on the company website, presented as a human agent called \"Sarah\" to boost engagement. What is the most appropriate guidance?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Keep the human persona, because customers engage more with people."
+      },
+      {
+        "key": "B",
+        "text": "Disclose that it is AI only if a customer asks directly."
+      },
+      {
+        "key": "C",
+        "text": "Launch it quickly through a personal account first, to test how customers react before any review."
+      },
+      {
+        "key": "D",
+        "text": "Users must be told they are talking to AI, and the build should be escalated to Developers."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "Anthropic’s Usage Policy requires consumer-facing chatbots to disclose that users are interacting with AI. A website assistant is also a technical build, which Associates escalate to Developers or Architects.",
+    "distractors": {
+      "A": "Consumer-facing chatbots must disclose that users are talking to AI.",
+      "B": "Disclosure is needed up front, not only when a customer asks.",
+      "C": "A public chatbot built through a personal account bypasses governance and still breaks the disclosure rule."
+    },
+    "difficulty": 2,
+    "tags": [
+      "disclosure",
+      "chatbot"
+    ]
+  },
+  {
+    "id": "as-wg-036",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.1",
+    "type": "single",
+    "select": 1,
+    "stem": "A teacher wants to use Claude to grade 120 student essays and record the final grades directly. What is the most appropriate approach?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Let Claude assign and record the final grades to save time."
+      },
+      {
+        "key": "B",
+        "text": "Have Claude draft feedback against the rubric, with the teacher reviewing and deciding each grade, and tell students AI was used."
+      },
+      {
+        "key": "C",
+        "text": "Avoid Claude entirely, since any AI use in education is prohibited."
+      },
+      {
+        "key": "D",
+        "text": "Use Claude for grading but keep its use hidden from students."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Education outcomes for individuals are a high-risk area that needs a qualified human in the loop and disclosure to those affected. Claude can speed up feedback while the teacher keeps the decision.",
+    "distractors": {
+      "A": "Grades are a high-risk education decision that needs a qualified person to review and decide.",
+      "C": "Claude can appropriately assist with feedback when the teacher stays in control.",
+      "D": "High-risk uses require disclosing AI use to the people affected."
+    },
+    "difficulty": 2,
+    "tags": [
+      "high-risk",
+      "education",
+      "disclosure"
+    ]
+  },
+  {
+    "id": "as-wg-037",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.1",
+    "type": "single",
+    "select": 1,
+    "stem": "Before a product launch, a manager asks a marketing associate to use Claude to write 30 positive reviews to post under made-up customer names. What should the associate do?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Write them, since marketing copy is a normal use of Claude."
+      },
+      {
+        "key": "B",
+        "text": "Write them, but add a small-print label saying they are \"inspired by real customer feedback\"."
+      },
+      {
+        "key": "C",
+        "text": "Decline, explain it is deceptive, and offer to draft requests for honest reviews."
+      },
+      {
+        "key": "D",
+        "text": "Write them using a personal account so the company is not involved."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Fraudulent and deceptive content, such as fake reviews, is outside appropriate use under the Usage Policy. Offering a legitimate alternative keeps the business goal while staying ethical.",
+    "distractors": {
+      "A": "Fake reviews deceive customers and are not ordinary marketing copy.",
+      "B": "A small label does not stop the reviews misleading readers.",
+      "D": "Moving the work to a personal account does not make deceptive content acceptable."
+    },
+    "difficulty": 1,
+    "tags": [
+      "deception",
+      "inappropriate-use"
+    ]
+  },
+  {
+    "id": "as-wg-038",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.1",
+    "type": "single",
+    "select": 1,
+    "stem": "An insurance company’s training team wants Claude to summarize new regulations into a learning guide for staff. A colleague says this is a high-risk use that needs disclosure to customers. Which assessment is most accurate?",
+    "options": [
+      {
+        "key": "A",
+        "text": "The colleague is right, because anything in the insurance industry is high-risk."
+      },
+      {
+        "key": "B",
+        "text": "Internal research and summaries that don’t decide anything about a specific person fall outside the high-risk category, though facts still need checking."
+      },
+      {
+        "key": "C",
+        "text": "It is prohibited, because AI must never be used in regulated industries."
+      },
+      {
+        "key": "D",
+        "text": "It is fine with no checking, because internal documents carry no risk."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "The Usage Policy excludes internal drafting, research and summaries that are not the final recommendation about an individual from its high-risk requirements. Normal accuracy checks still apply, especially for regulatory content.",
+    "distractors": {
+      "A": "High-risk requirements apply to decisions about individuals, not every task in a regulated industry.",
+      "C": "Regulated industries can use Claude; the controls depend on the type of use.",
+      "D": "Internal materials can still contain errors, so the regulatory facts must be verified."
+    },
+    "difficulty": 3,
+    "tags": [
+      "high-risk",
+      "scope"
+    ]
+  },
+  {
+    "id": "as-wg-039",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.1",
+    "type": "single",
+    "select": 1,
+    "stem": "A manager asks an associate to use Claude to analyze employees’ personal social-media posts and rate each person’s \"loyalty\" to the company. What is the most appropriate action?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Decline, because covertly profiling employees invades their privacy, and raise it with HR."
+      },
+      {
+        "key": "B",
+        "text": "Do it, because the posts are public so any analysis is acceptable."
+      },
+      {
+        "key": "C",
+        "text": "Do it, but only for employees the manager is already concerned about."
+      },
+      {
+        "key": "D",
+        "text": "Do it, but keep the results strictly confidential within the management team so no one is hurt."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Surveillance and compromising people’s privacy are among the prohibited uses in the Usage Policy. Raising the request with HR routes it to the people responsible for handling it properly.",
+    "distractors": {
+      "B": "Public availability does not make covert profiling of employees appropriate.",
+      "C": "Targeting specific individuals makes the profiling more harmful, not less.",
+      "D": "Keeping it secret does not remove the privacy harm."
+    },
+    "difficulty": 2,
+    "tags": [
+      "privacy",
+      "surveillance"
+    ]
+  },
+  {
+    "id": "as-wg-040",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.1",
+    "type": "multi",
+    "select": 2,
+    "stem": "Which TWO uses need a qualified person to review Claude’s output before it is acted on and disclosure to the affected person that AI was used? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "Summarizing public industry news for an internal newsletter."
+      },
+      {
+        "key": "B",
+        "text": "Brainstorming taglines for a product campaign."
+      },
+      {
+        "key": "C",
+        "text": "Turning meeting notes into a tidy action list."
+      },
+      {
+        "key": "D",
+        "text": "Recommending whether to approve a specific tenant’s housing application."
+      },
+      {
+        "key": "E",
+        "text": "Recommending whether a specific job applicant moves to interview."
+      }
+    ],
+    "answer": [
+      "D",
+      "E"
+    ],
+    "explanation": "Housing and employment decisions about specific people are high-risk uses in the Usage Policy. They require a qualified human in the loop and disclosure, while routine internal tasks do not.",
+    "distractors": {
+      "A": "Internal summaries that decide nothing about an individual are not high-risk.",
+      "B": "Brainstorming is a low-stakes task with no decision about a person.",
+      "C": "Formatting internal notes is a routine business task, not a high-risk decision."
+    },
+    "difficulty": 2,
+    "tags": [
+      "high-risk",
+      "human-in-the-loop"
+    ]
+  },
+  {
+    "id": "as-wg-041",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.2",
+    "type": "single",
+    "select": 1,
+    "stem": "A clinic operations coordinator wants Claude to find patterns in missed appointments using a spreadsheet that includes patient names, diagnoses, appointment times and clinic locations. What is the most appropriate action?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Upload the full spreadsheet, since the results of the analysis will only be used inside the clinic."
+      },
+      {
+        "key": "B",
+        "text": "Upload it and tell Claude to delete the data after answering."
+      },
+      {
+        "key": "C",
+        "text": "Check policy and keep only appointment times and locations, removing names and diagnoses."
+      },
+      {
+        "key": "D",
+        "text": "Give up on the analysis because any patient data is off limits."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Data minimization means sharing only what the task needs and removing sensitive identifiers. Missed-appointment patterns need times and locations, not names or diagnoses.",
+    "distractors": {
+      "A": "Keeping the analysis internal does not make it acceptable to share health data the task doesn’t need.",
+      "B": "Telling Claude not to keep data is not a policy control over what is shared.",
+      "D": "Removing identifiers lets the analysis go ahead safely."
+    },
+    "difficulty": 2,
+    "tags": [
+      "health-data",
+      "minimization"
+    ]
+  },
+  {
+    "id": "as-wg-042",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.2",
+    "type": "single",
+    "select": 1,
+    "stem": "A team is comparing how Anthropic handles their chats on different Claude plans. Which statement is accurate?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Incognito chats are never stored anywhere, even briefly."
+      },
+      {
+        "key": "B",
+        "text": "Deleting a chat instantly erases it from every system."
+      },
+      {
+        "key": "C",
+        "text": "Typing \"do not remember this\" stops Anthropic storing the chat."
+      },
+      {
+        "key": "D",
+        "text": "By default Anthropic does not train on chats in Team and Enterprise, while on consumer plans it depends on the user’s model-improvement setting."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "Commercial products such as Team and Enterprise are not used for training by default, while consumer plans follow the user’s model-improvement setting. Knowing these defaults helps choose an approved workspace, but it never replaces company policy.",
+    "distractors": {
+      "A": "Incognito chats are still kept for a period, even though they are not saved to history or used for training.",
+      "B": "Deleted chats leave your history straight away but are removed from back-end storage later.",
+      "C": "An instruction in the chat does not change how the service stores data."
+    },
+    "difficulty": 2,
+    "tags": [
+      "training",
+      "data-use"
+    ]
+  },
+  {
+    "id": "as-wg-043",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.2",
+    "type": "single",
+    "select": 1,
+    "stem": "An analyst plans to use an incognito chat in the company’s Claude Enterprise workspace for confidential merger documents so that \"there will be no record.\" What is the most accurate guidance?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Incognito is the right choice, because it deletes everything as soon as the chat closes."
+      },
+      {
+        "key": "B",
+        "text": "Incognito is fine as long as the analyst also deletes the chat afterwards."
+      },
+      {
+        "key": "C",
+        "text": "Use a personal Claude account instead, which keeps the documents off company records."
+      },
+      {
+        "key": "D",
+        "text": "Incognito chats are left out of history and memory but are still retained and appear in org exports, so follow the data policy for merger documents instead."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "Incognito chats aren’t saved to history or memory, but they are kept for a period and on Team and Enterprise are included in organization exports. Whether confidential documents can be used is a policy question, not a privacy-mode setting.",
+    "distractors": {
+      "A": "Incognito chats are still retained for a period, so they are not erased on closing.",
+      "B": "Deleting the chat does not change what the data policy allows for confidential documents.",
+      "C": "Moving confidential company documents to a personal account breaches policy and removes company controls."
+    },
+    "difficulty": 3,
+    "tags": [
+      "incognito",
+      "policy"
+    ]
+  },
+  {
+    "id": "as-wg-044",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.2",
+    "type": "single",
+    "select": 1,
+    "stem": "A marketer wants Claude to suggest customer segments from a file containing email addresses, birth dates, home addresses and purchase categories. What is the best practice?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Share only the fields the segmentation needs, without direct identifiers."
+      },
+      {
+        "key": "B",
+        "text": "Share the whole file so Claude has as much context as possible."
+      },
+      {
+        "key": "C",
+        "text": "Share the file but rename it so it doesn’t look like customer data."
+      },
+      {
+        "key": "D",
+        "text": "Share the file through a personal account to keep it off the company workspace."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Data minimization is a core privacy safeguard: include only what the task needs and remove direct identifiers. Segmenting by purchase behavior does not require emails or home addresses.",
+    "distractors": {
+      "B": "More personal data than the task needs raises risk without improving the result.",
+      "C": "A new file name doesn’t change what personal data is inside.",
+      "D": "A personal account bypasses company controls and makes the exposure worse."
+    },
+    "difficulty": 1,
+    "tags": [
+      "minimization"
+    ]
+  },
+  {
+    "id": "as-wg-045",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.2",
+    "type": "single",
+    "select": 1,
+    "stem": "Before connecting Google Drive to Claude, an employee worries that Claude will be able to read the HR folder that only HR staff can open. What is accurate?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Claude can read every file in the company’s Drive once any connector has been enabled by an admin."
+      },
+      {
+        "key": "B",
+        "text": "Claude can reach only files the employee can already open, so connect only what is needed."
+      },
+      {
+        "key": "C",
+        "text": "Claude can read only files that have been uploaded to a chat."
+      },
+      {
+        "key": "D",
+        "text": "Claude can read the HR folder but is not allowed to repeat what it finds."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Claude inherits each person’s permissions in a connected service. That protects folders the person can’t open, but also means Claude can reach everything they can, which is why connectors should be limited to what is needed.",
+    "distractors": {
+      "A": "Connectors inherit the user’s permissions, so Claude cannot open files the user cannot.",
+      "C": "A connected Drive lets Claude search and read files the user can access, not only uploaded ones.",
+      "D": "Claude cannot access folders the user lacks permission for in the first place."
+    },
+    "difficulty": 3,
+    "tags": [
+      "connectors",
+      "permissions"
+    ]
+  },
+  {
+    "id": "as-wg-046",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.2",
+    "type": "single",
+    "select": 1,
+    "stem": "A recruiter wants Claude to draft offer letters and plans to paste in each candidate’s government ID number and immigration status. What is the most appropriate approach?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Paste the details in, since Claude needs every one of them to write accurate, personalized letters."
+      },
+      {
+        "key": "B",
+        "text": "Paste the details and ask Claude not to store them."
+      },
+      {
+        "key": "C",
+        "text": "Draft the letters with placeholders and add the regulated details afterwards, outside Claude."
+      },
+      {
+        "key": "D",
+        "text": "Write every letter by hand, because Claude cannot be used for HR documents."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Placeholders let Claude handle the wording while regulated identifiers never leave approved systems. This is a practical way to apply data-sensitivity rules without giving up the time savings.",
+    "distractors": {
+      "A": "The letter wording does not depend on the ID numbers, so sharing them adds risk without benefit.",
+      "B": "An instruction to Claude is not a control over sensitive data you have already shared.",
+      "D": "Placeholders let Claude help safely, so avoiding it entirely is unnecessary."
+    },
+    "difficulty": 2,
+    "tags": [
+      "placeholders",
+      "regulated-data"
+    ]
+  },
+  {
+    "id": "as-wg-047",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.2",
+    "type": "single",
+    "select": 1,
+    "stem": "A consultant wants Claude to summarize a client’s supplier contract. The client agreement says client documents may not be processed by third-party AI services without written consent. What is the most appropriate action?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Upload it, because the company’s Claude workspace has strong security."
+      },
+      {
+        "key": "B",
+        "text": "Paraphrase the whole contract into the chat in your own words instead of uploading the actual file."
+      },
+      {
+        "key": "C",
+        "text": "Get the client’s written consent before uploading the contract, or summarize it without Claude."
+      },
+      {
+        "key": "D",
+        "text": "Upload it in an incognito chat so it is not saved to history."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Contractual and regulatory restrictions apply regardless of how secure a tool is. When an agreement requires consent before AI processing, the consultant must get it or do the work without Claude.",
+    "distractors": {
+      "A": "Tool security does not override a contract term that restricts third-party processing.",
+      "B": "A full paraphrase still sends the client’s confidential content to a third-party service.",
+      "D": "Incognito changes history and memory, not the contract’s ban on third-party processing."
+    },
+    "difficulty": 3,
+    "tags": [
+      "contracts",
+      "client-data"
+    ]
+  },
+  {
+    "id": "as-wg-048",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.2",
+    "type": "multi",
+    "select": 2,
+    "stem": "An analyst wants Claude to review a dataset that includes customers’ personal information. Which TWO steps should come before uploading it? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "Check how the data is classified and whether this Claude workspace is approved for that class."
+      },
+      {
+        "key": "B",
+        "text": "Remove or mask the personal identifiers that the analysis does not need."
+      },
+      {
+        "key": "C",
+        "text": "Plan to tell Claude to forget the data once the analysis is done."
+      },
+      {
+        "key": "D",
+        "text": "Rename the file so it does not look like it contains customer data."
+      },
+      {
+        "key": "E",
+        "text": "Use a personal account so the upload does not appear in company records."
+      }
+    ],
+    "answer": [
+      "A",
+      "B"
+    ],
+    "explanation": "Responsible data handling starts with classification and an approved tool, then minimization of what is shared. Workarounds such as renaming files, personal accounts or asking Claude to forget do not protect the data.",
+    "distractors": {
+      "C": "Asking Claude to forget is not a policy control over sharing the data.",
+      "D": "Renaming hides nothing about the contents and helps no one.",
+      "E": "Avoiding company records is a policy breach, not a safeguard."
+    },
+    "difficulty": 2,
+    "tags": [
+      "data-handling",
+      "policy"
+    ]
+  },
+  {
+    "id": "as-wg-049",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.3",
+    "type": "single",
+    "select": 1,
+    "stem": "The company’s Claude Owner has turned off web search for the organization. A sales associate needs current market news for a pitch. What is the most appropriate action?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Use a personal Claude account that has web search turned on, just for this one work task."
+      },
+      {
+        "key": "B",
+        "text": "Borrow a colleague’s login from another team that might have different settings."
+      },
+      {
+        "key": "C",
+        "text": "Ask Claude to pretend it has searched the web and give recent news anyway."
+      },
+      {
+        "key": "D",
+        "text": "Ask the Owner to enable it with a business reason, using approved sources meanwhile."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "On Team and Enterprise, Owners decide which capabilities are on, so a disabled feature reflects a governance choice. The right path is to request it through the proper channel rather than work around it.",
+    "distractors": {
+      "A": "A personal account bypasses the organization’s decision and its data controls.",
+      "B": "Sharing logins breaks access controls and accountability.",
+      "C": "Without search Claude cannot know recent news and may make it up."
+    },
+    "difficulty": 1,
+    "tags": [
+      "admin-controls",
+      "workarounds"
+    ]
+  },
+  {
+    "id": "as-wg-050",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.3",
+    "type": "single",
+    "select": 1,
+    "stem": "Company policy says client deliverables substantially drafted with AI must be labelled as AI-assisted. An associate heavily edited a Claude draft and is short of time. What should the associate do?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Skip the label, because the heavy editing makes it the associate’s own work."
+      },
+      {
+        "key": "B",
+        "text": "Apply the AI-assisted label as the policy requires."
+      },
+      {
+        "key": "C",
+        "text": "Skip it this once and label future deliverables."
+      },
+      {
+        "key": "D",
+        "text": "Ask Claude whether the label is needed and follow its advice."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Following governance standards means applying them consistently, including under time pressure. Disclosure rules exist so clients understand how work was produced.",
+    "distractors": {
+      "A": "The policy applies to work substantially drafted with AI, and editing does not remove that.",
+      "C": "Time pressure does not exempt anyone from a governance requirement.",
+      "D": "The company’s policy, not Claude, decides when labelling is required."
+    },
+    "difficulty": 2,
+    "tags": [
+      "labelling",
+      "policy"
+    ]
+  },
+  {
+    "id": "as-wg-051",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.3",
+    "type": "single",
+    "select": 1,
+    "stem": "Your Claude Enterprise Owner has set organization instructions requiring formal English in all responses. Your own instructions ask for a casual tone. Which applies when they conflict?",
+    "options": [
+      {
+        "key": "A",
+        "text": "The organization instructions, which take precedence over individual ones."
+      },
+      {
+        "key": "B",
+        "text": "Your own instructions, because they are more specific to you and your work."
+      },
+      {
+        "key": "C",
+        "text": "Whichever instructions were saved most recently."
+      },
+      {
+        "key": "D",
+        "text": "Neither, because Claude ignores instructions that conflict."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Organization instructions apply to every conversation in the organization and override individual instructions when they conflict. They are one of the ways an Owner applies standards across the company.",
+    "distractors": {
+      "B": "When they conflict, organization instructions take precedence over individual ones.",
+      "C": "Precedence does not depend on which was saved last.",
+      "D": "Claude does not ignore both; the organization instructions win."
+    },
+    "difficulty": 1,
+    "tags": [
+      "organization-instructions"
+    ]
+  },
+  {
+    "id": "as-wg-052",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.3",
+    "type": "single",
+    "select": 1,
+    "stem": "A team leader wants to use Claude to draft parts of annual performance reviews. The company AI policy doesn’t mention performance reviews. What is the best first step?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Ask the policy owner, such as HR or the governance team, before going ahead."
+      },
+      {
+        "key": "B",
+        "text": "Go ahead, since anything the policy doesn’t mention is allowed."
+      },
+      {
+        "key": "C",
+        "text": "Ask Claude to read the policy and decide whether the use is permitted."
+      },
+      {
+        "key": "D",
+        "text": "Assume it is banned, and quietly drop the idea without raising it with anyone."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "When governance is unclear, the responsible step is to ask the people who own the policy before acting. This matters most for uses involving employees’ personal information and evaluations.",
+    "distractors": {
+      "B": "Silence in a policy is not approval, especially for a sensitive use about people.",
+      "C": "Interpreting company policy is the policy owner’s job, not Claude’s.",
+      "D": "Asking clarifies the rules and may enable a safe, approved way to proceed."
+    },
+    "difficulty": 2,
+    "tags": [
+      "unclear-policy"
+    ]
+  },
+  {
+    "id": "as-wg-053",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.3",
+    "type": "single",
+    "select": 1,
+    "stem": "A team member on the company’s Claude Team plan finds a third-party custom connector, not verified by Anthropic, that could link Claude to a client’s database. What is the most appropriate action?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Add it on a personal Free account and connect the client database there."
+      },
+      {
+        "key": "B",
+        "text": "Route it to the organization’s Owner and IT security review, since only Owners can add custom connectors and unverified ones carry risk."
+      },
+      {
+        "key": "C",
+        "text": "Connect it straight away, because a connector listed online must be safe."
+      },
+      {
+        "key": "D",
+        "text": "Ask Claude to scan the connector and decide whether it is safe to use."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "On Team plans only Owners and Primary Owners can add custom connectors to the organization, and custom connectors can reach services Anthropic has not verified. Routing it through review protects the client data and follows governance.",
+    "distractors": {
+      "A": "Connecting client data through a personal account bypasses every organizational control.",
+      "C": "Custom connectors can reach services not verified by Anthropic, so they need review.",
+      "D": "Security approval belongs to the organization’s review process, not to Claude."
+    },
+    "difficulty": 3,
+    "tags": [
+      "custom-connectors",
+      "third-party"
+    ]
+  },
+  {
+    "id": "as-wg-054",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.3",
+    "type": "single",
+    "select": 1,
+    "stem": "An associate realizes they pasted a customer’s personal details into a Claude chat, against company policy. What is the most appropriate next step?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Delete the chat and tell no one, since no harm has been noticed."
+      },
+      {
+        "key": "B",
+        "text": "Ask Claude to forget the details and treat the matter as closed."
+      },
+      {
+        "key": "C",
+        "text": "Wait a few weeks to see whether anything goes wrong before telling anyone."
+      },
+      {
+        "key": "D",
+        "text": "Report it promptly through the company’s incident or privacy process."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "Governance depends on mistakes being reported quickly so the people responsible can respond. Prompt, honest reporting is part of following organizational AI policy.",
+    "distractors": {
+      "A": "Hiding a breach stops the organization from meeting its obligations and managing the risk.",
+      "B": "Asking Claude to forget is not a substitute for the incident process.",
+      "C": "Delay can make the situation worse and may breach reporting duties."
+    },
+    "difficulty": 1,
+    "tags": [
+      "incident",
+      "reporting"
+    ]
+  },
+  {
+    "id": "as-wg-055",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.3",
+    "type": "multi",
+    "select": 2,
+    "stem": "An associate becomes the Claude champion for their department. Which TWO actions best help colleagues follow the organization’s AI governance? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "Set up one shared login so everyone can get started quickly."
+      },
+      {
+        "key": "B",
+        "text": "Share the approved uses and data-handling rules, with practical examples."
+      },
+      {
+        "key": "C",
+        "text": "Send requests for new use cases or tools through the governance review process."
+      },
+      {
+        "key": "D",
+        "text": "Encourage colleagues to use personal accounts when the work account is restricted."
+      },
+      {
+        "key": "E",
+        "text": "Write a department AI policy that overrides the company policy where it is inconvenient."
+      }
+    ],
+    "answer": [
+      "B",
+      "C"
+    ],
+    "explanation": "A champion helps colleagues understand and apply the rules, and routes new requests through the proper review. Workarounds and local overrides undermine governance.",
+    "distractors": {
+      "A": "Shared logins break access controls and accountability.",
+      "D": "Personal accounts bypass the organization’s controls and data terms.",
+      "E": "A department cannot override company governance on its own."
+    },
+    "difficulty": 1,
+    "tags": [
+      "governance",
+      "champion"
+    ]
+  },
+  {
+    "id": "as-wg-056",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.4",
+    "type": "single",
+    "select": 1,
+    "stem": "A Claude-generated candidate shortlist consistently ranks graduates of a few universities higher, although university is not a job criterion. What is the most appropriate response?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Keep the ranking, since an AI has no personal preferences and must therefore be neutral about schools."
+      },
+      {
+        "key": "B",
+        "text": "Keep the ranking but hide the university names in the final report."
+      },
+      {
+        "key": "C",
+        "text": "Treat it as possible bias: fix the inputs and criteria, and have people review every candidate."
+      },
+      {
+        "key": "D",
+        "text": "Ask Claude whether its ranking is biased and accept its answer."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Claude can reflect biases in its training data or in the information it is given. When a pattern tracks something unrelated to the job, fix the inputs and criteria and keep people reviewing decisions about candidates.",
+    "distractors": {
+      "A": "AI outputs can reflect bias from training data or inputs, so neutrality cannot be assumed.",
+      "B": "Hiding the pattern leaves the biased ranking in place.",
+      "D": "Claude’s self-assessment is not a reliable check for bias."
+    },
+    "difficulty": 2,
+    "tags": [
+      "bias",
+      "hiring"
+    ]
+  },
+  {
+    "id": "as-wg-057",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.4",
+    "type": "single",
+    "select": 1,
+    "stem": "A student asks a tutor whether the written feedback on their essay was produced by AI. The tutor used Claude to draft it and then reviewed and edited it. What is the most ethical response?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Say honestly that Claude helped draft it and that the tutor reviewed and stands behind it."
+      },
+      {
+        "key": "B",
+        "text": "Say the feedback was written entirely by the tutor, since they reviewed and edited the draft."
+      },
+      {
+        "key": "C",
+        "text": "Avoid the question and change the subject."
+      },
+      {
+        "key": "D",
+        "text": "Say the AI wrote it, so the tutor is not responsible for its content."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Transparency about AI use and human accountability go together. Being honest about Claude’s role while owning the reviewed result keeps trust with the people affected.",
+    "distractors": {
+      "B": "Denying AI use is deceptive and damages trust.",
+      "C": "Dodging a direct question about AI use is not transparent.",
+      "D": "The tutor reviewed the feedback and remains responsible for it."
+    },
+    "difficulty": 1,
+    "tags": [
+      "transparency",
+      "education"
+    ]
+  },
+  {
+    "id": "as-wg-058",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.4",
+    "type": "single",
+    "select": 1,
+    "stem": "A Claude-drafted client report contained an error that the associate did not catch before sending. What is the most appropriate response to the client?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Explain that the AI tool made the error, so the firm itself is not at fault for the report."
+      },
+      {
+        "key": "B",
+        "text": "Say nothing unless the client notices."
+      },
+      {
+        "key": "C",
+        "text": "Take responsibility, correct the error, and strengthen the review step for future reports."
+      },
+      {
+        "key": "D",
+        "text": "Stop using Claude for all client work immediately."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Accountability for AI-assisted work stays with the people who use and send it. Owning the error, fixing it and improving review shows responsible use.",
+    "distractors": {
+      "A": "The person who sends a deliverable stays accountable for it, whatever tool helped.",
+      "B": "Hiding a known error is dishonest and leaves the client relying on wrong information.",
+      "D": "Better review addresses the cause; dropping Claude is not the accountable fix."
+    },
+    "difficulty": 2,
+    "tags": [
+      "accountability"
+    ]
+  },
+  {
+    "id": "as-wg-059",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.4",
+    "type": "single",
+    "select": 1,
+    "stem": "A manager notices that junior analysts paste Claude’s analyses into reports without being able to explain the reasoning. What is the most appropriate response?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Allow it, because Claude’s analysis is usually better than a junior analyst’s."
+      },
+      {
+        "key": "B",
+        "text": "Require analysts to check and be able to explain the reasoning in anything they submit, using Claude as an aid rather than a replacement."
+      },
+      {
+        "key": "C",
+        "text": "Ban Claude for junior staff so they learn the old way."
+      },
+      {
+        "key": "D",
+        "text": "Ask Claude to add more explanation so readers don’t need the analyst."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Over-reliance on AI erodes skills and judgement and means errors go unnoticed. People should understand and be able to stand behind the work they submit.",
+    "distractors": {
+      "A": "Uncritical reliance leaves no one able to catch errors or defend the work.",
+      "C": "A ban loses the benefits; the goal is to use Claude with understanding.",
+      "D": "More text from Claude does not mean the analyst understands or has checked it."
+    },
+    "difficulty": 2,
+    "tags": [
+      "over-reliance",
+      "skills"
+    ]
+  },
+  {
+    "id": "as-wg-060",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.4",
+    "type": "single",
+    "select": 1,
+    "stem": "A director plans to redesign the customer-service team’s workflow around Claude and asks the associate to roll it out quietly, without telling staff how their roles will change. What is the most ethical approach?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Roll it out quietly as asked, since staff will adapt once it is in place."
+      },
+      {
+        "key": "B",
+        "text": "Tell staff only after the pilot has finished and the decision is final, to avoid early worry."
+      },
+      {
+        "key": "C",
+        "text": "Refuse to work on the redesign at all."
+      },
+      {
+        "key": "D",
+        "text": "Recommend telling staff openly how their roles will change and involving them in the pilot."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "Introducing AI into workflows affects colleagues, so transparency and involvement are part of responsible use. Staff also know the work best and can spot problems in a pilot.",
+    "distractors": {
+      "A": "Hiding changes that affect people’s work undermines trust and ignores their input.",
+      "B": "Informing people only after the decision denies them any voice in a change to their work.",
+      "C": "The redesign can go ahead ethically with openness and staff involvement."
+    },
+    "difficulty": 3,
+    "tags": [
+      "change-management",
+      "transparency"
+    ]
+  },
+  {
+    "id": "as-wg-061",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.4",
+    "type": "single",
+    "select": 1,
+    "stem": "While drafting persona descriptions for a campaign, Claude produces a description that relies on a stereotype about older customers. What should the marketer do?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Use it, because personas are meant to generalize."
+      },
+      {
+        "key": "B",
+        "text": "Not use it, revise the prompt or the text to remove the stereotype, and report the output with the thumbs-down button."
+      },
+      {
+        "key": "C",
+        "text": "Change a few words so the stereotype is less obvious and use it."
+      },
+      {
+        "key": "D",
+        "text": "Stop using Claude for any marketing content."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Outputs can contain stereotypes, so content about groups of people needs review. Correcting the content and reporting biased or harmful outputs, for example with the thumbs-down button, is the responsible response.",
+    "distractors": {
+      "A": "Generalizing for a persona does not justify a harmful stereotype.",
+      "C": "Lightly disguising a stereotype keeps the bias in the content.",
+      "D": "Correcting and reporting the output is proportionate; abandoning Claude is not needed."
+    },
+    "difficulty": 1,
+    "tags": [
+      "bias",
+      "reporting"
+    ]
+  },
+  {
+    "id": "as-wg-062",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.4",
+    "type": "multi",
+    "select": 2,
+    "stem": "Which TWO practices best reflect ethical use of Claude in a workplace? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "Presenting Claude’s analysis to clients as independent expert research."
+      },
+      {
+        "key": "B",
+        "text": "Letting Claude make unreviewed decisions about people to save time."
+      },
+      {
+        "key": "C",
+        "text": "Telling people when AI meaningfully shaped content or decisions that affect them, as policy requires."
+      },
+      {
+        "key": "D",
+        "text": "Keeping a named person accountable for final decisions that affect people."
+      },
+      {
+        "key": "E",
+        "text": "Assuming Claude’s outputs are neutral because it has no opinions."
+      }
+    ],
+    "answer": [
+      "C",
+      "D"
+    ],
+    "explanation": "Transparency about AI use and human accountability for decisions about people are core to responsible use. Deception, unreviewed automation and assumed neutrality all create ethical risk.",
+    "distractors": {
+      "A": "Passing AI output off as independent expert work is deceptive.",
+      "B": "Decisions about people need a human who reviews and owns them.",
+      "E": "AI outputs can carry bias, so neutrality cannot be assumed."
+    },
+    "difficulty": 2,
+    "tags": [
+      "ethics",
+      "accountability",
+      "transparency"
+    ]
+  }
+]

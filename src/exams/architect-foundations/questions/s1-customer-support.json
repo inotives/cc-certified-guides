@@ -1,0 +1,1191 @@
+[
+  {
+    "id": "s1-001",
+    "scenario": 1,
+    "domain": 1,
+    "task": "1.1",
+    "type": "single",
+    "select": 1,
+    "stem": "Your support agent's loop stops after the first API response whenever that response contains any text block. In about 30% of conversations Claude replies 'Let me pull up that order for you' together with a `lookup_order` tool_use block, the loop exits, the tool never runs, and the customer is left waiting with no answer. What is the most effective fix?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Add a system prompt instruction telling Claude never to emit explanatory text in the same response as a tool call."
+      },
+      {
+        "key": "B",
+        "text": "Keep the text check but add an iteration cap of 10 so the loop has more opportunities to reach a final answer."
+      },
+      {
+        "key": "C",
+        "text": "Use `stop_reason`: run the requested tools and continue while it is 'tool_use', and exit only when it is 'end_turn'."
+      },
+      {
+        "key": "D",
+        "text": "Scan the assistant text for completion phrases such as 'anything else I can help with' and end the loop only when one appears."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "The agentic loop should be driven by `stop_reason`: 'tool_use' means Claude wants a tool executed and the result returned, 'end_turn' means it has finished. Checking for assistant text content as a completion indicator is a named anti-pattern because Claude routinely narrates while calling tools. Switching to `stop_reason` fixes the root cause deterministically.",
+    "distractors": {
+      "A": "This tries to change model behavior to fit a broken loop and still relies on probabilistic compliance instead of using the signal designed for this purpose.",
+      "B": "The loop exits on the first response regardless of the cap, and arbitrary iteration caps are an anti-pattern as a primary stopping mechanism.",
+      "D": "Parsing natural-language signals to decide termination is an explicitly listed anti-pattern and will break whenever Claude phrases its closing differently."
+    },
+    "difficulty": 1,
+    "tags": [
+      "agentic-loop",
+      "stop-reason"
+    ]
+  },
+  {
+    "id": "s1-002",
+    "scenario": 1,
+    "domain": 1,
+    "task": "1.1",
+    "type": "single",
+    "select": 1,
+    "stem": "Logs show the support agent calling `lookup_order` for the same order number four or five times in a row before giving up and apologizing. The orchestration code executes each tool call successfully, but the next request it sends contains only the original customer message plus a system note saying 'Tool executed successfully.' What should you change?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Append Claude's tool_use turn and a tool_result block containing the actual `lookup_order` output to the conversation history before sending the next request."
+      },
+      {
+        "key": "B",
+        "text": "Cache `lookup_order` responses in the MCP server so that the repeated calls for the same order number return faster and cost less."
+      },
+      {
+        "key": "C",
+        "text": "After the first `lookup_order` call, force `tool_choice` to `process_refund` so the agent moves on to the next step in the workflow."
+      },
+      {
+        "key": "D",
+        "text": "Add a system prompt rule stating that the agent must never call the same tool twice with identical arguments within a single customer conversation, under any circumstances."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Tool results must be appended to the conversation history so the model can reason about them on the next iteration. Because the order data never reaches Claude, it rationally requests it again. Returning the tool_use turn and its matching tool_result fixes the root cause.",
+    "distractors": {
+      "B": "Caching makes the redundant calls cheaper but Claude still never sees the data, so the loop of repeated calls continues.",
+      "C": "Forcing a refund step imposes a rigid sequence on high-ambiguity requests and would act on order data the model has never seen.",
+      "D": "Forbidding repeat calls leaves the model without the order data it needs, so it would answer blindly instead of looping."
+    },
+    "difficulty": 2,
+    "tags": [
+      "agentic-loop",
+      "tool-results",
+      "conversation-history"
+    ]
+  },
+  {
+    "id": "s1-003",
+    "scenario": 1,
+    "domain": 1,
+    "task": "1.1",
+    "type": "single",
+    "select": 1,
+    "stem": "A review of 2,000 conversations finds the agent takes many different tool paths: some billing disputes need three `lookup_order` calls across related orders, some account issues never touch orders, and in 3% of refund cases the agent called `process_refund` before `get_customer` had verified the customer. An engineer proposes replacing the model-driven loop with a fixed sequence (`get_customer` -> `lookup_order` -> `process_refund`) for all requests. What is the best response to this proposal?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Adopt the fixed sequence for every request type, since a predictable tool order is easier to audit and removes the 3% ordering failure."
+      },
+      {
+        "key": "B",
+        "text": "Build a request classifier that maps each request category to its own pre-configured tool sequence, then execute that sequence without model involvement."
+      },
+      {
+        "key": "C",
+        "text": "Keep the model-driven loop but cap it at three iterations so the agent cannot wander through unnecessary lookups before resolving the case."
+      },
+      {
+        "key": "D",
+        "text": "Keep model-driven tool selection, and enforce only the must-hold rule (verification before refund) with a programmatic prerequisite gate."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "High-ambiguity support requests benefit from model-driven decision-making, where Claude chooses the next tool based on what each result reveals; the observed path variety is legitimate. The real defect is a single ordering rule with financial consequences, which calls for deterministic programmatic enforcement rather than discarding adaptability. This targets the actual failure without over-constraining every other case.",
+    "distractors": {
+      "A": "A single fixed sequence cannot handle disputes that span multiple orders or account issues with no order, so it would lower first-contact resolution.",
+      "B": "Pre-configured decision trees replace Claude's reasoning with brittle category mappings and add infrastructure when only one ordering rule is broken.",
+      "C": "An arbitrary iteration cap cuts off legitimate multi-order investigations and does nothing to stop refunds before verification."
+    },
+    "difficulty": 3,
+    "tags": [
+      "agentic-loop",
+      "model-driven",
+      "programmatic-enforcement"
+    ]
+  },
+  {
+    "id": "s1-004",
+    "scenario": 1,
+    "domain": 1,
+    "task": "1.4",
+    "type": "single",
+    "select": 1,
+    "stem": "Customers are verified correctly via `get_customer`, but an audit finds that in a small number of cases the agent issued refunds against order numbers the customer typed that actually belong to a different account. The system prompt already says 'Only refund orders that belong to the verified customer.' What change most reliably prevents this?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Move the ownership rule to the top of the system prompt and repeat it in the closing instructions so it carries more weight with the model."
+      },
+      {
+        "key": "B",
+        "text": "Add a programmatic check that blocks `process_refund` unless the order's customer ID matches the verified customer ID returned by `get_customer`."
+      },
+      {
+        "key": "C",
+        "text": "Add few-shot examples in which the agent compares the order's owner against the verified customer before calling `process_refund`."
+      },
+      {
+        "key": "D",
+        "text": "Have the agent ask the customer to type the order number a second time and only proceed when both entries match exactly."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "When a rule must hold every time and violations have financial consequences, prompt instructions alone have a non-zero failure rate. A programmatic prerequisite that blocks `process_refund` until ownership is confirmed against the verified customer ID gives a deterministic guarantee. This is the same gating principle as blocking refunds until verification completes.",
+    "distractors": {
+      "A": "Repositioning the instruction still relies on probabilistic compliance, which is already failing.",
+      "C": "Few-shot examples improve consistency but still cannot guarantee compliance for a rule with financial impact.",
+      "D": "Re-entering the order number confirms the customer typed it consistently, not that the order belongs to their account."
+    },
+    "difficulty": 1,
+    "tags": [
+      "programmatic-enforcement",
+      "prerequisite-gate"
+    ]
+  },
+  {
+    "id": "s1-005",
+    "scenario": 1,
+    "domain": 1,
+    "task": "1.4",
+    "type": "single",
+    "select": 1,
+    "stem": "When the agent calls `escalate_to_human`, the human queue receives messages like 'Customer needs help with a refund, escalated per policy.' Human agents cannot see the conversation transcript and spend an average of six minutes re-interviewing customers, who complain about repeating themselves. What is the most effective improvement?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Attach the complete raw transcript, including every tool result payload returned during the conversation, to each escalation so human agents can search it for whatever detail they need."
+      },
+      {
+        "key": "B",
+        "text": "Before escalating, have the agent ask the customer to write a short description of the problem that will be forwarded to the human agent."
+      },
+      {
+        "key": "C",
+        "text": "Require `escalate_to_human` to carry a structured summary: customer ID, verification status, order IDs, root cause, amounts, actions taken, recommended action."
+      },
+      {
+        "key": "D",
+        "text": "Tighten the escalation criteria so that fewer conversations are escalated, reducing the total time human agents spend re-interviewing customers."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Humans receiving an escalation lack the transcript, so the agent must compile a structured handoff with customer details, root cause analysis, and a recommended action. This lets the human act immediately instead of re-investigating. It directly fixes the information gap that causes re-interviews.",
+    "distractors": {
+      "A": "A raw transcript with verbose tool payloads makes the human dig for facts and still lacks the agent's synthesized root cause and recommendation.",
+      "B": "This shifts the burden back to the customer and loses the verified facts the agent already gathered.",
+      "D": "Escalation volume is a different problem; the escalations that remain would still arrive without usable context."
+    },
+    "difficulty": 2,
+    "tags": [
+      "handoff",
+      "escalation",
+      "structured-summary"
+    ]
+  },
+  {
+    "id": "s1-006",
+    "scenario": 1,
+    "domain": 1,
+    "task": "1.4",
+    "type": "single",
+    "select": 1,
+    "stem": "A customer writes in one message: 'The blender in order #5521 arrived cracked, I was charged twice for my March subscription, and I need my account email changed.' The agent resolves the blender issue, ends its turn, and the customer has to raise the other two items again; 22% of such multi-issue contacts end up as repeat contacts. What design best improves first-contact resolution?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Decompose the message into distinct issues, investigate each (in parallel where independent) with the shared verified-customer context, then send one unified resolution."
+      },
+      {
+        "key": "B",
+        "text": "Open three fresh agent sessions, one per issue, each receiving only the sentence that describes its issue, and send the customer three separate replies."
+      },
+      {
+        "key": "C",
+        "text": "Instruct the agent to politely ask customers to submit one issue per conversation so that each request can be tracked and resolved independently."
+      },
+      {
+        "key": "D",
+        "text": "Detect messages that contain more than one issue and route them straight to `escalate_to_human`, since resolving several unrelated problems at once exceeds the scope of a single automated resolution."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Multi-concern requests should be decomposed into distinct items, investigated using shared context (one verification, one customer record), and then synthesized into a single resolution. This handles all concerns in one contact, which is exactly what first-contact resolution measures. It also avoids redundant verification and conflicting replies.",
+    "distractors": {
+      "B": "Isolated sessions lose the shared verified-customer context, duplicate verification, and fragment the customer experience.",
+      "C": "Pushing decomposition onto the customer guarantees repeat contacts and lowers first-contact resolution.",
+      "D": "Having several issues is not an escalation trigger; these are routine items within the agent's capability."
+    },
+    "difficulty": 3,
+    "tags": [
+      "task-decomposition",
+      "multi-concern",
+      "first-contact-resolution"
+    ]
+  },
+  {
+    "id": "s1-007",
+    "scenario": 1,
+    "domain": 1,
+    "task": "1.5",
+    "type": "single",
+    "select": 1,
+    "stem": "Company policy requires that refunds above $500 be approved by a human. The system prompt states this clearly, yet a monthly audit finds that about 2% of refunds over $500 were processed autonomously by the agent. Finance requires zero exceptions. What should you implement?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Move the $500 rule to the very top of the system prompt in capital letters and repeat it in the final instruction block."
+      },
+      {
+        "key": "B",
+        "text": "Add the $500 approval requirement to the description of `process_refund` so the model reads the rule each time it selects that tool."
+      },
+      {
+        "key": "C",
+        "text": "Have the agent state its confidence that each refund is policy-compliant and require a self-reported score of 9 or higher before it is allowed to call `process_refund`."
+      },
+      {
+        "key": "D",
+        "text": "Add a hook that intercepts outgoing `process_refund` calls, blocks any with an amount above $500, and redirects the case to `escalate_to_human`."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "Business rules that require guaranteed compliance belong in hooks, not prompts. A tool-call interception hook evaluates every `process_refund` call deterministically, blocks those above the threshold, and redirects to the human escalation workflow. Prompt-based approaches only offer probabilistic compliance, which the 2% failure rate already demonstrates.",
+    "distractors": {
+      "A": "Emphasis in the prompt is still probabilistic and cannot deliver the zero-exception guarantee finance requires.",
+      "B": "Tool descriptions guide selection, but they do not enforce a numeric limit on the arguments the model passes.",
+      "C": "Self-reported confidence is poorly calibrated and does not reliably detect policy violations."
+    },
+    "difficulty": 1,
+    "tags": [
+      "hooks",
+      "tool-call-interception",
+      "programmatic-enforcement"
+    ]
+  },
+  {
+    "id": "s1-008",
+    "scenario": 1,
+    "domain": 1,
+    "task": "1.5",
+    "type": "single",
+    "select": 1,
+    "stem": "`get_customer` returns `member_since` as a Unix timestamp, `lookup_order` returns `delivered_at` in ISO 8601, and order status comes back as numeric codes (e.g., 3 = delivered, 7 = returned). The agent sometimes tells customers they are outside the 30-day return window when they are not, and occasionally treats returned orders as delivered. What is the most effective fix?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Add a section to the system prompt explaining how to convert Unix timestamps and listing what each numeric status code means."
+      },
+      {
+        "key": "B",
+        "text": "Add a PostToolUse hook that converts all timestamps to a single ISO date format and maps status codes to readable labels before the model sees the results."
+      },
+      {
+        "key": "C",
+        "text": "Ask the backend teams to rewrite every service behind the MCP tools so they all emit one standard date and status format."
+      },
+      {
+        "key": "D",
+        "text": "Give the agent a date-arithmetic tool that it can call to compute the exact number of days between the delivery date and today before making any return-window decision."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "PostToolUse hooks intercept tool results and transform them before the model processes them, which is the intended pattern for normalizing heterogeneous formats like Unix timestamps, ISO 8601, and numeric status codes. Normalization in code is deterministic, so the model reasons over consistent, readable data. It fixes the problem at the integration boundary you control.",
+    "distractors": {
+      "A": "Asking the model to convert formats in its head is probabilistic and error-prone, which is how the current mistakes arise.",
+      "C": "Rewriting multiple backend services is disproportionate when the format mismatch can be normalized at the tool-result layer.",
+      "D": "A calculator still depends on the model correctly interpreting raw timestamps first, and does nothing about the numeric status codes."
+    },
+    "difficulty": 2,
+    "tags": [
+      "hooks",
+      "posttooluse",
+      "data-normalization"
+    ]
+  },
+  {
+    "id": "s1-009",
+    "scenario": 1,
+    "domain": 1,
+    "task": "1.5",
+    "type": "multi",
+    "select": 2,
+    "stem": "You are reviewing a list of rules for the support agent and deciding which should be implemented as Agent SDK hooks rather than system prompt guidance. Which TWO rules should be implemented as hooks? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "Acknowledge the customer's frustration in a warm, empathetic tone before explaining the next steps."
+      },
+      {
+        "key": "B",
+        "text": "Never allow `process_refund` to execute for an account flagged for fraud review; route those cases to `escalate_to_human`."
+      },
+      {
+        "key": "C",
+        "text": "When a customer is indifferent between store credit and a card refund, suggest store credit first."
+      },
+      {
+        "key": "D",
+        "text": "Mask full payment card numbers in `get_customer` results before the model ever processes them, to meet PCI requirements."
+      },
+      {
+        "key": "E",
+        "text": "Judge whether the written returns policy actually covers an unusual request before promising an outcome."
+      }
+    ],
+    "answer": [
+      "B",
+      "D"
+    ],
+    "explanation": "Hooks are the right tool when a rule requires a deterministic guarantee. Blocking refunds on fraud-flagged accounts is a tool-call interception rule that must hold every time, and masking card numbers in tool results is a PostToolUse transformation that must happen before the model sees the data. Tone, soft preferences, and policy interpretation are judgment calls suited to prompt guidance.",
+    "distractors": {
+      "A": "Tone is a soft behavioral preference where occasional variation is acceptable, so prompt guidance is appropriate.",
+      "C": "This is a non-binding preference that requires conversational judgment rather than a guaranteed rule.",
+      "E": "Interpreting whether policy covers a request is a reasoning task for the model, not something a deterministic hook can evaluate."
+    },
+    "difficulty": 2,
+    "tags": [
+      "hooks",
+      "programmatic-enforcement",
+      "posttooluse"
+    ]
+  },
+  {
+    "id": "s1-010",
+    "scenario": 1,
+    "domain": 1,
+    "task": "1.3",
+    "type": "single",
+    "select": 1,
+    "stem": "For complex billing disputes, the main support agent spawns a `billing-investigator` subagent via the Task tool with the prompt 'Investigate the customer's disputed charge.' The subagent frequently reports 'Unable to identify which charge the customer is disputing,' even though the customer gave the amount, date, and verified account in the main conversation. What is the most effective fix?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Give the subagent the `escalate_to_human` tool so it can hand off disputes it cannot identify instead of returning a failure."
+      },
+      {
+        "key": "B",
+        "text": "Increase the subagent's max_tokens so it has more room to reason through the customer's full account history."
+      },
+      {
+        "key": "C",
+        "text": "Include the verified customer ID, the disputed amount and date, and the relevant order details explicitly in the Task prompt passed to the subagent."
+      },
+      {
+        "key": "D",
+        "text": "Configure the subagent to share the main agent's session memory so it automatically inherits the conversation history."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Subagents operate with isolated context and do not inherit the parent's conversation history, so any facts they need must be passed explicitly in their prompt. Supplying the verified ID and dispute specifics lets the subagent investigate the right charge. This addresses the root cause directly.",
+    "distractors": {
+      "A": "Escalating unidentifiable disputes would push routine cases to humans when the real problem is missing context.",
+      "B": "More output budget does not supply facts the subagent was never given.",
+      "D": "Subagents do not automatically inherit or share the parent's memory; context must be provided in the prompt."
+    },
+    "difficulty": 2,
+    "tags": [
+      "subagents",
+      "context-passing",
+      "task-tool"
+    ]
+  },
+  {
+    "id": "s1-011",
+    "scenario": 1,
+    "domain": 2,
+    "task": "2.1",
+    "type": "single",
+    "select": 1,
+    "stem": "Customers often ask 'Where is my refund?' about refunds already issued. Logs show the agent calling `process_refund` for these questions; the call fails validation because no amount is given, the agent apologizes for a 'technical issue,' and the customer leaves confused. The description of `process_refund` is 'Handles refunds.' What is the most effective first step?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Rewrite the `process_refund` description: it starts a new, irreversible refund, requires an order ID and amount, and is not for status checks, which use `lookup_order`."
+      },
+      {
+        "key": "B",
+        "text": "Remove `process_refund` from the agent and require every refund request to go through `escalate_to_human` until misrouting stops."
+      },
+      {
+        "key": "C",
+        "text": "Add a routing layer that scans each customer message for the word 'refund' and pre-selects the correct tool before the model is called."
+      },
+      {
+        "key": "D",
+        "text": "Leave the tool description unchanged and add several few-shot examples to the system prompt showing refund status questions being answered with `lookup_order` instead of `process_refund`."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Tool descriptions are the primary mechanism the model uses to choose tools, and 'Handles refunds' gives no basis for distinguishing initiating a refund from checking one. Stating the tool's purpose, inputs, and when to use an alternative fixes the root cause cheaply. That is the proportionate first step before adding examples or infrastructure.",
+    "distractors": {
+      "B": "Removing the tool would wreck first-contact resolution for legitimate refunds to fix a description problem.",
+      "C": "A keyword router is over-engineered and would misroute just as easily, since both intents contain the word 'refund'.",
+      "D": "Examples add token overhead while leaving the vague description, which is the root cause, unfixed."
+    },
+    "difficulty": 1,
+    "tags": [
+      "tool-descriptions",
+      "tool-selection"
+    ]
+  },
+  {
+    "id": "s1-012",
+    "scenario": 1,
+    "domain": 2,
+    "task": "2.1",
+    "type": "single",
+    "select": 1,
+    "stem": "After a prompt update, the agent started calling `get_customer` repeatedly for messages like 'My account shows a duplicate charge on order #8812,' instead of calling `lookup_order`. The `lookup_order` description is detailed and clearly covers order-number queries. The new system prompt includes: 'Whenever the customer mentions their account, start by calling get_customer.' What should you do first?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Expand the `lookup_order` description further, adding more example queries that mention accounts alongside order numbers."
+      },
+      {
+        "key": "B",
+        "text": "Force `tool_choice` to `lookup_order` whenever a regular expression detects an order number in the customer's message."
+      },
+      {
+        "key": "C",
+        "text": "Merge `get_customer` and `lookup_order` into a single lookup tool that accepts any identifier, including emails and order numbers, and decides internally which backend to query."
+      },
+      {
+        "key": "D",
+        "text": "Revise the system prompt instruction so that the word 'account' no longer triggers `get_customer`, and rely on the tool descriptions for selection."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "Keyword-sensitive system prompt instructions can create unintended tool associations that override well-written tool descriptions. The regression appeared with the new instruction, so the instruction is the root cause. Rewording it restores the descriptions as the primary selection mechanism.",
+    "distractors": {
+      "A": "The description is already good; the prompt instruction overrides it, so more description text does not remove the conflict.",
+      "B": "Regex-driven forced selection bypasses the model's understanding and would break mixed requests that need other tools.",
+      "C": "Consolidating tools is a larger architectural change that ignores the actual cause, a misleading prompt instruction."
+    },
+    "difficulty": 2,
+    "tags": [
+      "tool-descriptions",
+      "system-prompt",
+      "keyword-sensitivity"
+    ]
+  },
+  {
+    "id": "s1-013",
+    "scenario": 1,
+    "domain": 2,
+    "task": "2.1",
+    "type": "single",
+    "select": 1,
+    "stem": "You added `get_billing_history` alongside `lookup_order`. Both descriptions read 'Retrieves transaction details for a customer.' Since then, 35% of subscription-charge disputes are routed to `lookup_order`, which returns only physical product orders, and the agent tells customers no matching charge exists. What is the most effective fix?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Add a system prompt instruction asking the agent to think carefully about which of the two transaction tools fits each request before calling one."
+      },
+      {
+        "key": "B",
+        "text": "Rename `get_billing_history` to `get_subscription_charges` and rewrite both descriptions to state their data sources, inputs, and when to use each versus the other."
+      },
+      {
+        "key": "C",
+        "text": "Have the agent call both tools for every transaction question and merge the results before responding to the customer."
+      },
+      {
+        "key": "D",
+        "text": "Combine both into one generic `get_transactions` tool with no type parameter that queries every billing and order backend and returns all matching records for the customer."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Near-identical descriptions cause misrouting because the model has nothing to differentiate the tools. Renaming and rewriting descriptions to eliminate functional overlap, including boundaries for when to use each, addresses the root cause. This is the guide's recommended pattern for overlapping tools.",
+    "distractors": {
+      "A": "A generic 'think carefully' instruction gives the model no new information to distinguish two identically described tools.",
+      "C": "Calling both tools every time doubles tool output in context and masks the description problem instead of fixing it.",
+      "D": "Moving toward a more generic tool runs counter to splitting tools into purpose-specific contracts and floods context with irrelevant records."
+    },
+    "difficulty": 3,
+    "tags": [
+      "tool-descriptions",
+      "tool-naming",
+      "misrouting"
+    ]
+  },
+  {
+    "id": "s1-014",
+    "scenario": 1,
+    "domain": 2,
+    "task": "2.2",
+    "type": "multi",
+    "select": 2,
+    "stem": "`process_refund` returns `{\"isError\": true, \"content\": \"Refund failed\"}` for every failure. Logs show the agent retrying three times when an order is outside the return window, then telling the customer there is 'a technical issue,' while genuine payment-gateway timeouts are sometimes not retried at all. Which TWO changes to the tool's error responses best address this? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "Include an `errorCategory` (transient, validation, business, permission) and an `isRetryable` boolean in every error response."
+      },
+      {
+        "key": "B",
+        "text": "Have the MCP server retry every failure three times internally and then return the same generic 'Refund failed' message."
+      },
+      {
+        "key": "C",
+        "text": "For policy violations, return `isRetryable: false` with a customer-friendly explanation, e.g., 'Delivered 47 days ago; the return window is 30 days.'"
+      },
+      {
+        "key": "D",
+        "text": "Return policy violations as successful results with an empty refund object so the agent stops retrying them."
+      },
+      {
+        "key": "E",
+        "text": "Add a system prompt instruction telling the agent never to retry any failed `process_refund` call."
+      }
+    ],
+    "answer": [
+      "A",
+      "C"
+    ],
+    "explanation": "Uniform error responses prevent the agent from making appropriate recovery decisions. Structured metadata with an error category and retryability lets the agent retry transient gateway timeouts and stop on non-retryable ones. For business-rule violations, a non-retryable flag plus a customer-friendly explanation lets the agent tell the customer the real reason.",
+    "distractors": {
+      "B": "Retrying policy violations is wasted work, and the generic message still hides the reason from the agent.",
+      "D": "Marking a failure as success suppresses the error, so the agent may tell the customer the refund went through.",
+      "E": "A blanket no-retry rule would abandon transient failures that a retry would resolve."
+    },
+    "difficulty": 2,
+    "tags": [
+      "structured-errors",
+      "isError",
+      "retryable"
+    ]
+  },
+  {
+    "id": "s1-015",
+    "scenario": 1,
+    "domain": 2,
+    "task": "2.2",
+    "type": "single",
+    "select": 1,
+    "stem": "`get_customer` returns an empty result both when no account matches the email and when the CRM times out. During a 20-minute CRM degradation, the agent told 400 customers 'We have no account under that email,' and dozens created duplicate accounts. What is the best fix?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Instruct the agent to retry `get_customer` up to three times whenever it returns an empty result, and only then tell the customer that no account exists under that email."
+      },
+      {
+        "key": "B",
+        "text": "Have the agent tell customers on any empty result that their account could not be found or that a system issue may be occurring."
+      },
+      {
+        "key": "C",
+        "text": "Return timeouts as errors with `isError`, a transient category, and `isRetryable: true`; keep the empty success result only for genuine no-match queries."
+      },
+      {
+        "key": "D",
+        "text": "Route every empty `get_customer` result to `escalate_to_human` so a person can determine whether the account truly does not exist."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Access failures and valid empty results must be distinguishable: a timeout needs a retry decision, while a successful query with no matches is a real answer. Returning structured transient errors for timeouts lets the agent retry or tell the customer about a temporary problem, without mislabeling an outage as 'no account.' Only the tool can make this distinction reliably.",
+    "distractors": {
+      "A": "Blind retries waste calls on genuine no-match results and still cannot tell the agent which situation it is in.",
+      "B": "A hedged message confuses customers in both cases because the agent still cannot distinguish the two situations.",
+      "D": "Escalating every empty result floods human agents with routine no-match cases and hurts first-contact resolution."
+    },
+    "difficulty": 3,
+    "tags": [
+      "structured-errors",
+      "empty-results",
+      "transient-errors"
+    ]
+  },
+  {
+    "id": "s1-016",
+    "scenario": 1,
+    "domain": 2,
+    "task": "2.3",
+    "type": "single",
+    "select": 1,
+    "stem": "To save integration effort, the support agent was connected to a company-wide MCP server exposing 19 tools, including inventory adjustments, shipping-label creation, marketing preferences, and warehouse transfers. Since then, wrong-tool calls rose from 3% to 14% of conversations. What is the most effective fix?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Add a system prompt section explaining when to use each of the 19 tools, with one example customer request per tool so the agent can match requests to tools."
+      },
+      {
+        "key": "B",
+        "text": "Restrict the agent to the tools its support role needs, such as the four core tools plus any truly high-frequency support tool."
+      },
+      {
+        "key": "C",
+        "text": "Move to a model with a larger context window so it has enough room to consider all 19 tool definitions."
+      },
+      {
+        "key": "D",
+        "text": "Set `tool_choice` to 'any' so that the model must commit to one of the available tools on every turn."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Giving an agent far more tools than its role needs degrades selection reliability by increasing decision complexity, and out-of-role tools invite misuse. Scoping the tool set to the support role removes the irrelevant options at the source. It is a low-effort fix that addresses the cause.",
+    "distractors": {
+      "A": "More prompt guidance adds tokens while leaving the excess options that cause the confusion.",
+      "C": "Selection errors come from decision complexity, not lack of context space.",
+      "D": "'any' only forces some tool call; it does nothing to improve which tool is chosen and blocks plain-text replies to customers."
+    },
+    "difficulty": 1,
+    "tags": [
+      "tool-distribution",
+      "scoped-tools"
+    ]
+  },
+  {
+    "id": "s1-017",
+    "scenario": 1,
+    "domain": 2,
+    "task": "2.3",
+    "type": "single",
+    "select": 1,
+    "stem": "Each session begins with the authenticated customer's email. In some sessions the agent answers the first question from general knowledge (for example 'Our return window is 30 days') without loading the customer record, which is wrong for premium members who have 60 days. You want the customer record loaded before anything else, while still letting the agent choose tools and reply normally afterward. What should you configure?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Set `tool_choice` to 'any' on every request so that the agent always calls a tool instead of answering from general knowledge."
+      },
+      {
+        "key": "B",
+        "text": "Force `tool_choice` to `get_customer` on every request so the customer record is always freshly loaded before the agent responds."
+      },
+      {
+        "key": "C",
+        "text": "Keep `tool_choice` as 'auto' and strengthen the system prompt with a rule to always load the customer record first."
+      },
+      {
+        "key": "D",
+        "text": "Force `tool_choice` to `get_customer` on the first request only, then use 'auto' for subsequent turns."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "Forced tool selection guarantees a specific tool is called first; subsequent steps are then handled in follow-up turns with normal selection. Forcing `get_customer` only on the first request ensures the record is in context before any answer, while 'auto' afterward preserves the agent's ability to choose tools and to reply in text.",
+    "distractors": {
+      "A": "'any' on every turn prevents the agent from ever returning a plain-text reply, and does not guarantee `get_customer` is the tool chosen.",
+      "B": "Forcing the same tool on every turn blocks `lookup_order`, `process_refund`, and normal replies.",
+      "C": "A prompt rule is probabilistic and is the approach already failing in some sessions."
+    },
+    "difficulty": 2,
+    "tags": [
+      "tool-choice",
+      "forced-tool"
+    ]
+  },
+  {
+    "id": "s1-018",
+    "scenario": 1,
+    "domain": 5,
+    "task": "5.1",
+    "type": "single",
+    "select": 1,
+    "stem": "In long conversations, older turns are summarized to save context. After summarization, the agent told one customer their refund would be 'around $80' when it was $84.37, and forgot that it had promised another customer a replacement by Friday. What is the most effective fix?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Keep exact transactional facts (amounts, dates, order numbers, statuses, commitments) in a persistent case-facts block included in every prompt, outside the summary."
+      },
+      {
+        "key": "B",
+        "text": "Summarize the history more often so that each summary covers a shorter stretch of conversation and loses less detail."
+      },
+      {
+        "key": "C",
+        "text": "Disable summarization entirely and send the full unsummarized history on every turn, including all raw tool outputs, so that no detail from earlier turns can ever be lost."
+      },
+      {
+        "key": "D",
+        "text": "Have the agent ask the customer to restate the key amounts and dates whenever it is about to take an action."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Progressive summarization tends to compress exact numbers, dates, and customer-facing commitments into vague text. Keeping these facts in a persistent case-facts block outside the summarized history preserves them exactly on every turn. Summarization can then continue to manage context size safely.",
+    "distractors": {
+      "B": "More frequent summarization means more compression passes and more chances to blur exact values.",
+      "C": "Long sessions will eventually exhaust the context with verbose tool outputs, and important facts get lost in the middle.",
+      "D": "Making customers repeat information hurts their experience and undermines trust in the agent."
+    },
+    "difficulty": 1,
+    "tags": [
+      "case-facts",
+      "progressive-summarization",
+      "context-management"
+    ]
+  },
+  {
+    "id": "s1-019",
+    "scenario": 1,
+    "domain": 5,
+    "task": "5.1",
+    "type": "single",
+    "select": 1,
+    "stem": "`lookup_order` returns about 45 fields per order, including warehouse bin locations, carrier routing codes, and tax jurisdiction IDs. Customers disputing charges across several orders trigger 8-10 lookups, and by late in these conversations the agent forgets details the customer gave early on. Only about six fields (status, items, amounts, dates, return eligibility) matter for support decisions. What is the most effective fix?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Add a system prompt instruction telling the agent to ignore warehouse, routing, and tax fields when reading order lookup results."
+      },
+      {
+        "key": "B",
+        "text": "Automatically start a fresh session after every five tool calls, carrying over a brief free-text summary of the conversation so far so the context never fills up."
+      },
+      {
+        "key": "C",
+        "text": "Trim `lookup_order` results to the support-relevant fields (for example in a PostToolUse hook) before they are added to the conversation context."
+      },
+      {
+        "key": "D",
+        "text": "Limit customers to discussing a maximum of three orders per conversation and ask them to open a new contact for the rest."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Tool results accumulate in context and consume tokens far out of proportion to their relevance. Trimming verbose outputs to the fields that matter before they enter context keeps the conversation focused and preserves earlier customer details. It addresses the root cause without changing the customer experience.",
+    "distractors": {
+      "A": "Telling the model to ignore fields does not remove them; they still consume context.",
+      "B": "Arbitrary session resets with lossy free-text summaries drop details and disrupt conversational coherence.",
+      "D": "Capping orders per contact pushes the problem onto customers and lowers first-contact resolution."
+    },
+    "difficulty": 2,
+    "tags": [
+      "context-trimming",
+      "tool-output",
+      "posttooluse"
+    ]
+  },
+  {
+    "id": "s1-020",
+    "scenario": 1,
+    "domain": 5,
+    "task": "5.2",
+    "type": "single",
+    "select": 1,
+    "stem": "A customer contacting by chat gives only their name, 'Maria Gonzalez.' `get_customer` returns three matching accounts. The agent picks the account with the most recent order activity and proceeds, which turns out to be the wrong account in about 1 of 6 such cases. How should the agent handle multiple matches?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Choose the match whose shipping address is closest to the customer's IP-based location, since location is the strongest signal available in a chat session."
+      },
+      {
+        "key": "B",
+        "text": "Ask the customer for an additional identifier, such as their email address or an order number, and use it to determine the correct account."
+      },
+      {
+        "key": "C",
+        "text": "Escalate every multiple-match case to a human agent, who can review the accounts and identify the correct one."
+      },
+      {
+        "key": "D",
+        "text": "Have the agent rate its confidence in the selected account and proceed only if the score is 8 out of 10 or higher."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "When a lookup returns multiple matches, the agent should request additional identifiers instead of choosing by heuristic. A single clarifying question resolves the ambiguity reliably and keeps the case in automated handling. Any heuristic choice risks acting on the wrong customer's data.",
+    "distractors": {
+      "A": "This is still heuristic selection, which will sometimes pick the wrong account.",
+      "C": "Escalating a case that one clarifying question would resolve hurts first-contact resolution needlessly.",
+      "D": "Self-reported confidence is poorly calibrated and does not make a heuristic choice more correct."
+    },
+    "difficulty": 1,
+    "tags": [
+      "escalation",
+      "ambiguity",
+      "clarification"
+    ]
+  },
+  {
+    "id": "s1-021",
+    "scenario": 1,
+    "domain": 5,
+    "task": "5.2",
+    "type": "single",
+    "select": 1,
+    "stem": "A customer's first message is: 'I want to talk to a real person. My package never arrived.' The agent currently looks up the order, confirms it is lost in transit, and offers a reship before mentioning escalation. Customer satisfaction scores for these conversations are very low. What is the correct behavior?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Complete the order investigation first so that the human agent receives full context, then escalate once the facts are confirmed."
+      },
+      {
+        "key": "B",
+        "text": "Offer the reship resolution first and escalate only if the customer repeats that they want to speak with a person."
+      },
+      {
+        "key": "C",
+        "text": "Run sentiment analysis on the message and escalate only if negative sentiment exceeds a configured threshold."
+      },
+      {
+        "key": "D",
+        "text": "Honor the request immediately by calling `escalate_to_human`, passing along what the customer has already said."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "An explicit request for a human should be honored immediately, without first attempting investigation. Passing along what is already known gives the human a head start without delaying the customer. Offering resolution first is appropriate for frustration, not for an explicit request.",
+    "distractors": {
+      "A": "Investigating before escalating ignores the customer's explicit request, which is exactly what is driving low satisfaction.",
+      "B": "Offer-then-escalate applies to frustrated customers who have not asked for a human; this customer already asked.",
+      "C": "Sentiment is an unreliable proxy, and the explicit request is already a sufficient trigger."
+    },
+    "difficulty": 1,
+    "tags": [
+      "escalation",
+      "explicit-request"
+    ]
+  },
+  {
+    "id": "s1-022",
+    "scenario": 1,
+    "domain": 5,
+    "task": "5.2",
+    "type": "multi",
+    "select": 2,
+    "stem": "You are auditing a sample of conversations to check escalation decisions. In which TWO of the following situations is escalating to a human the correct decision? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "A customer asks the agent to match a competitor's lower price; your policy only covers price adjustments when your own site's price drops."
+      },
+      {
+        "key": "B",
+        "text": "A customer writes in all caps about a late delivery on a standard order that qualifies for a refund under current policy."
+      },
+      {
+        "key": "C",
+        "text": "`get_customer` returns two accounts matching the customer's name and ZIP code."
+      },
+      {
+        "key": "D",
+        "text": "A standard return within the 30-day window, but the order contains six line items with different prices."
+      },
+      {
+        "key": "E",
+        "text": "After the agent explains the return policy, the customer says, 'I'd like to speak to a supervisor, please.'"
+      }
+    ],
+    "answer": [
+      "A",
+      "E"
+    ],
+    "explanation": "Appropriate escalation triggers include policy gaps where the policy is silent on the specific request, such as competitor price matching when only own-site adjustments are covered, and explicit customer requests for a human. Both require a human decision or honoring a stated preference. The other cases are within the agent's capability.",
+    "distractors": {
+      "B": "Frustration alone is not a trigger; the agent should acknowledge it and offer the in-policy resolution.",
+      "C": "Multiple matches call for asking for an additional identifier, not escalation.",
+      "D": "More line items make the case longer, not a policy exception; the agent can resolve it."
+    },
+    "difficulty": 2,
+    "tags": [
+      "escalation",
+      "policy-gap",
+      "explicit-request"
+    ]
+  },
+  {
+    "id": "s1-023",
+    "scenario": 1,
+    "domain": 5,
+    "task": "5.2",
+    "type": "single",
+    "select": 1,
+    "stem": "A customer writes: 'This is ridiculous. It's the third time I've contacted you about this cracked blender!' They have not asked for a human. The order is eligible for a standard damaged-item replacement, which the agent can process directly. A product manager proposes automatically escalating any message with strongly negative sentiment. What should the agent do here?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Acknowledge the frustration, offer to process the replacement now, and escalate only if the customer reiterates that they want a human."
+      },
+      {
+        "key": "B",
+        "text": "Escalate immediately, since a third contact shows the automated channel cannot make meaningful progress on this case."
+      },
+      {
+        "key": "C",
+        "text": "Adopt the sentiment rule and escalate, because strongly negative messages are a reliable signal that the case is too complex to automate."
+      },
+      {
+        "key": "D",
+        "text": "Process the replacement right away without commenting on the customer's frustration, since speed matters most to an annoyed customer."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "When the issue is within the agent's capability and the customer has not asked for a human, the agent should acknowledge the frustration and offer to resolve it, escalating only if the customer reiterates a preference. Sentiment does not correlate reliably with case complexity, so it is a poor escalation trigger. The prior contacts do not show that this agent cannot make progress, because the replacement is available right now.",
+    "distractors": {
+      "B": "Inability to make progress is a valid trigger, but here the agent can resolve the case immediately, so escalation lowers first-contact resolution.",
+      "C": "Sentiment is an unreliable proxy for complexity; this case is angry but simple.",
+      "D": "Ignoring the frustration misses the guidance to acknowledge it and skips giving the customer a chance to state a preference for a human."
+    },
+    "difficulty": 3,
+    "tags": [
+      "escalation",
+      "sentiment",
+      "frustration"
+    ]
+  },
+  {
+    "id": "s1-024",
+    "scenario": 1,
+    "domain": 5,
+    "task": "5.3",
+    "type": "single",
+    "select": 1,
+    "stem": "The main support agent delegates multi-order investigations to an `order-history` subagent that calls `lookup_order` for each order. When one of five lookups times out, the subagent discards the four successful results and returns 'Order lookup unavailable.' The main agent then escalates the whole case. How should the subagent handle this?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Return the four successful lookups as a complete, successful result and simply leave out the failed order, so the main agent can keep resolving the case without any interruption."
+      },
+      {
+        "key": "B",
+        "text": "Keep returning the generic message but have the main agent automatically re-run the entire subagent from scratch whenever it sees that message."
+      },
+      {
+        "key": "C",
+        "text": "Raise the timeout as an exception that terminates the main agent's workflow, so the case goes to a human with a clear failure signal."
+      },
+      {
+        "key": "D",
+        "text": "Retry the timed-out lookup locally; if it still fails, return the four results plus structured error context: failure type, the failed order, and what was tried."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "Subagents should recover locally from transient failures and propagate only what they cannot resolve, along with what was attempted and any partial results. Structured context lets the main agent make an informed decision, such as resolving the four orders now and retrying or asking about the fifth. A generic status hides exactly the information needed for recovery.",
+    "distractors": {
+      "A": "Reporting partial data as complete silently suppresses the error and can lead to an incorrect resolution.",
+      "B": "Re-running everything discards completed work and still gives the main agent no insight into what failed.",
+      "C": "Terminating the whole workflow on one failure is an anti-pattern when partial results and recovery options exist."
+    },
+    "difficulty": 2,
+    "tags": [
+      "error-propagation",
+      "partial-results",
+      "local-recovery"
+    ]
+  },
+  {
+    "id": "s1-025",
+    "scenario": 1,
+    "domain": 5,
+    "task": "5.3",
+    "type": "single",
+    "select": 1,
+    "stem": "For a dispute about a charge for an undelivered package, the main agent gathers findings from a payments subagent (charge confirmed) and a shipping subagent (carrier API unavailable after retries). The final message to the customer stated 'Your package was delivered on March 12,' a date the shipping subagent never confirmed. What design change best prevents this?",
+    "options": [
+      {
+        "key": "A",
+        "text": "When a subagent fails, drop its topic from the workflow and build the customer response only from the subagents that succeeded."
+      },
+      {
+        "key": "B",
+        "text": "Have findings carry coverage annotations marking verified facts versus gaps from unavailable sources, so the reply states what is unconfirmed and the agent can retry, ask, or escalate."
+      },
+      {
+        "key": "C",
+        "text": "Have the shipping subagent estimate a delivery date from typical carrier transit times whenever the API is unavailable, and return that estimate as a successful result so the response stays complete."
+      },
+      {
+        "key": "D",
+        "text": "Block any response to the customer until every subagent has succeeded, retrying the carrier API in a loop until it recovers."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Annotating which findings are well-supported and which have gaps due to unavailable sources prevents unsupported claims from appearing as fact. The main agent can then tell the customer delivery is unconfirmed and choose a recovery path, such as retrying later, gathering more information, or escalating. This keeps failure information visible instead of letting it disappear during synthesis.",
+    "distractors": {
+      "A": "Silently dropping the failed topic hides the gap, and the response may still imply delivery status was checked.",
+      "C": "Presenting a guess as a successful result is error suppression and produces exactly this kind of fabricated fact.",
+      "D": "Blocking indefinitely on one source leaves the customer waiting when an honest partial answer and a recovery path are available."
+    },
+    "difficulty": 3,
+    "tags": [
+      "error-propagation",
+      "coverage-annotations"
+    ]
+  },
+  {
+    "id": "s1-026",
+    "scenario": 1,
+    "domain": 4,
+    "task": "4.1",
+    "type": "multi",
+    "select": 2,
+    "stem": "The system prompt currently says: 'Escalate when the case is complex or you are not confident you can resolve it.' Escalation decisions are inconsistent: identical damaged-item cases are sometimes resolved and sometimes escalated, and first-contact resolution is stuck at 61%. Which TWO prompt changes would most improve escalation precision? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "Add: 'Be conservative and escalate only when you are highly confident that escalation is truly necessary.'"
+      },
+      {
+        "key": "B",
+        "text": "Replace the vague rule with explicit categorical triggers: the customer asks for a human, the request needs a policy exception or the policy is silent, or no meaningful progress is possible."
+      },
+      {
+        "key": "C",
+        "text": "List explicit cases to resolve autonomously, such as in-window returns, damage reported with photos, and duplicate charges confirmed in billing history."
+      },
+      {
+        "key": "D",
+        "text": "Require the agent to output a 1-10 complexity score for every case and escalate whenever the score is above 6."
+      },
+      {
+        "key": "E",
+        "text": "Add: 'Escalate whenever the customer seems upset, since unhappy customers are best served by a human.'"
+      }
+    ],
+    "answer": [
+      "B",
+      "C"
+    ],
+    "explanation": "Explicit categorical criteria outperform vague instructions like 'complex' or 'not confident.' Defining exactly what triggers escalation, and what should be resolved autonomously, gives the model clear decision boundaries and produces consistent outcomes on identical cases. General instructions about conservatism and confidence-based filtering do not improve precision.",
+    "distractors": {
+      "A": "General 'be conservative' or 'high confidence' wording fails to improve precision compared to specific categorical criteria.",
+      "D": "Self-reported complexity or confidence scores are poorly calibrated and would reproduce the inconsistency.",
+      "E": "Sentiment is an unreliable proxy for case complexity and would push simple cases to humans."
+    },
+    "difficulty": 2,
+    "tags": [
+      "explicit-criteria",
+      "escalation",
+      "prompt-design"
+    ]
+  },
+  {
+    "id": "s1-027",
+    "scenario": 1,
+    "domain": 4,
+    "task": "4.2",
+    "type": "single",
+    "select": 1,
+    "stem": "After you add explicit escalation criteria, clear-cut cases are handled consistently, but borderline cases still vary: a used item that broke in week three (warranty claim or return?), or a partial refund request for one missing accessory. Re-running the same borderline case produces different decisions. What is the most effective next step?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Add 2-4 few-shot examples of these borderline cases, each showing the decision and the reasoning for choosing it over the plausible alternative."
+      },
+      {
+        "key": "B",
+        "text": "Expand the written criteria into a much longer, more detailed rulebook that tries to define every product category, failure type, and edge case the agent might encounter."
+      },
+      {
+        "key": "C",
+        "text": "Escalate every case that does not exactly match one of the explicit criteria, so that borderline decisions are always made by humans."
+      },
+      {
+        "key": "D",
+        "text": "Add roughly 40 examples covering every product line and failure type, so that the agent has a close match for any case it sees."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Few-shot examples are the most effective technique when instructions alone produce inconsistent results, especially for ambiguous cases. A small set of targeted examples that show why one action was chosen over a plausible alternative teaches the underlying judgment, which the model can generalize to new borderline cases. This builds on the explicit criteria already in place.",
+    "distractors": {
+      "B": "More prose rules are still instructions, which are already failing on ambiguous cases, and can never list every edge case.",
+      "C": "Escalating everything borderline gives up first-contact resolution on cases the agent could handle with clearer guidance.",
+      "D": "A large exhaustive set adds token overhead and encourages matching listed cases rather than generalizing the reasoning."
+    },
+    "difficulty": 3,
+    "tags": [
+      "few-shot",
+      "ambiguous-cases",
+      "escalation"
+    ]
+  },
+  {
+    "id": "s1-028",
+    "scenario": 1,
+    "domain": 4,
+    "task": "4.2",
+    "type": "single",
+    "select": 1,
+    "stem": "The system prompt tells the agent to include 'the customer ID, root cause, refund amount, and recommended action' in every `escalate_to_human` handoff. Human agents report the summaries are inconsistent: some are long narratives, some omit the amount, and the recommended action is often buried mid-paragraph. What is the most effective way to make handoff summaries consistent?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Restate the required fields in capital letters and add 'Be thorough and consistent' to the end of the system prompt."
+      },
+      {
+        "key": "B",
+        "text": "Have a second model instance rewrite each handoff summary into a cleaner, standardized format before the summary is delivered to the human agent queue."
+      },
+      {
+        "key": "C",
+        "text": "Add a few example handoff summaries to the prompt that demonstrate the exact desired format and field order for different case types."
+      },
+      {
+        "key": "D",
+        "text": "Raise the agent's max_tokens so that it has enough room to include every required field in each handoff summary."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "When detailed instructions alone produce inconsistent output, few-shot examples demonstrating the desired format are the most effective way to achieve consistency. Showing complete summaries with a fixed field order across different case types shows the model exactly what a good handoff looks like. This is a lightweight change to the existing prompt.",
+    "distractors": {
+      "A": "Louder instructions and generic 'be consistent' wording repeat the approach that is already producing inconsistent output.",
+      "B": "A rewrite pass adds latency and another component, and it cannot restore an amount the original summary left out.",
+      "D": "The summaries are inconsistent in structure, not truncated, so more output budget does not help."
+    },
+    "difficulty": 2,
+    "tags": [
+      "few-shot",
+      "output-format",
+      "handoff"
+    ]
+  }
+]

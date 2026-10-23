@@ -1,0 +1,166 @@
+[
+  {
+    "task": "5.1",
+    "knowledge": [
+      "Tokens are model-specific units: newer models can use a different tokenizer that produces more tokens for the same text, so counts never transfer across model generations.",
+      "Everything in a request counts toward the context window: system prompt, all messages (including tool results), tool definitions, and the output generated for the turn, including thinking.",
+      "The model generates one token at a time, each conditioned only on earlier tokens, so a verdict written before the reasoning cannot depend on that reasoning.",
+      "Output is sampled, so identical inputs can give different outputs; current models reject `temperature`, `top_p` and `top_k`, so consistency comes from prompt and output design, not sampling knobs.",
+      "Adaptive thinking lets the model decide per request whether and how much to think, steered mainly by `effort`; effort affects all output tokens (text, tool calls, thinking), and thinking is billed as output even when only a summary is shown.",
+      "Fast mode (`speed: \"fast\"` on supported models) raises output tokens per second at premium pricing; it does not target time to first token and is not available with the Batch API."
+    ],
+    "skills": [
+      "Pick zero-shot for clear, common tasks and add 3 to 5 diverse examples (multi-shot) when format, tone or edge cases must be matched.",
+      "Diagnose single-shot over-imitation (copied length or details) and fix it with varied examples.",
+      "Order prompts so reasoning comes before conclusions, or enable thinking, when the answer depends on analysis.",
+      "Choose between lowering effort, enabling adaptive thinking, or fast mode based on whether the problem is cost, reasoning depth, or output speed.",
+      "Estimate input size with the token counting endpoint for the exact target model."
+    ],
+    "examLens": [
+      "Inconsistent output: constrain the output and add examples, then measure with repeated-run evals; never rely on a seed or zero temperature.",
+      "Too slow or too expensive on simple tasks with acceptable quality: lower `effort` on the same model before touching `max_tokens` or the prompt.",
+      "Mixed trivial and hard requests: adaptive thinking plus an effort level beats a fixed thinking budget.",
+      "Long outputs too slow and budget allows a premium: fast mode, not a smaller `max_tokens`."
+    ],
+    "traps": [
+      "Using `temperature` as a lever for determinism, cost or reasoning depth; it does none of these and newer models reject it.",
+      "Believing fast mode is cheaper or mainly cuts time to first token.",
+      "Adding a single example and expecting the model to generalize rather than copy it."
+    ],
+    "links": [
+      {"label": "Thinking", "url": "https://platform.claude.com/docs/en/build-with-claude/thinking"},
+      {"label": "Effort", "url": "https://platform.claude.com/docs/en/build-with-claude/effort"},
+      {"label": "Fast mode", "url": "https://platform.claude.com/docs/en/build-with-claude/fast-mode"},
+      {"label": "Prompting best practices: use examples", "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"}
+    ],
+    "cheat": [
+      ["Same input, different labels across runs", "Enumerated output format plus examples, verified by a repeated-run eval"],
+      ["Unusual house format comes out inconsistent", "Add 3 to 5 diverse examples in example tags"],
+      ["Justification rationalizes a verdict given first", "Reasoning before the verdict, or enable thinking"],
+      ["Agent verbose and slow on easy, scoped tasks", "Lower `effort`"],
+      ["Billed output far above visible text with thinking on", "Full thinking tokens are billed as output, not the summary"]
+    ]
+  },
+  {
+    "task": "5.2",
+    "knowledge": [
+      "Official SDKs wrap the REST API with typed request and response models, typed error classes mapped from HTTP status codes, and auth read from configuration (default `ANTHROPIC_API_KEY`).",
+      "SDKs automatically retry connection errors, 408, 409, 429 and 5xx responses a small number of times with exponential backoff; `max_retries` and `timeout` are configurable per client or per request.",
+      "SDKs reject non-streaming requests expected to run longer than roughly ten minutes; streaming (or an explicit timeout override) is the documented fix.",
+      "The Messages API streams over HTTP using server-sent events (`stream: true`): `message_start`, content block start/delta/stop, `message_delta` with cumulative usage, then `message_stop`; errors such as overload can arrive mid-stream.",
+      "WebSockets are bidirectional and full-duplex; they belong between your browser and your backend when users must send signals mid-stream, not between your backend and the Claude API.",
+      "Every response carries a request ID (exposed by the SDK, for example `_request_id` in Python) for debugging and support."
+    ],
+    "skills": [
+      "Configure SDK auth, timeouts and retries centrally instead of stacking custom retry loops.",
+      "Classify errors with SDK error classes: retry transient ones, fail fast on bad-request and auth errors.",
+      "Consume streams with SDK helpers or handle every delta type, including partial JSON for tool input.",
+      "Design a browser architecture that keeps the API key server-side and relays the SSE stream to clients.",
+      "Read response content by block `type` rather than assuming the first block is text."
+    ],
+    "examLens": [
+      "Prefer the SDK's built-in retries, typed errors and stream helpers over hand-rolled equivalents.",
+      "The API key never reaches the browser or a mobile client; the backend calls Claude.",
+      "Long generations: stream them; do not lower `max_tokens` below what the task needs.",
+      "Usage from a stream: take the cumulative value, do not sum `message_delta` events."
+    ],
+    "traps": [
+      "Claiming the Claude API streams over WebSockets or requires polling.",
+      "Wrapping SDK calls in another retry loop that also retries permanent 400 and 401 errors.",
+      "Indexing `content[0].text` and breaking once thinking or tool-use blocks appear."
+    ],
+    "links": [
+      {"label": "SDKs, CLI, and libraries", "url": "https://platform.claude.com/docs/en/cli-sdks-libraries/overview"},
+      {"label": "Streaming messages", "url": "https://platform.claude.com/docs/en/build-with-claude/streaming"},
+      {"label": "Errors", "url": "https://platform.claude.com/docs/en/api/errors"}
+    ],
+    "cheat": [
+      ["Retry storm during 429s with a custom loop", "SDK already retries with backoff; tune `max_retries`, don't stack"],
+      ["SDK refuses a long non-streaming request", "Use streaming and collect the final message"],
+      ["Users need stop or follow-up mid-answer in a browser", "WebSocket browser-to-backend; backend consumes Claude SSE and aborts upstream"],
+      ["Tool arguments missing from a custom stream parser", "Handle the partial JSON delta type, or use the SDK stream helper"],
+      ["Answer stops partway after a 200 under high load", "Handle error events inside the stream"]
+    ]
+  },
+  {
+    "task": "5.3",
+    "knowledge": [
+      "Haiku is the fastest, lowest-cost tier for high-volume, latency-sensitive work such as classification, extraction, routing and subagent tasks.",
+      "Sonnet is positioned as the best combination of speed and intelligence for everyday coding, agent and enterprise workloads.",
+      "Opus targets complex, long-running agentic coding and knowledge work where accuracy outweighs cost and latency.",
+      "Effort trades intelligence for latency and cost within one model, and tuning it is often a better lever than switching models.",
+      "A model ID is a pinned snapshot; new releases ship under new IDs and can bring breaking changes (rejected parameters, prefill errors, new tokenizers) documented in migration guides.",
+      "Adaptive thinking is supported only on newer models; older models that support only extended thinking reject `type: \"adaptive\"` with a 400 error."
+    ],
+    "skills": [
+      "Match a workload's quality, latency and cost constraints to a starting tier, efficiency-first or capability-first.",
+      "Use an eval set to compare tiers and effort levels, then adopt the cheapest configuration that clears the bar.",
+      "Plan an upgrade: keep the pinned ID, run evals, and work through the migration guide before switching traffic.",
+      "Recount tokens and update cost models when moving to a model with a different tokenizer.",
+      "Make thinking configuration model-aware in shared client code."
+    ],
+    "examLens": [
+      "The right model is the cheapest one that meets the quality bar on your own evals, not the biggest one.",
+      "Before downgrading tiers to save money, try lowering effort on the current model.",
+      "Upgrades are tested changes: pin, evaluate, migrate; never auto-follow the newest model in production."
+    ],
+    "traps": [
+      "Treating public benchmark gains as enough evidence to switch production.",
+      "Assuming new models are backward compatible with old parameters and token counts.",
+      "Picking the largest model, or the smallest, without considering the stated constraint."
+    ],
+    "links": [
+      {"label": "Models overview", "url": "https://platform.claude.com/docs/en/models/overview"},
+      {"label": "Choosing a model", "url": "https://platform.claude.com/docs/en/about-claude/models/choosing-a-model"},
+      {"label": "Model IDs and versioning", "url": "https://platform.claude.com/docs/en/about-claude/models/model-ids-and-versions"},
+      {"label": "Migration guides", "url": "https://platform.claude.com/docs/en/about-claude/models/migration-guide"}
+    ],
+    "cheat": [
+      ["Millions of short routing or classification calls, tight latency", "Haiku, validated with an eval"],
+      ["Interactive everyday coding assistant at scale", "Sonnet"],
+      ["Quality margin is ample but costs are over budget", "Eval lower effort and a smaller tier; pick the cheapest that passes"],
+      ["New model released", "Keep the pinned ID, run evals, follow the migration guide"],
+      ["400 on adaptive thinking with an older model", "Use a thinking budget there, or move to a model that supports adaptive"]
+    ]
+  },
+  {
+    "task": "5.4",
+    "knowledge": [
+      "`usage` splits input into `input_tokens` (after the last cache breakpoint), `cache_read_input_tokens` and `cache_creation_input_tokens`; total input is their sum.",
+      "Cache reads are billed at a fraction of base input price, cache writes at a premium over base input, and output (including thinking) at the higher output rate.",
+      "The cache prefix is built in the order `tools`, `system`, `messages`; a change at one level invalidates that level and everything after it, and changing speed, thinking or effort settings can also invalidate parts of the cache.",
+      "Cache hits require an identical prefix up to the breakpoint within the cache lifetime; writes happen only at breakpoints, and lookup checks a limited window of earlier blocks.",
+      "Prompts below a model's minimum cacheable length are silently not cached; both cache fields reading 0 is the signal.",
+      "Token counting is free (rate-limited), returns an estimate, and does not apply caching."
+    ],
+    "skills": [
+      "Build cost dashboards and forecasts from every `usage` field priced at its own rate.",
+      "Place `cache_control` on the last block whose prefix stays identical, with dynamic content after it.",
+      "Add intermediate breakpoints (check-points) in long agent turns so earlier cache entries stay reachable.",
+      "Diagnose cache misses caused by timestamps, per-request tool changes or settings toggles.",
+      "Choose between automatic caching and explicit breakpoints, and between the default and longer TTL, based on traffic patterns."
+    ],
+    "examLens": [
+      "Stable content first, volatile content last, breakpoint on the last stable block.",
+      "Forecast cost from measured `usage` on representative traffic, not word counts or a single request.",
+      "If cache writes happen every request, something in the prefix changes; find it before adding more breakpoints."
+    ],
+    "traps": [
+      "Reading only `input_tokens` after enabling caching and concluding context shrank.",
+      "Putting per-user tools or timestamps early in the prefix.",
+      "Assuming cache reads cost the same as or more than base input."
+    ],
+    "links": [
+      {"label": "Prompt caching", "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"},
+      {"label": "Token counting", "url": "https://platform.claude.com/docs/en/build-with-claude/token-counting"},
+      {"label": "Pricing", "url": "https://platform.claude.com/docs/en/about-claude/pricing"}
+    ],
+    "cheat": [
+      ["`input_tokens` near zero after enabling caching", "Sum input, cache read and cache write fields"],
+      ["Fresh cache write on every request", "Something early in the prefix changes, such as a timestamp; move it after the breakpoint"],
+      ["Per-user tool added each request kills the cache", "Tools are first in the prefix; keep them stable"],
+      ["Both cache fields always 0, no error", "Prefix is below the minimum cacheable length"],
+      ["Cache hits drop on turns adding many blocks", "Add an intermediate breakpoint (check-point)"]
+    ]
+  }
+]

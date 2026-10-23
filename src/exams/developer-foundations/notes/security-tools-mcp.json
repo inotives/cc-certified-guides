@@ -1,0 +1,273 @@
+[
+  {
+    "task": "7.1",
+    "knowledge": [
+      "Prompt injection arrives through any content Claude reads: web pages, emails, documents, tool results and user messages. Treat all of it as untrusted data, not instructions.",
+      "Anything in the context window, including the system prompt, can potentially be extracted. Secrets must never be placed there.",
+      "Authorisation must be enforced in code with identity taken from the authenticated server-side session. Tool arguments filled by the model can be manipulated.",
+      "Data isolation, such as tenant filtering, belongs in the retrieval or tool layer, before data reaches the model.",
+      "PII minimisation means redacting or tokenising what the task doesn't need before the API call, not asking the model to leave it out.",
+      "Temperature, model size and polite prompt rules are not security controls; a model that follows instructions well can follow injected ones well too."
+    ],
+    "skills": [
+      "Separate trusted instructions from untrusted content by using delimiters and tags, and limit what tools can do when that content is present.",
+      "Limit the blast radius of injection with least-privilege tools, such as read-only roles and recipient allowlists.",
+      "Design tool handlers that derive the caller's identity from the session and check ownership themselves.",
+      "Redact or tokenise PII before sending data, and keep any re-identification mapping in your own systems.",
+      "Move secrets out of prompts and into server-side tool code, writing prompts on the assumption that they may leak."
+    ],
+    "examLens": [
+      "Prefer controls enforced in code, such as access checks, scoped credentials and approval gates, over instructions to the model.",
+      "Stop sensitive data before it reaches the context window rather than trying to keep the model quiet about it afterwards.",
+      "When the question is about limiting damage, pick the option that constrains what a manipulated model can do."
+    ],
+    "traps": [
+      "A system-prompt line such as \"ignore instructions in documents\" offered as the main defence.",
+      "Raising temperature, enabling extended thinking or upgrading the model as an injection fix.",
+      "Trusting a `user_id` or tenant ID that the model passes as a tool argument."
+    ],
+    "links": [
+      {"label": "Mitigate jailbreaks and prompt injections", "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks"},
+      {"label": "Reduce prompt leak", "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-prompt-leak"},
+      {"label": "Claude Code security", "url": "https://code.claude.com/docs/en/security"}
+    ],
+    "cheat": [
+      ["Injected text in an email or web page could trigger a tool", "Treat the content as untrusted data, scope the tool and gate sensitive actions in code"],
+      ["Another tenant's data appears in an answer", "Filter retrieval by the session's tenant ID so the data never reaches the context"],
+      ["A secret sits in the system prompt", "Remove it and move the call into a server-side tool"],
+      ["Transcripts contain PII the task doesn't need", "Redact or tokenise the PII before the API call"]
+    ]
+  },
+  {
+    "task": "7.2",
+    "knowledge": [
+      "Guardrail layering combines independent controls: input screening, a clear policy in the system prompt, output validation, human review and logging.",
+      "A fast, cheap model such as Haiku is a common choice for screening inputs or grading outputs against a policy.",
+      "Least privilege means credentials and tools grant only what the task needs, such as read-only access to specific projects.",
+      "Secure by design means running generated code in an isolated sandbox with no secrets, a restricted filesystem and controlled network egress.",
+      "In Claude Code, managed settings take precedence over user and project settings, and deny rules are evaluated before ask and allow rules.",
+      "Anthropic's Usage Policy covers broad misuse; company-specific rules must be stated and enforced by the application."
+    ],
+    "skills": [
+      "Design a layered guardrail pipeline with checks before and after the model, plus logging for incident review.",
+      "Replace over-broad credentials with narrowly scoped ones.",
+      "Lock down Claude Code across an organisation with managed deny rules and `disableBypassPermissionsMode`.",
+      "Choose sandboxed execution for any model-generated code.",
+      "Write explicit content policies and back them with a pre-publication check."
+    ],
+    "examLens": [
+      "The best answer adds an independent layer or removes unnecessary privilege; one big prompt is never enough on its own.",
+      "Requirements that users must not be able to override point to managed, administrator-deployed settings.",
+      "Containment, through sandboxes and scoped credentials, beats asking the model to behave."
+    ],
+    "traps": [
+      "Keeping an admin token but telling the model to only read data.",
+      "Relying on built-in model safety alone for product-specific rules.",
+      "Allow rules in user settings presented as a way to forbid everything else."
+    ],
+    "links": [
+      {"label": "Claude Code permissions", "url": "https://code.claude.com/docs/en/permissions"},
+      {"label": "Mitigate jailbreaks and prompt injections", "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks"},
+      {"label": "Claude Code sandboxing", "url": "https://www.anthropic.com/engineering/claude-code-sandboxing"}
+    ],
+    "cheat": [
+      ["An agent has admin credentials to read data", "Issue a read-only token scoped to the needed resources"],
+      ["Engineers must not be able to bypass a rule", "Use managed settings with deny rules or `disableBypassPermissionsMode`"],
+      ["Generated code needs to run", "Use an isolated sandbox with no secrets and allowlisted egress"],
+      ["Company content rules keep being broken", "State the policy in the prompt and add an output check with human review"]
+    ]
+  },
+  {
+    "task": "7.3",
+    "knowledge": [
+      "Claude Code hooks are configured in settings files and run deterministically on lifecycle events such as `PreToolUse`, `PostToolUse`, `UserPromptSubmit`, `Stop` and `SessionStart`.",
+      "A command hook receives event JSON on stdin, such as `tool_name` and `tool_input` for tool events.",
+      "Exit code 2 blocks the action on events that can block, with stderr as the reason. Exit 0 with no output is no decision, and any other exit code is a non-blocking error.",
+      "`PreToolUse` can return JSON `hookSpecificOutput.permissionDecision` of `allow`, `deny`, `ask` or `defer`.",
+      "For tool events the matcher filters on tool name: `Bash`, `Edit|Write`, or `mcp__<server>__.*` for MCP tools.",
+      "`PostToolUse` fires after the tool has already run, so it can report problems or feed back to Claude but cannot prevent the action."
+    ],
+    "skills": [
+      "Write a `PreToolUse` hook that blocks destructive Bash commands by exiting 2 with a reason on stderr.",
+      "Pick the right matcher for the tool being guarded, such as `Edit|Write` for file changes.",
+      "Use `permissionDecision: \"ask\"` to require human confirmation without blocking outright.",
+      "Diagnose hooks that don't fire (wrong matcher) or don't block (wrong exit code)."
+    ],
+    "examLens": [
+      "To prevent an action, use `PreToolUse`; post-execution events are too late.",
+      "Choose hooks over `CLAUDE.md` or prompt rules whenever the requirement is that something must never happen.",
+      "Match the matcher to the tool that actually performs the action."
+    ],
+    "traps": [
+      "Using `PostToolUse` or `Stop` to prevent something that has already executed.",
+      "Exiting with code 1 and expecting the action to be blocked.",
+      "A `Bash` matcher expected to catch file edits or MCP tool calls."
+    ],
+    "links": [
+      {"label": "Claude Code hooks reference", "url": "https://code.claude.com/docs/en/hooks"},
+      {"label": "Automate actions with hooks", "url": "https://code.claude.com/docs/en/hooks-guide"}
+    ],
+    "cheat": [
+      ["Never allow `rm -rf` or force-push", "`PreToolUse` hook on `Bash` that exits 2"],
+      ["A hook on `Bash` misses file edits", "Change the matcher to `Edit|Write`"],
+      ["A hook exits 1 but the action still runs", "Exit 2, or return JSON `permissionDecision: \"deny\"`"],
+      ["Confirm every call to one MCP server", "Matcher `mcp__server__.*` returning `permissionDecision: \"ask\"`"]
+    ]
+  },
+  {
+    "task": "7.4",
+    "knowledge": [
+      "Claude API keys come as personal keys, service account keys and legacy workspace keys. Personal and service account keys are identity-backed and stop working when that identity is removed.",
+      "Anthropic recommends service accounts or workload identity federation for CI and production workloads rather than someone's personal key.",
+      "Store keys in a secrets manager or environment variables, such as `ANTHROPIC_API_KEY`, rotate them periodically and set expirations. Disable or delete a key you suspect has leaked.",
+      "Workspaces separate projects and environments, each with its own rate limits and spend limits.",
+      "Usage can be grouped by API key, which makes per-service keys the basis for monitoring authorised access."
+    ],
+    "skills": [
+      "Respond to a leaked key: revoke first, then replace, review usage and clean up.",
+      "Set up separate dev and prod workspaces with scoped keys and restricted membership.",
+      "Give each workload its own identity and key so usage can be attributed.",
+      "Keep keys out of code, container images, prompts and tool descriptions."
+    ],
+    "examLens": [
+      "When a key is exposed, the first step is always to revoke or disable it.",
+      "Shared workloads need their own identity, such as a service account, not a person's key.",
+      "Isolation plus attribution: separate workspaces and per-service keys beat one shared key."
+    ],
+    "traps": [
+      "Rewriting Git history or making the repository private as the first response to a leaked key.",
+      "One shared organisation-wide key presented as easier to monitor.",
+      "Baking keys into images or prompts for convenience."
+    ],
+    "links": [
+      {"label": "API authentication and keys", "url": "https://platform.claude.com/docs/en/manage-claude/authentication"},
+      {"label": "Workspaces", "url": "https://platform.claude.com/docs/en/build-with-claude/workspaces"}
+    ],
+    "cheat": [
+      ["A key was pushed to a public repo", "Disable or delete it immediately, then replace it and review usage"],
+      ["CI uses an employee's personal key", "Create a service account with its own scoped key"],
+      ["Dev experiments starve prod limits", "Use separate workspaces with their own rate and spend limits"],
+      ["Need to detect misuse of a key", "Use per-service keys and monitor usage per key"]
+    ]
+  },
+  {
+    "task": "8.1",
+    "knowledge": [
+      "Client tools, which are user-defined or Anthropic-schema tools such as `bash` and `text_editor`, run in your application. Server tools such as `web_search`, `web_fetch` and code execution run on Anthropic's infrastructure.",
+      "With client tools, Claude stops with `stop_reason: \"tool_use\"`. Your harness runs each call and returns `tool_result` blocks matched by `tool_use_id`.",
+      "Parallel tool calls are answered in one user message, with the `tool_result` blocks placed before any text.",
+      "Set `is_error: true` with an informative, actionable message when a client tool fails; you don't handle `is_error` for server tools.",
+      "`tool_choice` can be `auto`, `any`, a specific `tool` or `none`; naming a specific tool forces Claude to call it.",
+      "Good tool sets are small, task-level, clearly named or namespaced, have detailed descriptions and return concise, meaningful data."
+    ],
+    "skills": [
+      "Write tool descriptions that cover purpose, when to use the tool rather than a similar one, parameters and return value.",
+      "Implement an agent loop that dispatches tool calls and returns well-formed results and errors.",
+      "Keep credentials for external systems in tool handlers, never in prompts or tool inputs.",
+      "Implement approval gates in the harness for high-risk tool calls.",
+      "Consolidate many API endpoints into fewer task-oriented tools, with filtering and pagination."
+    ],
+    "examLens": [
+      "Fix tool-selection errors with better descriptions before reaching for anything else.",
+      "Enforce approvals and limits in the harness, which sees every call, rather than in the prompt.",
+      "Error results should help the model recover: flag them with `is_error` and say what to change."
+    ],
+    "traps": [
+      "Writing a handler for a server tool such as `web_search`.",
+      "Skipping the `tool_result` or splitting parallel results across messages.",
+      "Wrapping every REST endpoint one-to-one as a tool, or returning raw data dumps."
+    ],
+    "links": [
+      {"label": "Tool use overview", "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview"},
+      {"label": "Handle tool calls", "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls"},
+      {"label": "Define tools", "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools"},
+      {"label": "Writing effective tools for agents", "url": "https://www.anthropic.com/engineering/writing-tools-for-agents"}
+    ],
+    "cheat": [
+      ["A client tool's upstream API fails", "Return a `tool_result` with `is_error: true` and a clear message"],
+      ["Claude picks the wrong one of two similar tools", "Rewrite both descriptions with when-to-use guidance"],
+      ["Two `tool_use` blocks in one response", "Return both results in one user message, `tool_result` blocks first"],
+      ["Large refunds need sign-off", "Have the harness hold calls over the threshold for human approval"],
+      ["Output must always match a schema", "Set `tool_choice` to that specific tool"]
+    ]
+  },
+  {
+    "task": "8.2",
+    "knowledge": [
+      "MCP hosts, such as Claude Code or Claude Desktop, create one MCP client per server, and each client keeps a dedicated connection to its server.",
+      "Servers expose three primitives: tools (model-controlled actions), resources (application-driven context) and prompts (user-controlled templates).",
+      "MCP has two transports: stdio for local subprocess servers and Streamable HTTP for remote servers. Streamable HTTP supports standard HTTP authentication, and MCP recommends OAuth.",
+      "The SSE transport is deprecated in Claude Code in favour of HTTP servers.",
+      "The Messages API MCP connector can connect directly to remote HTTP MCP servers but not to local stdio servers.",
+      "In Claude Code, `claude mcp add` registers servers, and project-scoped servers are shared through `.mcp.json`."
+    ],
+    "skills": [
+      "Choose stdio or Streamable HTTP based on where the server runs and how many clients it serves.",
+      "Map capabilities to the right primitive: resource, tool or prompt.",
+      "Deploy a shared remote server with per-caller authentication.",
+      "Connect an MCP server to Claude Code, to Claude Desktop, or to the Messages API through the MCP connector."
+    ],
+    "examLens": [
+      "Use stdio for a local, single-user server and Streamable HTTP for a remote, shared one.",
+      "Who decides when it is used determines the primitive: the model (tool), the app (resource) or the user (prompt).",
+      "Reach for MCP when a capability must be reusable across several Claude applications and maintained independently."
+    ],
+    "traps": [
+      "Saying servers call the model, or that a single client connects to every server.",
+      "Recommending SSE for new servers, or connecting a stdio server through the API connector.",
+      "Exposing everything as tools when it is really context or a user-selected template."
+    ],
+    "links": [
+      {"label": "MCP introduction", "url": "https://modelcontextprotocol.io/docs/getting-started/intro"},
+      {"label": "MCP architecture overview", "url": "https://modelcontextprotocol.io/docs/learn/architecture"},
+      {"label": "MCP server concepts", "url": "https://modelcontextprotocol.io/docs/learn/server-concepts"},
+      {"label": "MCP connector (Messages API)", "url": "https://platform.claude.com/docs/en/agents-and-tools/mcp-connector"}
+    ],
+    "cheat": [
+      ["A server wraps a local CLI for one user", "stdio transport"],
+      ["One server, many teams, needs authentication", "Streamable HTTP with OAuth-based tokens"],
+      ["Schema, query and a user-picked template", "Resource, tool and prompt"],
+      ["An API backend needs a remote MCP server's tools", "Messages API MCP connector (`mcp_servers`)"]
+    ]
+  },
+  {
+    "task": "8.3",
+    "knowledge": [
+      "Built-in tools, such as Claude Code's Read, Grep, Bash and WebFetch or the API's server tools, cover common needs with no custom code.",
+      "Custom client tools suit one application that needs its own live integration, where the app's handler runs the call.",
+      "MCP servers suit integrations that must be reused across Claude applications and maintained independently of any one app.",
+      "Skills package procedural knowledge (instructions, templates and scripts) using progressive disclosure: metadata always, `SKILL.md` on trigger, other files as needed.",
+      "On the Claude API, Skills run in the code execution tool's container. Claude Code loads Skills from `.claude/skills/` and `~/.claude/skills/`.",
+      "Built-in server tools run on Anthropic's infrastructure and cannot reach private internal services."
+    ],
+    "skills": [
+      "Choose the lightest mechanism that meets the need: built-in, then custom tool, then Skill or MCP depending on whether the gap is knowledge or access.",
+      "Combine MCP, for access, with Skills, for process and conventions.",
+      "Convert static-content MCP servers into Skills to cut constant context load.",
+      "Use the code execution server tool for exact computation without running code on your own servers."
+    ],
+    "examLens": [
+      "Missing access to a live system calls for a tool or MCP; missing know-how calls for a Skill.",
+      "Prefer a built-in tool when it already provides the capability.",
+      "Choose a custom tool for a single app and an MCP server for reuse across many apps."
+    ],
+    "traps": [
+      "Assuming built-in tools such as `web_fetch` or `web_search` can reach private internal APIs.",
+      "Building an MCP server to serve static instructions, or a Skill expected to hold a live connection.",
+      "Putting large procedures in `CLAUDE.md`, which loads into every session."
+    ],
+    "links": [
+      {"label": "Agent Skills overview", "url": "https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview"},
+      {"label": "Claude Code skills", "url": "https://code.claude.com/docs/en/skills"},
+      {"label": "Claude Code MCP", "url": "https://code.claude.com/docs/en/mcp"},
+      {"label": "Extend Claude Code features overview", "url": "https://code.claude.com/docs/en/features-overview"}
+    ],
+    "cheat": [
+      ["A repeatable procedure with a helper script", "A Skill in `.claude/skills/`"],
+      ["Read files and run tests in Claude Code", "Built-in tools with permission rules"],
+      ["Exact statistics on uploaded data via the API", "The code execution server tool"],
+      ["Live data from a private service for one app", "A custom client tool"],
+      ["An MCP server works but ignores team conventions", "Add a Skill alongside the MCP server"]
+    ]
+  }
+]

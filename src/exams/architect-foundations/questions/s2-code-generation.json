@@ -1,0 +1,1194 @@
+[
+  {
+    "id": "s2-001",
+    "scenario": 2,
+    "domain": 3,
+    "task": "3.1",
+    "type": "single",
+    "select": 1,
+    "stem": "A new engineer joins your team and reports that Claude Code ignores the team's conventions (named exports only, Zod for request validation), even though everyone else gets them applied consistently. The tech lead confirms the conventions were written months ago in `~/.claude/CLAUDE.md` on their own laptop and that teammates later added the same text to their own home directories. What is the most effective fix?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Send the new engineer a copy of the tech lead's `~/.claude/CLAUDE.md` so they can place it in their own home directory."
+      },
+      {
+        "key": "B",
+        "text": "Move the conventions into the project-level CLAUDE.md (repository root or `.claude/CLAUDE.md`) and commit it to version control."
+      },
+      {
+        "key": "C",
+        "text": "Add a `shared: true` frontmatter flag to the tech lead's `~/.claude/CLAUDE.md` so Claude Code syncs it to collaborators on the repository."
+      },
+      {
+        "key": "D",
+        "text": "Create a CLAUDE.md in the subdirectory the new engineer is currently working in that contains the conventions."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "User-level instructions in `~/.claude/CLAUDE.md` apply only to that user and are never shared through version control, which is exactly why the new engineer is missing them. Team-wide conventions belong in the project-level CLAUDE.md, which every developer receives when they clone or pull the repository. This also removes the fragile pattern of each person maintaining their own copy.",
+    "distractors": {
+      "A": "Copying user-level files by hand perpetuates the drift-prone setup and every future hire will hit the same problem.",
+      "C": "There is no frontmatter flag that shares a user-level CLAUDE.md with other developers.",
+      "D": "A directory-level CLAUDE.md only applies within that subdirectory, so the conventions would still be missing elsewhere in the repository."
+    },
+    "difficulty": 1,
+    "tags": [
+      "claude-md",
+      "hierarchy",
+      "user-vs-project"
+    ]
+  },
+  {
+    "id": "s2-002",
+    "scenario": 2,
+    "domain": 3,
+    "task": "3.1",
+    "type": "single",
+    "select": 1,
+    "stem": "A developer notices that Claude Code follows the team's error-handling convention when they start sessions from `services/billing/`, but not when they start sessions from the repository root. The repository has a root CLAUDE.md, several subdirectory CLAUDE.md files, and a `.claude/rules/` directory. What should they do first to diagnose the inconsistency?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Copy the error-handling convention into every subdirectory CLAUDE.md so it is present no matter where a session starts."
+      },
+      {
+        "key": "B",
+        "text": "Rewrite the convention in the root CLAUDE.md using stronger wording and capital letters so it is harder to ignore."
+      },
+      {
+        "key": "C",
+        "text": "Ask Claude at the start of each session to list the conventions it remembers and compare the two answers."
+      },
+      {
+        "key": "D",
+        "text": "Run the `/memory` command in both sessions to see which memory files are actually loaded in each."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "The symptom depends on where the session starts, which points to a configuration hierarchy issue: the convention probably lives in a file that only loads in one location. The `/memory` command shows which memory files are loaded, so comparing both sessions reveals exactly where the convention is defined and why it is missing. Diagnosing first avoids guessing at fixes.",
+    "distractors": {
+      "A": "Duplicating the text everywhere treats the symptom without understanding the cause and creates a maintenance burden.",
+      "B": "The problem is that the instruction is not loaded in one session, not that its wording is too weak.",
+      "C": "Asking the model to recall its instructions is a non-deterministic self-report, not a reliable view of which files were loaded."
+    },
+    "difficulty": 2,
+    "tags": [
+      "claude-md",
+      "memory-command",
+      "diagnosis"
+    ]
+  },
+  {
+    "id": "s2-003",
+    "scenario": 2,
+    "domain": 3,
+    "task": "3.1",
+    "type": "single",
+    "select": 1,
+    "stem": "Your monorepo has a `docs/standards/` folder with `pci-handling.md`, `accessibility.md`, `api-conventions.md`, and `logging.md`. The `payments` package needs the PCI, API, and logging standards; the `web` package needs accessibility and logging. Each package's maintainers know which standards apply to their code. What is the most maintainable way to give Claude Code the right standards in each package?",
+    "options": [
+      {
+        "key": "A",
+        "text": "In each package's CLAUDE.md, use `@import` to reference only the standards files that apply to that package."
+      },
+      {
+        "key": "B",
+        "text": "Paste the full text of the relevant standards into each package's CLAUDE.md so each package is self-contained."
+      },
+      {
+        "key": "C",
+        "text": "Use `@import` in the root CLAUDE.md to pull in all four standards files so every package sees every standard."
+      },
+      {
+        "key": "D",
+        "text": "Turn each standards file into a skill that developers invoke manually when they start working in a package."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "The `@import` syntax keeps CLAUDE.md files modular by referencing external files instead of duplicating them. Letting each package's CLAUDE.md import only its relevant standards uses the maintainers' domain knowledge, keeps a single source of truth for each standard, and avoids loading irrelevant context.",
+    "distractors": {
+      "B": "Copying the text into several files creates duplicates that drift apart when a standard is updated.",
+      "C": "Importing everything at the root loads irrelevant standards, such as PCI rules, into unrelated packages and wastes context.",
+      "D": "Skills are invoked on demand, so standards that should always apply in a package would be skipped whenever someone forgets to invoke them."
+    },
+    "difficulty": 2,
+    "tags": [
+      "claude-md",
+      "import",
+      "monorepo"
+    ]
+  },
+  {
+    "id": "s2-004",
+    "scenario": 2,
+    "domain": 3,
+    "task": "3.1",
+    "type": "multi",
+    "select": 2,
+    "stem": "Your root CLAUDE.md has grown to about 1,400 lines covering testing, API conventions, deployment, database migrations, and code style. Developers find it hard to locate and update sections, and edits regularly cause merge conflicts. All of these standards should keep applying for everyone on the team. Which two restructurings are appropriate? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "Move each section into the `~/.claude/CLAUDE.md` of the developer who owns it, so each owner maintains only their part."
+      },
+      {
+        "key": "B",
+        "text": "Split the content into focused topic files in `.claude/rules/`, such as `testing.md`, `api-conventions.md`, and `deployment.md`."
+      },
+      {
+        "key": "C",
+        "text": "Move the sections into a `.claude/CLAUDE.d/` directory, which Claude Code concatenates in alphabetical order at startup."
+      },
+      {
+        "key": "D",
+        "text": "Keep a short root CLAUDE.md that uses `@import` to reference separate standards files maintained alongside it in the repository."
+      },
+      {
+        "key": "E",
+        "text": "Convert every section into a skill in `.claude/skills/` so the content loads only when a developer invokes it."
+      }
+    ],
+    "answer": [
+      "B",
+      "D"
+    ],
+    "explanation": "Both `.claude/rules/` topic files and `@import` references are supported ways to break a monolithic CLAUDE.md into focused, separately maintained files while keeping the content project-scoped and shared through version control. Smaller files reduce merge conflicts and make ownership clear without changing who receives the standards.",
+    "distractors": {
+      "A": "User-level files are not shared through version control, so most of the team would lose most of the standards.",
+      "C": "`.claude/CLAUDE.d/` is not a Claude Code configuration mechanism.",
+      "E": "Skills load on demand, so universal standards that must always apply would stop being applied automatically."
+    },
+    "difficulty": 2,
+    "tags": [
+      "claude-md",
+      "rules-directory",
+      "import",
+      "modularity"
+    ]
+  },
+  {
+    "id": "s2-005",
+    "scenario": 2,
+    "domain": 3,
+    "task": "3.2",
+    "type": "single",
+    "select": 1,
+    "stem": "Your team shares a `release-notes` skill in `.claude/skills/release-notes/SKILL.md`. One developer wants a version that also adds emoji section headers and a short summary for their personal blog, without changing what teammates get when they run the team's skill. What should they do?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Edit the project's `SKILL.md` to add the extra formatting, wrapped in a note saying it applies only when they run it."
+      },
+      {
+        "key": "B",
+        "text": "Create `~/.claude/skills/release-notes/SKILL.md` with the same name so their personal copy replaces the team's version on their machine."
+      },
+      {
+        "key": "C",
+        "text": "Create a personal skill under `~/.claude/skills/` with a different name, such as `my-release-notes`, that contains their variant."
+      },
+      {
+        "key": "D",
+        "text": "Add the extra formatting instructions to the project CLAUDE.md so they apply whenever release notes are generated."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Personal customizations belong in `~/.claude/skills/`, which is not shared through version control. Giving the variant a different name keeps it clearly separate from the team skill, so both stay available and teammates are not affected.",
+    "distractors": {
+      "A": "Editing the shared `SKILL.md` changes the skill for everyone, and relying on a prose note to scope it to one person is unreliable.",
+      "B": "Reusing the same name makes it ambiguous which version runs, so the guidance is to give personal variants different names.",
+      "D": "The project CLAUDE.md is shared and always loaded, so the personal formatting would apply to the whole team."
+    },
+    "difficulty": 1,
+    "tags": [
+      "skills",
+      "personal-scope",
+      "naming"
+    ]
+  },
+  {
+    "id": "s2-006",
+    "scenario": 2,
+    "domain": 3,
+    "task": "3.2",
+    "type": "single",
+    "select": 1,
+    "stem": "Your team's `/analyze-deps` skill walks the dependency graph and prints a very long report of every import chain it inspected. Developers usually run it in the middle of a feature, and afterwards Claude's answers about the feature become less focused because the report fills the conversation. What is the most effective change?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Add `allowed-tools: [Read, Grep]` to the skill's frontmatter so it can only read and search files while it builds the dependency report."
+      },
+      {
+        "key": "B",
+        "text": "Add `context: fork` to the frontmatter so the skill runs in an isolated sub-agent context and returns only its result."
+      },
+      {
+        "key": "C",
+        "text": "Move the skill's instructions into `.claude/commands/analyze-deps.md` so it runs as a project slash command instead of a skill."
+      },
+      {
+        "key": "D",
+        "text": "Tell developers to run `/compact` every time the skill finishes, before they go back to the feature they were working on."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "The `context: fork` frontmatter option runs a skill in an isolated sub-agent context so its verbose output does not pollute the main conversation. That directly addresses the cause: the analysis report is crowding out the feature context. The main session keeps its focus and receives only the result it needs.",
+    "distractors": {
+      "A": "`allowed-tools` limits what the skill can do, not how much output ends up in the main conversation.",
+      "C": "A slash command runs in the same conversation, so the long report would still fill the main context.",
+      "D": "Asking developers to compact after every run is a manual, lossy workaround for a problem the skill configuration can prevent."
+    },
+    "difficulty": 2,
+    "tags": [
+      "skills",
+      "context-fork",
+      "context-isolation"
+    ]
+  },
+  {
+    "id": "s2-007",
+    "scenario": 2,
+    "domain": 3,
+    "task": "3.2",
+    "type": "single",
+    "select": 1,
+    "stem": "You are writing a `scaffold-migration` skill that should only read the existing schema and write new migration files. A reviewer worries that, while running the skill, Claude could run shell commands that drop tables or delete files. How should you address this?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Add a sentence to the body of `SKILL.md` saying never run shell commands or delete files during this skill."
+      },
+      {
+        "key": "B",
+        "text": "Add `context: fork` to the frontmatter so the skill runs in a separate sub-agent context."
+      },
+      {
+        "key": "C",
+        "text": "Move the skill to `~/.claude/skills/` so that only you can run it."
+      },
+      {
+        "key": "D",
+        "text": "Set `allowed-tools` in the skill's frontmatter to only the read and write tools the skill needs."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "The `allowed-tools` frontmatter restricts which tools are available while the skill runs, so destructive tools such as Bash are simply not available. This is a configuration-level restriction rather than a request the model might not follow.",
+    "distractors": {
+      "A": "A prose instruction depends on the model following it and does not prevent the tools from being called.",
+      "B": "`context: fork` isolates the skill's context but does not restrict which tools it can use.",
+      "C": "Changing where the skill is stored changes who can run it, not what it is allowed to do."
+    },
+    "difficulty": 1,
+    "tags": [
+      "skills",
+      "allowed-tools",
+      "safety"
+    ]
+  },
+  {
+    "id": "s2-008",
+    "scenario": 2,
+    "domain": 3,
+    "task": "3.2",
+    "type": "multi",
+    "select": 2,
+    "stem": "Your team uses a `gen-endpoint` skill to create a new REST endpoint. Two problems keep coming up: developers often type `/gen-endpoint` without saying which resource it is for, so Claude guesses a name, and the skill's step that surveys every existing route floods the main session with output. Which two frontmatter changes in `SKILL.md` address these problems? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "Add `argument-hint: \"<resource-name>\"` so developers are prompted for the resource when they invoke the skill without arguments."
+      },
+      {
+        "key": "B",
+        "text": "Add `allowed-tools: [Bash]` so the route survey runs as a single shell command instead of many file reads."
+      },
+      {
+        "key": "C",
+        "text": "Add `context: fork` so the route survey runs in an isolated sub-agent context and only the result returns."
+      },
+      {
+        "key": "D",
+        "text": "Add `required-args: [resource]` so Claude Code refuses to run the skill until a resource name is supplied."
+      },
+      {
+        "key": "E",
+        "text": "Remove the frontmatter and move the skill's instructions into CLAUDE.md so they are always available."
+      }
+    ],
+    "answer": [
+      "A",
+      "C"
+    ],
+    "explanation": "`argument-hint` tells developers which parameter the skill expects when they invoke it without arguments, which addresses the missing resource name. `context: fork` runs the skill in an isolated sub-agent context so the verbose route survey stays out of the main conversation. Together they fix both problems with supported frontmatter.",
+    "distractors": {
+      "B": "Restricting the skill to Bash does not isolate its output and removes the file tools the skill needs to write code.",
+      "D": "`required-args` is not a supported SKILL.md frontmatter field.",
+      "E": "Moving the workflow into CLAUDE.md loads it in every session and still produces the survey output in the main context."
+    },
+    "difficulty": 3,
+    "tags": [
+      "skills",
+      "argument-hint",
+      "context-fork",
+      "frontmatter"
+    ]
+  },
+  {
+    "id": "s2-009",
+    "scenario": 2,
+    "domain": 3,
+    "task": "3.2",
+    "type": "single",
+    "select": 1,
+    "stem": "Your project CLAUDE.md contains two things: naming and error-handling conventions that apply to every change, and a 120-line step-by-step procedure for cutting a release (version bump, changelog, tagging) that someone runs about twice a month. Developers point out that the release procedure is loaded into every session even though it is rarely relevant. What is the best restructuring?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Move the release procedure into the release manager's `~/.claude/CLAUDE.md`, since they are the person who usually cuts releases."
+      },
+      {
+        "key": "B",
+        "text": "Move both the conventions and the release procedure into skills so that CLAUDE.md stays as small as possible."
+      },
+      {
+        "key": "C",
+        "text": "Move the release procedure into a project skill in `.claude/skills/` and keep the always-applicable conventions in CLAUDE.md."
+      },
+      {
+        "key": "D",
+        "text": "Move the release procedure into a CLAUDE.md inside `scripts/release/` so it only loads when working in that folder."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Skills are for task-specific workflows that are invoked on demand, while CLAUDE.md holds universal standards that should always be loaded. The release procedure is an occasional workflow, so a project skill keeps it shared through version control without costing context in every session, and the everyday conventions stay always loaded.",
+    "distractors": {
+      "A": "A user-level file is not shared, so anyone else who cuts a release would lose the procedure, and it would still load in all of that person's sessions.",
+      "B": "Conventions that apply to every change must stay always loaded; as skills they would only apply when someone remembered to invoke them.",
+      "D": "Releasing is triggered by a task, not by editing files in one folder, and the work touches files outside `scripts/release/`."
+    },
+    "difficulty": 1,
+    "tags": [
+      "skills",
+      "claude-md",
+      "on-demand-vs-always-loaded"
+    ]
+  },
+  {
+    "id": "s2-010",
+    "scenario": 2,
+    "domain": 3,
+    "task": "3.3",
+    "type": "single",
+    "select": 1,
+    "stem": "Your platform team has Terraform conventions (pinned provider versions, required tags, no inline IAM policies). Terraform files live in the top-level `infra/` folder, but each service also keeps its own `.tf` files in `services/<name>/deploy/`. You want these conventions applied whenever Claude edits Terraform, and not loaded when it works on application code. What should you do?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Put the conventions in a CLAUDE.md inside the top-level `infra/` folder."
+      },
+      {
+        "key": "B",
+        "text": "Add a Terraform section to the root CLAUDE.md and rely on Claude to apply it when it notices it is editing Terraform."
+      },
+      {
+        "key": "C",
+        "text": "Create `.claude/rules/terraform.md` with the conventions and no frontmatter."
+      },
+      {
+        "key": "D",
+        "text": "Create `.claude/rules/terraform.md` with YAML frontmatter `paths: [\"**/*.tf\"]` and the conventions in the body."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "Rule files in `.claude/rules/` with a `paths` glob in their YAML frontmatter load only when Claude edits matching files. A `**/*.tf` pattern matches Terraform files wherever they live, including inside service folders, and keeps the conventions out of context during application work.",
+    "distractors": {
+      "A": "A directory-level CLAUDE.md only covers `infra/`, so the `.tf` files under `services/` would miss the conventions.",
+      "B": "A root CLAUDE.md section is always loaded and relies on Claude inferring when it applies instead of deterministic path matching.",
+      "C": "Without a `paths` field the rule is not path-scoped, so it would load for every session, including application work."
+    },
+    "difficulty": 2,
+    "tags": [
+      "path-rules",
+      "glob",
+      "terraform"
+    ]
+  },
+  {
+    "id": "s2-011",
+    "scenario": 2,
+    "domain": 3,
+    "task": "3.3",
+    "type": "single",
+    "select": 1,
+    "stem": "You created `.claude/rules/api-handlers.md` with frontmatter `paths: [\"src/api/*.ts\"]`. Claude applies the conventions when editing `src/api/health.ts`, but not when editing `src/api/v2/orders/create.ts`, and the API team keeps adding nested version folders. What is the most likely cause and fix?",
+    "options": [
+      {
+        "key": "A",
+        "text": "A single `*` does not match across subdirectories; change the pattern to `src/api/**/*.ts`."
+      },
+      {
+        "key": "B",
+        "text": "Path-scoped rules only apply at the top level of the repository; move the rule file into `src/api/v2/.claude/rules/`."
+      },
+      {
+        "key": "C",
+        "text": "The frontmatter key must be `globs` rather than `paths`; rename it so Claude Code evaluates the pattern recursively."
+      },
+      {
+        "key": "D",
+        "text": "The rule was cached when the session started; run `/memory` before each nested edit so Claude Code reloads the rule for that file."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "In glob patterns, `*` matches within one path segment, while `**` matches any number of nested directories. The rule matches `src/api/health.ts` but not files inside version folders, so changing it to `src/api/**/*.ts` covers current and future nested folders without adding more rule files.",
+    "distractors": {
+      "B": "Path-scoped rules are not limited to the top level, and adding a rules folder for each version would not scale as folders are added.",
+      "C": "`paths` is the frontmatter field for path-scoped rules, and renaming it would not change how the pattern matches.",
+      "D": "`/memory` shows which memory files are loaded but cannot make a pattern match files it does not match."
+    },
+    "difficulty": 3,
+    "tags": [
+      "path-rules",
+      "glob",
+      "troubleshooting"
+    ]
+  },
+  {
+    "id": "s2-012",
+    "scenario": 2,
+    "domain": 3,
+    "task": "3.4",
+    "type": "single",
+    "select": 1,
+    "stem": "You have two tickets. Ticket 1: `parseInvoiceDate()` throws on an empty string, and the stack trace points to the exact line; add a guard that returns null. Ticket 2: replace the in-house event bus, used in about 50 files, with a message queue library; two candidate libraries need different infrastructure. How should you approach them in Claude Code?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Use plan mode for both tickets, because planning first is always safer than changing code directly."
+      },
+      {
+        "key": "B",
+        "text": "Use direct execution for Ticket 1 and plan mode for Ticket 2."
+      },
+      {
+        "key": "C",
+        "text": "Use direct execution for both tickets, giving Ticket 2 a detailed upfront description of the target library."
+      },
+      {
+        "key": "D",
+        "text": "Use plan mode for Ticket 1 to investigate the root cause, and direct execution for Ticket 2 since the goal is clear."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Direct execution fits simple, well-scoped changes such as a one-function fix with a clear stack trace. Plan mode is for large changes across many files with several valid approaches and architectural decisions, like choosing between libraries with different infrastructure needs and migrating about 50 files. Matching the mode to the task avoids both wasted overhead and costly rework.",
+    "distractors": {
+      "A": "Plan mode for a one-line guard with a known location adds overhead without reducing any real risk.",
+      "C": "Starting the migration directly commits to a library and approach before exploring dependencies, which risks rework across many files.",
+      "D": "This reverses the guidance: the bug's location is already known, and the migration is the task that involves architectural choices."
+    },
+    "difficulty": 1,
+    "tags": [
+      "plan-mode",
+      "direct-execution",
+      "complexity-assessment"
+    ]
+  },
+  {
+    "id": "s2-013",
+    "scenario": 2,
+    "domain": 3,
+    "task": "3.4",
+    "type": "single",
+    "select": 1,
+    "stem": "You are reworking a legacy billing module in three phases: discovery (mapping how roughly 200 files interact), design, and implementation. In your last attempt you ran discovery in the main session, and by the time you reached design, the context was nearly full of file listings and search results and Claude kept losing track of the decisions you had agreed on. What approach is most effective this time?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Run discovery in the main session again but in plan mode, since plan mode prevents exploration output from using up context."
+      },
+      {
+        "key": "B",
+        "text": "Have Claude read all 200 files at the start so the design phase has complete information in context."
+      },
+      {
+        "key": "C",
+        "text": "Run each phase in a separate new session and repeat discovery at the start of design and implementation so each has fresh context."
+      },
+      {
+        "key": "D",
+        "text": "Use the Explore subagent for discovery so it returns a summary, then design in plan mode and implement with direct execution."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "The Explore subagent isolates verbose discovery output and returns a summary, which keeps the main session's context free for design and implementation. Combining that with plan mode for design and direct execution for the agreed plan matches each phase to the right tool and prevents the context exhaustion seen last time.",
+    "distractors": {
+      "A": "Plan mode prevents changes during exploration but does not keep verbose discovery output out of the main context.",
+      "B": "Reading all 200 files up front uses up context even faster, which is the failure you are trying to avoid.",
+      "C": "Repeating discovery in each session wastes effort and still gives later phases no record of the earlier findings."
+    },
+    "difficulty": 3,
+    "tags": [
+      "explore-subagent",
+      "plan-mode",
+      "multi-phase"
+    ]
+  },
+  {
+    "id": "s2-014",
+    "scenario": 2,
+    "domain": 3,
+    "task": "3.5",
+    "type": "single",
+    "select": 1,
+    "stem": "You asked Claude Code to write a function that normalizes customer phone numbers into the company's standard format. Across several attempts the output varies: sometimes it includes the country code, sometimes it uses spaces instead of hyphens, and extensions are handled differently. Rewording the description has not helped. What is the most effective next step?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Give two or three concrete input and output pairs, such as a raw number with an extension and its exact normalized form."
+      },
+      {
+        "key": "B",
+        "text": "Expand the prose description with stronger wording, such as strictly consistent and always use the company's standard format."
+      },
+      {
+        "key": "C",
+        "text": "Ask Claude to generate five alternative implementations and choose the one whose output looks closest to the standard."
+      },
+      {
+        "key": "D",
+        "text": "Ask Claude to explain the formatting choices it made after each attempt so you can understand how it interprets the request."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "When prose descriptions are interpreted inconsistently, two or three concrete input and output examples are the most effective way to communicate the exact transformation. Examples settle the ambiguous details directly, including the country code, separators, and extension format, which more prose cannot do reliably.",
+    "distractors": {
+      "B": "Stronger wording still leaves the actual format ambiguous, which is the cause of the inconsistency.",
+      "C": "Generating alternatives and choosing by eye is wasteful and still does not define the target format.",
+      "D": "An explanation describes the misinterpretation but does not give Claude the precise target it is missing."
+    },
+    "difficulty": 1,
+    "tags": [
+      "iterative-refinement",
+      "io-examples"
+    ]
+  },
+  {
+    "id": "s2-015",
+    "scenario": 2,
+    "domain": 3,
+    "task": "3.5",
+    "type": "single",
+    "select": 1,
+    "stem": "A backend developer who has never built a caching layer asks Claude Code to add caching in front of the pricing service. Prices change several times a day, some downstream consumers are sensitive to stale prices, and the cache store has occasionally been unavailable in staging. What is the most effective way to start?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Ask Claude to implement caching immediately using industry best practices for read-heavy services, then review the result."
+      },
+      {
+        "key": "B",
+        "text": "Ask Claude to implement three different caching designs in parallel branches and compare them afterwards."
+      },
+      {
+        "key": "C",
+        "text": "Ask Claude to interview them first about invalidation, acceptable staleness, and cache failure behavior before implementing."
+      },
+      {
+        "key": "D",
+        "text": "Have the developer write a complete specification on their own before involving Claude, so Claude has nothing left to decide."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "The interview pattern has Claude ask questions that surface design considerations the developer may not have anticipated, such as cache invalidation strategy, staleness tolerance, and failure modes. In an unfamiliar domain with real constraints, settling these first avoids building the wrong design and reworking it later.",
+    "distractors": {
+      "A": "Best practices depend on requirements that have not been stated, so Claude would have to guess the important decisions.",
+      "B": "Building several designs before the requirements are clear wastes effort and gives no basis for choosing between them.",
+      "D": "A developer new to caching is likely to miss considerations they do not know about, which is what the interview pattern is meant to catch."
+    },
+    "difficulty": 2,
+    "tags": [
+      "iterative-refinement",
+      "interview-pattern"
+    ]
+  },
+  {
+    "id": "s2-016",
+    "scenario": 2,
+    "domain": 3,
+    "task": "3.5",
+    "type": "multi",
+    "select": 2,
+    "stem": "Claude Code wrote a script that migrates legacy order CSV files into the new JSON format. Review finds three problems: empty `discount` cells become the string \"null\" instead of a JSON null; the date-parsing logic and the timezone conversion interact, so fixing one has shifted the output of the other; and a log message has a typo. Which two actions are most effective for the next iteration? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "Provide specific test cases, with sample CSV rows that contain empty discounts and the exact JSON expected, and share the failing results."
+      },
+      {
+        "key": "B",
+        "text": "Send the date-parsing issue and the timezone issue as separate follow-up messages, waiting for each fix before raising the next."
+      },
+      {
+        "key": "C",
+        "text": "Ask Claude to rewrite the whole script from scratch with instructions to handle all edge cases properly."
+      },
+      {
+        "key": "D",
+        "text": "Add a line to the project CLAUDE.md saying nulls must always be preserved in migrations, and rerun the script."
+      },
+      {
+        "key": "E",
+        "text": "Describe the date-parsing and timezone problems together in one detailed message, explaining how the fixes affect each other."
+      }
+    ],
+    "answer": [
+      "A",
+      "E"
+    ],
+    "explanation": "Specific test cases with example input and expected output are the most effective way to fix edge-case handling such as nulls, and sharing the test failures guides each iteration. When fixes interact, as with date parsing and timezone conversion, they should be described together in a single detailed message so Claude can solve them jointly. The independent typo can be fixed separately.",
+    "distractors": {
+      "B": "Sequential fixes suit independent issues; for interacting issues they cause each fix to undo or shift the other.",
+      "C": "A vague rewrite request discards working code and gives no precise definition of correct behavior.",
+      "D": "A general CLAUDE.md note does not specify the expected output or provide a test that verifies the fix."
+    },
+    "difficulty": 3,
+    "tags": [
+      "iterative-refinement",
+      "test-driven",
+      "single-vs-sequential"
+    ]
+  },
+  {
+    "id": "s2-017",
+    "scenario": 2,
+    "domain": 5,
+    "task": "5.4",
+    "type": "single",
+    "select": 1,
+    "stem": "Three hours into a session exploring an unfamiliar codebase, Claude starts saying things like \"this probably follows a typical repository pattern\" instead of naming the `LedgerRepository` and `PostingService` classes it found earlier, and two of its answers now contradict its earlier findings. What is the most effective way to handle this?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Connect additional MCP tools, such as a code-search server, so Claude has more ways to look up the classes it found earlier."
+      },
+      {
+        "key": "B",
+        "text": "Treat it as context degradation: have Claude record key findings in a scratchpad file and consult it for later questions."
+      },
+      {
+        "key": "C",
+        "text": "Repeat each question with more emphasis and ask Claude to name the specific classes and avoid generic, pattern-based answers."
+      },
+      {
+        "key": "D",
+        "text": "Increase the maximum output length so Claude has more room to include the class names and details it found earlier."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Generic answers about typical patterns and contradictions with earlier findings are classic signs of context degradation in long sessions. Writing key findings, such as class names, file paths, and confirmed behaviors, to a scratchpad file keeps them available across context boundaries, so later questions can be answered from that file rather than from degraded conversation history.",
+    "distractors": {
+      "A": "The problem is not missing tools; the earlier findings are being lost in a long context.",
+      "C": "More emphasis does not restore information the model is no longer using reliably from earlier in the session.",
+      "D": "Output length has nothing to do with how well earlier context is retained."
+    },
+    "difficulty": 2,
+    "tags": [
+      "context-degradation",
+      "scratchpad"
+    ]
+  },
+  {
+    "id": "s2-018",
+    "scenario": 2,
+    "domain": 5,
+    "task": "5.4",
+    "type": "single",
+    "select": 1,
+    "stem": "Midway through a debugging session, your context is filling up with long grep results and verbose test logs from earlier exploration. You are not finished and want to continue the same task with the important conclusions still available. Which built-in command should you use?",
+    "options": [
+      {
+        "key": "A",
+        "text": "`/memory`"
+      },
+      {
+        "key": "B",
+        "text": "`/clear`"
+      },
+      {
+        "key": "C",
+        "text": "`claude --resume` on the current session"
+      },
+      {
+        "key": "D",
+        "text": "`/compact`"
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "`/compact` reduces context usage by summarizing the conversation so far, which removes verbose discovery output while keeping the important conclusions. That lets you continue the same task in the same session with much more room.",
+    "distractors": {
+      "A": "`/memory` shows and edits memory files; it does not reduce conversation context.",
+      "B": "`/clear` throws away the whole conversation, including the conclusions you want to keep.",
+      "C": "Resuming the same session reloads the same full context and does not reduce it."
+    },
+    "difficulty": 1,
+    "tags": [
+      "compact",
+      "context-management"
+    ]
+  },
+  {
+    "id": "s2-019",
+    "scenario": 2,
+    "domain": 5,
+    "task": "5.4",
+    "type": "multi",
+    "select": 2,
+    "stem": "You need to answer \"how does the refund flow work end to end, and which tests cover it?\" in a large monorepo that you have not worked in before. You want the main Claude Code session to stay focused on the overall picture and on deciding what to change. Which two practices are most effective? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "Have the main session read every file under `services/` first so it has the full codebase in context before answering."
+      },
+      {
+        "key": "B",
+        "text": "Have each subagent return its complete raw tool output so the main session can check every detail itself."
+      },
+      {
+        "key": "C",
+        "text": "Spawn subagents with focused questions, such as trace refund flow dependencies and find all tests that touch refunds, each returning a summary."
+      },
+      {
+        "key": "D",
+        "text": "Rely on the main session to remember earlier results rather than writing them to files, since writing notes wastes tokens."
+      },
+      {
+        "key": "E",
+        "text": "Keep a scratchpad file of key findings (class names, file paths, call chains) that later steps read and update."
+      }
+    ],
+    "answer": [
+      "C",
+      "E"
+    ],
+    "explanation": "Delegating focused investigation questions to subagents isolates the verbose exploration output while the main session coordinates the high-level understanding. A scratchpad file keeps key findings available across context boundaries so later steps do not depend on a degrading conversation history. Together they keep the main context lean and the findings reliable.",
+    "distractors": {
+      "A": "Reading everything up front fills the context with mostly irrelevant content and speeds up degradation.",
+      "B": "Returning raw output defeats the purpose of delegating, because the verbose content lands in the main context anyway.",
+      "D": "Relying on conversation memory in long explorations is what leads to context degradation."
+    },
+    "difficulty": 2,
+    "tags": [
+      "subagent-delegation",
+      "scratchpad",
+      "exploration"
+    ]
+  },
+  {
+    "id": "s2-020",
+    "scenario": 2,
+    "domain": 5,
+    "task": "5.4",
+    "type": "single",
+    "select": 1,
+    "stem": "In phase 1, subagents mapped the authentication module and found that session tokens are issued in `TokenIssuer`, stored by `SessionStore`, and refreshed by a background job with a known race condition. In phase 2, new subagents will implement a fix to session handling. How should the coordinator start the phase-2 subagents?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Summarize the key phase-1 findings (classes, responsibilities, the race condition) and include that summary in each phase-2 prompt."
+      },
+      {
+        "key": "B",
+        "text": "Have each phase-2 subagent explore the authentication module again from scratch so it forms its own independent understanding of the code."
+      },
+      {
+        "key": "C",
+        "text": "Spawn the phase-2 subagents with no extra context, since subagents automatically inherit the coordinator's conversation history."
+      },
+      {
+        "key": "D",
+        "text": "Include the complete phase-1 subagent transcripts in each phase-2 subagent's prompt so that no detail from the exploration is lost."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Summarizing the key findings from one exploration phase and injecting them into the initial context of the next phase's subagents gives them exactly what they need without repeating the work. It also keeps their context focused, because a concise summary carries the important facts without the exploration noise.",
+    "distractors": {
+      "B": "Exploring again wastes effort and may produce a different, conflicting understanding of the same code.",
+      "C": "Subagents do not automatically inherit the coordinator's history, so context must be passed to them explicitly.",
+      "D": "Full transcripts bring all the verbose exploration output with them, which uses up the new subagents' context."
+    },
+    "difficulty": 3,
+    "tags": [
+      "subagent-delegation",
+      "phase-summaries",
+      "context-passing"
+    ]
+  },
+  {
+    "id": "s2-021",
+    "scenario": 2,
+    "domain": 5,
+    "task": "5.4",
+    "type": "single",
+    "select": 1,
+    "stem": "Your team runs a long multi-agent job that refactors logging calls across 30 services, with a coordinator dispatching one subagent per service. When the job crashed after 18 services, the restarted coordinator had no record of what was done and began again from the first service. What design best prevents this?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Resume the coordinator's previous session after a crash and rely on its conversation history to work out which services were already finished."
+      },
+      {
+        "key": "B",
+        "text": "Make every service refactor idempotent and simply rerun all 30 services from the start after any crash, accepting the repeated work."
+      },
+      {
+        "key": "C",
+        "text": "Have each subagent export state to a known location; on resume, the coordinator loads a manifest and passes relevant state into new subagent prompts."
+      },
+      {
+        "key": "D",
+        "text": "Have the coordinator keep each subagent's progress in its own conversation context so it always knows the current status of every service."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Structured state persistence makes crash recovery reliable: each agent writes its state to a known location, and on resume the coordinator loads a manifest of completed and pending work and passes the relevant state into the prompts of the agents it starts next. Recovery then no longer depends on conversation history surviving the crash.",
+    "distractors": {
+      "A": "Conversation history may be incomplete after a crash and does not reliably reflect what each subagent finished.",
+      "B": "Rerunning everything wastes the completed work, and idempotency does not give the coordinator any knowledge of progress.",
+      "D": "State held only in a context window is exactly what is lost when the process crashes."
+    },
+    "difficulty": 2,
+    "tags": [
+      "crash-recovery",
+      "manifest",
+      "state-persistence"
+    ]
+  },
+  {
+    "id": "s2-022",
+    "scenario": 2,
+    "domain": 2,
+    "task": "2.5",
+    "type": "single",
+    "select": 1,
+    "stem": "Before updating a shared test helper, you want Claude Code to list every Playwright test file in the repository. By team convention these files end in `.e2e.ts` and can be in any folder. Which built-in tool is the best fit?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Grep for the string `test(` across the repository to find files that contain tests."
+      },
+      {
+        "key": "B",
+        "text": "Glob with the pattern `**/*.e2e.ts`."
+      },
+      {
+        "key": "C",
+        "text": "Read each top-level directory and follow subfolders until all test files are found."
+      },
+      {
+        "key": "D",
+        "text": "Read `playwright.config.ts` and infer the list of test files from its configuration."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Glob matches file paths against name or extension patterns, which is exactly what finding all `.e2e.ts` files anywhere in the repository requires. It answers the question directly without reading file contents.",
+    "distractors": {
+      "A": "Grep searches file contents, so it would also match unit tests and other files and does not use the naming convention.",
+      "C": "Walking directories by hand is slow and error-prone compared with a single path pattern.",
+      "D": "Config files show test settings, not a reliable list of every matching file in the repository."
+    },
+    "difficulty": 1,
+    "tags": [
+      "built-in-tools",
+      "glob"
+    ]
+  },
+  {
+    "id": "s2-023",
+    "scenario": 2,
+    "domain": 2,
+    "task": "2.5",
+    "type": "single",
+    "select": 1,
+    "stem": "You ask Claude Code to explain how webhook delivery retries work in a large, unfamiliar service. You know the retry error message is \"webhook delivery failed, scheduling retry\" but you do not know which files are involved. What is the most effective way for Claude to build this understanding?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Grep for the error message to find where retries start, then Read those files and follow their imports."
+      },
+      {
+        "key": "B",
+        "text": "Read every file in the service's `src/` folder first so the full code is in context before tracing anything."
+      },
+      {
+        "key": "C",
+        "text": "Glob for files with `retry` or `webhook` in their names, then Read all of the matching files in full before tracing."
+      },
+      {
+        "key": "D",
+        "text": "Read the service's README and architecture docs, then describe the retry flow based on what the documentation says."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Building understanding step by step works best: Grep finds entry points by content, such as the known error message, and Read then follows imports to trace the actual flow. This targets only the relevant code instead of loading the whole service into context.",
+    "distractors": {
+      "B": "Reading everything up front wastes context on unrelated code and makes the relevant parts harder to follow.",
+      "C": "File names may not reflect where retry logic lives, so Glob by name can miss the important files and include irrelevant ones.",
+      "D": "Documentation may be out of date and does not show how the code actually behaves."
+    },
+    "difficulty": 2,
+    "tags": [
+      "built-in-tools",
+      "grep",
+      "incremental-exploration"
+    ]
+  },
+  {
+    "id": "s2-024",
+    "scenario": 2,
+    "domain": 2,
+    "task": "2.5",
+    "type": "single",
+    "select": 1,
+    "stem": "Claude Code needs to change the timeout in only the third of four `retry_policy` blocks in a generated YAML file. The four blocks are identical, including their surrounding lines, so the Edit tool keeps failing because its target text is not unique. What is the most reliable way to make the change?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Retry the Edit with the same target text, since a transient failure may let it succeed on a later attempt."
+      },
+      {
+        "key": "B",
+        "text": "Run Edit with replace-all enabled so the matching `retry_policy` blocks are all updated in one call."
+      },
+      {
+        "key": "C",
+        "text": "Read the whole file, change the third block in the content, then Write the full updated file."
+      },
+      {
+        "key": "D",
+        "text": "Use Grep to locate the line number of the third match and apply the new timeout value at that position."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Edit relies on unique text matching, so it cannot target one of several identical blocks. When no unique anchor text exists, reading the full file and writing back the modified content is the reliable fallback for making a precise change.",
+    "distractors": {
+      "A": "The text is still not unique, so retrying the same Edit will keep failing.",
+      "B": "Replace-all would change all four blocks, not just the third one.",
+      "D": "Grep only searches; it cannot change file contents."
+    },
+    "difficulty": 2,
+    "tags": [
+      "built-in-tools",
+      "edit",
+      "read-write-fallback"
+    ]
+  },
+  {
+    "id": "s2-025",
+    "scenario": 2,
+    "domain": 2,
+    "task": "2.5",
+    "type": "single",
+    "select": 1,
+    "stem": "You are removing the legacy `UserClient` class. A grep for `UserClient` shows only one usage, inside `lib/users/index.ts`, but that module wraps the client and re-exports several functions under new names, such as `getUser`, `fetchProfile`, and `lookupAccount`. How should Claude Code find every place that ultimately depends on `UserClient`?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Rely on the grep result, since only one file references `UserClient` directly and that is the only file to change."
+      },
+      {
+        "key": "B",
+        "text": "Glob for files with `user` in their names and treat those as the affected files."
+      },
+      {
+        "key": "C",
+        "text": "Read every file in the repository to find indirect uses of the client."
+      },
+      {
+        "key": "D",
+        "text": "Read the wrapper to list all of its exported names, then Grep for each exported name across the codebase."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "To trace usage through a wrapper module, first identify every name the wrapper exports, then search for each of those names across the codebase. This finds callers that never mention `UserClient` directly, without reading the whole repository.",
+    "distractors": {
+      "A": "Callers use the re-exported names, so a search for the original class name misses them.",
+      "B": "File names do not show which code calls the wrapper's functions, so this both misses and over-includes files.",
+      "C": "Reading every file is very inefficient compared with targeted Grep searches for the known exported names."
+    },
+    "difficulty": 3,
+    "tags": [
+      "built-in-tools",
+      "grep",
+      "wrapper-tracing"
+    ]
+  },
+  {
+    "id": "s2-026",
+    "scenario": 2,
+    "domain": 1,
+    "task": "1.7",
+    "type": "single",
+    "select": 1,
+    "stem": "Yesterday you spent a long session named `auth-refactor-analysis` mapping 40 files in the authentication code. This morning you edited only `token_store.py` and `session.py`, and everything else is unchanged. You want to continue the analysis efficiently. What should you do?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Start a new session and have Claude explore all 40 files again from the beginning so its picture of the authentication code is fully up to date."
+      },
+      {
+        "key": "B",
+        "text": "Resume with `claude --resume auth-refactor-analysis` and continue without mentioning the edits, since Claude will notice the changes."
+      },
+      {
+        "key": "C",
+        "text": "Resume with `claude --resume auth-refactor-analysis` and tell Claude that `token_store.py` and `session.py` changed."
+      },
+      {
+        "key": "D",
+        "text": "Resume the named session and ask Claude to read all 40 files again before continuing, so every earlier result is refreshed."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "When most of the earlier context is still valid, resuming the named session with `--resume` keeps that work. Telling the resumed session exactly which files changed lets it re-analyze only those files instead of relying on outdated results or redoing the whole exploration.",
+    "distractors": {
+      "A": "Starting over throws away valid analysis of 38 unchanged files.",
+      "B": "The resumed session holds earlier tool results for the edited files and will not know they changed unless you tell it.",
+      "D": "Re-reading every file wastes effort when only two files changed."
+    },
+    "difficulty": 2,
+    "tags": [
+      "session-management",
+      "resume",
+      "named-sessions"
+    ]
+  },
+  {
+    "id": "s2-027",
+    "scenario": 2,
+    "domain": 1,
+    "task": "1.7",
+    "type": "single",
+    "select": 1,
+    "stem": "After a long session analyzing the payments module, you want to compare two refactoring approaches, a strategy pattern and an explicit state machine, by having Claude develop each one in depth. You do not want work on one approach to influence the other, and you do not want to repeat the analysis. What is the most effective approach?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Use `fork_session` to create two independent branches from the analyzed session and develop one approach in each."
+      },
+      {
+        "key": "B",
+        "text": "Develop both approaches one after the other in the same session, asking Claude to forget the first before starting the second."
+      },
+      {
+        "key": "C",
+        "text": "Start two new sessions and have each one analyze the payments module from scratch before developing its approach."
+      },
+      {
+        "key": "D",
+        "text": "Ask Claude in the current session to write both approaches side by side in one response."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "`fork_session` creates independent branches from a shared analysis baseline, so each approach starts from the same understanding of the module without being influenced by work on the other. It is designed for comparing divergent approaches like this.",
+    "distractors": {
+      "B": "Claude cannot reliably ignore earlier conversation, so the first approach will influence the second.",
+      "C": "Repeating the analysis twice wastes effort and may give the two branches different baselines.",
+      "D": "Developing both in one response limits the depth of each and mixes them in the same context."
+    },
+    "difficulty": 2,
+    "tags": [
+      "session-management",
+      "fork-session"
+    ]
+  },
+  {
+    "id": "s2-028",
+    "scenario": 2,
+    "domain": 1,
+    "task": "1.7",
+    "type": "single",
+    "select": 1,
+    "stem": "Last week you ran a long investigation session into a performance problem in the order pipeline. Since then, a teammate merged a large refactor that rewrote most of the pipeline files the session had read and changed several function names. You still want to use last week's conclusions about where the bottlenecks were. What is the most reliable way to continue?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Resume last week's session and continue, since its conclusions about the bottlenecks are still the most detailed information available to you."
+      },
+      {
+        "key": "B",
+        "text": "Start a new session and give it a structured summary of last week's conclusions, noting that the pipeline was refactored and needs fresh analysis."
+      },
+      {
+        "key": "C",
+        "text": "Use `fork_session` on last week's session so the new branch can explore the refactored code without changing the original session's history."
+      },
+      {
+        "key": "D",
+        "text": "Resume last week's session and tell it that some files changed, leaving it to decide which earlier results still hold."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "When most of the earlier tool results are stale, starting a new session with a structured summary is more reliable than resuming. The summary keeps the useful conclusions while making clear that the code has changed, so Claude analyzes the current code instead of reasoning from outdated file contents and function names.",
+    "distractors": {
+      "A": "The session's tool results describe code that no longer exists, so Claude would reason from outdated information.",
+      "C": "A fork inherits the same stale context, so it has the same problem as resuming.",
+      "D": "Resuming fits when earlier context is mostly valid; here most of it is stale, and a vague notice leaves Claude mixing old and new information."
+    },
+    "difficulty": 3,
+    "tags": [
+      "session-management",
+      "stale-context",
+      "fresh-session-summary"
+    ]
+  }
+]

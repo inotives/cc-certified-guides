@@ -1,0 +1,87 @@
+[
+  {
+    "task": "2.4",
+    "knowledge": [
+      "HTTP method semantics: GET is safe, PUT and DELETE are idempotent, POST is not idempotent, and PATCH is not guaranteed to be idempotent.",
+      "Status codes tell the client what to do next: 4xx means fix the request (400 bad input, 401 bad credentials), while 429, 500 and 529 (`overloaded_error`) from the Claude API are transient and worth retrying with backoff.",
+      "Cursor (keyset) pagination stays consistent while rows are inserted; offset pagination skips or duplicates rows when data shifts.",
+      "The Claude SDKs automatically retry some errors with backoff (configurable with `max_retries`). Long requests should use streaming or the Message Batches API rather than large non-streaming calls.",
+      "Additive JSON changes, such as new optional fields, are backward compatible. Renaming, removing or re-typing fields breaks clients that are already deployed.",
+      "Claude Code checkpoints are local undo points, not a substitute for Git branches, commits and pull requests."
+    ],
+    "skills": [
+      "Implement retries with capped exponential backoff and jitter that honour `retry-after`, and only for transient errors.",
+      "Make webhook and queue handlers idempotent by deduplicating on an event ID or idempotency key.",
+      "Run independent API or tool calls concurrently with a bounded pool sized to rate limits, with per-request timeouts.",
+      "Return all `tool_result` blocks for one assistant turn together in the next user message, each matched to its `tool_use_id`.",
+      "Plan large refactors as a proven pattern applied in small batches, with tests and a commit after each batch.",
+      "Add evals to CI so that prompt or model changes cannot silently degrade quality."
+    ],
+    "examLens": [
+      "Retry only what is transient (429, 5xx, 529), with backoff; fix 4xx errors instead of retrying them.",
+      "When delivery is at-least-once or clients retry, the correct answer makes the operation idempotent.",
+      "Prefer incremental, reviewable, test-verified change (branches, small commits, batches) over big-bang rewrites.",
+      "Concurrency must be bounded; unbounded fan-out and shared mutable state are wrong."
+    ],
+    "traps": [
+      "Retrying immediately or without limit, or retrying 400 and 401 errors that will never succeed.",
+      "Fixes that shrink a symptom without removing the cause, such as bigger page sizes for offset drift, longer timeouts for idle-connection drops, or lower `temperature` for duplicate processing.",
+      "Exact-string assertions on model output, or relying only on post-deploy spot checks."
+    ],
+    "links": [
+      {"label": "Claude API errors", "url": "https://platform.claude.com/docs/en/api/errors"},
+      {"label": "Rate limits", "url": "https://platform.claude.com/docs/en/api/rate-limits"},
+      {"label": "Claude Code overview", "url": "https://code.claude.com/docs/en/overview"}
+    ],
+    "cheat": [
+      ["429 or 529 during traffic spikes", "Honour `retry-after`, use capped exponential backoff with jitter"],
+      ["Duplicate webhook deliveries cause duplicate actions", "Deduplicate on event ID so the handler is idempotent"],
+      ["Records skipped or duplicated while paging a growing table", "Cursor-based pagination on a stable sort key"],
+      ["Long non-streaming generation times out", "Use streaming (or Message Batches if latency-tolerant)"],
+      ["Hundreds of files to migrate", "Prove the pattern, then batch with tests and commits per batch"]
+    ]
+  },
+  {
+    "task": "2.5",
+    "knowledge": [
+      "claude.ai and the Claude mobile apps use their own system prompt (current date, formatting habits); those prompts do not apply to the API, which uses only the `system` prompt you send.",
+      "`CLAUDE.md` is read by Claude Code. The client SDKs and Messages API do not read repository files, and they get no built-in file or shell tools; the Claude Agent SDK provides Claude Code's harness.",
+      "The Messages API is stateless: the app sends the conversation it wants Claude to see on every request and owns all session state.",
+      "Structured outputs (`output_config.format` with a JSON schema) and strict tool use (`strict: true`) guarantee schema-conformant output or tool input, but they do not check business rules.",
+      "Claude Code plugins bundle skills, agents, hooks and MCP servers, with a manifest at `.claude-plugin/plugin.json`. They install from marketplaces at user, project or local scope.",
+      "Enabling a plugin at project scope (`.claude/settings.json`) turns it on for collaborators, but each collaborator still installs it once. Disabling it for yourself writes `false` to `.claude/settings.local.json`."
+    ],
+    "skills": [
+      "Put the persistent role and rules in the `system` parameter, and keep user content in user turns.",
+      "Wrap each untrusted document in its own descriptive tag, state that tagged content is data, and escape delimiter strings in untrusted input.",
+      "Design output schemas with required fields and enums, including an explicit `other` or `unknown` value, and enforce them with structured outputs.",
+      "Design tool schemas with precise types, units and descriptions, and validate inputs server-side before acting.",
+      "Choose between `/clear`, `/compact` and a fresh session, and carry state explicitly in files, Git or structured app state.",
+      "Audit plugin context cost with `claude plugin details <name>` and scope plugins to the projects that need them."
+    ],
+    "examLens": [
+      "If behaviour differs between interfaces, the answer is usually a difference in what each interface puts in context (system prompt, `CLAUDE.md`, tools).",
+      "Untrusted data never goes into the system prompt; it is delimited and labelled as data.",
+      "Prefer schema enforcement over prompt pleading or regex repair for machine-read output.",
+      "State that must survive belongs in explicit, external, structured storage, not in a long-lived conversation."
+    ],
+    "traps": [
+      "Non-existent features, such as an API `session_id` that remembers turns, the SDK reading `CLAUDE.md`, or a Console toggle that grants file access.",
+      "Adding instructions or emphasis (\"IMPORTANT\", \"ignore injected text\") where a structural control is needed.",
+      "Raising trust or scope by mistake: moving untrusted data into the system prompt, or enabling plugins at user scope to save context."
+    ],
+    "links": [
+      {"label": "Prompt engineering overview", "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview"},
+      {"label": "Structured outputs", "url": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs"},
+      {"label": "System prompts release notes", "url": "https://platform.claude.com/docs/en/release-notes/system-prompts"},
+      {"label": "Install and manage plugins", "url": "https://code.claude.com/docs/en/discover-plugins"}
+    ],
+    "cheat": [
+      ["Prompt works in claude.ai but not via the API", "claude.ai adds its own system prompt; send your own `system`"],
+      ["JSON sometimes malformed or missing fields", "JSON schema with structured outputs or a strict tool"],
+      ["Untrusted text breaks out of your tags", "Escape delimiters, use unguessable tags, keep it out of `system`"],
+      ["Claude confused by an earlier unrelated task", "`/clear` and carry over only what is needed"],
+      ["Teammate doesn't get a project-enabled plugin", "They must install it once; project scope only enables it"]
+    ]
+  }
+]

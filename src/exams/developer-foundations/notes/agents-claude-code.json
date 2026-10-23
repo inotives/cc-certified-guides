@@ -1,0 +1,166 @@
+[
+  {
+    "task": "1.1",
+    "knowledge": [
+      "A workflow orchestrates model calls and tools through predefined code paths; an agent dynamically decides its own steps and tool use based on what it learns.",
+      "Agents trade higher cost, latency and unpredictability for flexibility, so they are justified only when the number or order of steps cannot be fixed in advance.",
+      "Common workflow patterns: prompt chaining (fixed sequence with gates), routing (classify then hand off), parallelization (independent subtasks or voting), orchestrator-workers, and evaluator-optimizer (generate, critique, refine).",
+      "In a manager/supervisor hierarchy, the supervisor decomposes the task, delegates to specialist workers with clear objectives and scopes, and synthesizes their results.",
+      "Subagents run in their own fresh context and return only their result, which isolates exploration from the main context and lets independent work run in parallel.",
+      "Multi-agent systems usually use more tokens in total and fit broad, separable tasks; tightly interdependent work such as editing one coupled module suits a single agent better."
+    ],
+    "skills": [
+      "Decide between a workflow and an agent from how predictable the steps are and how much auditability is required.",
+      "Pick the right workflow pattern (chaining, routing, parallelization, evaluator-optimizer) for a described task.",
+      "Write delegation instructions that give each subagent an objective, a non-overlapping scope and an output format.",
+      "Design subagents to return condensed, structured results rather than raw exploration output.",
+      "Route simple requests around an expensive hierarchy so complexity matches each request."
+    ],
+    "examLens": [
+      "Start with the simplest design that meets the requirement; add agentic autonomy only when the path genuinely cannot be fixed in code.",
+      "Duplicate work or coverage gaps in a hierarchy point to vague delegation, not to too few agents or too small a model.",
+      "Use subagents for context isolation and parallelism on separable work, and expect higher total token cost."
+    ],
+    "traps": [
+      "Over-engineering: a supervisor with many subagents for a fixed three-step process.",
+      "Assuming subagents inherit the parent's conversation or that splitting work always lowers cost.",
+      "Fixing coordination problems by adding more agents or a bigger model instead of clearer task boundaries."
+    ],
+    "links": [
+      {"label": "Building effective agents", "url": "https://www.anthropic.com/engineering/building-effective-agents"},
+      {"label": "Subagents in the Agent SDK", "url": "https://platform.claude.com/docs/en/agent-sdk/subagents"}
+    ],
+    "cheat": [
+      ["Fixed, known steps that must be reproducible and auditable", "Workflow (prompt chain with programmatic gates), not an agent"],
+      ["Open-ended task where the number of steps is unpredictable", "Agent with scoped tools and an iteration cap"],
+      ["Distinct input categories needing different prompts or tools", "Routing workflow"],
+      ["Clear quality criteria and drafts improve with feedback", "Evaluator-optimizer"],
+      ["Subagent output floods the main agent's context", "Return a condensed, structured summary from the subagent"]
+    ]
+  },
+  {
+    "task": "1.2",
+    "knowledge": [
+      "The Claude Agent SDK (Python and TypeScript) provides the same built-in tools, agent loop, context management, permissions, sessions and hooks that power Claude Code; it runs and supervises a Claude Code process.",
+      "The Client SDK calls the Claude API directly: you write the tool loop yourself (or use its tool runner), handling `stop_reason` `tool_use` by returning `tool_result` blocks that reference each `tool_use_id`.",
+      "Deployment models: self-host the Agent SDK in sandboxed containers you operate (ephemeral, long-running or hybrid patterns), or use Claude Managed Agents, where a hosted harness runs the loop and sessions run in an Anthropic-managed or self-hosted sandbox.",
+      "Hooks are code that runs deterministically at agent events such as `PreToolUse` (can block or modify a call) and `PostToolUse` (after execution, for logging or follow-up).",
+      "The SDK checks hooks first, then permission rules; a hook returning `allow` does not bypass deny rules, and `canUseTool` handles runtime approval for anything rules do not settle.",
+      "By default `query()` loads the same filesystem settings as the CLI (CLAUDE.md, project settings, `.claude/` skills and agents); `settingSources: []` limits the agent to programmatic configuration."
+    ],
+    "skills": [
+      "Choose between the Agent SDK, the Client SDK with a custom loop, and Managed Agents for a given set of build and operations constraints.",
+      "Implement a correct tool-use loop that continues while `stop_reason` is `tool_use`.",
+      "Use `PreToolUse` hooks to enforce must-never-happen rules and `PostToolUse` hooks for complete audit logs.",
+      "Restrict tools to least privilege and add human approval for sensitive tools with `canUseTool`.",
+      "Use session resume to continue work and session fork to explore alternatives without altering the original history.",
+      "Isolate multi-tenant SDK deployments with per-tenant file systems and explicit `settingSources`."
+    ],
+    "examLens": [
+      "When a requirement must hold every time, choose a hook or permission rule over a prompt instruction.",
+      "Pick the hosting model by who should operate the infrastructure: Managed Agents to offload it, self-hosted SDK containers for full control.",
+      "A loop that stops after Claude says it will use a tool is missing the execute-and-return `tool_result` step."
+    ],
+    "traps": [
+      "Using a `PostToolUse` hook to prevent an action; it fires after the tool has already run.",
+      "Relying on system-prompt rules, temperature or turn limits as security controls.",
+      "Treating the Agent SDK as a stateless HTTP client that needs no shell or file system."
+    ],
+    "links": [
+      {"label": "Agent SDK overview", "url": "https://platform.claude.com/docs/en/agent-sdk/overview"},
+      {"label": "Agent SDK hooks", "url": "https://platform.claude.com/docs/en/agent-sdk/hooks"},
+      {"label": "Hosting the Agent SDK", "url": "https://platform.claude.com/docs/en/agent-sdk/hosting"},
+      {"label": "Claude Managed Agents overview", "url": "https://platform.claude.com/docs/en/managed-agents/overview"}
+    ],
+    "cheat": [
+      ["Need Claude Code's tools and loop inside your own app", "Claude Agent SDK"],
+      ["Block a dangerous command regardless of model reasoning", "`PreToolUse` hook returning deny"],
+      ["Complete audit trail of every tool call", "`PostToolUse` hook"],
+      ["Long-running agent without operating containers or sandboxes", "Claude Managed Agents"],
+      ["Human must approve one sensitive tool at runtime", "`canUseTool` callback"]
+    ]
+  },
+  {
+    "task": "1.3",
+    "knowledge": [
+      "In a tool-use loop, Claude requests a tool call, the application executes it and returns a `tool_result`, and the loop repeats until Claude finishes; failures should come back as informative error results.",
+      "Context is a finite resource: compaction summarizes older turns, and context editing can clear stale tool results in long runs.",
+      "The Messages API is stateless; the memory tool lets Claude read and write memory files that the application stores in infrastructure it controls.",
+      "Just-in-time retrieval keeps lightweight references (paths, titles) in context and loads full content with tools only when needed.",
+      "Structured note-taking (for example a progress file) keeps long-horizon state outside the context window so it survives compaction.",
+      "Frameworks such as LangGraph (graph-based stateful orchestration), PydanticAI (type-validated outputs) and Strands add useful abstractions, but can obscure the prompts and calls underneath."
+    ],
+    "skills": [
+      "Build a bounded tool-use loop with error results and a maximum iteration count.",
+      "Choose between compaction, tool-result clearing, note-taking and subagents to manage a growing context.",
+      "Add cross-session memory to an API-based agent without relying on the model to remember.",
+      "Decide whether a framework is warranted or whether direct API calls are simpler.",
+      "Debug framework-based agents by inspecting the actual requests sent to Claude."
+    ],
+    "examLens": [
+      "Start with direct API calls and adopt a framework only when its specific capabilities are needed.",
+      "Keep context small and relevant: retrieve on demand, clear what is stale, and persist durable state outside the window.",
+      "Bound every loop deterministically and surface tool failures to the model so it can adapt."
+    ],
+    "traps": [
+      "A bigger context window or model as the fix for context bloat.",
+      "Believing frameworks are required for tool use or that they guarantee lower token cost.",
+      "Assuming the API remembers earlier conversations without an explicit memory mechanism."
+    ],
+    "links": [
+      {"label": "Effective context engineering for AI agents", "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"},
+      {"label": "Memory tool", "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool"},
+      {"label": "Compaction", "url": "https://platform.claude.com/docs/en/build-with-claude/compaction"},
+      {"label": "Building effective agents", "url": "https://www.anthropic.com/engineering/building-effective-agents"}
+    ],
+    "cheat": [
+      ["Context filling with old tool results", "Compaction or tool-result clearing"],
+      ["Agent must remember across separate conversations", "Memory tool backed by your own storage"],
+      ["Agent loads hundreds of documents up front", "Just-in-time retrieval with references plus tools"],
+      ["Long task loses progress after compaction", "Progress file outside the context (structured notes)"],
+      ["Framework agent picks the wrong tool", "Trace the real requests the framework sends"]
+    ]
+  },
+  {
+    "task": "3.1",
+    "knowledge": [
+      "CLAUDE.md hierarchy: managed policy, user (`~/.claude/CLAUDE.md`), project (`./CLAUDE.md`, shared via git) and `CLAUDE.local.md` for personal project notes kept out of git; files above the working directory load at launch and subdirectory files load on demand.",
+      "`.claude/rules/` files with `paths` frontmatter load only when Claude works with matching files; rules without `paths` load unconditionally, and `@` imports do not reduce context cost.",
+      "CLAUDE.md is context, not enforced configuration; use hooks or permission rules for anything that must always hold.",
+      "Settings precedence, highest first: managed settings, command-line arguments, `.claude/settings.local.json`, `.claude/settings.json`, `~/.claude/settings.json`.",
+      "Skills (`.claude/skills/<name>/SKILL.md`) create slash commands; custom commands have been merged into skills, and `disable-model-invocation: true` makes a skill user-triggered only.",
+      "Headless mode is `claude -p`; `--output-format json` returns one result and `stream-json` streams events; auto mode uses a classifier model to review actions instead of prompting."
+    ],
+    "skills": [
+      "Place an instruction in the right CLAUDE.md scope or path-scoped rule.",
+      "Run `/init` to bootstrap a CLAUDE.md, and use `/compact`, `/clear` and `/resume` to manage sessions.",
+      "Choose the settings file scope for personal, team and organization-enforced configuration.",
+      "Run Claude Code in CI with `claude -p`, the right output format and allowed tools.",
+      "Package a repeatable procedure as a skill and control who can invoke it.",
+      "Pick a permission mode (manual, accept edits, plan, auto, bypass) for a situation."
+    ],
+    "examLens": [
+      "Shared team conventions go in committed files; personal ones go in local, git-ignored files.",
+      "Guarantees come from hooks, permission rules or managed settings, never from wording in CLAUDE.md.",
+      "Load context only when relevant: path-scoped rules and skills over an ever-growing root CLAUDE.md."
+    ],
+    "traps": [
+      "Putting personal or secret values in the committed project CLAUDE.md or settings.json.",
+      "Confusing `/compact` (summarize the conversation) with `/init` (generate CLAUDE.md).",
+      "Choosing bypass permissions when the requirement is fewer prompts with risky actions still reviewed."
+    ],
+    "links": [
+      {"label": "How Claude remembers your project", "url": "https://code.claude.com/docs/en/memory"},
+      {"label": "Claude Code settings", "url": "https://code.claude.com/docs/en/settings"},
+      {"label": "Run Claude Code programmatically", "url": "https://code.claude.com/docs/en/headless"},
+      {"label": "Permission modes", "url": "https://code.claude.com/docs/en/permission-modes"}
+    ],
+    "cheat": [
+      ["Personal sandbox URL for one repo, not committed", "`CLAUDE.local.md`"],
+      ["Conventions only for `src/api/` files", "`.claude/rules/` file with `paths` frontmatter"],
+      ["Rule in CLAUDE.md is occasionally ignored but must always hold", "`PreToolUse` hook or a permission deny rule"],
+      ["CI dashboard needs live events", "`claude -p --output-format stream-json`"],
+      ["On-demand `/release` that Claude must never start itself", "Skill with `disable-model-invocation: true`"]
+    ]
+  }
+]

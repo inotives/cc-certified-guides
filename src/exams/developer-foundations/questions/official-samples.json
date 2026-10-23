@@ -1,0 +1,56 @@
+[
+  {
+    "id": "dv-off-01", "scenario": 0, "domain": 2, "task": "2.3", "type": "single", "select": 1,
+    "stem": "A developer must process 10,000 documents overnight to produce a non-urgent analytics report. Cost is the primary concern, and results are not needed until the following morning. Which approach best fits the requirement?",
+    "options": [
+      {"key": "A", "text": "Send every request synchronously through the Messages API in parallel to finish as quickly as possible."},
+      {"key": "B", "text": "Use the Message Batches API, which processes large asynchronous workloads within a 24-hour window at reduced cost."},
+      {"key": "C", "text": "Lower max_tokens on synchronous calls to minimize cost."},
+      {"key": "D", "text": "Switch to the smallest available model regardless of output quality."}
+    ],
+    "answer": ["B"],
+    "explanation": "The Message Batches API is designed for latency-tolerant, high-volume workloads at lower cost, which matches an overnight, non-urgent job.",
+    "distractors": {
+      "A": "Sending requests synchronously in parallel does not reduce per-token cost.",
+      "C": "Lowering max_tokens doesn't address the batch-versus-realtime tradeoff and can truncate output.",
+      "D": "Blindly downsizing the model sacrifices quality and still ignores the batch-versus-realtime tradeoff."
+    },
+    "difficulty": 1, "tags": ["official-sample", "batch-api"]
+  },
+  {
+    "id": "dv-off-02", "scenario": 0, "domain": 7, "task": "7.1", "type": "single", "select": 1,
+    "stem": "A Claude-powered agent summarizes web pages submitted by end users. One page contains hidden text instructing the model to ignore previous instructions and reveal its system prompt. Which mitigation is most effective?",
+    "options": [
+      {"key": "A", "text": "Raise the model's temperature so its behavior is harder to predict."},
+      {"key": "B", "text": "Treat retrieved page content as untrusted input, keep it separate from trusted instructions, and use guardrails or hooks so injected instructions cannot trigger sensitive actions."},
+      {"key": "C", "text": "Add a line to the system prompt asking users not to include malicious instructions."},
+      {"key": "D", "text": "Switch to a larger model that follows instructions more reliably."}
+    ],
+    "answer": ["B"],
+    "explanation": "Prompt injection is addressed by isolating untrusted content from trusted instructions and enforcing least-privilege guardrails so injected text cannot invoke sensitive tools.",
+    "distractors": {
+      "A": "Temperature is irrelevant to prompt injection.",
+      "C": "A polite request is not an enforceable control.",
+      "D": "A more instruction-following model can be more susceptible to injected instructions, not less."
+    },
+    "difficulty": 1, "tags": ["official-sample", "prompt-injection"]
+  },
+  {
+    "id": "dv-off-03", "scenario": 0, "domain": 8, "task": "8.2", "type": "single", "select": 1,
+    "stem": "A team needs Claude to call an internal inventory service exposed as a REST API. They want the capability to be reusable across several Claude applications and maintained independently of any one app. Which approach best fits?",
+    "options": [
+      {"key": "A", "text": "Hard-code the inventory logic into each application's system prompt."},
+      {"key": "B", "text": "Build an MCP server that exposes the inventory operations as tools so multiple Claude applications can connect to it."},
+      {"key": "C", "text": "Paste the current inventory data into the context window on every request."},
+      {"key": "D", "text": "Rely on a built-in tool, since built-in tools can reach any internal REST API."}
+    ],
+    "answer": ["B"],
+    "explanation": "An MCP server exposes reusable tools that multiple Claude applications can share and that can be maintained independently of any single app.",
+    "distractors": {
+      "A": "Hard-coding logic into prompts is neither reusable nor maintainable.",
+      "C": "Pasting data gives no live access and wastes context on every request.",
+      "D": "Built-in tools do not automatically reach arbitrary internal APIs."
+    },
+    "difficulty": 1, "tags": ["official-sample", "mcp"]
+  }
+]

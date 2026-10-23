@@ -1,0 +1,678 @@
+[
+  {
+    "id": "s4-001",
+    "scenario": 4,
+    "domain": 2,
+    "task": "2.5",
+    "type": "single",
+    "select": 1,
+    "stem": "An engineer who joined a payments team yesterday asks your developer productivity agent: \"How do webhook retries work in this repo?\" The monorepo has roughly 4,000 source files and no architecture docs. Which exploration strategy should the agent follow?",
+    "options": [
+      {"key": "A", "text": "Use Glob with `**/*` to enumerate every source file, then Read them in batches of 50 so the complete codebase is in context before the agent attempts any answer."},
+      {"key": "B", "text": "Grep file contents for terms such as `retry` and `webhook` to find entry points, then Read those files and follow their imports to trace the flow."},
+      {"key": "C", "text": "Use Glob with `**/*retry*` and explain the retry behavior based on the names of the files that match."},
+      {"key": "D", "text": "Use Bash to concatenate every file under `src/` into one output so the model can scan the whole codebase in a single tool result."}
+    ],
+    "answer": ["B"],
+    "explanation": "Codebase understanding should be built incrementally: Grep searches file contents to locate entry points, and Read then follows imports to trace the actual flow. This keeps context focused on the relevant code instead of loading thousands of files upfront. Grep is the right tool because the question is about code content, not file names.",
+    "distractors": {
+      "A": "Reading all files upfront exhausts context with irrelevant code and is the opposite of incremental exploration.",
+      "C": "Glob matches path patterns only; file names do not reveal retry logic, and the logic may live in files without 'retry' in their names.",
+      "D": "Dumping the whole source tree into one tool result has the same context-flooding problem as reading every file upfront."
+    },
+    "difficulty": 1,
+    "tags": ["built-in-tools", "grep", "incremental-exploration"]
+  },
+  {
+    "id": "s4-002",
+    "scenario": 4,
+    "domain": 2,
+    "task": "2.5",
+    "type": "single",
+    "select": 1,
+    "stem": "An engineer asks the agent to generate Storybook stories for components that lack them. As a first step, the agent needs a list of every existing `*.stories.tsx` file, wherever it lives in the repository, to use as style examples. Which built-in tool call fits this step best?",
+    "options": [
+      {"key": "A", "text": "Grep for the string `stories` across all files in the repository."},
+      {"key": "B", "text": "Read the root `package.json` to find where the Storybook configuration points."},
+      {"key": "C", "text": "Bash `ls src/components` to list the component directory."},
+      {"key": "D", "text": "Glob with the pattern `**/*.stories.tsx`, which matches story files at any depth in the repository."}
+    ],
+    "answer": ["D"],
+    "explanation": "Glob is built for finding files by name or extension pattern, and `**/*.stories.tsx` matches story files at any depth in any directory. The task is about file paths, not file contents, so a path-pattern tool is the right choice.",
+    "distractors": {
+      "A": "Grep searches file contents, so it returns imports, comments, and config lines mentioning 'stories' rather than a clean list of story files.",
+      "B": "package.json does not list story files, so this adds a step without producing the needed file list.",
+      "C": "A non-recursive listing of one directory misses story files located elsewhere in the repository."
+    },
+    "difficulty": 1,
+    "tags": ["built-in-tools", "glob"]
+  },
+  {
+    "id": "s4-003",
+    "scenario": 4,
+    "domain": 2,
+    "task": "2.5",
+    "type": "single",
+    "select": 1,
+    "stem": "The agent must change the third entry in a YAML list of six retry policies. All six entries are byte-identical (`- retries: 3` followed by `  timeout: 30`) and are distinguished only by their position in the list. The agent's Edit call fails because the old text matches multiple locations. What should the agent do next?",
+    "options": [
+      {"key": "A", "text": "Read the full file, construct the new contents with only the third entry changed, and Write the complete file back."},
+      {"key": "B", "text": "Retry the Edit with the same old text and replace-all enabled, which tells Edit to accept multiple matches instead of failing on the ambiguity."},
+      {"key": "C", "text": "Use Bash to run `sed` with a substitution that changes the first occurrence of `timeout: 30`."},
+      {"key": "D", "text": "Stop and ask the engineer to make the change by hand, since Edit cannot target the entry."}
+    ],
+    "answer": ["A"],
+    "explanation": "Edit relies on unique anchor text. When no unique anchor exists, the reliable fallback is Read followed by Write: load the whole file, change the intended entry, and write the full contents back. This gives the agent exact control over which occurrence changes.",
+    "distractors": {
+      "B": "Replace-all would change all six identical entries, not just the third one.",
+      "C": "Substituting the first occurrence edits the wrong entry and is a fragile workaround for a standard tool fallback.",
+      "D": "Handing the edit back to the engineer is unnecessary because the Read plus Write fallback handles this case."
+    },
+    "difficulty": 2,
+    "tags": ["built-in-tools", "edit", "read-write-fallback"]
+  },
+  {
+    "id": "s4-004",
+    "scenario": 4,
+    "domain": 2,
+    "task": "2.5",
+    "type": "single",
+    "select": 1,
+    "stem": "Before a migration, an engineer asks the agent to find every use of a deprecated HTTP client. Grep for `require('old-http')` returns a single file, `lib/http/index.js`, which wraps the client and re-exports helpers named `get`, `postJson`, `legacyRequest`, and a default export. Other modules import those helpers, sometimes under aliases. What is the most effective next step?",
+    "options": [
+      {"key": "A", "text": "Grep again with a looser regex such as `old.?http` to catch spelling variations of the package name."},
+      {"key": "B", "text": "Glob for `**/*http*` to find files whose names suggest they make HTTP calls."},
+      {"key": "C", "text": "Read the wrapper to list its exported names, then Grep for each name and for the wrapper's import path."},
+      {"key": "D", "text": "Read every file under `src/` one by one, noting each place an HTTP call appears so no aliased usage is overlooked."}
+    ],
+    "answer": ["C"],
+    "explanation": "When usage is hidden behind a wrapper module, the agent should first identify every name the wrapper exports and then search the codebase for each of them. Grepping for the wrapper's import path also catches aliased imports. This traces real usage precisely without reading the whole codebase.",
+    "distractors": {
+      "A": "Callers never reference the original package name, so any variant of it still only finds the wrapper.",
+      "B": "Glob matches file names, not usages, and HTTP calls are not confined to files with 'http' in their names.",
+      "D": "Reading every file upfront is costly and context-heavy compared with targeted searches for the known exported names."
+    },
+    "difficulty": 3,
+    "tags": ["built-in-tools", "grep", "wrapper-modules", "legacy-code"]
+  },
+  {
+    "id": "s4-005",
+    "scenario": 4,
+    "domain": 2,
+    "task": "2.4",
+    "type": "single",
+    "select": 1,
+    "stem": "Your team wants the developer productivity agent to read pull requests and issues from GitHub. Every engineer on the team should get the integration automatically when they clone the repository, and the GitHub personal access token must never be committed. What should you do?",
+    "options": [
+      {"key": "A", "text": "Build a custom MCP server that wraps the GitHub REST API and store the token in the server's checked-in config file."},
+      {"key": "B", "text": "Have each engineer add the community GitHub MCP server to their own `~/.claude.json` with the token pasted in."},
+      {"key": "C", "text": "Add the community GitHub MCP server to the project's `.mcp.json`, referencing the token as `${GITHUB_TOKEN}` set in each engineer's environment."},
+      {"key": "D", "text": "Add the community GitHub MCP server to the project's `.mcp.json` with the token inline, and restrict repository access to team members so only they can see it."}
+    ],
+    "answer": ["C"],
+    "explanation": "Project-scoped `.mcp.json` is version-controlled, so every engineer gets the shared server on clone, and environment variable expansion such as `${GITHUB_TOKEN}` keeps the secret out of the repository. For a standard integration like GitHub, an existing community MCP server is preferable to building a custom one.",
+    "distractors": {
+      "A": "A custom server duplicates what a community server already provides, and checking the token in leaks the secret.",
+      "B": "User-level configuration is not shared through version control, so every engineer has to repeat the setup by hand.",
+      "D": "Committing an inline token exposes the secret no matter who has repository access."
+    },
+    "difficulty": 1,
+    "tags": ["mcp", "mcp-json", "env-expansion", "community-servers"]
+  },
+  {
+    "id": "s4-006",
+    "scenario": 4,
+    "domain": 2,
+    "task": "2.4",
+    "type": "single",
+    "select": 1,
+    "stem": "Your platform team built a `code-index` MCP server whose `find_references` tool resolves symbols semantically. It follows re-exports and aliases and includes generated code that is not checked in. Its description reads only \"Finds references.\" Transcripts show the agent almost always uses Grep to find usages and misses aliased call sites. What is the most effective fix?",
+    "options": [
+      {"key": "A", "text": "Remove Grep from the agent's allowed tools so it has no choice but to call `find_references`."},
+      {"key": "B", "text": "Add \"Never use Grep\" to the system prompt so the agent defaults to MCP tools."},
+      {"key": "C", "text": "Move the `code-index` server from `.mcp.json` to `~/.claude.json`, because user-scoped servers are registered later and their tools take priority over built-in tools."},
+      {"key": "D", "text": "Expand the description to explain its semantic resolution (aliases, re-exports, generated code), its inputs and outputs, and when to prefer it over Grep."}
+    ],
+    "answer": ["D"],
+    "explanation": "Tool descriptions are the main signal the model uses to choose a tool. A minimal description gives the agent no reason to prefer the MCP tool over a familiar built-in like Grep. Describing the tool's capabilities, outputs, and when to use it instead of Grep fixes the root cause and leaves Grep available for plain text searches.",
+    "distractors": {
+      "A": "Removing Grep breaks legitimate content searches, such as finding error strings, that `find_references` does not handle.",
+      "B": "A blanket keyword ban is blunt and suppresses valid Grep use instead of helping the agent tell the tools apart.",
+      "C": "Configuration scope controls who gets the server, not tool priority, and moving it also removes it from teammates."
+    },
+    "difficulty": 2,
+    "tags": ["mcp", "tool-descriptions", "grep"]
+  },
+  {
+    "id": "s4-007",
+    "scenario": 4,
+    "domain": 2,
+    "task": "2.4",
+    "type": "multi",
+    "select": 2,
+    "stem": "Your repository's `.mcp.json` configures two team servers, `jira` and `docs-search`. One engineer wants to try an experimental `perf-profiler` MCP server for their own work without affecting teammates. Which statements about this setup are correct? (Select TWO.)",
+    "options": [
+      {"key": "A", "text": "The engineer should configure `perf-profiler` in their user-level `~/.claude.json`, which makes it available to them without changing the shared project configuration."},
+      {"key": "B", "text": "Once connected, tools from `jira`, `docs-search`, and `perf-profiler` are discovered at connection time and are all available to the agent at the same time."},
+      {"key": "C", "text": "The agent can use only one MCP server's tools per session, determined by which server it calls first."},
+      {"key": "D", "text": "The engineer should add `perf-profiler` to the project `.mcp.json` with a `\"personal\": true` flag so it is hidden from teammates."},
+      {"key": "E", "text": "A user-level server automatically disables any project-level server whose tools fall into the same category."}
+    ],
+    "answer": ["A", "B"],
+    "explanation": "Personal or experimental servers belong in user-scoped `~/.claude.json`, while shared team servers belong in project-scoped `.mcp.json`. Tools from all configured MCP servers are discovered at connection time and offered to the agent together, so the engineer's personal server adds to the team servers rather than replacing them.",
+    "distractors": {
+      "C": "There is no one-server-per-session restriction; all configured servers' tools are available at the same time.",
+      "D": "There is no `personal` flag, and anything in the committed `.mcp.json` is shared with the whole team.",
+      "E": "User and project servers do not disable each other by category; their tools coexist."
+    },
+    "difficulty": 2,
+    "tags": ["mcp", "mcp-scope", "claude-json"]
+  },
+  {
+    "id": "s4-008",
+    "scenario": 4,
+    "domain": 2,
+    "task": "2.4",
+    "type": "single",
+    "select": 1,
+    "stem": "Engineers use your agent to understand how 250 internal services fit together. A custom MCP server exposes a `get_service_spec(name)` tool backed by the internal service registry. Transcripts show the agent guessing names before it finds the right one: `get_service_spec(\"billing\")`, then `\"billing-svc\"`, then `\"billing-api\"`, often taking five or more calls. What is the most effective improvement?",
+    "options": [
+      {"key": "A", "text": "Add a `list_all_specs` tool that returns all 250 full OpenAPI specifications in a single response."},
+      {"key": "B", "text": "Expose the service catalog (names, one-line summaries, spec identifiers) as an MCP resource the agent can browse before calling the tool."},
+      {"key": "C", "text": "Paste the list of 250 service names and one-line summaries into the root CLAUDE.md so the agent always has every exact service name in context before it calls the tool."},
+      {"key": "D", "text": "Instruct the agent to Grep the local repository for service names before calling `get_service_spec`."}
+    ],
+    "answer": ["B"],
+    "explanation": "MCP resources are designed to expose content catalogs, such as service lists, documentation hierarchies, or schemas, so the agent can see what data is available without exploratory tool calls. A lightweight catalog resource lets the agent pick the exact service name first and then fetch only the spec it needs.",
+    "distractors": {
+      "A": "Returning every full spec at once floods the context with mostly irrelevant content.",
+      "C": "A static copy in CLAUDE.md drifts from the live registry and adds the whole list to every session, including unrelated ones.",
+      "D": "The registry lives behind the MCP server, not in the local repository, so Grep cannot reliably find the canonical names."
+    },
+    "difficulty": 3,
+    "tags": ["mcp", "mcp-resources", "content-catalog"]
+  },
+  {
+    "id": "s4-009",
+    "scenario": 4,
+    "domain": 2,
+    "task": "2.1",
+    "type": "single",
+    "select": 1,
+    "stem": "An internal MCP server gives your agent two tools: `search` (\"Searches the codebase\") and `lookup` (\"Looks up code information\"). Logs show the agent often calls `lookup` for free-text searches and `search` when it needs a symbol's definition, so results come back wrong. What is the most effective first step?",
+    "options": [
+      {"key": "A", "text": "Rename them `search_text_in_files` and `get_symbol_definition`, and rewrite each description with inputs, outputs, example queries, and when to use it over the other."},
+      {"key": "B", "text": "Merge both tools into a single `code_query` tool with a `mode` parameter that the agent sets on each call."},
+      {"key": "C", "text": "Add eight few-shot examples to the system prompt showing which tool to call for different kinds of questions."},
+      {"key": "D", "text": "Add a routing layer that classifies each request with regular expressions (symbol-shaped tokens versus free text) and pre-selects the matching tool before the model runs."}
+    ],
+    "answer": ["A"],
+    "explanation": "The misrouting comes from vague, overlapping tool names and descriptions, which are the model's main basis for choosing a tool. Renaming the tools to reflect their distinct purposes and writing descriptions that state inputs, outputs, examples, and boundaries fixes the root cause with little effort.",
+    "distractors": {
+      "B": "Merging the tools only moves the ambiguity into a mode parameter that still needs clear documentation, which makes it a larger change than a first step needs.",
+      "C": "Few-shot examples add token overhead without fixing the vague descriptions that cause the confusion.",
+      "D": "A regex routing layer is over-engineered and bypasses the model's own understanding of the request."
+    },
+    "difficulty": 2,
+    "tags": ["tool-descriptions", "tool-naming", "mcp"]
+  },
+  {
+    "id": "s4-010",
+    "scenario": 4,
+    "domain": 2,
+    "task": "2.3",
+    "type": "single",
+    "select": 1,
+    "stem": "In your boilerplate generator, one step must always produce a structured file plan by calling `emit_scaffold_manifest` before any files are written. The tools available in that step are `emit_scaffold_manifest`, Read, and Glob. With `tool_choice` set to \"auto\", about 10% of runs return a prose explanation of the plan instead of calling the tool. Which configuration guarantees the manifest is produced?",
+    "options": [
+      {"key": "A", "text": "Keep `tool_choice: \"auto\"` and add \"You MUST call emit_scaffold_manifest before anything else\" to the system prompt, in capital letters."},
+      {"key": "B", "text": "Set `tool_choice: \"any\"` for this step."},
+      {"key": "C", "text": "Set `tool_choice: {\"type\": \"tool\", \"name\": \"emit_scaffold_manifest\"}` for this step; handle later steps in follow-up turns."},
+      {"key": "D", "text": "Raise `max_tokens` so the model has room to both explain the plan and call the tool."}
+    ],
+    "answer": ["C"],
+    "explanation": "Forced tool selection guarantees that the named tool is called, which is exactly what a step with a mandatory structured output needs. Subsequent steps, such as writing files, can then run in follow-up turns with normal tool choice. Prompt wording only makes the call more likely, not certain.",
+    "distractors": {
+      "A": "Prompt instructions remain probabilistic, so some runs will still return prose.",
+      "B": "\"any\" guarantees that some tool is called, but the model could call Read or Glob instead of the manifest tool.",
+      "D": "Token limits do not affect whether the model chooses to call a tool."
+    },
+    "difficulty": 3,
+    "tags": ["tool-choice", "boilerplate", "structured-output"]
+  },
+  {
+    "id": "s4-011",
+    "scenario": 4,
+    "domain": 3,
+    "task": "3.1",
+    "type": "single",
+    "select": 1,
+    "stem": "A tech lead wrote the team's service conventions (\"return our `Result` type; never throw from service methods\") into their own `~/.claude/CLAUDE.md`. Their sessions follow the conventions, but a new hire's sessions in the same repository keep generating code that throws exceptions. What is the cause and the correct fix?",
+    "options": [
+      {"key": "A", "text": "The new hire's context is too full; they should run /compact before each task."},
+      {"key": "B", "text": "The instructions are user-level and apply only to the tech lead; move them to the project-level CLAUDE.md and commit it to the repository."},
+      {"key": "C", "text": "The new hire is missing the file; they should copy the tech lead's `~/.claude/CLAUDE.md` into their own home directory so both sessions load identical conventions."},
+      {"key": "D", "text": "The conventions belong in `.claude/settings.json` under an `instructions` key so every user loads them."}
+    ],
+    "answer": ["B"],
+    "explanation": "User-level `~/.claude/CLAUDE.md` applies only to that user and is not shared through version control. Team conventions belong in the project-level CLAUDE.md (repository root or `.claude/CLAUDE.md`), so every engineer who clones the repository gets them.",
+    "distractors": {
+      "A": "Context size is not the issue; the new hire never loads the instructions at all.",
+      "C": "Copying a personal file works for one person but creates unshared copies that drift apart over time.",
+      "D": "Settings files do not carry an `instructions` key for project conventions; CLAUDE.md is the mechanism for that."
+    },
+    "difficulty": 1,
+    "tags": ["claude-md", "hierarchy", "team-rollout"]
+  },
+  {
+    "id": "s4-012",
+    "scenario": 4,
+    "domain": 3,
+    "task": "3.1",
+    "type": "single",
+    "select": 1,
+    "stem": "Your monorepo has `packages/api` (Python), `packages/web` (TypeScript), and `packages/infra` (Terraform). Standards live in `docs/standards/` as `python.md`, `typescript.md`, `terraform.md`, and `security.md`. Today the root CLAUDE.md pastes all four documents, so every session carries irrelevant guidance. Package maintainers want each package to get only the standards that apply to it, while the standards documents stay the single source of truth. What should you do?",
+    "options": [
+      {"key": "A", "text": "Copy the relevant sections of each standards document into the matching package's CLAUDE.md."},
+      {"key": "B", "text": "Keep everything in the root CLAUDE.md and add a heading instructing the agent to apply only the sections relevant to the package it is currently editing."},
+      {"key": "C", "text": "Convert each standards document into a skill that engineers invoke when working in that package."},
+      {"key": "D", "text": "Give each package a CLAUDE.md that uses @import to pull in only its relevant standards files (e.g. python.md and security.md for the API)."}
+    ],
+    "answer": ["D"],
+    "explanation": "The @import syntax keeps CLAUDE.md modular. Each package's CLAUDE.md can selectively import the standards files that apply to it, chosen by the maintainers who know that package. The standards stay in one place, and each package loads only what is relevant.",
+    "distractors": {
+      "A": "Copying text creates duplicates that drift from the source documents.",
+      "B": "This still loads all four documents and relies on the model to infer which parts apply.",
+      "C": "Skills are invoked on demand, so standards that should always apply would be skipped whenever no one invokes them."
+    },
+    "difficulty": 2,
+    "tags": ["claude-md", "import", "monorepo"]
+  },
+  {
+    "id": "s4-013",
+    "scenario": 4,
+    "domain": 3,
+    "task": "3.1",
+    "type": "single",
+    "select": 1,
+    "stem": "During rollout, an engineer reports that the agent follows the team's testing conventions in some sessions but ignores them in others, apparently depending on which directory they start Claude Code from. What is the most useful first diagnostic step?",
+    "options": [
+      {"key": "A", "text": "Run /memory in each kind of session to see which CLAUDE.md and memory files are actually loaded from each starting directory."},
+      {"key": "B", "text": "Reinstall Claude Code to clear any cached configuration."},
+      {"key": "C", "text": "Increase `max_tokens` so the conventions are not truncated from the response."},
+      {"key": "D", "text": "Run /compact at the start of every session so the conventions take up proportionally more of the context."}
+    ],
+    "answer": ["A"],
+    "explanation": "The /memory command shows which CLAUDE.md and memory files are loaded in the current session. That is the direct way to diagnose behavior that varies across sessions, such as conventions that live in a directory-level CLAUDE.md that loads only from certain locations.",
+    "distractors": {
+      "B": "Reinstalling does not reveal or change which memory files apply to a given directory.",
+      "C": "`max_tokens` limits output length and has nothing to do with which instructions are loaded.",
+      "D": "Compacting does not load memory files that were never loaded in the first place."
+    },
+    "difficulty": 1,
+    "tags": ["claude-md", "memory-command", "diagnostics"]
+  },
+  {
+    "id": "s4-014",
+    "scenario": 4,
+    "domain": 3,
+    "task": "3.2",
+    "type": "single",
+    "select": 1,
+    "stem": "Your team's `/trace-deps` skill Greps and Reads dozens of files and prints long dependency dumps. Engineers like the final dependency summary, but after running the skill, the main session is cluttered and later answers in the same session lose focus. What is the best change?",
+    "options": [
+      {"key": "A", "text": "Move the skill's instructions into the project CLAUDE.md so dependency tracing is always available without invoking a skill."},
+      {"key": "B", "text": "Add `allowed-tools: Read` to the skill's frontmatter to cut down the amount of output it produces."},
+      {"key": "C", "text": "Add `context: fork` to the skill's SKILL.md frontmatter so it runs in an isolated sub-agent context and returns only its final summary to the main session."},
+      {"key": "D", "text": "Move the skill to `~/.claude/skills/` so it runs as a personal skill whose output is kept outside the shared project conversation context."}
+    ],
+    "answer": ["C"],
+    "explanation": "The `context: fork` frontmatter option runs a skill in an isolated sub-agent context, so its verbose exploration does not pollute the main conversation. This suits skills like codebase analysis, where only the final summary matters to the main session.",
+    "distractors": {
+      "A": "Putting the instructions in CLAUDE.md loads them in every session and does nothing to isolate the verbose output.",
+      "B": "Restricting tools breaks the skill's Grep usage and does not isolate whatever output remains.",
+      "D": "Moving the skill to user scope changes who can use it, not where its output goes, and it removes the skill from teammates."
+    },
+    "difficulty": 2,
+    "tags": ["skills", "context-fork", "verbose-output"]
+  },
+  {
+    "id": "s4-015",
+    "scenario": 4,
+    "domain": 3,
+    "task": "3.2",
+    "type": "multi",
+    "select": 2,
+    "stem": "You are writing `.claude/skills/new-endpoint/SKILL.md`, which scaffolds REST endpoint boilerplate for a named resource. Two requirements came up in rollout: engineers often invoke it without saying which resource to scaffold, and security requires that the skill can only read existing code and create or edit files, never run shell commands. Which frontmatter settings address these requirements? (Select TWO.)",
+    "options": [
+      {"key": "A", "text": "`argument-hint: \"<resource-name>, e.g. invoice\"`"},
+      {"key": "B", "text": "`allowed-tools: Read, Grep, Glob, Write, Edit`"},
+      {"key": "C", "text": "`context: fork`"},
+      {"key": "D", "text": "`disallow-bash: true`"},
+      {"key": "E", "text": "`required-args: [resource]`"}
+    ],
+    "answer": ["A", "B"],
+    "explanation": "`argument-hint` prompts developers for the expected parameter when they invoke the skill without arguments. `allowed-tools` restricts which tools the skill can use while it runs. Listing only read and file-write tools excludes Bash and so prevents shell commands.",
+    "distractors": {
+      "C": "`context: fork` isolates the skill's output from the main session but addresses neither the missing argument nor the tool restriction.",
+      "D": "`disallow-bash` is not a supported frontmatter option; tool restriction is done with `allowed-tools`.",
+      "E": "`required-args` is not a supported frontmatter option; `argument-hint` is the mechanism for prompting for parameters."
+    },
+    "difficulty": 2,
+    "tags": ["skills", "allowed-tools", "argument-hint", "frontmatter"]
+  },
+  {
+    "id": "s4-016",
+    "scenario": 4,
+    "domain": 3,
+    "task": "3.3",
+    "type": "single",
+    "select": 1,
+    "stem": "Database migration conventions (reversible steps, no data backfills in schema migrations) apply to files matching `services/*/db/migrations/*.sql` across 14 services. You want the agent to load these conventions only when it is working on migration files. What should you do?",
+    "options": [
+      {"key": "A", "text": "Add a CLAUDE.md containing the conventions to each of the 14 migrations directories."},
+      {"key": "B", "text": "Create `.claude/rules/migrations.md` with YAML frontmatter `paths: [\"services/*/db/migrations/**/*.sql\"]` so it loads only for matching files."},
+      {"key": "C", "text": "Add the conventions to the root CLAUDE.md under a \"Migrations\" heading."},
+      {"key": "D", "text": "Create a `/migration-rules` skill containing the conventions that engineers invoke before they start editing any migration file."}
+    ],
+    "answer": ["B"],
+    "explanation": "Rule files in `.claude/rules/` with a `paths` glob in their frontmatter load only when the agent works on matching files. One rule can cover conventions spread across many directories, without duplicating content or loading it into unrelated sessions.",
+    "distractors": {
+      "A": "Fourteen copies of the same conventions drift apart and must all be maintained separately.",
+      "C": "The root CLAUDE.md is always loaded, so the conventions take up context even when no migration is involved.",
+      "D": "A skill depends on someone remembering to invoke it, so it is not applied automatically."
+    },
+    "difficulty": 1,
+    "tags": ["path-rules", "claude-rules", "glob-patterns"]
+  },
+  {
+    "id": "s4-017",
+    "scenario": 4,
+    "domain": 3,
+    "task": "3.4",
+    "type": "single",
+    "select": 1,
+    "stem": "An engineer asks the agent to replace a deprecated internal logging library used in about 70 files across 5 services. There are two viable approaches: an adapter shim that keeps the old call sites, or rewriting every call site to the new API. Each has different rollout and testing implications. Which workflow is most appropriate?",
+    "options": [
+      {"key": "A", "text": "Use direct execution starting with one service, and let the first service's changes reveal which approach to use for the rest."},
+      {"key": "B", "text": "Do the whole job in plan mode, including the file edits, so every change across the 70 files gets the same planning-level scrutiny before it lands."},
+      {"key": "C", "text": "Use direct execution with detailed upfront instructions that mandate the adapter-shim approach for every service."},
+      {"key": "D", "text": "Use plan mode to explore usages and decide between the approaches, then switch to direct execution to implement the agreed plan."}
+    ],
+    "answer": ["D"],
+    "explanation": "This task involves many files and a choice between valid approaches with architectural consequences, which is what plan mode is for. Once exploration has settled the approach, direct execution is the right way to carry out the well-defined plan. Combining the two avoids costly rework without slowing down implementation.",
+    "distractors": {
+      "A": "Starting edits before choosing an approach risks rework across services once dependencies surface.",
+      "B": "Plan mode is for safe exploration and design; the implementation itself should run as direct execution once the plan exists.",
+      "C": "This commits to an approach without exploring the codebase to check whether it is the right one."
+    },
+    "difficulty": 2,
+    "tags": ["plan-mode", "direct-execution", "migration"]
+  },
+  {
+    "id": "s4-018",
+    "scenario": 4,
+    "domain": 3,
+    "task": "3.4",
+    "type": "single",
+    "select": 1,
+    "stem": "An engineer runs a two-phase task: first find every place a set of retired feature flags is read (hundreds of Grep hits across the repository), then design how to remove them safely. In previous attempts, the discovery output filled the main conversation before the design phase began. What is the best approach?",
+    "options": [
+      {"key": "A", "text": "Delegate discovery to the Explore subagent so the verbose search output stays isolated and only a summary returns."},
+      {"key": "B", "text": "Run discovery in the main conversation but cap each Grep at the first 50 matches."},
+      {"key": "C", "text": "Skip discovery and use direct execution to delete the flag checks wherever the agent finds them."},
+      {"key": "D", "text": "Run discovery in one session and design in a separate fresh session, so each phase starts with a clean context window and no leftover output."}
+    ],
+    "answer": ["A"],
+    "explanation": "The Explore subagent isolates verbose discovery output and returns a summary, which keeps the main context free for the design phase. This is the recommended way to prevent context exhaustion in multi-phase tasks where discovery is noisy but only its conclusions matter.",
+    "distractors": {
+      "B": "Capping matches silently drops call sites, which defeats the purpose of finding every flag read.",
+      "C": "Skipping discovery for a cross-cutting removal risks breaking code paths the agent never examined.",
+      "D": "A fresh session with no handoff loses the discovery results the design phase depends on."
+    },
+    "difficulty": 2,
+    "tags": ["explore-subagent", "context-management", "plan-mode"]
+  },
+  {
+    "id": "s4-019",
+    "scenario": 4,
+    "domain": 1,
+    "task": "1.1",
+    "type": "single",
+    "select": 1,
+    "stem": "Your custom Agent SDK loop ends a run as soon as any response contains a text block. Engineers report that the agent often stops after saying \"I'll start by searching for the config loader,\" even though that same response also requested a Grep tool call that was never executed. How should you fix the loop?",
+    "options": [
+      {"key": "A", "text": "Strip text blocks from each response before the completion check so only tool calls are considered."},
+      {"key": "B", "text": "Continue the loop while `stop_reason` is \"tool_use\" (executing the tools and appending results), and end it when `stop_reason` is \"end_turn\"."},
+      {"key": "C", "text": "End the loop only when the text block contains a completion phrase such as \"done\" or \"finished\"."},
+      {"key": "D", "text": "Add a system prompt instruction telling the agent never to write explanatory text in the same response as a tool call, so text reliably signals completion."}
+    ],
+    "answer": ["B"],
+    "explanation": "Loop control should be driven by `stop_reason`: \"tool_use\" means the model wants tools executed and their results returned, and \"end_turn\" means it is done. Checking for assistant text as a completion signal is a documented anti-pattern, because the model often explains what it is about to do in the same response as a tool call.",
+    "distractors": {
+      "A": "Filtering text works around the symptom but still relies on content inspection instead of the explicit `stop_reason` signal.",
+      "C": "Parsing natural-language phrases to decide termination is an unreliable anti-pattern.",
+      "D": "This relies on probabilistic compliance to paper over a bug in the loop's control flow."
+    },
+    "difficulty": 2,
+    "tags": ["agentic-loop", "stop-reason", "anti-patterns"]
+  },
+  {
+    "id": "s4-020",
+    "scenario": 4,
+    "domain": 1,
+    "task": "1.1",
+    "type": "multi",
+    "select": 2,
+    "stem": "You are reviewing a teammate's agent loop. It runs at most 8 iterations and breaks early if the response text contains \"TASK COMPLETE\". On each iteration it rebuilds `messages` as just the system prompt, the original user request, and the latest turn's tool results. Engineers report that the agent repeats the same Grep calls and that long tasks get cut off partway through. Which changes should you make? (Select TWO.)",
+    "options": [
+      {"key": "A", "text": "Base termination on `stop_reason`: keep looping on \"tool_use\" and stop on \"end_turn\", instead of using the iteration cap and the \"TASK COMPLETE\" string as the primary stop."},
+      {"key": "B", "text": "Append each assistant response and its corresponding tool_result blocks to the running conversation history instead of rebuilding `messages` every iteration."},
+      {"key": "C", "text": "Raise the iteration cap from 8 to 50 so long tasks have room to finish."},
+      {"key": "D", "text": "Require the model to output `{\"done\": true}` when finished and parse it to decide when to stop."},
+      {"key": "E", "text": "Replace model-driven tool selection with a fixed Glob, then Read, then Write sequence so tool calls cannot repeat."}
+    ],
+    "answer": ["A", "B"],
+    "explanation": "The loop should continue on `stop_reason` \"tool_use\" and end on \"end_turn\", not on an arbitrary cap or a parsed text marker, which is why long tasks get cut off. The repeated Grep calls happen because earlier tool results are dropped from history. Appending each turn's assistant response and tool results lets the model reason over everything it has already learned.",
+    "distractors": {
+      "C": "A larger cap is still an arbitrary primary stopping mechanism and does nothing about the lost history.",
+      "D": "Parsing a done marker out of model output is the same text-signal anti-pattern in a different format.",
+      "E": "A hardcoded sequence gives up model-driven decision-making and cannot adapt to what the agent discovers."
+    },
+    "difficulty": 3,
+    "tags": ["agentic-loop", "stop-reason", "conversation-history", "anti-patterns"]
+  },
+  {
+    "id": "s4-021",
+    "scenario": 4,
+    "domain": 1,
+    "task": "1.5",
+    "type": "single",
+    "select": 1,
+    "stem": "In a polyglot repository, your agent runs test suites through different tools: Jest returns JSON, pytest returns JUnit XML, and a legacy Go runner returns custom text with numeric status codes. The agent frequently misreads which tests failed. What is the most reliable fix?",
+    "options": [
+      {"key": "A", "text": "Describe each output format in detail in the system prompt so the agent knows how to read each one."},
+      {"key": "B", "text": "Instruct the agent to first convert each tool's raw output into a common JSON format itself, then reason about failures from that converted version."},
+      {"key": "C", "text": "Add few-shot examples of correctly interpreted output from each test runner."},
+      {"key": "D", "text": "Add a PostToolUse hook that normalizes each test result into a common schema (test, status, message, file) before the model sees it."}
+    ],
+    "answer": ["D"],
+    "explanation": "PostToolUse hooks intercept tool results and can transform them before the model sees them. Normalizing heterogeneous formats in code gives the agent a consistent, deterministic input every time, instead of relying on the model to parse three formats correctly.",
+    "distractors": {
+      "A": "Prompt descriptions leave interpretation probabilistic, which is the source of the current errors.",
+      "B": "Making the model do the conversion uses up reasoning effort and keeps the same error-prone parsing step.",
+      "C": "Few-shot examples improve the odds but cannot guarantee correct parsing of every output."
+    },
+    "difficulty": 2,
+    "tags": ["hooks", "post-tool-use", "data-normalization"]
+  },
+  {
+    "id": "s4-022",
+    "scenario": 4,
+    "domain": 1,
+    "task": "1.5",
+    "type": "single",
+    "select": 1,
+    "stem": "Security requires a guarantee that the developer productivity agent never runs `git push --force` or `rm -rf` on paths outside the workspace, even when an engineer casually asks it to. Engineers still need the agent to run builds and tests through Bash. Which approach meets the requirement?",
+    "options": [
+      {"key": "A", "text": "Add \"Never force-push or delete files outside the workspace\" to the project CLAUDE.md."},
+      {"key": "B", "text": "Add a PostToolUse hook that detects any force-push or recursive delete in Bash output and flags it to the security team for review."},
+      {"key": "C", "text": "Add a hook that intercepts outgoing Bash calls before they run, blocks matching commands, and explains a safer alternative."},
+      {"key": "D", "text": "Remove Bash from the agent's tools entirely."}
+    ],
+    "answer": ["C"],
+    "explanation": "When a rule requires guaranteed compliance, a hook that intercepts outgoing tool calls enforces it deterministically, which prompt instructions cannot. Blocking only the matching commands keeps Bash available for builds and tests, and returning an explanation lets the agent redirect to a safe alternative.",
+    "distractors": {
+      "A": "CLAUDE.md instructions guide behavior only probabilistically and cannot guarantee a command never runs.",
+      "B": "A PostToolUse hook runs after the command has executed, so the damage is already done.",
+      "D": "Removing Bash entirely breaks required build and test workflows, which is far broader than the rule requires."
+    },
+    "difficulty": 1,
+    "tags": ["hooks", "tool-interception", "compliance"]
+  },
+  {
+    "id": "s4-023",
+    "scenario": 4,
+    "domain": 1,
+    "task": "1.6",
+    "type": "single",
+    "select": 1,
+    "stem": "An engineering manager asks the agent to \"add comprehensive tests to our 12-year-old billing service.\" The service has roughly 300 files, no existing tests, heavy use of global state, and direct database calls scattered throughout. How should the agent decompose this task?",
+    "options": [
+      {"key": "A", "text": "Map structure and dependencies, identify high-impact areas such as invoice calculation, then build a prioritized plan that adapts as hidden dependencies surface."},
+      {"key": "B", "text": "Run a fixed pipeline that generates one test file per source file in alphabetical order until all 300 files are covered."},
+      {"key": "C", "text": "Send a single request asking the agent to write comprehensive tests for the entire service in one pass."},
+      {"key": "D", "text": "Spawn 300 parallel subagents, each writing tests for one file independently, then merge their output so all 300 files are covered in a single fast parallel pass."}
+    ],
+    "answer": ["A"],
+    "explanation": "Open-ended work on legacy code calls for adaptive decomposition. Mapping the structure first shows where the risk and coupling are, prioritizing high-impact areas puts effort where it matters most, and adapting as dependencies such as global state surface keeps the plan realistic. A fixed plan made before exploring cannot anticipate these discoveries.",
+    "distractors": {
+      "B": "A fixed alphabetical pipeline ignores impact and cannot adapt to the coupling discovered along the way.",
+      "C": "A single broad pass dilutes attention across 300 files and produces shallow, inconsistent coverage.",
+      "D": "Independent per-file agents miss cross-file dependencies and do no prioritization or coordination."
+    },
+    "difficulty": 3,
+    "tags": ["task-decomposition", "legacy-code", "testing"]
+  },
+  {
+    "id": "s4-024",
+    "scenario": 4,
+    "domain": 1,
+    "task": "1.7",
+    "type": "single",
+    "select": 1,
+    "stem": "Yesterday an engineer spent two hours in a named session, `auth-legacy-analysis`, mapping a legacy authentication module. Overnight, a teammate merged a PR that changed `session_store.py` and `token_refresh.py`; the rest of the module is unchanged. What is the best way to continue?",
+    "options": [
+      {"key": "A", "text": "Start a new session and have the agent re-explore the entire authentication module from scratch."},
+      {"key": "B", "text": "Run `--resume auth-legacy-analysis` and tell the agent that `session_store.py` and `token_refresh.py` changed so it re-analyzes them."},
+      {"key": "C", "text": "Resume with `--resume auth-legacy-analysis` and continue the analysis without mentioning the merged PR."},
+      {"key": "D", "text": "Use fork_session on yesterday's session so the new branch starts from the existing analysis and automatically picks up the merged changes from the PR."}
+    ],
+    "answer": ["B"],
+    "explanation": "When most prior context is still valid, resuming the named session keeps the investment. Telling the agent exactly which files changed allows targeted re-analysis, so stale tool results for those two files do not mislead it and the whole module does not need re-exploring.",
+    "distractors": {
+      "A": "Full re-exploration throws away a mostly valid analysis and wastes time.",
+      "C": "The agent would keep reasoning from stale tool results for the two changed files.",
+      "D": "Forking creates a divergent branch from the same baseline; it does not refresh stale file contents."
+    },
+    "difficulty": 2,
+    "tags": ["sessions", "resume", "stale-context"]
+  },
+  {
+    "id": "s4-025",
+    "scenario": 4,
+    "domain": 1,
+    "task": "1.7",
+    "type": "single",
+    "select": 1,
+    "stem": "After a long session analyzing a legacy order-processing module, your team wants to evaluate two refactoring strategies: a strangler-fig wrapper and in-place extraction of services. Both evaluations should start from the same analysis, and neither should be influenced by the other's reasoning. What should you do?",
+    "options": [
+      {"key": "A", "text": "Continue in the same session: explore the strangler-fig approach first, then ask the agent to evaluate in-place extraction."},
+      {"key": "B", "text": "Open two brand-new sessions and have each one re-analyze the module before exploring its assigned strategy."},
+      {"key": "C", "text": "Ask a single subagent to compare both strategies side by side in one response."},
+      {"key": "D", "text": "Use fork_session on the analysis session to create two independent branches, one per strategy, each starting from the shared analysis."}
+    ],
+    "answer": ["D"],
+    "explanation": "fork_session creates independent branches from a shared analysis baseline, which is exactly what comparing divergent approaches requires. Each branch inherits the completed analysis but explores its strategy without contamination from the other.",
+    "distractors": {
+      "A": "Exploring sequentially in one session lets the first strategy's reasoning bias the second.",
+      "B": "Re-analyzing twice wastes effort and may produce two different baselines, which undermines the comparison.",
+      "C": "A single combined pass does not give either strategy an independent, in-depth exploration."
+    },
+    "difficulty": 3,
+    "tags": ["sessions", "fork-session", "refactoring"]
+  },
+  {
+    "id": "s4-026",
+    "scenario": 4,
+    "domain": 5,
+    "task": "5.4",
+    "type": "single",
+    "select": 1,
+    "stem": "Two hours into exploring a legacy insurance-claims system, the agent's answers become inconsistent. Asked how claims are persisted, it now says the handler \"likely follows a typical repository pattern,\" even though earlier in the session it identified the specific `ClaimLedgerGateway` class and its write path. What is the most effective way to counter this?",
+    "options": [
+      {"key": "A", "text": "Have the agent keep a scratchpad file of key findings (classes, flows, file paths) and consult it for later questions."},
+      {"key": "B", "text": "Ask the same question several times and keep the answer that appears most often."},
+      {"key": "C", "text": "Switch to a model with a larger context window so the earlier findings about specific classes stay in view for the rest of the session."},
+      {"key": "D", "text": "Add \"be specific and avoid generic patterns\" to the system prompt."}
+    ],
+    "answer": ["A"],
+    "explanation": "Vague references to \"typical patterns\" in place of specific earlier discoveries are a classic sign of context degradation in long sessions. A scratchpad file persists key findings outside the degrading context, so the agent can reread exact class names and flows when it answers later questions.",
+    "distractors": {
+      "B": "Repeating the question samples from the same degraded context and does not bring back the lost specifics.",
+      "C": "A larger window does not fix attention degradation over a long, noisy session.",
+      "D": "An instruction to be specific cannot restore details the model is no longer attending to."
+    },
+    "difficulty": 2,
+    "tags": ["context-degradation", "scratchpad", "long-sessions"]
+  },
+  {
+    "id": "s4-027",
+    "scenario": 4,
+    "domain": 5,
+    "task": "5.4",
+    "type": "multi",
+    "select": 2,
+    "stem": "A coordinator agent is investigating how a legacy monolith handles currency conversion ahead of a migration. Phase 1 is broad discovery across the codebase; Phase 2 is a deep dive into each affected subsystem. Earlier attempts ran out of context partway through Phase 2. Which practices should you adopt? (Select TWO.)",
+    "options": [
+      {"key": "A", "text": "Spawn subagents for specific questions, such as \"find all callers of `convert_amount`\" or \"trace rounding rules in invoicing\", while the coordinator keeps the high-level picture."},
+      {"key": "B", "text": "Summarize the key Phase 1 findings and inject that summary into the initial prompts of the Phase 2 subagents."},
+      {"key": "C", "text": "Rely on Phase 2 subagents automatically inheriting the coordinator's conversation history from Phase 1."},
+      {"key": "D", "text": "Have the coordinator Read every relevant file itself during Phase 1 so it does not need subagents."},
+      {"key": "E", "text": "Pass the coordinator's complete raw Phase 1 transcript, including all tool output, to every Phase 2 subagent."}
+    ],
+    "answer": ["A", "B"],
+    "explanation": "Delegating focused questions to subagents keeps verbose exploration output out of the coordinator's context, so it can stay focused on coordination. Summarizing each phase's findings before spawning the next phase's subagents gives those subagents the context they need without carrying over the raw discovery noise.",
+    "distractors": {
+      "C": "Subagents do not inherit the coordinator's history; context must be passed to them explicitly.",
+      "D": "Reading everything in the coordinator is what exhausts its context in the first place.",
+      "E": "Raw transcripts flood each subagent with verbose output instead of distilled findings."
+    },
+    "difficulty": 3,
+    "tags": ["subagents", "context-management", "phase-summaries"]
+  },
+  {
+    "id": "s4-028",
+    "scenario": 4,
+    "domain": 5,
+    "task": "5.4",
+    "type": "single",
+    "select": 1,
+    "stem": "Partway through an interactive exploration session, an engineer notices the context is nearly full of verbose Grep and Bash output from earlier discovery steps. They want to keep working on the same task in the same session. What should they do?",
+    "options": [
+      {"key": "A", "text": "Run /memory to free the space taken up by earlier tool output."},
+      {"key": "B", "text": "Close the session and start a new one with no summary of what was found."},
+      {"key": "C", "text": "Run /compact to reduce context usage while continuing the same session and task."},
+      {"key": "D", "text": "Exit and use `--resume` on the same session to reload it."}
+    ],
+    "answer": ["C"],
+    "explanation": "/compact is meant for reducing context usage during extended sessions when verbose discovery output has filled the window. The engineer can keep working in the same session with the accumulated output condensed.",
+    "distractors": {
+      "A": "/memory shows which memory files are loaded; it does not reduce context.",
+      "B": "Starting fresh without a summary throws away the findings the task still depends on.",
+      "D": "Resuming reloads the same full conversation, so context usage stays the same."
+    },
+    "difficulty": 1,
+    "tags": ["compact", "context-management"]
+  }
+]

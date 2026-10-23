@@ -1,0 +1,349 @@
+[
+  {
+    "task": "2.1",
+    "knowledge": [
+      "Accuracy asks whether each claim is true and supported by the source. Completeness asks whether the output covers everything the request required. A well-written answer can fail either test.",
+      "Claude can produce incorrect or misleading content in a confident, polished voice, so tone, formatting and length are not evidence of quality.",
+      "The yardstick is your own request and source material: the brief, the checklist, the data and the original document, not how good the output sounds.",
+      "Typical completeness gaps: a skipped section of a long document, items dropped from a list, an ignored constraint (audience, length, deadline) or a question only partly answered.",
+      "Names, numbers, dates, quotes and calculations are the highest-risk details in a business output and deserve the closest check."
+    ],
+    "skills": [
+      "Write down what the task required (sections, questions, constraints) before reading the output, then tick each item off.",
+      "Trace key figures and claims back to the source document or data.",
+      "Spot-check the hard, specific parts (numbers, quotes, edge cases), not just the easy summary sentences.",
+      "Ask Claude to list what it left out or could not find, then confirm that against the source yourself."
+    ],
+    "examLens": [
+      "Asked for the best first step with a fresh draft, the answer is usually to check it against the source or the brief, not to polish it or send it.",
+      "\"Claude sounded certain\" or \"it looks professional\" is never a reason to skip checking.",
+      "Completeness failures are silent: prefer the answer that compares the output with the full request."
+    ],
+    "traps": [
+      "Judging quality by fluency, formatting or length.",
+      "Checking the opening summary and skipping the figures further down.",
+      "Asking Claude whether its own answer is correct and treating \"yes\" as verification."
+    ],
+    "links": [
+      {"label": "Claude is providing incorrect or misleading responses", "url": "https://support.claude.com/en/articles/8525154-claude-is-providing-incorrect-or-misleading-responses-what-s-going-on"},
+      {"label": "AI Capabilities and Limitations (course)", "url": "https://anthropic.skilljar.com/ai-capabilities-and-limitations"}
+    ],
+    "cheat": [
+      ["Polished summary of a long report", "Check every section of the source is covered before sharing"],
+      ["Draft board report with a growth figure", "Trace the figure back to the spreadsheet and recheck the maths"],
+      ["Brief had a checklist of required topics", "Tick each item off against the output"],
+      ["Claude says its answer is complete", "Not verification; compare with the brief yourself"]
+    ],
+    "diagrams": [
+      {
+        "kind": "flow", "title": "Check a draft before you use it",
+        "steps": [
+          {"label": "Restate what the task required", "note": "Sections, questions, audience, length and any must-include items.", "tone": "sky"},
+          {"label": "Check completeness against that list", "note": "Look for skipped sections, dropped items and ignored constraints."},
+          {"label": "Verify the specific details", "note": "Names, numbers, dates and quotes against the source.", "tone": "accent"},
+          {"label": "Fix gaps or ask Claude to revise", "note": "Say exactly what is missing or wrong."},
+          {"label": "Only then polish tone and format", "tone": "good"}
+        ]
+      },
+      {
+        "kind": "compare", "title": "Two separate questions",
+        "columns": [
+          {"head": "Accuracy", "items": ["Is each claim true?", "Do figures match the source?", "Are quotes word for word?"], "tone": "accent"},
+          {"head": "Completeness", "items": ["Is every part of the brief covered?", "Were any sections or items dropped?", "Were the constraints followed?"], "tone": "sky"}
+        ]
+      }
+    ]
+  },
+  {
+    "task": "2.2",
+    "knowledge": [
+      "A hallucination is content that sounds plausible but is not grounded: invented facts, figures, quotes, citations or sources.",
+      "Claude can also be wrong about its own capabilities, for example claiming it sent an email or created an outside document when no such tool was connected.",
+      "Inconsistencies are contradictions inside one output (a duration that doesn't match the timeline, a total that doesn't match its parts) or different answers to the same question across chats.",
+      "Bias shows up as one-sided framing, stereotyped examples or wording, unequal treatment of groups, or missing perspectives. Output is not neutral just because a machine wrote it.",
+      "Claude can be confused about recent events, so time-sensitive claims need a current source."
+    ],
+    "skills": [
+      "Flag very specific details you did not supply (exact percentages, named experts, case names, page numbers) as hallucination risks to check.",
+      "Cross-check figures, dates and names within the output for internal consistency.",
+      "Ask the same question again or in a new chat and compare; answers that disagree are not reliable.",
+      "Read examples, wording and recommendations for skewed or stereotyped treatment of groups, and ask for a balanced version.",
+      "Report inaccurate, biased or harmful responses with the thumbs-down button."
+    ],
+    "examLens": [
+      "Specific-looking details with no source are the classic hallucination signal; a correct-looking format proves nothing.",
+      "If Claude says it sent, saved or booked something, check the actual app; it can only act through tools that are connected.",
+      "For bias, the right move is to revise for balance and have the right people review, not to trust it as neutral or abandon Claude entirely."
+    ],
+    "traps": [
+      "Assuming a reference is real because the author, year and journal look right.",
+      "Averaging inconsistent answers instead of finding the real figure.",
+      "Treating confident tone as a reliability signal."
+    ],
+    "links": [
+      {"label": "Claude is providing incorrect or misleading responses", "url": "https://support.claude.com/en/articles/8525154-claude-is-providing-incorrect-or-misleading-responses-what-s-going-on"},
+      {"label": "Claude falsely claiming it sent emails or made documents", "url": "https://support.claude.com/en/articles/8241188-claude-is-producing-links-that-don-t-work-and-falsely-claiming-that-it-has-sent-emails-or-produced-external-documents-what-s-going-on"},
+      {"label": "Reduce hallucinations", "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations"}
+    ],
+    "cheat": [
+      ["References you can't find in any database", "Likely hallucinated; don't cite until found in the original"],
+      ["\"I've sent the email\" with no email tool connected", "Capability hallucination; nothing was sent"],
+      ["Different figures for the same question across chats", "Not grounded; check a verified source"],
+      ["Stereotyped examples in a job ad or lesson", "Bias; revise for balance and have the right people review"]
+    ],
+    "diagrams": [
+      {
+        "kind": "compare", "title": "Three things to spot",
+        "columns": [
+          {"head": "Hallucination", "items": ["Invented facts or figures", "Fake quotes or references", "Claims of actions it can't take"], "tone": "warn"},
+          {"head": "Inconsistency", "items": ["Numbers that don't add up", "Dates that change between sections", "Different answers across chats"], "tone": "amber"},
+          {"head": "Bias", "items": ["One-sided framing", "Stereotyped examples or wording", "Missing perspectives"], "tone": "sky"}
+        ]
+      },
+      {
+        "kind": "decision", "title": "Red flag spotted: what next?",
+        "question": "What did you notice?",
+        "branches": [
+          {"when": "Exact figure, quote or citation you didn't supply", "then": "Find it in the original source or remove it", "tone": "warn"},
+          {"when": "Claude says it sent or saved something", "then": "Check the real app; it only acts through connected tools"},
+          {"when": "Parts of the output contradict each other", "then": "Check the source record and correct the wrong one", "tone": "amber"},
+          {"when": "Answers differ across chats", "then": "Treat as unverified; use an authoritative source"},
+          {"when": "One-sided or stereotyped content", "then": "Ask for balance, then have the right people review", "tone": "sky"}
+        ]
+      }
+    ]
+  },
+  {
+    "task": "2.3",
+    "knowledge": [
+      "Fact-checking means comparing specific claims with an authoritative source: the official text, the original document, or your organization's own records.",
+      "Web search and Research responses include citations. Open the cited source, because the original may hold context that Claude's summary left out.",
+      "Techniques that lower the risk of unsupported claims: let Claude say \"I don't know\"; ask for word-for-word quotes first and base the answer on them; require a source for each claim and drop any claim without one; limit Claude to the documents you provided; compare several answers; review the reasoning Claude shows.",
+      "These techniques reduce errors but do not remove them. Critical information still needs checking, especially for high-stakes decisions.",
+      "Asking Claude to rate its confidence, or to confirm its own answer, is not validation."
+    ],
+    "skills": [
+      "Pull out the specific checkable claims (numbers, names, dates, rules, quotes) and check those first.",
+      "Prompt for quotes and sources up front when you will need to trace answers back to a document.",
+      "Recalculate a few key figures yourself, or have Claude show its working so you can follow it.",
+      "Use a source independent of Claude for claims that will be published or acted on."
+    ],
+    "examLens": [
+      "The right answer checks against a primary or official source; wrong answers rely on Claude's confidence, a second Claude opinion, or rewording.",
+      "\"Most effective prompting technique to reduce unsupported claims\" points to quotes, citations per claim, or \"use only these documents and say when you can't find it\".",
+      "Citations are a starting point for checking, not proof."
+    ],
+    "traps": [
+      "Treating the presence of citations as proof of accuracy.",
+      "Accepting a figure because two runs gave similar numbers.",
+      "Raising effort or switching to a stronger model and then skipping the check."
+    ],
+    "links": [
+      {"label": "Reduce hallucinations", "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations"},
+      {"label": "Claude is providing incorrect or misleading responses", "url": "https://support.claude.com/en/articles/8525154-claude-is-providing-incorrect-or-misleading-responses-what-s-going-on"}
+    ],
+    "cheat": [
+      ["Briefing built with web search citations", "Open the sources and confirm key claims"],
+      ["Questions about a long uploaded contract", "Ask for the exact clauses first, then answer from those quotes"],
+      ["Summary must not fill gaps with assumptions", "\"Use only these notes; say when something isn't covered\""],
+      ["Eligibility rules with no source", "Check each rule against the official published guidelines"],
+      ["Growth figure from a spreadsheet", "Recalculate a few figures or check Claude's working"]
+    ],
+    "diagrams": [
+      {
+        "kind": "flow", "title": "Validate a claim",
+        "steps": [
+          {"label": "Pick out the checkable claims", "note": "Numbers, names, dates, rules and quotes.", "tone": "sky"},
+          {"label": "Find an authoritative source", "note": "The citation Claude gave, the official text or your own records."},
+          {"label": "Open it and compare the wording", "note": "The original may add context or limits the summary dropped.", "tone": "accent"},
+          {"label": "Correct or remove unsupported claims", "tone": "warn"},
+          {"label": "Share once the key claims hold up", "tone": "good"}
+        ]
+      },
+      {
+        "kind": "compare", "title": "What helps, and what doesn't",
+        "columns": [
+          {"head": "Lowers the risk", "items": ["Quotes first, then the answer", "A source for every claim", "\"Use only these documents\"", "Allow \"I don't know\""], "tone": "good"},
+          {"head": "Not validation", "items": ["Claude's confidence rating", "Asking Claude \"are you sure?\"", "Rewording or reformatting", "Citations nobody opened"], "tone": "warn"}
+        ]
+      }
+    ]
+  },
+  {
+    "task": "2.4",
+    "knowledge": [
+      "Match the level of review to the stakes: who will see the output, what decision it drives, and how hard a mistake would be to undo.",
+      "Anthropic's Usage Policy treats decisions about individuals in areas such as legal, medical, financial, insurance, employment, housing and education as high-risk. A qualified person must meaningfully review the AI output, be able to change it before it is acted on, and the affected person should be told AI was used.",
+      "Internal drafting, research and summaries that are not the final recommendation sit outside that high-risk category, but still need the checks their audience requires.",
+      "Public, legal, regulatory, safety, health and financial-results content needs a subject expert or approver, not just the person who prompted it.",
+      "Low-stakes, internal, easily changed output (brainstorm lists, your own notes) needs only a quick read.",
+      "When checking an output needs technical work you can't do, such as validating a connected data workflow at scale, escalate to a Claude Developer or Architect."
+    ],
+    "skills": [
+      "Classify an output by audience, impact and reversibility before deciding how much review it gets.",
+      "Route outputs about specific people's rights, money, health or jobs to a qualified reviewer who can change the result.",
+      "Keep light-touch review for trivial internal drafts instead of slowing everything down.",
+      "Recognize when verification is a technical problem and hand it to the right specialist."
+    ],
+    "examLens": [
+      "Decision about a specific person in a high-risk area: the answer is qualified human review with power to change the outcome.",
+      "Brainstorms and internal drafts: over-reviewing is also a wrong answer.",
+      "A disclaimer such as \"may contain errors\" never replaces review."
+    ],
+    "traps": [
+      "Giving every output the same level of review, whether trivial or high-stakes.",
+      "Asking Claude to review its own output for legal or medical risk instead of involving an expert.",
+      "Assuming that checking the facts alone is enough for public or safety-related statements."
+    ],
+    "links": [
+      {"label": "Usage Policy", "url": "https://www.anthropic.com/legal/aup"},
+      {"label": "Claude is providing incorrect or misleading responses", "url": "https://support.claude.com/en/articles/8525154-claude-is-providing-incorrect-or-misleading-responses-what-s-going-on"}
+    ],
+    "cheat": [
+      ["Brainstorm list for an internal project", "Quick self-read is enough"],
+      ["Recommendation on a specific person's loan, claim or promotion", "Qualified human reviews and can change it before it is acted on"],
+      ["Replies to patients about medication", "Clinician reviews and approves each one"],
+      ["Public statement about a safety incident", "Communications and legal approval"],
+      ["Checking a connected data workflow at scale", "Escalate to a Claude Developer or Architect"]
+    ],
+    "diagrams": [
+      {
+        "kind": "decision", "title": "How much review does it need?",
+        "question": "Where will this output go?",
+        "branches": [
+          {"when": "Your own brainstorm or rough notes", "then": "Quick read for anything wrong or inappropriate", "tone": "good"},
+          {"when": "Internal draft colleagues will build on", "then": "Check facts and completeness yourself"},
+          {"when": "Customers, the public or leadership", "then": "Verify facts, then a second reviewer or approver", "tone": "amber"},
+          {"when": "Decision about a person: legal, health, money, job", "then": "Qualified expert reviews and can change it", "tone": "warn"},
+          {"when": "Checking needs technical work you can't do", "then": "Escalate to a Claude Developer or Architect", "tone": "sky"}
+        ]
+      },
+      {
+        "kind": "layers", "title": "Stakes set the review level",
+        "axis": {"label": "Higher stakes, more review", "dir": "up"},
+        "layers": [
+          {"label": "Qualified expert sign-off", "note": "High-risk decisions about individuals; can change the result.", "tone": "warn"},
+          {"label": "Second reviewer or approver", "note": "Public, legal, safety or financial content.", "tone": "amber"},
+          {"label": "Your own fact and completeness check", "note": "Internal drafts others will use."},
+          {"label": "Quick read", "note": "Brainstorms and personal notes.", "tone": "good"}
+        ]
+      }
+    ]
+  },
+  {
+    "task": "2.5",
+    "knowledge": [
+      "The same content needs different versions for different readers: executives want the decision and impact first, specialists want detail, customers want plain language and next steps, students need the right reading level.",
+      "Claude doesn't know your audience unless you say so. State the reader, purpose, tone, length and key points.",
+      "Refine with specific feedback (\"lead with the price change, under 150 words, keep the contact name\") rather than vague requests such as \"make it better\".",
+      "Examples of your house style are one of the most reliable ways to steer tone and format.",
+      "Compare versions against criteria agreed in advance (accuracy, audience fit, call to action, length), not by which one sounds best or which one Claude prefers.",
+      "Simplifying or shortening can drop conditions, dates and caveats, so re-check facts after every edit."
+    ],
+    "skills": [
+      "Ask for audience-specific versions of one source, each tailored to what that group must know and do.",
+      "Turn reactions such as \"too long\" into concrete instructions Claude can act on.",
+      "Score competing drafts against a short list of criteria.",
+      "Check that edited or simplified text still says what the source says."
+    ],
+    "examLens": [
+      "The best prompt names the audience and what they need first, with a clear length or format.",
+      "When an edit loses facts, the fix is specific feedback that keeps what works and restores what was lost.",
+      "When comparing versions, agreed criteria beat preference, length or polish."
+    ],
+    "traps": [
+      "Sending one detailed version to every audience.",
+      "Repeating vague feedback (\"punchier\", \"better\") and hoping it converges.",
+      "Assuming a simplified version is still accurate because the original was."
+    ],
+    "links": [
+      {"label": "Prompting best practices", "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"},
+      {"label": "My prompt isn't giving me a helpful answer", "url": "https://support.claude.com/en/articles/7996857-my-prompt-isn-t-giving-me-a-helpful-answer"}
+    ],
+    "cheat": [
+      ["Technical update for a steering committee", "Decisions and business impact first, short"],
+      ["Simplified customer text dropped a condition", "Restore it in plain language and re-check against the policy"],
+      ["Two drafts, team can't agree", "Agree criteria first, then score both"],
+      ["One policy change, three audiences", "Three tailored versions"],
+      ["Edits lost key details", "Specific feedback: keep the tone, restore the details"]
+    ],
+    "diagrams": [
+      {
+        "kind": "flow", "title": "Adapt a draft for its audience",
+        "steps": [
+          {"label": "Name the reader and the purpose", "tone": "sky"},
+          {"label": "Say what they need first", "note": "Decision, action, plain explanation or full detail."},
+          {"label": "Ask with clear constraints", "note": "Length, tone, format; add an example of your house style."},
+          {"label": "Compare against agreed criteria", "note": "Accuracy, audience fit, call to action, length.", "tone": "accent"},
+          {"label": "Re-check facts survived the edit", "note": "Shortening can drop dates, conditions and caveats.", "tone": "warn"}
+        ],
+        "loop": "Give specific feedback and refine"
+      },
+      {
+        "kind": "compare", "title": "Same update, different readers",
+        "columns": [
+          {"head": "Leadership", "items": ["Decision needed first", "Business impact", "A few lines"], "tone": "accent"},
+          {"head": "Managers", "items": ["What changes for their team", "What to do and by when", "Who to ask"], "tone": "sky"},
+          {"head": "Customers or staff", "items": ["Plain language", "What it means for them", "Clear next step"], "tone": "good"}
+        ]
+      }
+    ]
+  },
+  {
+    "task": "2.6",
+    "knowledge": [
+      "Inline replies suit short answers, quick explanations, brief drafts and back-and-forth questions that live in the conversation.",
+      "Artifacts suit substantial, self-contained content (typically more than about 15 lines) that will be edited, reused, shared or referred back to, such as documents, decks, dashboards, diagrams and small interactive tools. They open beside the conversation.",
+      "Structured data (tables, consistent field lists, spreadsheets) suits content people will sort, filter, compare or import. Claude can create Excel, Word, PowerPoint and PDF files when file creation is turned on.",
+      "Curating means choosing what matters to the reader: group related points into themes, remove repetition, order by priority and keep the source references.",
+      "Pick the format from what the reader will do with the output, not from what looks most impressive."
+    ],
+    "skills": [
+      "Ask for a short inline answer when the question is quick and the reply won't be reused.",
+      "Ask for an artifact or file when the content is long, standalone and will be edited or shared.",
+      "Specify fixed columns and one row per item when output will be compared, filtered or imported.",
+      "Ask Claude to group by theme and rank by importance rather than repeat material in source order."
+    ],
+    "examLens": [
+      "Quick question → inline. Long, reusable, shareable or interactive → artifact. Compare, sort, import → structured data.",
+      "Messy, repetitive summaries call for curation (themes, priority, no duplicates), not more detail.",
+      "A heavier format for a trivial request is as wrong as a chat paragraph for a reusable document."
+    ],
+    "traps": [
+      "Using a narrative paragraph for data that people need to filter or compare.",
+      "Putting a long, frequently edited document in a chat reply that has to be copied around.",
+      "Including every comment word for word instead of curating."
+    ],
+    "links": [
+      {"label": "What are artifacts and how do I use them?", "url": "https://support.claude.com/en/articles/17153992-what-are-artifacts-and-how-do-i-use-them"},
+      {"label": "Create and edit files with Claude", "url": "https://support.claude.com/en/articles/12111783-create-and-edit-files-with-claude"}
+    ],
+    "cheat": [
+      ["Two-sentence definition for a colleague", "Inline reply"],
+      ["Onboarding checklist the team will edit and share", "Artifact"],
+      ["Supplier quotes to sort and filter", "Table or spreadsheet, one row per supplier"],
+      ["Interview notes repeating the same points", "Group into themes, rank, remove repetition"],
+      ["Fields pulled from 200 descriptions for import", "Fixed columns, one row per item"]
+    ],
+    "diagrams": [
+      {
+        "kind": "compare", "title": "Choose the output format",
+        "columns": [
+          {"head": "Inline reply", "items": ["Short answers and explanations", "Quick drafts and follow-ups", "Lives in the conversation"], "tone": "plain"},
+          {"head": "Artifact", "items": ["Long, standalone content", "Edited, reused or shared", "Docs, decks, dashboards, tools"], "tone": "accent"},
+          {"head": "Structured data", "items": ["Tables and spreadsheets", "Sort, filter or compare", "Same fields every time for import"], "tone": "sky"}
+        ]
+      },
+      {
+        "kind": "decision", "title": "What will the reader do with it?",
+        "question": "How will the output be used?",
+        "branches": [
+          {"when": "Read once, right now", "then": "Inline reply"},
+          {"when": "Edit over time, share or present", "then": "Artifact or file", "tone": "accent"},
+          {"when": "Sort, filter, compare or import", "then": "Table or spreadsheet with fixed columns", "tone": "sky"},
+          {"when": "Lots of overlapping material", "then": "Curate: themes, priority, no repetition", "tone": "good"}
+        ]
+      }
+    ]
+  }
+]

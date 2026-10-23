@@ -1,0 +1,636 @@
+[
+  {
+    "id": "dv-b-001", "scenario": 0, "domain": 2, "task": "2.1", "type": "single", "select": 1,
+    "stem": "A product owner writes: \"Contact-center agents need a suggested reply to appear on screen while the customer is still on the line.\" You are turning this into requirements for a Claude-powered assist feature. Which infrastructure requirement follows most directly from this business requirement?",
+    "options": [
+      {"key": "A", "text": "Keep every generated suggestion downloadable for 29 days so supervisors can review results in bulk later."},
+      {"key": "B", "text": "Queue suggestion requests and process them asynchronously in an hourly job to maximise throughput."},
+      {"key": "C", "text": "Synchronous calls with low time-to-first-token, streaming the reply to the agent as it is generated."},
+      {"key": "D", "text": "A context window large enough to hold the entire contact-center knowledge base on every request."}
+    ],
+    "answer": ["C"],
+    "explanation": "\"While the customer is still on the line\" is an interactive latency requirement. It translates into realtime Messages API calls, with streaming so the agent starts reading within a second or two instead of waiting for the full reply. Throughput, retention and context size are secondary to that latency target.",
+    "distractors": {
+      "A": "Bulk result retention describes batch output handling and does nothing for the live-call latency requirement.",
+      "B": "An hourly asynchronous job directly violates the requirement that the suggestion arrives during the call.",
+      "D": "Stuffing the whole knowledge base into every request is over-engineered, adds latency and cost, and addresses recall rather than timeliness."
+    },
+    "difficulty": 1, "tags": ["requirements", "latency", "streaming"]
+  },
+  {
+    "id": "dv-b-002", "scenario": 0, "domain": 2, "task": "2.1", "type": "single", "select": 1,
+    "stem": "A healthcare startup in Germany is building a clinical-notes summarizer and will call Claude through Google Cloud. Their legal team states that model inference on patient data must happen inside the European Union. The prototype currently uses the global endpoint. Which change best satisfies the requirement?",
+    "options": [
+      {"key": "A", "text": "Switch to an EU multi-region endpoint or an EU regional endpoint, and accept that these cost more than the global endpoint."},
+      {"key": "B", "text": "Keep the global endpoint for availability and add a system prompt rule that patient data must remain in the EU."},
+      {"key": "C", "text": "Remove patient names before each request and keep the global endpoint, since redacted notes carry no residency obligations."},
+      {"key": "D", "text": "Move the workload to batch jobs, because batches always run in the region where the batch was created."}
+    ],
+    "answer": ["A"],
+    "explanation": "On Google Cloud the global endpoint may route requests to any region with capacity, so it cannot guarantee EU-only processing. Multi-region (EU) and regional endpoints restrict where requests are served, which is how a residency requirement becomes an infrastructure setting. The tradeoff is a price premium over the global endpoint and, for regional endpoints, a narrower set of available models.",
+    "distractors": {
+      "B": "A prompt instruction cannot control where inference physically runs.",
+      "C": "Removing names is not full anonymisation of clinical notes and does not satisfy a stated rule about where inference happens.",
+      "D": "There is no such regional guarantee for batches, and switching to batch changes the latency profile without solving residency."
+    },
+    "difficulty": 2, "tags": ["requirements", "data-residency", "vertex-ai"]
+  },
+  {
+    "id": "dv-b-003", "scenario": 0, "domain": 2, "task": "2.1", "type": "single", "select": 1,
+    "stem": "The business requirement for an internal contract-redlining tool says: \"Legal must approve any clause change before it is sent to a counterparty.\" Claude will propose clause edits. How should the developer express this as a functional requirement?",
+    "options": [
+      {"key": "A", "text": "Use the most capable model tier available so that proposed clause edits are accurate enough to send without a separate review."},
+      {"key": "B", "text": "Add a system prompt instruction telling Claude to propose only edits that the legal team would approve."},
+      {"key": "C", "text": "Log every proposed edit so that legal can audit what was sent to counterparties at the end of each quarter."},
+      {"key": "D", "text": "Treat each Claude edit as a draft and add a blocking legal-approval step that the application enforces before sending."}
+    ],
+    "answer": ["D"],
+    "explanation": "A mandatory human approval is a workflow requirement, so it belongs in the application's state machine: Claude's output is a draft, and nothing can be sent until a reviewer approves it. Enforcing the gate in code makes it deterministic and auditable regardless of what the model produces.",
+    "distractors": {
+      "A": "A better model reduces errors but does not satisfy a requirement that a human approves every change.",
+      "B": "A prompt instruction is probabilistic guidance and cannot stand in for an approval the business says is mandatory.",
+      "C": "After-the-fact auditing detects problems once clauses have already been sent, which is exactly what the requirement forbids."
+    },
+    "difficulty": 2, "tags": ["requirements", "human-in-the-loop"]
+  },
+  {
+    "id": "dv-b-004", "scenario": 0, "domain": 2, "task": "2.1", "type": "single", "select": 1,
+    "stem": "A customer-support chatbot has a 99.9% availability target. It calls the Claude API directly, and during traffic peaks a small share of requests fail with HTTP 529 `overloaded_error`. Which design best meets the availability requirement?",
+    "options": [
+      {"key": "A", "text": "Raise `max_tokens` so each request does more work and fewer requests are needed during peaks."},
+      {"key": "B", "text": "Retry transient errors with exponential backoff, and keep a fallback route to Claude on another platform for sustained outages."},
+      {"key": "C", "text": "Move all chat traffic to the Message Batches API, whose queued processing is unaffected by load spikes."},
+      {"key": "D", "text": "Return a polite apology on any 529, because overload errors are client mistakes that retrying cannot fix."}
+    ],
+    "answer": ["B"],
+    "explanation": "A 529 signals temporary server-side overload, so bounded retries with exponential backoff (honouring `retry-after` when present) recover most failures; the official SDKs already retry transient errors. For an availability target, a fallback route such as the same model on Amazon Bedrock, Google Cloud or Microsoft Foundry covers sustained provider-side incidents.",
+    "distractors": {
+      "A": "`max_tokens` caps output length; it does not reduce request count or overload errors.",
+      "C": "Batch processing is asynchronous and can take hours, which breaks an interactive chatbot.",
+      "D": "A 529 is a transient server-side condition, not a client error, so giving up immediately sacrifices availability."
+    },
+    "difficulty": 3, "tags": ["requirements", "availability", "errors", "retries"]
+  },
+  {
+    "id": "dv-b-005", "scenario": 0, "domain": 2, "task": "2.1", "type": "single", "select": 1,
+    "stem": "A stakeholder asks for two things: classify 2 million archived support tickets for a one-off trend analysis due next month, and triage each new incoming ticket within a few seconds of arrival. How should the developer translate this into an architecture requirement?",
+    "options": [
+      {"key": "A", "text": "Treat them as two workloads: the archive through the Message Batches API and new tickets through realtime Messages API calls."},
+      {"key": "B", "text": "Run both through realtime Messages API calls with streaming, so the archive finishes as quickly as possible."},
+      {"key": "C", "text": "Run both through the Message Batches API and poll every few seconds to pick up results for new tickets."},
+      {"key": "D", "text": "Send the archive and new tickets together in one large request so Claude can compare them in a single context."}
+    ],
+    "answer": ["A"],
+    "explanation": "The two asks have opposite latency profiles. The archive is latency-tolerant and high-volume, which suits the Message Batches API at half the price; new-ticket triage needs seconds-level responses, which only synchronous Messages API calls can promise. Splitting workloads by latency need is the core requirements decision here.",
+    "distractors": {
+      "B": "Streaming improves perceived latency for a human reader but does not lower the cost of a large, non-urgent backlog.",
+      "C": "Batches can take up to 24 hours, so polling cannot make them meet a few-seconds triage target.",
+      "D": "Two million tickets cannot fit in one context window, and one request cannot serve per-ticket realtime triage."
+    },
+    "difficulty": 1, "tags": ["requirements", "batch-vs-realtime"]
+  },
+  {
+    "id": "dv-b-006", "scenario": 0, "domain": 2, "task": "2.1", "type": "single", "select": 1,
+    "stem": "Finance has set a hard monthly cost envelope for an HR policy assistant. Every request includes the same 40-page policy handbook as the system prompt, followed by a short employee question, and there are thousands of conversations a day. Which change best reduces input cost without changing answer quality?",
+    "options": [
+      {"key": "A", "text": "Move the handbook to the end of the user message so it is processed after the employee's question."},
+      {"key": "B", "text": "Replace the handbook with a one-paragraph summary so that every request is much shorter."},
+      {"key": "C", "text": "Keep the handbook as an unchanging prefix and mark it for prompt caching so repeat requests read it from cache."},
+      {"key": "D", "text": "Send the handbook only on the first turn of each conversation, since the API keeps it for later turns."}
+    ],
+    "answer": ["C"],
+    "explanation": "Prompt caching is designed for a large, identical prefix reused across many requests: cache reads are billed at a small fraction of the base input price and also reduce latency. The handbook stays in full, so answer quality is unchanged, which is what the cost requirement asks for.",
+    "distractors": {
+      "A": "Reordering the prompt does not reduce input tokens, and putting the variable question first would also stop the handbook forming a cacheable prefix.",
+      "B": "Summarising cuts tokens but discards policy detail, which changes answer quality.",
+      "D": "The Messages API is stateless, so content left out of a request is simply not seen by the model."
+    },
+    "difficulty": 2, "tags": ["requirements", "cost", "prompt-caching"]
+  },
+  {
+    "id": "dv-b-007", "scenario": 0, "domain": 2, "task": "2.1", "type": "multi", "select": 2,
+    "stem": "A brief for an expense-receipt assistant says: employees photograph receipts in a mobile app; extracted fields must appear for confirmation within a few seconds; finance requires that model inference runs only on US infrastructure; any amount over $5,000 must be approved by a finance manager. The app will call the Claude API directly. Which TWO are infrastructure (non-functional) requirements derived from this brief? (Select TWO.)",
+    "options": [
+      {"key": "A", "text": "A confirmation screen that shows the extracted merchant, date and amount for the employee to edit."},
+      {"key": "B", "text": "Synchronous extraction requests with an end-to-end latency budget of a few seconds."},
+      {"key": "C", "text": "A routing rule that sends receipts over $5,000 to a finance manager for approval."},
+      {"key": "D", "text": "Inference restricted to US geography, for example by setting `inference_geo` to `\"us\"` on requests."},
+      {"key": "E", "text": "A nightly job that extracts all receipts submitted that day in a single batch."}
+    ],
+    "answer": ["B", "D"],
+    "explanation": "Latency and data residency are qualities of how the system runs, so they are infrastructure requirements: synchronous calls sized for a few-second budget, and US-only inference, which the Claude API exposes through the `inference_geo` request parameter (or a workspace default). The confirmation screen and approval routing describe what the system does, so they are functional requirements.",
+    "distractors": {
+      "A": "A confirmation screen is a functional user-facing feature, not an infrastructure requirement.",
+      "C": "An approval rule is business logic, which makes it a functional requirement.",
+      "E": "A nightly batch contradicts the requirement that fields appear within a few seconds."
+    },
+    "difficulty": 2, "tags": ["requirements", "non-functional", "data-residency"]
+  },
+  {
+    "id": "dv-b-008", "scenario": 0, "domain": 2, "task": "2.2", "type": "single", "select": 1,
+    "stem": "A team wants to move its production meeting-summary service from the Claude model it has used for a year to a newer model. Prompts and parsing code are unchanged. What should they do first?",
+    "options": [
+      {"key": "A", "text": "Change the model ID in production and watch support tickets for a week to see whether users notice differences."},
+      {"key": "B", "text": "Run the existing evaluation set on the new model and compare its results with the current model's baseline."},
+      {"key": "C", "text": "Rewrite every prompt from scratch first, because prompts tuned for one model never carry over to another model."},
+      {"key": "D", "text": "Wait until the current model is retired, so the platform forces the switch and no planning effort is wasted."}
+    ],
+    "answer": ["B"],
+    "explanation": "A model upgrade is a change like any other release, so the test phase comes before deployment. Running the same representative evaluation set against both models shows regressions in quality, format or length before customers see them, and gives a baseline to judge whether prompt changes are needed.",
+    "distractors": {
+      "A": "Using customers as the test suite finds regressions late and with real impact.",
+      "C": "Many prompts carry over with small adjustments; rewriting everything before measuring is wasted effort and adds risk.",
+      "D": "Requests to a retired model fail, so waiting turns a planned migration into an outage."
+    },
+    "difficulty": 2, "tags": ["life-cycle", "model-upgrade", "regression-testing"]
+  },
+  {
+    "id": "dv-b-009", "scenario": 0, "domain": 2, "task": "2.2", "type": "single", "select": 1,
+    "stem": "Your production service pins a specific Claude model ID. Anthropic announces that this model is deprecated and gives a retirement date. Which response best fits sound life-cycle management?",
+    "options": [
+      {"key": "A", "text": "Do nothing for now, because a pinned model ID is guaranteed to keep working for as long as the application needs it."},
+      {"key": "B", "text": "Switch the configuration to a moving alias so the service follows the newest model automatically from now on."},
+      {"key": "C", "text": "Turn the feature off immediately and wait for Anthropic to announce a replacement before changing anything."},
+      {"key": "D", "text": "Find every use of the ID, evaluate the recommended replacement, then roll it out in stages before retirement."}
+    ],
+    "answer": ["D"],
+    "explanation": "Deprecation starts a planned migration: requests to a model fail once it is retired, and Anthropic names a recommended replacement and gives advance notice. Auditing usage, running regression evaluations on the replacement and rolling out gradually lets the team move before the deadline with evidence that quality holds.",
+    "distractors": {
+      "A": "Pinning guarantees the model does not change, not that it lives forever; requests fail after retirement.",
+      "B": "Following whatever model is newest swaps one untested change for a series of them and skips regression testing.",
+      "C": "A deprecated model keeps working until its retirement date and already comes with a recommended replacement, so an immediate shutdown is unnecessary."
+    },
+    "difficulty": 2, "tags": ["life-cycle", "deprecation", "migration"]
+  },
+  {
+    "id": "dv-b-010", "scenario": 0, "domain": 2, "task": "2.2", "type": "single", "select": 1,
+    "stem": "A team deployed prompt template v15 after it passed their offline evaluation. Within a day, the downstream parser's failure rate rose from 0.2% to 4%. Every request is logged with its prompt version and model ID. What is the best operational response?",
+    "options": [
+      {"key": "A", "text": "Roll back to v14 through configuration, then add the failing inputs to the regression suite before trying v15 again."},
+      {"key": "B", "text": "Keep v15 live and loosen the parser so that it accepts whatever new output format the v15 template is now producing."},
+      {"key": "C", "text": "Keep v15 live and move to a larger model, which should make the new template's output more consistent."},
+      {"key": "D", "text": "Raise `max_tokens` on all requests, since a jump in parse failures nearly always means truncated output."}
+    ],
+    "answer": ["A"],
+    "explanation": "The regression started with a known, versioned change, so the fastest safe fix is to restore the last good version, which is cheap when prompts are versioned configuration. The failing production inputs show what the offline suite missed; adding them closes the gap before v15 is retried.",
+    "distractors": {
+      "B": "Loosening the parser leaves a known regression in production and may let malformed data through.",
+      "C": "Changing the model adds a second untested variable instead of removing the one that caused the regression.",
+      "D": "Nothing points to truncation, and the failures began with the prompt change, so this is a guess that leaves the regression live."
+    },
+    "difficulty": 3, "tags": ["life-cycle", "prompt-versioning", "rollback", "operations"]
+  },
+  {
+    "id": "dv-b-011", "scenario": 0, "domain": 2, "task": "2.2", "type": "single", "select": 1,
+    "stem": "During the operate phase of a report-drafting service, users say some reports end abruptly mid-sentence. Which signal from Messages API responses should the team monitor to detect and quantify this?",
+    "options": [
+      {"key": "A", "text": "The number of HTTP 529 `overloaded_error` responses per hour."},
+      {"key": "B", "text": "The `request-id` header returned on each response."},
+      {"key": "C", "text": "The share of responses whose `stop_reason` is `max_tokens`."},
+      {"key": "D", "text": "The `cache_read_input_tokens` value in each response's usage."}
+    ],
+    "answer": ["C"],
+    "explanation": "A `stop_reason` of `max_tokens` means generation stopped because it hit the output limit, which produces exactly this mid-sentence cut-off. Tracking its rate turns a user complaint into a measurable signal, and the fix is usually a larger `max_tokens` or a continuation step.",
+    "distractors": {
+      "A": "A 529 is a failed request with no partial report, not a successful but truncated one.",
+      "B": "The request ID helps trace an individual call, but it says nothing about why output stopped.",
+      "D": "Cache read tokens measure prompt caching efficiency on the input side, not output completeness."
+    },
+    "difficulty": 1, "tags": ["life-cycle", "monitoring", "stop-reason"]
+  },
+  {
+    "id": "dv-b-012", "scenario": 0, "domain": 2, "task": "2.2", "type": "single", "select": 1,
+    "stem": "A team is ready to release a new model and prompt configuration for a customer-facing assistant used by 200,000 people. Offline evaluations look good, but leadership wants to limit the impact if something unexpected happens in production. Which rollout approach best fits?",
+    "options": [
+      {"key": "A", "text": "Switch all traffic in a single release during the quietest night of the week, with a rollback script prepared in case complaints come in."},
+      {"key": "B", "text": "Send a small share of traffic to the new configuration, compare its metrics with the current one, and widen it only as they hold."},
+      {"key": "C", "text": "Release to every user at once, but label the assistant as \"beta\" in the interface so expectations are set."},
+      {"key": "D", "text": "Keep the new configuration in staging indefinitely, because production traffic should never be used for evaluation."}
+    ],
+    "answer": ["B"],
+    "explanation": "A canary or percentage rollout limits blast radius: a small cohort sees the change while quality, error-rate, latency and cost metrics are compared against the current configuration. Expanding only while metrics hold, with a quick path back, is the deploy-and-operate practice the requirement calls for.",
+    "distractors": {
+      "A": "A big-bang switch still exposes every user at once; low traffic only delays discovering the problem.",
+      "C": "A label manages expectations but does not limit how many users a regression affects.",
+      "D": "Staging never reproduces real traffic fully, and indefinite staging means the change never ships."
+    },
+    "difficulty": 3, "tags": ["life-cycle", "deployment", "canary"]
+  },
+  {
+    "id": "dv-b-013", "scenario": 0, "domain": 2, "task": "2.2", "type": "multi", "select": 2,
+    "stem": "A company is retiring an internal Claude-powered FAQ bot because a new platform replaces it. The bot used its own API key and uploaded reference documents through the Files API. Which TWO activities belong in the retirement phase? (Select TWO.)",
+    "options": [
+      {"key": "A", "text": "Raise the bot's workspace rate limits so remaining users get faster answers before shutdown."},
+      {"key": "B", "text": "Re-run the bot's full evaluation suite against the newest Claude model."},
+      {"key": "C", "text": "Revoke the bot's API key so the decommissioned service can no longer make calls."},
+      {"key": "D", "text": "Keep the old bot deployed in production indefinitely as a silent fallback."},
+      {"key": "E", "text": "Delete or archive its uploaded files and stored conversation logs according to the retention policy."}
+    ],
+    "answer": ["C", "E"],
+    "explanation": "Retirement means shutting off access and dealing with the data the system leaves behind. Revoking the key removes an unused credential, and files uploaded through the Files API stay in the workspace until they are deleted, so they and the logs must be deleted or archived per policy.",
+    "distractors": {
+      "A": "Spending effort on performance for a system being shut down is not a retirement activity.",
+      "B": "Evaluating a system that is being decommissioned belongs to maintenance, not retirement.",
+      "D": "An unmaintained production fallback keeps the credentials, cost and risk the retirement is meant to remove."
+    },
+    "difficulty": 2, "tags": ["life-cycle", "retirement", "files-api"]
+  },
+  {
+    "id": "dv-b-014", "scenario": 0, "domain": 2, "task": "2.3", "type": "single", "select": 1,
+    "stem": "A developer's support chatbot keeps \"forgetting\" what the user said two turns earlier. Each request contains the system prompt and only the user's latest message. What is the most likely cause?",
+    "options": [
+      {"key": "A", "text": "The model's context window is too small to hold a three-turn conversation."},
+      {"key": "B", "text": "The prompt cache expired between turns, so the earlier turns were discarded."},
+      {"key": "C", "text": "The system prompt takes priority over earlier turns and overwrites them."},
+      {"key": "D", "text": "The Messages API is stateless, so prior turns must be resent each time."}
+    ],
+    "answer": ["D"],
+    "explanation": "The Messages API keeps no conversation state between calls. The application must send the full history (alternating `user` and `assistant` messages) in the `messages` array on every request, or Claude only sees the latest message.",
+    "distractors": {
+      "A": "A three-turn chat is tiny relative to Claude's context window.",
+      "B": "Prompt caching only affects cost and latency; an expired cache never removes content that was sent.",
+      "C": "The system prompt does not delete conversation turns; the turns were simply never sent."
+    },
+    "difficulty": 1, "tags": ["messages-api", "stateless", "multi-turn"]
+  },
+  {
+    "id": "dv-b-015", "scenario": 0, "domain": 2, "task": "2.3", "type": "single", "select": 1,
+    "stem": "A Messages API response comes back with `stop_reason` set to `tool_use`, and its content holds a `tool_use` block for `get_order_status`. What should the application do next?",
+    "options": [
+      {"key": "A", "text": "Run the tool, append the assistant turn, then send a user turn with a `tool_result` that cites the `tool_use` id."},
+      {"key": "B", "text": "Treat the response as finished and show any text it contains to the user as the final answer."},
+      {"key": "C", "text": "Resend the identical request with a higher `max_tokens`, because the tool call was cut off."},
+      {"key": "D", "text": "Put the tool's output into the system prompt so that Claude treats it as trusted instruction."}
+    ],
+    "answer": ["A"],
+    "explanation": "`tool_use` means Claude is waiting for your code to execute the tool. The client runs it, appends Claude's assistant message unchanged, and sends a user message containing a `tool_result` block whose `tool_use_id` matches the call, so Claude can continue with the result.",
+    "distractors": {
+      "B": "The turn is not finished; Claude has paused to wait for the tool result.",
+      "C": "`tool_use` is a normal stop reason, not truncation, which would be reported as `max_tokens`.",
+      "D": "Tool output is data, not instructions, and belongs in a `tool_result` block, not the system prompt."
+    },
+    "difficulty": 1, "tags": ["messages-api", "tool-use", "stop-reason"]
+  },
+  {
+    "id": "dv-b-016", "scenario": 0, "domain": 2, "task": "2.3", "type": "single", "select": 1,
+    "stem": "A multi-tenant contract assistant lets customers upload a long PDF once and then ask questions about it across many sessions over several weeks. Today the backend base64-encodes the full PDF into every request. Which data access pattern is best?",
+    "options": [
+      {"key": "A", "text": "Keep base64 embedding, because the Files API is only for downloading files created by code execution."},
+      {"key": "B", "text": "Upload once via the Files API and reference the `file_id`, with the app enforcing tenant isolation for each file."},
+      {"key": "C", "text": "Upload once via the Files API and rely on each `file_id` being private to the end-user session that originally created it."},
+      {"key": "D", "text": "Load the PDF into a server-side Claude conversation that persists between API calls for each customer."}
+    ],
+    "answer": ["B"],
+    "explanation": "The Files API lets you upload a document once and reference it by `file_id` in later Messages requests instead of resending the bytes. Uploaded files are scoped to the workspace, not to an end user or session, so the application must keep its own mapping of tenant to `file_id` and enforce access.",
+    "distractors": {
+      "A": "The Files API also accepts uploads such as PDFs and images for use in Messages requests, not only code-execution outputs.",
+      "C": "Uploaded files are accessible to anyone with an API key for the workspace, so there is no per-session privacy to rely on.",
+      "D": "The Messages API is stateless; there is no server-side conversation that holds the document between calls."
+    },
+    "difficulty": 2, "tags": ["messages-api", "files-api", "data-access", "multi-tenant"]
+  },
+  {
+    "id": "dv-b-017", "scenario": 0, "domain": 2, "task": "2.3", "type": "single", "select": 1,
+    "stem": "A developer streams responses from a request that includes tools. Their handler calls `JSON.parse` on every `input_json_delta` it receives and throws errors on most of them. What is the correct fix?",
+    "options": [
+      {"key": "A", "text": "Turn off streaming whenever tools are included in the request, because tool input can never be streamed."},
+      {"key": "B", "text": "Set a `stream_mode` of `\"complete_json\"` so that each delta arrives as a whole object."},
+      {"key": "C", "text": "Concatenate each block's `partial_json` strings and parse once its `content_block_stop` arrives."},
+      {"key": "D", "text": "Read the tool input from the `message_start` event, which already contains the final object."}
+    ],
+    "answer": ["C"],
+    "explanation": "Tool input is streamed as `input_json_delta` events carrying partial JSON strings, so a single delta is usually not valid JSON. Accumulate the fragments for that content block and parse when `content_block_stop` arrives, or let the SDK's streaming helpers assemble the final message.",
+    "distractors": {
+      "A": "Tool input does stream; disabling streaming throws away its latency benefit to avoid a parsing bug.",
+      "B": "There is no `stream_mode` parameter in the Messages API.",
+      "D": "`message_start` carries a message with empty content; the tool input arrives later in the deltas."
+    },
+    "difficulty": 2, "tags": ["streaming", "tool-use", "input-json-delta"]
+  },
+  {
+    "id": "dv-b-018", "scenario": 0, "domain": 2, "task": "2.3", "type": "single", "select": 1,
+    "stem": "An app streams Claude responses over server-sent events. Its retry middleware retries any request whose HTTP status is 429 or 5xx. During busy periods some streams stop part-way through, and the middleware never retries them. What is the most likely reason?",
+    "options": [
+      {"key": "A", "text": "Overload during streaming is permanent for that request, so the API marks it as non-retryable."},
+      {"key": "B", "text": "The SDK converts an overload during a stream into a `stop_reason` of `refusal`, which the middleware does not retry."},
+      {"key": "C", "text": "The server sends a second HTTP status line with 529 after the 200, which the middleware ignores."},
+      {"key": "D", "text": "The 200 status was already sent, so the error arrives as an `error` event inside the stream instead."}
+    ],
+    "answer": ["D"],
+    "explanation": "With streaming, the API can return HTTP 200 and later send an `error` event, such as `overloaded_error`, within the event stream. Middleware that only inspects status codes misses it, so the stream handler must detect error events and apply the retry policy itself.",
+    "distractors": {
+      "A": "Overload is a transient condition that is generally safe to retry.",
+      "B": "`refusal` means Claude declined to respond; overload is reported as an error, not a stop reason.",
+      "C": "HTTP sends one status per response; mid-stream failures are delivered as events, not new status lines."
+    },
+    "difficulty": 3, "tags": ["streaming", "errors", "retries"]
+  },
+  {
+    "id": "dv-b-019", "scenario": 0, "domain": 2, "task": "2.3", "type": "single", "select": 1,
+    "stem": "A system prompt begins with `Current time: {timestamp}` and continues with 10,000 tokens of fixed instructions; a `cache_control` breakpoint is placed at the end of the system prompt. Usage shows `cache_read_input_tokens` is always 0. What is the most likely cause?",
+    "options": [
+      {"key": "A", "text": "The timestamp at the start changes the prefix every request; put dynamic content after the cached part."},
+      {"key": "B", "text": "`cache_control` is accepted only on tool definitions, so a breakpoint in `system` is ignored."},
+      {"key": "C", "text": "The cache lifetime counts from creation and is never refreshed when a request reads from it."},
+      {"key": "D", "text": "Caching is switched off automatically whenever the system prompt grows longer than a few thousand tokens."}
+    ],
+    "answer": ["A"],
+    "explanation": "Caching matches an exact prefix up to the breakpoint. Because the first line changes on every request, no two prefixes are identical and every call writes a new cache entry instead of reading one. Moving the timestamp below the breakpoint, for example into the user message, keeps the fixed instructions cacheable.",
+    "distractors": {
+      "B": "Breakpoints can be placed on tools, system blocks and message content blocks.",
+      "C": "The cache lifetime is refreshed at no extra cost each time cached content is used.",
+      "D": "Long, stable prompts are the main use case for caching; only prompts below a minimum length are not cached."
+    },
+    "difficulty": 2, "tags": ["prompt-caching", "cache-misses"]
+  },
+  {
+    "id": "dv-b-020", "scenario": 0, "domain": 2, "task": "2.3", "type": "single", "select": 1,
+    "stem": "An agent caches its tool definitions, a long system prompt and the conversation history. A new feature adds or removes tools on each request depending on the workflow step. Since then, usage shows high `cache_creation_input_tokens` and almost no `cache_read_input_tokens`. What is the most likely cause?",
+    "options": [
+      {"key": "A", "text": "Varying the request's `tool_choice` invalidates only the system-prompt cache entry on each request it is sent with."},
+      {"key": "B", "text": "Tools come first in the cached prefix, so changing tool definitions invalidates the whole cache entry."},
+      {"key": "C", "text": "Cache reads are reported in usage only for requests submitted through the Message Batches API."},
+      {"key": "D", "text": "Prompt caching is disabled for any request that includes a tools array, whatever its contents."}
+    ],
+    "answer": ["B"],
+    "explanation": "The cached prefix is built in the order `tools`, then `system`, then `messages`, and a change at one level invalidates that level and everything after it. Changing tool definitions every step therefore forces a full cache write each time. Keeping a stable tool set, or putting tools that change later, restores cache hits.",
+    "distractors": {
+      "A": "A `tool_choice` change affects only cached message blocks, and the problem here is changing tool definitions, not `tool_choice`.",
+      "C": "Cache usage fields are reported on ordinary Messages API responses too.",
+      "D": "Requests with tools can be cached; tool definitions are often the first part of the cached prefix."
+    },
+    "difficulty": 3, "tags": ["prompt-caching", "tool-use", "cache-invalidation"]
+  },
+  {
+    "id": "dv-b-021", "scenario": 0, "domain": 2, "task": "2.3", "type": "single", "select": 1,
+    "stem": "A field-inspection app sends a photo of equipment plus the question \"Which gauges read outside the safe range?\" to Claude. What is the best way to structure the request?",
+    "options": [
+      {"key": "A", "text": "Convert the photo to a hex string and include that string inside the system prompt."},
+      {"key": "B", "text": "Place the question first and attach the image as the last block in the message."},
+      {"key": "C", "text": "Send the photo as an image block in the user message, placed before the question."},
+      {"key": "D", "text": "Describe the photo in text first, because the API does not take images directly."}
+    ],
+    "answer": ["C"],
+    "explanation": "Images are sent as `image` content blocks in a user message, from a base64 source, a URL or a Files API `file_id`. Like long documents, images give the best results when they come before the text that asks about them.",
+    "distractors": {
+      "A": "Images are not passed as text strings in the system prompt; the API has a dedicated image content block.",
+      "B": "Putting the image after the text is allowed but usually gives weaker results than image-first ordering.",
+      "D": "Claude accepts images directly through image content blocks, so a text description only loses detail."
+    },
+    "difficulty": 1, "tags": ["vision", "content-blocks"]
+  },
+  {
+    "id": "dv-b-022", "scenario": 0, "domain": 2, "task": "2.3", "type": "single", "select": 1,
+    "stem": "A team moves a document-intake service from the Claude API to Claude on Google Cloud (Google managed) using the vendor SDK client. Text requests work, but requests that pass images as URL sources now fail. What is the most likely cause and fix?",
+    "options": [
+      {"key": "A", "text": "Google Cloud accepts images only in the system prompt, so the image blocks need to move into `system`."},
+      {"key": "B", "text": "The Google Cloud client supports text-only models, so image work must stay on the Claude API."},
+      {"key": "C", "text": "URL images on Google Cloud need a `vision: true` flag set on the client before they are accepted."},
+      {"key": "D", "text": "Supported features differ by platform; there, images must be sent as base64, so fetch and encode them."}
+    ],
+    "answer": ["D"],
+    "explanation": "Calling Claude through a cloud vendor uses the same Messages format, but feature support is not always identical to the Claude API. On Amazon Bedrock and Claude on Google Cloud, only base64 image sources are currently available, so the service must download and encode images itself. Checking the platform's feature list is part of any vendor migration.",
+    "distractors": {
+      "A": "Images go in user-message content blocks on every platform, never in the system prompt.",
+      "B": "Claude models on Google Cloud do accept images; the restriction is on the source type.",
+      "C": "There is no `vision` flag; image support depends on the content block and its source type."
+    },
+    "difficulty": 3, "tags": ["third-party-platforms", "vertex-ai", "vision"]
+  },
+  {
+    "id": "dv-b-023", "scenario": 0, "domain": 2, "task": "2.3", "type": "single", "select": 1,
+    "stem": "An enterprise's cloud policy says every model call must be authenticated with AWS IAM credentials and billed to its existing AWS account. A developer needs to add Claude to an internal service. Which approach fits the policy?",
+    "options": [
+      {"key": "A", "text": "Call the Claude API with an Anthropic API key that is stored in AWS Secrets Manager."},
+      {"key": "B", "text": "Call Claude through Amazon Bedrock with AWS credentials and the Bedrock model identifiers."},
+      {"key": "C", "text": "Route Claude API calls through an AWS Lambda proxy so that they count as AWS traffic."},
+      {"key": "D", "text": "Call Claude through Microsoft Foundry and authenticate with an Entra ID service principal."}
+    ],
+    "answer": ["B"],
+    "explanation": "Amazon Bedrock authenticates with AWS credentials and IAM and bills through the AWS account, which matches the policy. The SDKs provide a Bedrock client so the Messages-style code changes little, but model identifiers use the Bedrock format rather than the Claude API format.",
+    "distractors": {
+      "A": "Storing an Anthropic key in an AWS service does not make the call IAM-authenticated or AWS-billed.",
+      "C": "A proxy still calls the Claude API with an Anthropic key and Anthropic billing; it only hides the dependency.",
+      "D": "Foundry uses Azure identity and billing, which does not satisfy an AWS IAM requirement."
+    },
+    "difficulty": 1, "tags": ["third-party-platforms", "bedrock", "authentication"]
+  },
+  {
+    "id": "dv-b-024", "scenario": 0, "domain": 2, "task": "2.3", "type": "single", "select": 1,
+    "stem": "A developer submits a Message Batch of product-description requests, waits for it to end, then writes result number N back to database row N. Many descriptions end up on the wrong products. What is the most likely cause?",
+    "options": [
+      {"key": "A", "text": "Batches above a certain size are silently truncated, which shifts the later results up by a few positions."},
+      {"key": "B", "text": "The results were read before the batch ended, so they were only partially ordered at that point in time."},
+      {"key": "C", "text": "Batch results can come back in any order, so each result must be matched to its request by `custom_id`."},
+      {"key": "D", "text": "The batch service sorts results alphabetically by output text before making them available for download."}
+    ],
+    "answer": ["C"],
+    "explanation": "Each request in a batch is processed independently and results are not guaranteed to match submission order. Every request carries a unique `custom_id`, and the result echoes it, so it is the only reliable key for joining results back to records.",
+    "distractors": {
+      "A": "Oversized batches are rejected against documented limits, not silently truncated.",
+      "B": "The scenario says the developer waited for the batch to end, and ordering is not guaranteed even then.",
+      "D": "Results are not sorted by content; the order is simply unspecified."
+    },
+    "difficulty": 1, "tags": ["batch-api", "custom-id"]
+  },
+  {
+    "id": "dv-b-025", "scenario": 0, "domain": 2, "task": "2.3", "type": "single", "select": 1,
+    "stem": "A team submits a Message Batch of 20,000 requests that all start with the same 6,000-token style guide marked with `cache_control` using the default settings. Cache read rates across the batch are disappointing. Which adjustment is most likely to help?",
+    "options": [
+      {"key": "A", "text": "Use the 1-hour cache duration for the shared prefix, because batch processing can stretch well past 5 minutes."},
+      {"key": "B", "text": "Set `stream: true` on each batched request so they run one after another and reuse the cache."},
+      {"key": "C", "text": "Abandon the batch for 20,000 realtime calls, because prompt caching does not work inside batches."},
+      {"key": "D", "text": "Remove `cache_control`, since the batch discount and prompt caching discounts cannot be combined."}
+    ],
+    "answer": ["A"],
+    "explanation": "The default cache lifetime is 5 minutes, but batch requests are processed asynchronously over a longer window, so entries can expire between related requests. Anthropic recommends the 1-hour cache duration for batches with shared context to improve hit rates; caching and the batch discount can be used together.",
+    "distractors": {
+      "B": "`stream: true` is not supported in batch requests and returns a validation error.",
+      "C": "Prompt caching works inside batches; giving up the batch discount would raise cost.",
+      "D": "Caching and batch pricing can be combined, so removing caching only raises input cost."
+    },
+    "difficulty": 3, "tags": ["batch-api", "prompt-caching", "ttl"]
+  },
+  {
+    "id": "dv-b-026", "scenario": 0, "domain": 2, "task": "2.3", "type": "single", "select": 1,
+    "stem": "An agent uses thinking together with tools. To save tokens, the developer removes the `thinking` blocks from Claude's assistant message before sending back the `tool_result`, and the follow-up requests start failing. What is the correct approach?",
+    "options": [
+      {"key": "A", "text": "Turn each thinking block into a plain text block so that its content is kept but formatted as text."},
+      {"key": "B", "text": "Return the thinking blocks with the `tool_use` block, complete and unmodified, alongside the tool result."},
+      {"key": "C", "text": "Copy the thinking text into the next request's system prompt so that Claude still has access to its earlier reasoning."},
+      {"key": "D", "text": "Shorten the thinking blocks to their key points before returning them, to cut input tokens in half."}
+    ],
+    "answer": ["B"],
+    "explanation": "When Claude calls a tool mid-turn, returning the result continues the same response, so the thinking blocks from that assistant message must be sent back complete and unmodified. Each block carries a `signature` used to verify and reconstruct the original reasoning, so edited or removed blocks break the request.",
+    "distractors": {
+      "A": "Converting thinking to text changes the block type and loses the signature the API uses for verification.",
+      "C": "Moving reasoning into the system prompt is not how thinking continuity works, and the assistant turn would still be missing its blocks.",
+      "D": "Thinking blocks must be returned unmodified; edited blocks fail signature verification."
+    },
+    "difficulty": 2, "tags": ["extended-thinking", "tool-use"]
+  },
+  {
+    "id": "dv-b-027", "scenario": 0, "domain": 2, "task": "2.3", "type": "multi", "select": 2,
+    "stem": "A developer is moving a weekly compliance-report job onto the Message Batches API. The job assembles about 30,000 requests that use different prompts and models. Which TWO behaviours should the job be designed around? (Select TWO.)",
+    "options": [
+      {"key": "A", "text": "Batched requests can set `stream: true`, so the job can show live progress for each item."},
+      {"key": "B", "text": "Results can be downloaded at any time indefinitely, so the job can collect them whenever it likes."},
+      {"key": "C", "text": "Each request runs independently, so the job must handle per-request outcomes such as `errored` or `expired`."},
+      {"key": "D", "text": "Results are ready when every request finishes or 24 hours pass, so the job polls until `processing_status` is `ended`."},
+      {"key": "E", "text": "Every request in one batch must use the same model and parameters, so the job needs one batch per model."}
+    ],
+    "answer": ["C", "D"],
+    "explanation": "Batches are asynchronous: the job polls the batch until `processing_status` is `ended`, which happens when all requests finish or after 24 hours. Because each request is processed independently, results report a per-request outcome (succeeded, errored, canceled or expired) that the job must handle, for example by resubmitting failures.",
+    "distractors": {
+      "A": "Streaming is not supported inside batches; results come back as a file once processing ends.",
+      "B": "Batch results are available only for a limited period (29 days) after creation.",
+      "E": "Requests in one batch are independent and can mix models and request types."
+    },
+    "difficulty": 2, "tags": ["batch-api", "polling", "error-handling"]
+  },
+  {
+    "id": "dv-b-028", "scenario": 0, "domain": 2, "task": "2.6", "type": "single", "select": 1,
+    "stem": "A team wants every developer's Claude Code sessions in their repository to share the same permission rules and hooks. One developer also wants a personal override for this project that teammates won't receive. Where should each go?",
+    "options": [
+      {"key": "A", "text": "Team rules in each person's `~/.claude/settings.json`; the override in `.claude/settings.json`."},
+      {"key": "B", "text": "Team rules in the project `CLAUDE.md`; the override in `CLAUDE.local.md` at the project root."},
+      {"key": "C", "text": "Team rules in committed `.claude/settings.json`; the override in `.claude/settings.local.json`."},
+      {"key": "D", "text": "Team rules in a committed `.claude/settings.local.json`; the override in an environment variable."}
+    ],
+    "answer": ["C"],
+    "explanation": "Shared project settings in `.claude/settings.json` are committed so everyone who clones the repo gets the same permissions, hooks and plugins. Project-local settings in `.claude/settings.local.json` are kept out of git and take precedence over the shared file, which suits a personal override.",
+    "distractors": {
+      "A": "User settings apply to every project on one machine and are not shared through the repository.",
+      "B": "CLAUDE.md holds instructions Claude reads as context; permissions and hooks are configured in settings files.",
+      "D": "The local settings file is meant to stay uncommitted, and environment variables are not a general override layer for settings."
+    },
+    "difficulty": 1, "tags": ["claude-code", "settings-json", "precedence"]
+  },
+  {
+    "id": "dv-b-029", "scenario": 0, "domain": 2, "task": "2.6", "type": "single", "select": 1,
+    "stem": "A repository's `CLAUDE.md` says \"Never run database migration commands.\" In one session, Claude Code still tried to run a migration. The team needs this to be enforced, not just suggested. Which configuration change is best?",
+    "options": [
+      {"key": "A", "text": "Repeat the rule in capital letters at the top of `CLAUDE.md` and mark it as critical."},
+      {"key": "B", "text": "Move the rule into `CLAUDE.local.md`, which takes priority over `CLAUDE.md`."},
+      {"key": "C", "text": "Add the rule to every developer's `~/.claude/CLAUDE.md` as well as to the repo."},
+      {"key": "D", "text": "Add a deny permission rule in settings, or a PreToolUse hook that blocks the command."}
+    ],
+    "answer": ["D"],
+    "explanation": "CLAUDE.md content is loaded as context that guides Claude, not as enforced configuration, so it can be overlooked. Permission deny rules in `settings.json` and PreToolUse hooks are evaluated by Claude Code itself and block the action whatever the model decides.",
+    "distractors": {
+      "A": "Emphasis may improve adherence but is still guidance, not enforcement.",
+      "B": "CLAUDE.local.md is for personal project notes and is still only context, not an enforced control.",
+      "C": "More copies of the same instruction are still context and cannot block a tool call."
+    },
+    "difficulty": 2, "tags": ["claude-code", "claude-md", "permissions", "hooks"]
+  },
+  {
+    "id": "dv-b-030", "scenario": 0, "domain": 2, "task": "2.6", "type": "single", "select": 1,
+    "stem": "A service's config sets a dateless Claude model ID from the 4.6 generation or later. A teammate argues it acts like an evergreen alias that will silently start pointing at a newer model, and wants to append a date to pin it. What is accurate?",
+    "options": [
+      {"key": "A", "text": "From the 4.6 generation on, a dateless ID is itself the pinned snapshot; an updated model ships under a new ID."},
+      {"key": "B", "text": "Dateless IDs always resolve to the newest model in that family, so a date suffix is needed to pin the exact version."},
+      {"key": "C", "text": "Only Amazon Bedrock model IDs are pinned; every model ID on the Claude API is a moving convenience alias."},
+      {"key": "D", "text": "Model IDs cannot be pinned on the API at all, so reproducibility has to come from setting temperature to 0."}
+    ],
+    "answer": ["A"],
+    "explanation": "Starting with the 4.6 generation, Claude model IDs are dateless, and each one maps to a single fixed snapshot whose weights do not change; updates ship under new IDs. Moving aliases exist only for some earlier dated models on the Claude API, so no date suffix is needed, and the team should still track each ID's deprecation schedule.",
+    "distractors": {
+      "B": "This describes the convenience aliases of earlier models, not the dateless IDs of the 4.6 generation and later.",
+      "C": "Every Claude API model ID is a pinned version; only certain older shorthand aliases move.",
+      "D": "Model IDs are pinned by design, and temperature does not choose which model serves a request."
+    },
+    "difficulty": 3, "tags": ["model-pinning", "model-ids", "configuration"]
+  },
+  {
+    "id": "dv-b-031", "scenario": 0, "domain": 2, "task": "2.6", "type": "single", "select": 1,
+    "stem": "A platform team standardises Claude Code for a regulated project. Developers currently pick the `opus` alias, but the team must stay on one specific, approved model version until it re-certifies a newer one. What is the best configuration?",
+    "options": [
+      {"key": "A", "text": "Add a line to the project `CLAUDE.md` asking Claude Code to stay on the approved Opus model."},
+      {"key": "B", "text": "Set the `model` key in shared settings to the full model name instead of the alias."},
+      {"key": "C", "text": "Keep the `opus` alias, because an alias never changes once Claude Code is installed."},
+      {"key": "D", "text": "Pin the Claude Code CLI version, which also fixes the model the alias resolves to."}
+    ],
+    "answer": ["B"],
+    "explanation": "Claude Code aliases such as `opus` point to the recommended version and change over time. Pinning means naming the full model ID, for example via the `model` setting in committed project settings or the matching `ANTHROPIC_DEFAULT_*_MODEL` variable; administrators can also restrict choices with `availableModels` in managed settings.",
+    "distractors": {
+      "A": "CLAUDE.md is instructions to the model, not a setting that controls which model runs.",
+      "C": "Aliases are designed to move to newer recommended versions over time.",
+      "D": "The CLI version does not freeze alias resolution, which is decided by model configuration."
+    },
+    "difficulty": 2, "tags": ["claude-code", "model-pinning", "settings-json"]
+  },
+  {
+    "id": "dv-b-032", "scenario": 0, "domain": 2, "task": "2.6", "type": "single", "select": 1,
+    "stem": "A Claude application has prompts written as string literals scattered across a dozen source files. When a bad output is reported, nobody can tell which prompt wording produced it, and rolling back a prompt means a full code release. What is the best improvement?",
+    "options": [
+      {"key": "A", "text": "Store the prompts in a database table that anyone on the team can edit directly in production."},
+      {"key": "B", "text": "Add a dated comment above each string literal whenever someone edits that prompt's text."},
+      {"key": "C", "text": "Keep prompts as versioned templates in source control and log the prompt version with the model ID per request."},
+      {"key": "D", "text": "Ask Claude to repeat the exact prompt it received at the end of every response it produces."}
+    ],
+    "answer": ["C"],
+    "explanation": "Treating prompts as versioned configuration gives each wording an identifier, a review history and a cheap rollback path. Logging the prompt version and model ID with each request lets you trace any output back to the exact configuration that produced it.",
+    "distractors": {
+      "A": "Unreviewed live edits remove change control and still leave no record of which version served a request.",
+      "B": "Comments are not machine-readable and do not tie a logged output to a prompt version.",
+      "D": "This wastes output tokens, can leak the system prompt to users, and is not a reliable record."
+    },
+    "difficulty": 2, "tags": ["prompt-versioning", "observability"]
+  },
+  {
+    "id": "dv-b-033", "scenario": 0, "domain": 2, "task": "2.6", "type": "single", "select": 1,
+    "stem": "Your Claude Code plugin `deploy-kit` calls MCP tools provided by another plugin, `secrets-vault`, which it lists as an unversioned dependency. A new `secrets-vault` release renamed one of those tools, and `deploy-kit` broke for everyone who updated. What is the best configuration fix?",
+    "options": [
+      {"key": "A", "text": "Copy the `secrets-vault` source code into `deploy-kit` and then delete the dependency entry from the manifest."},
+      {"key": "B", "text": "Tell every user to turn off plugin updates on their machine so `secrets-vault` stays on the old version."},
+      {"key": "C", "text": "Remove the dependency entry and document that users must install `secrets-vault` manually themselves."},
+      {"key": "D", "text": "Give the dependency a tested semantic-version range in `plugin.json`, such as `~2.1.0`, and widen it later."}
+    ],
+    "answer": ["D"],
+    "explanation": "Without a constraint, a dependency moves to each new release its marketplace publishes. Declaring a semantic-version range you have tested keeps users on compatible releases (for example `2.1.x` patches), and you widen the range in a new release of your plugin after testing newer versions.",
+    "distractors": {
+      "A": "Vendoring forks the code, so you lose upstream fixes and take on maintaining someone else's plugin.",
+      "B": "Asking users to freeze updates is fragile, affects unrelated plugins, and is not enforced by configuration.",
+      "C": "Dropping the declaration loses automatic install and still lets users pick up the breaking release."
+    },
+    "difficulty": 3, "tags": ["plugins", "dependencies", "semver"]
+  },
+  {
+    "id": "dv-b-034", "scenario": 0, "domain": 2, "task": "2.6", "type": "single", "select": 1,
+    "stem": "A monorepo's root `CLAUDE.md` has grown to about 900 lines covering the build, frontend conventions, database rules and release steps. Developers report that Claude Code follows it less reliably than before. What is the best change?",
+    "options": [
+      {"key": "A", "text": "Keep the root file short with facts every session needs, and move area-specific guidance into path-scoped rules or skills."},
+      {"key": "B", "text": "Split it into topic files and `@import` all of them from the root `CLAUDE.md` so the root file looks short."},
+      {"key": "C", "text": "Move all of the guidance into an `instructions` key in `settings.json`, which is applied more strictly."},
+      {"key": "D", "text": "Delete `CLAUDE.md` and have each developer paste the relevant instructions at the start of every session."}
+    ],
+    "answer": ["A"],
+    "explanation": "Longer memory files consume more context and reduce adherence, so the guidance is to keep CLAUDE.md concise and move instructions that matter only for part of the codebase into path-scoped rules in `.claude/rules/` or into skills, which load only when relevant.",
+    "distractors": {
+      "B": "Imports help organise a file but are loaded into context too, so they do not reduce the context cost.",
+      "C": "There is no `instructions` key in `settings.json`; settings configure behaviour, not free-form guidance.",
+      "D": "Manual pasting is inconsistent across developers and loses the shared, versioned project memory."
+    },
+    "difficulty": 1, "tags": ["claude-code", "claude-md", "rules"]
+  },
+  {
+    "id": "dv-b-035", "scenario": 0, "domain": 2, "task": "2.6", "type": "multi", "select": 2,
+    "stem": "A developer wants two personal settings for one repository in Claude Code that teammates must not receive: an instruction pointing Claude at their own sandbox URL, and a preferred model for this project. Which TWO placements are correct? (Select TWO.)",
+    "options": [
+      {"key": "A", "text": "Put both in the committed `.claude/settings.json` with a comment marking them personal."},
+      {"key": "B", "text": "Put the sandbox URL instruction in a gitignored `CLAUDE.local.md` at the project root."},
+      {"key": "C", "text": "Put both in `managed-settings.json` so that they take the highest precedence."},
+      {"key": "D", "text": "Put the sandbox URL instruction in the shared `./CLAUDE.md` under a \"personal\" heading."},
+      {"key": "E", "text": "Put the model choice in `.claude/settings.local.json` inside the project."}
+    ],
+    "answer": ["B", "E"],
+    "explanation": "Personal, project-specific instructions belong in `CLAUDE.local.md`, which loads alongside `CLAUDE.md` and should be kept out of git. Personal setting overrides such as `model` belong in `.claude/settings.local.json`, which Claude Code keeps out of commits and applies over the shared project settings.",
+    "distractors": {
+      "A": "Committed settings reach every teammate, so a comment does not make them personal (and JSON does not support comments).",
+      "C": "Managed settings are deployed by the organisation for policy, not edited by individual developers.",
+      "D": "The shared CLAUDE.md is committed, so every teammate's Claude would receive the instruction."
+    },
+    "difficulty": 1, "tags": ["claude-code", "claude-md", "settings-json"]
+  }
+]

@@ -1,0 +1,1312 @@
+[
+  {
+    "id": "dv-e-001",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.1",
+    "type": "single",
+    "select": 1,
+    "stem": "A code-migration agent built on the Messages API works well for the first 40 or so tool calls, then starts re-reading files it already processed and loses track of constraints stated at the start. Inspecting the request shows the context is now about 85% raw file contents and grep output from earlier steps that the agent has already acted on. What is the most effective change?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Move the agent to a model with a larger context window so the accumulated file contents and search output never need to be removed and the constraints stay in view."
+      },
+      {
+        "key": "B",
+        "text": "Append a reminder such as 'Stay focused and remember the original constraints' to the end of every user turn."
+      },
+      {
+        "key": "C",
+        "text": "Prune or clear tool results the agent has already acted on, for example with server-side tool result clearing, so the context stays focused."
+      },
+      {
+        "key": "D",
+        "text": "Increase `max_tokens` so the agent has more room to reason through the accumulated history before choosing its next action."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Context is a finite attention budget, and raw tool output that has already been acted on is low-signal. Removing or clearing old tool results (context editing's `clear_tool_uses_20250919` strategy, or equivalent pruning in your own loop) keeps the context focused on instructions and current work. This addresses the cause of the drift rather than accommodating it.",
+    "distractors": {
+      "A": "A bigger window lets the bloat grow further; the problem is low-signal tokens diluting attention, not running out of room.",
+      "B": "A vague reminder does not remove the stale tokens that are crowding out the constraints, so the drift continues.",
+      "D": "`max_tokens` caps the output length; it does nothing about the size or quality of the input context."
+    },
+    "difficulty": 2,
+    "tags": [
+      "context-bloat",
+      "tool-result-clearing",
+      "context-editing"
+    ]
+  },
+  {
+    "id": "dv-e-002",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.1",
+    "type": "single",
+    "select": 1,
+    "stem": "A support assistant holds conversations that can run for several hours. Eventually requests approach the context window limit, but later turns often depend on decisions made early in the conversation. Which approach best keeps the conversation going without losing those decisions?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Use compaction, so older turns are replaced by a summary that preserves key decisions while recent turns are kept in full."
+      },
+      {
+        "key": "B",
+        "text": "Drop the oldest messages once the limit is close and keep only the most recent turns, since recent turns matter most."
+      },
+      {
+        "key": "C",
+        "text": "Start a fresh conversation each time the limit is reached and ask the customer to restate anything that is still relevant."
+      },
+      {
+        "key": "D",
+        "text": "Copy the entire transcript into the system prompt on every request so the earlier decisions are always visible to Claude."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Compaction summarises older turns into a compact block that carries forward decisions and state, while recent turns stay verbatim. It keeps a long conversation inside the context window and keeps the active context small. Truncation or restarting would lose the early decisions.",
+    "distractors": {
+      "B": "Silent truncation discards exactly the early decisions that later turns depend on.",
+      "C": "This pushes context management onto the user and breaks continuity.",
+      "D": "Moving the same tokens into the system prompt does not reduce their size and still hits the limit."
+    },
+    "difficulty": 1,
+    "tags": [
+      "compaction",
+      "long-conversations"
+    ]
+  },
+  {
+    "id": "dv-e-003",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.1",
+    "type": "single",
+    "select": 1,
+    "stem": "A lead research agent must evaluate 12 vendor API specifications and recommend one. Exploring each specification takes about 40,000 tokens of tool calls and reading. When the lead agent does all the exploration itself, its final comparison is shallow and mixes up details between vendors. Which design best fixes this?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Keep one agent but move it to a model with a 1M-token window, so all 12 explorations fit in a single context and nothing has to be summarised."
+      },
+      {
+        "key": "B",
+        "text": "Give each vendor to a subagent with its own clean context window, and have each subagent return a condensed, structured summary for the lead agent to compare."
+      },
+      {
+        "key": "C",
+        "text": "Use subagents, but have each one return its full exploration transcript so the lead agent has every detail available for the comparison."
+      },
+      {
+        "key": "D",
+        "text": "Have the lead agent run compaction after every single tool call so its context window never holds more than one vendor's details."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Subagent architectures isolate deep exploration in separate context windows, and each subagent returns only a distilled summary, often 1,000 to 2,000 tokens. The lead agent then reasons over 12 compact, comparable summaries instead of hundreds of thousands of raw tokens. This separation of concerns is what improves synthesis quality.",
+    "distractors": {
+      "A": "Fitting more tokens does not stop the detail of 12 explorations from diluting attention; quality still degrades as context grows.",
+      "C": "Returning full transcripts recreates the bloat in the lead's context and defeats the purpose of isolation.",
+      "D": "Constant compaction throws away detail before it can be compared and does not separate one vendor's work from another's."
+    },
+    "difficulty": 3,
+    "tags": [
+      "subagents",
+      "context-isolation"
+    ]
+  },
+  {
+    "id": "dv-e-004",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.1",
+    "type": "single",
+    "select": 1,
+    "stem": "A developer's RAG pipeline used to send the top 5 retrieved passages. They changed it to send the top 40, reasoning that more context can only help, and answer accuracy went down. Which explanation best fits?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Claude only reads the first half of any prompt, so passages placed later in the context are ignored entirely."
+      },
+      {
+        "key": "B",
+        "text": "Answer quality can only fall when the request exceeds the context window, so the 40 passages must have overflowed it."
+      },
+      {
+        "key": "C",
+        "text": "Answer quality can only fall when a request exceeds the context window, so the 40 passages must have overflowed it and been cut off by the API."
+      },
+      {
+        "key": "D",
+        "text": "Context has diminishing returns: as the token count grows, the model's focus and recall degrade, so low-relevance passages dilute the signal."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "Anthropic describes context as a finite resource with an attention budget: every extra token competes for the model's focus. Good context engineering aims for the smallest set of high-signal tokens, so adding many marginally relevant passages can lower accuracy. The fix is better retrieval and ranking, not more volume.",
+    "distractors": {
+      "A": "There is no hard cut-off like this; the issue is gradual degradation in focus, not a fixed region that is ignored.",
+      "B": "Quality can degrade well before the window is full; overflow would produce an error, not a lower-quality answer.",
+      "C": "Context length does not change sampling temperature; temperature is a separate request parameter."
+    },
+    "difficulty": 1,
+    "tags": [
+      "context-rot",
+      "attention-budget"
+    ]
+  },
+  {
+    "id": "dv-e-005",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.1",
+    "type": "single",
+    "select": 1,
+    "stem": "A coding agent works on a large refactor that spans several separate sessions over two days, and each session starts with a fresh context window. The agent keeps redoing finished work and repeating approaches that already failed. What is the most effective way to give it continuity?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Have the agent keep structured progress notes in a file or the memory tool, and read them at the start of each session."
+      },
+      {
+        "key": "B",
+        "text": "Replay the full transcripts of every previous session into the new session's opening messages."
+      },
+      {
+        "key": "C",
+        "text": "Rely on Claude to recall the earlier sessions, since the model retains what it learned while working in the same repository with the same API key."
+      },
+      {
+        "key": "D",
+        "text": "Raise `max_tokens` for each session so the agent can finish the whole refactor before the session ends."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Structured note-taking, or agentic memory, persists the important state (what is done, what failed, what is next) outside the context window. A new session reads a compact summary instead of raw history. This is the recommended pattern for long-horizon work with clear milestones.",
+    "distractors": {
+      "B": "Replaying whole transcripts quickly exhausts the window and floods it with low-signal history.",
+      "C": "The model has no memory between API calls; anything not in the request is unknown to it.",
+      "D": "Output length does not create continuity across sessions, and a multi-day refactor will not fit in one response."
+    },
+    "difficulty": 2,
+    "tags": [
+      "memory",
+      "note-taking",
+      "long-horizon"
+    ]
+  },
+  {
+    "id": "dv-e-006",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.1",
+    "type": "single",
+    "select": 1,
+    "stem": "An agent uses prompt caching and server-side tool result clearing (`clear_tool_uses_20250919`). After enabling clearing, input costs went up instead of down. Usage logs show that clearing triggers on almost every turn and removes only a few hundred tokens each time. What is the best adjustment?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Disable prompt caching, since caching and context editing cannot be used together in the same request."
+      },
+      {
+        "key": "B",
+        "text": "Switch to clearing the tool results in your own client code on every turn, because client-side edits keep the cached prompt prefix intact and cost nothing."
+      },
+      {
+        "key": "C",
+        "text": "Move all tool results into the system prompt, where they are cached separately and are never affected by context editing."
+      },
+      {
+        "key": "D",
+        "text": "Set `clear_at_least` (and, if needed, a higher trigger) so each clearing frees enough tokens to justify the cache invalidation it causes."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "Tool result clearing invalidates the cached prompt prefix whenever content is cleared, so you pay a cache write each time. The docs recommend `clear_at_least` so each clearing removes enough tokens to make that worthwhile. Fewer, larger clearings let later requests reuse the new cached prefix.",
+    "distractors": {
+      "A": "The two features can be combined; the problem is the clearing pattern, not the combination.",
+      "B": "Changing earlier content invalidates the cached prefix wherever the edit is made, so this repeats the same problem.",
+      "C": "Tool results belong in the conversation; stuffing them into the system prompt bloats the cached prefix and changes it on every call."
+    },
+    "difficulty": 3,
+    "tags": [
+      "context-editing",
+      "prompt-caching",
+      "cost"
+    ]
+  },
+  {
+    "id": "dv-e-007",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.1",
+    "type": "multi",
+    "select": 2,
+    "stem": "An agent's tools return large raw payloads, such as full JSON API responses and entire log files, and the context fills up after a handful of calls. Which TWO changes most directly reduce this context bloat? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "Design the tools to return concise, relevant results, for example filtered fields, pagination or truncation with a way to fetch more."
+      },
+      {
+        "key": "B",
+        "text": "Increase `max_tokens` so the model has more space to process each large payload before replying."
+      },
+      {
+        "key": "C",
+        "text": "Clear or prune older tool results once the agent has acted on them, keeping only what later steps still need."
+      },
+      {
+        "key": "D",
+        "text": "Move to a model with a larger context window so the full payloads always fit."
+      },
+      {
+        "key": "E",
+        "text": "Repeat the task instructions at the end of every turn so they are not lost among the payloads."
+      }
+    ],
+    "answer": [
+      "A",
+      "C"
+    ],
+    "explanation": "Context bloat is best fixed at the source and over time. Tools should return high-signal, token-efficient results instead of raw dumps, and stale tool output should be cleared once processed. Both keep the context small and focused.",
+    "distractors": {
+      "B": "`max_tokens` limits output length and does nothing to shrink the input.",
+      "D": "A bigger window postpones the overflow but keeps the low-signal tokens that degrade focus.",
+      "E": "Repeating instructions adds tokens rather than removing the bloat."
+    },
+    "difficulty": 1,
+    "tags": [
+      "context-bloat",
+      "tool-design",
+      "tool-result-clearing"
+    ]
+  },
+  {
+    "id": "dv-e-008",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.1",
+    "type": "single",
+    "select": 1,
+    "stem": "A developer builds a chat app on the Messages API. A user sets their preferred units to metric in one conversation, but in a new conversation the next day Claude answers in imperial units. What is the most likely cause?",
+    "options": [
+      {
+        "key": "A",
+        "text": "The model's memory of this user was cleared overnight by the data retention policy, so it must be restored from the Console or re-learned in the next conversation."
+      },
+      {
+        "key": "B",
+        "text": "The Messages API is stateless: Claude sees only what each request contains, so the app must store the preference and send it, e.g. in the system prompt."
+      },
+      {
+        "key": "C",
+        "text": "The temperature is too high, which makes Claude forget preferences that it learned earlier in the week."
+      },
+      {
+        "key": "D",
+        "text": "The context window is too small to hold the user's earlier conversations, so they were truncated automatically by the API."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Each Messages API request is independent: Claude knows only the system prompt and messages in that request. Persisting preferences is the application's job, for example storing them and injecting them into the system prompt or using a memory tool the app implements. This is a context-management design question, not a model fault.",
+    "distractors": {
+      "A": "The model never had per-user memory to clear; nothing carries over between requests unless the app sends it.",
+      "C": "Temperature affects sampling randomness, not whether information from past conversations is available.",
+      "D": "The earlier conversation was never sent; the API does not automatically include previous conversations."
+    },
+    "difficulty": 1,
+    "tags": [
+      "stateless-api",
+      "memory"
+    ]
+  },
+  {
+    "id": "dv-e-009",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.2",
+    "type": "single",
+    "select": 1,
+    "stem": "A product team prompts Claude with 'Summarise this customer feedback briefly.' Some summaries are one line and others are three paragraphs, which breaks the dashboard layout. Which prompt change is most effective?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Add 'Please be concise and careful' to the end of the prompt."
+      },
+      {
+        "key": "B",
+        "text": "Rewrite the instruction in capital letters and prefix it with 'IMPORTANT:' so that Claude treats the length requirement as a strict, high-priority rule."
+      },
+      {
+        "key": "C",
+        "text": "State the exact constraints: for example, 'Summarise in exactly 3 bullet points of at most 20 words each, for a product manager.'"
+      },
+      {
+        "key": "D",
+        "text": "Raise the temperature so Claude explores different summary styles and settles on a shorter one."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Claude follows precise instructions well, and the inconsistency comes from leaving 'briefly' undefined. Specifying the format, the count, the length limit and the audience removes the ambiguity. A good test is whether a new colleague given the same prompt would produce the same output.",
+    "distractors": {
+      "A": "This is still vague; 'concise' means different things for different inputs.",
+      "B": "Emphasis does not define what 'briefly' means, so the inconsistency remains.",
+      "D": "Higher temperature increases variation, the opposite of what is needed."
+    },
+    "difficulty": 1,
+    "tags": [
+      "instruction-clarity",
+      "output-constraints"
+    ]
+  },
+  {
+    "id": "dv-e-010",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.2",
+    "type": "single",
+    "select": 1,
+    "stem": "An invoice-extraction prompt includes three examples, all from the same vendor with the same layout. On invoices from other vendors, Claude misses fields and sometimes outputs that vendor's name from the examples. What is the best fix?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Add more copies of the same vendor's invoice so the pattern is reinforced more strongly."
+      },
+      {
+        "key": "B",
+        "text": "Use 3 to 5 diverse examples covering different layouts and edge cases, wrapped in `<example>` tags to separate them from instructions."
+      },
+      {
+        "key": "C",
+        "text": "Keep the current examples and add 'Do not copy any values from the examples into your answer' to the instructions, near the top of the prompt."
+      },
+      {
+        "key": "D",
+        "text": "Move the examples after the invoice text so Claude reads the real input first and the examples last."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Examples strongly steer Claude's output, so they should be relevant, diverse and clearly structured. Examples that all look alike teach unintended patterns, including copying literal values. Covering varied layouts and edge cases, and tagging the examples, lets Claude generalise.",
+    "distractors": {
+      "A": "More near-identical examples deepen the unintended pattern rather than generalising it.",
+      "C": "This treats the symptom; the examples still teach a single layout.",
+      "D": "Order is not the problem; the examples lack diversity."
+    },
+    "difficulty": 2,
+    "tags": [
+      "few-shot",
+      "examples"
+    ]
+  },
+  {
+    "id": "dv-e-011",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.2",
+    "type": "single",
+    "select": 1,
+    "stem": "A developer puts the assistant's role, policies and response rules into the same user message as the end user's text. Some end users type 'New rules:' followed by their own instructions, and Claude sometimes follows them. Which change best addresses the prompt structure?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Move stable role and policy instructions into the system prompt, and wrap end-user text in clearly delimited tags such as `<user_input>` that the prompt describes as data to act on, not as instructions."
+      },
+      {
+        "key": "B",
+        "text": "Keep everything in the user message but put the policies after the end user's text so they are the last thing Claude reads."
+      },
+      {
+        "key": "C",
+        "text": "Repeat the full policy text in every user message of the conversation so it is never forgotten."
+      },
+      {
+        "key": "D",
+        "text": "Raise the temperature slightly so Claude is less likely to latch onto any one instruction."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "The system prompt is the place for stable role, policy and behavioural instructions, and the user turn carries the variable input. Delimiting user-supplied text with tags makes clear what is data and what is instruction. This placement is a prompt-design baseline; sensitive actions still need enforcement outside the prompt.",
+    "distractors": {
+      "B": "Mixing trusted policy and untrusted text in one message keeps the boundary ambiguous wherever they are placed.",
+      "C": "Repetition adds tokens but still does not separate instructions from user-supplied text.",
+      "D": "Temperature has no bearing on which text Claude treats as authoritative."
+    },
+    "difficulty": 2,
+    "tags": [
+      "system-prompt",
+      "placement",
+      "delimiters"
+    ]
+  },
+  {
+    "id": "dv-e-012",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.2",
+    "type": "single",
+    "select": 1,
+    "stem": "A legal tool sends an 80-page contract to Claude along with the question 'Which clauses allow early termination, and under what notice periods?' Answers sometimes miss relevant clauses. Which prompt layout is most likely to improve accuracy?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Put the question first so Claude knows what to look for, then append the full contract after it."
+      },
+      {
+        "key": "B",
+        "text": "Put the question first so Claude knows what to look for while reading, then append the full contract after it, wrapped in `<document>` tags."
+      },
+      {
+        "key": "C",
+        "text": "Insert the question in the middle of the contract, next to the section that is most likely to contain termination clauses."
+      },
+      {
+        "key": "D",
+        "text": "Put the contract first in `<document>` tags, then the question, and ask Claude to quote relevant clauses before answering."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "For long documents, placing the content at the top and the query at the end improves response quality. Wrapping the document in tags and asking for supporting quotes first helps Claude focus on the relevant text. Grounding the answer in quotes also makes it easier to verify.",
+    "distractors": {
+      "A": "Anthropic's guidance is the opposite: long documents above the query, with the question at the end, performs better.",
+      "B": "Per-page calls lose cross-references between clauses and leave no step that reconciles the partial answers.",
+      "C": "This guesses where the answer is and breaks up the document structure."
+    },
+    "difficulty": 2,
+    "tags": [
+      "long-context",
+      "placement"
+    ]
+  },
+  {
+    "id": "dv-e-013",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.2",
+    "type": "single",
+    "select": 1,
+    "stem": "A prompt says 'Do NOT use markdown. Do NOT use bullet points.' The prompt itself is written with markdown headers and bulleted rules, and Claude's replies still contain headers and bullets about a third of the time. Which change is most likely to fix this?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Repeat the prohibition three times in capital letters, at both the start and the end of the prompt, so it is the first and last thing Claude reads."
+      },
+      {
+        "key": "B",
+        "text": "Add several examples of markdown-formatted answers labelled 'bad' so Claude can see exactly what to avoid."
+      },
+      {
+        "key": "C",
+        "text": "Describe the wanted format, such as flowing prose paragraphs, and rewrite the prompt itself in prose to match."
+      },
+      {
+        "key": "D",
+        "text": "Lower `max_tokens` so replies are too short to include headers or lists."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Telling Claude what to do works better than telling it what not to do, and the style of the prompt influences the style of the response. Describing the desired prose format and removing markdown from the prompt addresses both. Explicit format indicators such as XML tags can reinforce this.",
+    "distractors": {
+      "A": "Stacking negative instructions does not tell Claude what to produce instead, and the prompt's own style still pulls toward markdown.",
+      "B": "Showing the unwanted format adds more markdown to the context and can reinforce it.",
+      "D": "Truncating output does not change its format and risks cutting answers off mid-sentence."
+    },
+    "difficulty": 3,
+    "tags": [
+      "output-constraints",
+      "formatting"
+    ]
+  },
+  {
+    "id": "dv-e-014",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.2",
+    "type": "single",
+    "select": 1,
+    "stem": "Every time a stakeholder reports a bad answer, an engineer edits the production prompt to fix that case. Fixes often break earlier behaviour that nobody rechecks. What is the most effective way to iterate on this prompt?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Build a test set of real cases, including past failures, with success criteria, and run every prompt version against it before release."
+      },
+      {
+        "key": "B",
+        "text": "Switch to the most capable model so that small prompt changes stop affecting behaviour."
+      },
+      {
+        "key": "C",
+        "text": "Let each engineer tune a local copy of the prompt and merge the versions whenever they agree."
+      },
+      {
+        "key": "D",
+        "text": "Append each reported failure as a new rule at the end of the prompt, so the earlier rules stay untouched and every known case is explicitly covered."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Prompt engineering is iterative, and iteration needs a fixed yardstick. Defining success criteria and a representative test set, with past failures added as regression cases, shows whether a change helps or hurts overall. Versioning prompts alongside the results keeps changes traceable.",
+    "distractors": {
+      "B": "A stronger model does not remove the need to measure changes; regressions can still occur.",
+      "C": "Unmeasured parallel edits make regressions harder, not easier, to detect.",
+      "D": "An ever-growing list of special cases gets harder to follow and is still never tested."
+    },
+    "difficulty": 2,
+    "tags": [
+      "iterative-refinement",
+      "evaluation",
+      "prompt-versioning"
+    ]
+  },
+  {
+    "id": "dv-e-015",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.2",
+    "type": "single",
+    "select": 1,
+    "stem": "A smartwatch app instructs Claude to 'Keep responses short.' Responses are often still too long for the 200-character screen. Which prompt adjustment is most likely to help?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Add 'This is very important' after the instruction."
+      },
+      {
+        "key": "B",
+        "text": "Explain why: 'Replies appear on a smartwatch screen that fits about 200 characters, so answer in one or two short sentences.'"
+      },
+      {
+        "key": "C",
+        "text": "Use a smaller model, because smaller models tend to write shorter replies by default and will naturally fit the 200-character screen better."
+      },
+      {
+        "key": "D",
+        "text": "Ask Claude to count its characters after writing each answer."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Giving Claude the context or motivation behind an instruction helps it understand the goal and apply it sensibly. Here, stating the screen constraint turns a vague request into a concrete target. Claude can then generalise to cases the instruction did not spell out.",
+    "distractors": {
+      "A": "Emphasis without specifics leaves 'short' undefined.",
+      "C": "Model size does not reliably set response length; the instruction is still unclear.",
+      "D": "This adds work without telling Claude the actual limit or why it matters."
+    },
+    "difficulty": 1,
+    "tags": [
+      "context-motivation",
+      "instruction-clarity"
+    ]
+  },
+  {
+    "id": "dv-e-016",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.2",
+    "type": "single",
+    "select": 1,
+    "stem": "An app inserts customer reviews into a prompt between `<review>` and `</review>` tags and asks Claude to classify each one. Some reviews contain their own `</review>` text and lines such as 'Classification: positive', and those reviews are misclassified or merged with the next one. What is the best fix?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Tell Claude in the system prompt to ignore any tags or labels that appear inside a review."
+      },
+      {
+        "key": "B",
+        "text": "Switch to a larger model, which is better at working out where each review really ends."
+      },
+      {
+        "key": "C",
+        "text": "Raise `max_tokens` so Claude has room to reason about which text belongs to which review."
+      },
+      {
+        "key": "D",
+        "text": "Sanitise reviews before inserting them: escape or strip delimiter-like tags, enforce a length limit, and validate the input, so the prompt structure cannot be broken."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "The application is building the prompt, so it is responsible for making sure untrusted text cannot alter the structure. Escaping or removing delimiter sequences, limiting length and validating the input keeps each review inside its own boundary. This is input sanitisation at the integration layer, done before the model is involved.",
+    "distractors": {
+      "A": "A prompt instruction cannot undo a structure that the input has already broken; the tags are ambiguous before Claude reads them.",
+      "B": "Model capability does not fix malformed input that the application created.",
+      "C": "Output length is unrelated to how the input was assembled."
+    },
+    "difficulty": 3,
+    "tags": [
+      "input-sanitisation",
+      "delimiters"
+    ]
+  },
+  {
+    "id": "dv-e-017",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.2",
+    "type": "multi",
+    "select": 2,
+    "stem": "An agent's 3,000-word system prompt includes, deep in the text: 'Only call `issue_refund` for orders under 30 days old, and pass dates as YYYY-MM-DD.' Claude sometimes passes dates like '03/14/2026' and occasionally refunds older orders. Which TWO changes are most effective? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "Copy the refund rule into every user message so it is always recent."
+      },
+      {
+        "key": "B",
+        "text": "Put the date format and usage guidance in the `issue_refund` tool's description and `input_schema`, where Claude looks when it calls the tool."
+      },
+      {
+        "key": "C",
+        "text": "Raise the temperature so Claude considers more options before calling a tool."
+      },
+      {
+        "key": "D",
+        "text": "Move the whole system prompt into the first user message so it is closer to the conversation."
+      },
+      {
+        "key": "E",
+        "text": "Enforce the 30-day rule in application code before the refund runs, and return a clear error to Claude when the rule fails."
+      }
+    ],
+    "answer": [
+      "B",
+      "E"
+    ],
+    "explanation": "Guidance about a specific tool belongs with that tool, in its description and parameter schema, so it is in view when Claude decides how to call it. Business rules that must always hold should be enforced deterministically in code, not only stated in a prompt. Together these place each instruction in the component best suited to it.",
+    "distractors": {
+      "A": "Repeating the rule adds tokens and still relies on probabilistic compliance for a hard business rule.",
+      "C": "Temperature does not improve rule adherence and adds variability.",
+      "D": "Moving it does not put the guidance where the tool is defined, and it weakens the role of the system prompt."
+    },
+    "difficulty": 2,
+    "tags": [
+      "placement",
+      "tool-descriptions"
+    ]
+  },
+  {
+    "id": "dv-e-018",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.3",
+    "type": "single",
+    "select": 1,
+    "stem": "A pipeline asks Claude to return JSON, and about 2% of responses fail `JSON.parse()` or are missing required fields, which crashes a downstream service. What is the most reliable fix?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Use structured outputs with a JSON schema (or strict tool use), which constrains generation so responses match the schema."
+      },
+      {
+        "key": "B",
+        "text": "Add 'Respond ONLY with valid JSON, with no extra text and no exceptions' to both the system prompt and the user message in capital letters."
+      },
+      {
+        "key": "C",
+        "text": "Extract the text between the first '{' and the last '}' with a regex and parse that."
+      },
+      {
+        "key": "D",
+        "text": "Set the temperature to 0 so the output format is fully deterministic."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Structured outputs use constrained decoding to guarantee schema-compliant responses, which removes parse errors and missing required fields. Strict tool use gives the same guarantee for tool inputs. Prompt wording and regex extraction only reduce or hide the problem.",
+    "distractors": {
+      "B": "Prompting alone lowers the failure rate but cannot guarantee schema compliance.",
+      "C": "This recovers from stray prose but not from missing fields or invalid syntax.",
+      "D": "Low temperature reduces variation but does not guarantee valid or complete JSON."
+    },
+    "difficulty": 1,
+    "tags": [
+      "structured-outputs",
+      "json-schema"
+    ]
+  },
+  {
+    "id": "dv-e-019",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.3",
+    "type": "single",
+    "select": 1,
+    "stem": "A service uses structured outputs and still sees occasional JSON parse failures on long reports. Every failing response has `stop_reason: \"max_tokens\"`. What is the most likely explanation?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Structured outputs has a bug that breaks on long schemas, so it should be reported to support."
+      },
+      {
+        "key": "B",
+        "text": "The schema is too complex, so the API silently stops enforcing it once a response passes a certain length."
+      },
+      {
+        "key": "C",
+        "text": "The output was truncated at `max_tokens`, so it is incomplete; check `stop_reason` before parsing and raise the limit for long reports."
+      },
+      {
+        "key": "D",
+        "text": "Use strict tool use instead, because unlike JSON outputs it guarantees complete, schema-valid output even when the `max_tokens` limit is reached."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Structured outputs guarantee the schema only for completed responses. When generation stops at `max_tokens`, the JSON may be incomplete. Consumers should check `stop_reason` first and retry with a higher `max_tokens` (or a smaller task) instead of treating truncation as a parse bug.",
+    "distractors": {
+      "A": "The behaviour is documented: truncated output may not match the schema.",
+      "B": "Complexity limits are enforced when the request is made, not partway through generation.",
+      "D": "No mode can produce complete output past the token limit you set."
+    },
+    "difficulty": 2,
+    "tags": [
+      "structured-outputs",
+      "stop-reason",
+      "max-tokens"
+    ]
+  },
+  {
+    "id": "dv-e-020",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.3",
+    "type": "single",
+    "select": 1,
+    "stem": "Claude extracts invoices into a schema-valid JSON object using structured outputs. In one response, `total` is 1240.00 but the `line_items` amounts add up to 1420.00. What should the application do?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Accept the object, since structured outputs guarantee that the extracted values are correct as well as well-formed, so a mismatch cannot occur."
+      },
+      {
+        "key": "B",
+        "text": "Validate the semantics in code, such as recomputing the total, and on mismatch re-prompt with the discrepancy or route to human review."
+      },
+      {
+        "key": "C",
+        "text": "Ask Claude to rate its confidence from 0 to 100 and accept the object when the score is above 90."
+      },
+      {
+        "key": "D",
+        "text": "Turn on extended thinking for all future requests and trust the outputs without further checks."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Structured outputs guarantee syntax and schema, not semantic correctness. Business-rule checks in code, such as totals matching line items, catch errors the schema cannot express. A targeted retry that names the discrepancy, or human review, then resolves the case.",
+    "distractors": {
+      "A": "Schema compliance guarantees shape and types, not factual or arithmetic correctness.",
+      "C": "Self-reported confidence is not a reliable check of correctness.",
+      "D": "Better reasoning can lower the error rate, but outputs still need checking."
+    },
+    "difficulty": 2,
+    "tags": [
+      "response-validation",
+      "business-rules"
+    ]
+  },
+  {
+    "id": "dv-e-021",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.3",
+    "type": "single",
+    "select": 1,
+    "stem": "An internal assistant states confidently, with no hedging: 'The `retry_policy` option was added in v3.2 of our SDK, released in March 2025.' Nothing in the provided context mentions version history. How should the developer treat this kind of output?",
+    "options": [
+      {
+        "key": "A",
+        "text": "As reliable, because a confident and specific answer suggests the model has strong evidence for it."
+      },
+      {
+        "key": "B",
+        "text": "As reliable if Claude gives the same answer again when asked 'Are you sure?'"
+      },
+      {
+        "key": "C",
+        "text": "As reliable once the effort setting is raised, because higher effort removes ungrounded claims."
+      },
+      {
+        "key": "D",
+        "text": "As unverified: require answers to be grounded in provided sources with citations, verify them against those sources, and let Claude say it doesn't know."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "A fluent, specific answer can still be ungrounded, especially when the facts are not in the context. Requiring citations to provided material, checking claims against it, and permitting 'I don't know' reduces hallucinations. Confident output should get the same verification as any other.",
+    "distractors": {
+      "A": "Confidence and specificity in the wording do not show that a claim is accurate.",
+      "B": "Repeating a claim is not independent verification; the model may restate the same error.",
+      "C": "Effort can improve reasoning but does not ground claims that have no source in the context."
+    },
+    "difficulty": 3,
+    "tags": [
+      "skepticism",
+      "grounding",
+      "hallucination"
+    ]
+  },
+  {
+    "id": "dv-e-022",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.3",
+    "type": "single",
+    "select": 1,
+    "stem": "A developer adds `\"minimum\": 0, \"maximum\": 100` to a `score` field in a raw JSON schema sent with structured outputs. Requests now fail with a 400 error. What is the best fix?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Remove the numeric bounds from the schema sent to the API (an SDK helper can move them into the field description) and check the 0 to 100 range in your own code after parsing."
+      },
+      {
+        "key": "B",
+        "text": "Retry the failing requests with exponential backoff, because 400 errors on structured outputs are usually transient."
+      },
+      {
+        "key": "C",
+        "text": "Switch the extraction to strict tool use, which enforces numeric `minimum` and `maximum` on tool inputs."
+      },
+      {
+        "key": "D",
+        "text": "Change `score` to a string type with `minLength` and `maxLength` so its length limits enforce the 0 to 100 range."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Structured outputs support a subset of JSON Schema; numeric constraints such as `minimum` and `maximum` are not supported and cause a 400. The SDK helpers strip them from the sent schema, note them in the description and can validate the response locally. Range checks then live in application validation.",
+    "distractors": {
+      "B": "A 400 here is caused by the request content and fails the same way on every retry.",
+      "C": "Strict tool use has the same JSON Schema limitations, so the same constraints are rejected there too.",
+      "D": "String length constraints are also unsupported and would not enforce a numeric range anyway."
+    },
+    "difficulty": 3,
+    "tags": [
+      "structured-outputs",
+      "schema-limitations",
+      "validation"
+    ]
+  },
+  {
+    "id": "dv-e-023",
+    "scenario": 0,
+    "domain": 6,
+    "task": "6.3",
+    "type": "multi",
+    "select": 2,
+    "stem": "A team is hardening the code that consumes Claude's JSON responses in a production workflow. Which TWO practices are most appropriate? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "Check `stop_reason` before parsing and handle values such as `max_tokens` and `refusal` separately from normal completions."
+      },
+      {
+        "key": "B",
+        "text": "Evaluate the response with `eval()` so slightly malformed JSON can still be executed and recovered."
+      },
+      {
+        "key": "C",
+        "text": "Catch parse errors and silently substitute default empty values so the workflow never stops."
+      },
+      {
+        "key": "D",
+        "text": "Validate the parsed object against the schema and business rules, and retry a bounded number of times with the specific validation error fed back."
+      },
+      {
+        "key": "E",
+        "text": "Trust any response that is well-formed JSON, since a well-formed response shows the model understood the task."
+      }
+    ],
+    "answer": [
+      "A",
+      "D"
+    ],
+    "explanation": "Defensive consumption starts by checking why generation stopped, since truncated or refused responses may not match the schema. Parsed output should then be validated for both structure and meaning, with bounded, targeted retries. Failures stay visible instead of being masked.",
+    "distractors": {
+      "B": "Executing model output as code is unsafe and hides malformed data instead of handling it.",
+      "C": "Silent defaults turn failures into wrong data that flows downstream undetected.",
+      "E": "Valid syntax says nothing about whether the content is correct."
+    },
+    "difficulty": 2,
+    "tags": [
+      "defensive-parsing",
+      "stop-reason",
+      "validation"
+    ]
+  },
+  {
+    "id": "dv-e-024",
+    "scenario": 0,
+    "domain": 4,
+    "task": "4.1",
+    "type": "single",
+    "select": 1,
+    "stem": "A nightly job sends bursts of requests to the Messages API and some fail with HTTP 429 `rate_limit_error` responses that include a `retry-after` header. What is the best way to handle them?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Fix the request body, since a 429 means the request is malformed and must be changed before it is sent again."
+      },
+      {
+        "key": "B",
+        "text": "Treat each 429 as a permanent failure and drop that request from the job."
+      },
+      {
+        "key": "C",
+        "text": "Retry with exponential backoff that honours `retry-after`, and smooth the request rate so bursts stay within the organisation's limits."
+      },
+      {
+        "key": "D",
+        "text": "Spread the burst across additional API keys created in the same organisation so that each individual key stays below its own rate limit."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "A 429 means the organisation has hit a rate limit, which is a transient condition. The right response is to wait and retry with backoff, honouring `retry-after` when present (the official SDKs do this by default), and to reduce burstiness. Changing the request content would not help.",
+    "distractors": {
+      "A": "Malformed requests return 400 `invalid_request_error`; a 429 is about request volume.",
+      "B": "Rate-limit errors are normally transient and succeed after waiting, so dropping the work is unnecessary.",
+      "D": "Rate limits apply at the organisation level, so this does not avoid them."
+    },
+    "difficulty": 1,
+    "tags": [
+      "api-errors",
+      "429",
+      "retry-backoff"
+    ]
+  },
+  {
+    "id": "dv-e-025",
+    "scenario": 0,
+    "domain": 4,
+    "task": "4.1",
+    "type": "single",
+    "select": 1,
+    "stem": "During a regional traffic peak, a customer-facing app starts receiving HTTP 529 `overloaded_error` responses on some requests. Its requests and traffic pattern have not changed. What is the most appropriate response?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Reduce the request payload size and split large prompts, because a 529 means the request body exceeded the maximum size allowed for the Messages endpoint."
+      },
+      {
+        "key": "B",
+        "text": "Treat it as transient API load: retry with exponential backoff, and fall back to another model or a degraded response if retries run out."
+      },
+      {
+        "key": "C",
+        "text": "Ask for a higher rate limit, because a 529 shows the organisation has gone over its usage tier."
+      },
+      {
+        "key": "D",
+        "text": "Rotate the API key, because a 529 usually means the current key has been throttled or revoked."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "A 529 means the API is temporarily overloaded, which can happen during high traffic across all users. It is not caused by the request, so backoff and retry is appropriate, with a fallback path for user-facing reliability. Changing the payload, limits or key targets other error classes.",
+    "distractors": {
+      "A": "Oversized requests return 413 `request_too_large`, not 529.",
+      "C": "Hitting an organisation limit produces 429; 529 reflects load across all users.",
+      "D": "Key problems produce 401 or 403 errors."
+    },
+    "difficulty": 2,
+    "tags": [
+      "api-errors",
+      "529",
+      "fallback"
+    ]
+  },
+  {
+    "id": "dv-e-026",
+    "scenario": 0,
+    "domain": 4,
+    "task": "4.1",
+    "type": "single",
+    "select": 1,
+    "stem": "After upgrading a service to a current Claude model, every request fails with HTTP 400 `invalid_request_error`. The requests end with a partial assistant message, `{\"role\": \"assistant\", \"content\": \"{\"}`, which the team used to force JSON output. What should they do?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Change the request: remove the prefilled final assistant turn and get JSON through structured outputs or clear format instructions instead."
+      },
+      {
+        "key": "B",
+        "text": "Retry with exponential backoff, since 400 errors that appear right after a model upgrade are usually caused by rollout instability on the API side."
+      },
+      {
+        "key": "C",
+        "text": "Contact support with the request ID, because a consistent 400 across all requests indicates an outage on Anthropic's side."
+      },
+      {
+        "key": "D",
+        "text": "Rotate the API key, because the new model needs a key with different permissions to accept assistant messages."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Prefilling the last assistant turn is not supported on recent Claude models and returns a 400. A 400 `invalid_request_error` means the request itself has to change, so retrying cannot succeed. Structured outputs are the supported replacement for forcing a format.",
+    "distractors": {
+      "B": "A 400 is caused by the request content; retrying the same request fails the same way.",
+      "C": "Outages show up as 5xx errors; a uniform 400 points to something every request shares.",
+      "D": "Permission problems return 403, and this request is rejected for its shape."
+    },
+    "difficulty": 2,
+    "tags": [
+      "api-errors",
+      "400",
+      "prefill",
+      "model-migration"
+    ]
+  },
+  {
+    "id": "dv-e-027",
+    "scenario": 0,
+    "domain": 4,
+    "task": "4.1",
+    "type": "single",
+    "select": 1,
+    "stem": "An app logs 'model failure' and automatically retries whenever a long answer ends mid-sentence. The responses have HTTP status 200 and `stop_reason: \"max_tokens\"`, and the retries end at the same point. What is the correct diagnosis and fix?",
+    "options": [
+      {
+        "key": "A",
+        "text": "This is a transient server error, so the retry policy should use longer exponential backoff and more attempts before the request is abandoned."
+      },
+      {
+        "key": "B",
+        "text": "The model is unstable at this length, so lowering the temperature will make it finish its sentences."
+      },
+      {
+        "key": "C",
+        "text": "The connection is being dropped, so the app should switch to a different network or region."
+      },
+      {
+        "key": "D",
+        "text": "This is truncation, not an error: the response reached `max_tokens`, so raise the limit or continue from where it stopped."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "`stop_reason` values describe successful responses; `max_tokens` means generation reached the limit set in the request. The fix is to raise `max_tokens` or continue the response, not to retry. Telling stop reasons apart from 4xx and 5xx errors prevents misclassified failures.",
+    "distractors": {
+      "A": "The request succeeded with a 200; retrying the same request reproduces the same cut-off.",
+      "B": "Temperature does not change where generation is cut off.",
+      "C": "A dropped connection would not return a complete 200 response with `stop_reason` set."
+    },
+    "difficulty": 2,
+    "tags": [
+      "stop-reason",
+      "max-tokens",
+      "truncation"
+    ]
+  },
+  {
+    "id": "dv-e-028",
+    "scenario": 0,
+    "domain": 4,
+    "task": "4.1",
+    "type": "single",
+    "select": 1,
+    "stem": "In an order-support agent, Claude calls `get_order` with the right order ID, but its next reply says it 'could not find any details for that order.' The trace shows the `tool_result` sent back to Claude has the content `\"[object Object]\"`. What is the most likely cause?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Claude is hallucinating a missing order, so the system prompt should tell it to always trust tool results."
+      },
+      {
+        "key": "B",
+        "text": "An integration bug: the tool handler is not serialising the order data (for example with `JSON.stringify`) before returning it as the tool result."
+      },
+      {
+        "key": "C",
+        "text": "The model cannot handle nested order objects, so the agent should move to a larger model."
+      },
+      {
+        "key": "D",
+        "text": "The order database is returning empty records, so the data team should check the order table."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "The trace shows the model was given the string '[object Object]', which is what JavaScript produces when an object is coerced to a string. Claude's reply is a faithful response to useless input, so the fault is in the integration layer. Fixing serialisation, not the prompt or model, resolves it.",
+    "distractors": {
+      "A": "Claude reported accurately on what it received; no prompt change can recover data that never arrived.",
+      "C": "The data reached Claude as a literal placeholder string, so model capability is irrelevant.",
+      "D": "The trace shows an object existed; it was lost in serialisation, not in the database."
+    },
+    "difficulty": 3,
+    "tags": [
+      "integration-vs-model",
+      "trace-analysis",
+      "tool-results"
+    ]
+  },
+  {
+    "id": "dv-e-029",
+    "scenario": 0,
+    "domain": 4,
+    "task": "4.1",
+    "type": "single",
+    "select": 1,
+    "stem": "An agent sometimes calls `search_flights` 15 times in a row before giving up. The traces show that each call passes `date: \"next Friday\"` and the tool returns `{\"error\": \"Error\"}`. What is the best fix?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Lower the iteration cap to 3 so the agent gives up sooner."
+      },
+      {
+        "key": "B",
+        "text": "Raise the temperature so the agent tries different arguments on each retry."
+      },
+      {
+        "key": "C",
+        "text": "Return an actionable error such as 'date must be YYYY-MM-DD' with `is_error` set, and state the format in the tool description."
+      },
+      {
+        "key": "D",
+        "text": "Move to a larger model, which is better at inferring the expected date format from the tool name and the earlier failed calls in the trace."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "The trace shows the failure mode: an uninformative error leaves Claude with nothing to correct, so it repeats the same call. Returning a specific, actionable error marked with `is_error`, and stating the expected format up front, lets Claude fix the argument on the next attempt. Trace analysis points to the tool contract, not the model.",
+    "distractors": {
+      "A": "This limits the damage but never lets the call succeed.",
+      "B": "Random variation is no substitute for telling Claude what is wrong.",
+      "D": "The tool gives no information to reason from, so a larger model is still guessing."
+    },
+    "difficulty": 2,
+    "tags": [
+      "trace-analysis",
+      "tool-errors",
+      "agent-loops"
+    ]
+  },
+  {
+    "id": "dv-e-030",
+    "scenario": 0,
+    "domain": 4,
+    "task": "4.1",
+    "type": "single",
+    "select": 1,
+    "stem": "A streaming chat client treats any HTTP 200 as success. Users sometimes see answers stop partway with no error shown. The raw stream for those requests ends with `event: error` carrying an `overloaded_error`. What should the developer change?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Switch to non-streaming requests, because a streamed response cannot report an error once the HTTP 200 status and the first events have been sent."
+      },
+      {
+        "key": "B",
+        "text": "Raise `max_tokens`, because the stream stops when the output budget is exhausted."
+      },
+      {
+        "key": "C",
+        "text": "Treat the partial text as a complete answer, since a 200 status means the request succeeded."
+      },
+      {
+        "key": "D",
+        "text": "Handle `error` events in the stream: errors can arrive after the 200 status, so surface them and retry or resume as with an overloaded error."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "With server-sent events, the API can send an error event after it has already returned 200, for example an `overloaded_error` that would be a 529 in a non-streaming call. Clients must parse and handle these events rather than rely on the HTTP status alone. The recovery is the same as for an overload: back off and retry.",
+    "distractors": {
+      "A": "Streaming can report errors through error events; the client is simply ignoring them.",
+      "B": "Hitting the output limit ends normally with `stop_reason` `max_tokens`, not an error event.",
+      "C": "This hides a real failure and shows users incomplete answers."
+    },
+    "difficulty": 2,
+    "tags": [
+      "streaming",
+      "error-events",
+      "overloaded"
+    ]
+  },
+  {
+    "id": "dv-e-031",
+    "scenario": 0,
+    "domain": 4,
+    "task": "4.1",
+    "type": "multi",
+    "select": 2,
+    "stem": "A team is writing an error-handling policy for Messages API calls. For which TWO errors should the code fix the request rather than retry it unchanged? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "429 `rate_limit_error` with a `retry-after` header"
+      },
+      {
+        "key": "B",
+        "text": "400 `invalid_request_error`"
+      },
+      {
+        "key": "C",
+        "text": "529 `overloaded_error`"
+      },
+      {
+        "key": "D",
+        "text": "500 `api_error`"
+      },
+      {
+        "key": "E",
+        "text": "413 `request_too_large`"
+      }
+    ],
+    "answer": [
+      "B",
+      "E"
+    ],
+    "explanation": "A 400 means the format or content of the request is wrong, and a 413 means the request exceeded the size limit; sending the same request again fails the same way. 429, 500 and 529 are transient conditions where backoff and retry is the right strategy. Classifying errors this way avoids wasted retries and stuck jobs.",
+    "distractors": {
+      "A": "This is a transient rate-limit condition that normally succeeds after waiting.",
+      "C": "This reflects temporary API-wide load and is suitable for retry with backoff.",
+      "D": "This is an unexpected internal error; the docs advise retrying with backoff and contacting support if it persists."
+    },
+    "difficulty": 3,
+    "tags": [
+      "api-errors",
+      "recovery-strategy",
+      "non-retryable"
+    ]
+  }
+]

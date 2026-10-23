@@ -1,0 +1,873 @@
+[
+  {
+    "id": "as-pc-001", "scenario": 0, "domain": 3, "task": "3.1", "type": "single", "select": 1,
+    "stem": "Every Monday a marketing coordinator opens a new chat, uploads the same brand guide, tone rules and product sheet, and then asks Claude to draft the week's social posts. Which change would most improve this routine?",
+    "options": [
+      { "key": "A", "text": "Create a Project with those files as knowledge and the tone rules as instructions." },
+      { "key": "B", "text": "Keep one chat open indefinitely and add each week's requests to the bottom of it." },
+      { "key": "C", "text": "Turn on Research each week so Claude can look up the brand guide on its own." },
+      { "key": "D", "text": "Switch to the most capable model so Claude remembers the files between chats." }
+    ],
+    "answer": ["A"],
+    "explanation": "A Project is a workspace whose knowledge and instructions apply to every chat inside it, so recurring work that reuses the same files belongs there. It removes the weekly re-uploading and keeps the guidance consistent.",
+    "distractors": {
+      "B": "An endless chat grows long, uses more allowance with every message and mixes weeks of unrelated requests.",
+      "C": "Research searches the web and connected tools for in-depth reports; it is not a way to store internal reference files.",
+      "D": "Model choice does not carry files between separate chats; only Project knowledge or memory carries context across."
+    },
+    "difficulty": 1, "tags": ["projects", "feature-selection"]
+  },
+  {
+    "id": "as-pc-002", "scenario": 0, "domain": 3, "task": "3.1", "type": "single", "select": 1,
+    "stem": "An operations manager must brief leadership on how competitors handle product returns. The briefing needs a comprehensive view drawn from many public sources, with citations the team can check. Which Claude feature best fits?",
+    "options": [
+      { "key": "A", "text": "A regular chat without web access, relying on what Claude already knows." },
+      { "key": "B", "text": "Research, which runs many connected searches and returns a cited report." },
+      { "key": "C", "text": "A single web search for the most recent competitor announcement." },
+      { "key": "D", "text": "A Project holding the company's own returns policy for Claude to compare against itself." }
+    ],
+    "answer": ["B"],
+    "explanation": "Research is designed for comprehensive questions: it runs multiple searches that build on each other and produces an in-depth report with citations. A broad, multi-source competitor review with checkable sources is exactly that shape of work.",
+    "distractors": {
+      "A": "Without searching, Claude cannot draw on current public sources or cite them, and its knowledge may be out of date.",
+      "C": "One web search suits a single current fact, not a comprehensive view across many competitors.",
+      "D": "The company's own policy says nothing about competitors, so this cannot answer the question."
+    },
+    "difficulty": 1, "tags": ["research", "feature-selection"]
+  },
+  {
+    "id": "as-pc-003", "scenario": 0, "domain": 3, "task": "3.1", "type": "single", "select": 1,
+    "stem": "A finance assistant needs today's exchange rate between two currencies to finish an invoice in the next five minutes. Which approach is most appropriate?",
+    "options": [
+      { "key": "A", "text": "Start Research so Claude can produce a full report on currency trends." },
+      { "key": "B", "text": "Create a new Project for currency questions and upload past invoices to it." },
+      { "key": "C", "text": "Ask in a chat with web search on, and check the cited source for the rate." },
+      { "key": "D", "text": "Ask Claude to create an artifact dashboard that tracks exchange rates over time." }
+    ],
+    "answer": ["C"],
+    "explanation": "Web search is the right tool for a simple, current fact: it is quick and cites its source so the figure can be checked. Research is meant for multi-source investigation and would be slower and use more allowance for a one-number lookup.",
+    "distractors": {
+      "A": "Research takes longer and uses the allowance faster; it is overkill for a single current figure.",
+      "B": "A Project helps recurring work with shared files; past invoices don't contain today's rate.",
+      "D": "Building a dashboard is unnecessary effort when the task needs one checked number now."
+    },
+    "difficulty": 1, "tags": ["web-search", "feature-selection"]
+  },
+  {
+    "id": "as-pc-004", "scenario": 0, "domain": 3, "task": "3.1", "type": "single", "select": 1,
+    "stem": "A school's curriculum lead asks Claude for a lesson-plan template that colleagues will open, edit and reuse every term. What is the best way to produce it?",
+    "options": [
+      { "key": "A", "text": "Have Claude write it as a long reply in the chat and paste it into an email to colleagues." },
+      { "key": "B", "text": "Run Research so the template is backed by many cited online sources." },
+      { "key": "C", "text": "Regenerate the template from scratch in a new chat each term so it stays fresh." },
+      { "key": "D", "text": "Ask for it as an artifact, refine it beside the chat, then share it." }
+    ],
+    "answer": ["D"],
+    "explanation": "Artifacts are for substantial, self-contained output that will be edited, revisited and shared, such as documents and templates. Creating the template as an artifact keeps one version the team can refine and reuse.",
+    "distractors": {
+      "A": "An inline reply pasted into email is hard to keep updated and quickly splits into several copies.",
+      "B": "Research is for gathering information from many sources, not for producing a reusable document.",
+      "C": "Regenerating each term loses agreed improvements and produces inconsistent templates."
+    },
+    "difficulty": 1, "tags": ["artifacts", "feature-selection"]
+  },
+  {
+    "id": "as-pc-005", "scenario": 0, "domain": 3, "task": "3.1", "type": "multi", "select": 2,
+    "stem": "A team lead is writing a one-page guide that pairs common team needs with Claude features. Which TWO pairings are appropriate? (Select TWO.)",
+    "options": [
+      { "key": "A", "text": "A weekly status report that reuses the same templates and glossary: a Project." },
+      { "key": "B", "text": "Checking a single recent public announcement: Research." },
+      { "key": "C", "text": "Rewording one email for tone: a new Project created for that email." },
+      { "key": "D", "text": "A cited, multi-source analysis of an industry trend: Research." },
+      { "key": "E", "text": "A budget tracker the team will keep editing: a plain reply in the chat." }
+    ],
+    "answer": ["A", "D"],
+    "explanation": "Recurring work with the same reference material fits a Project, because its knowledge and instructions apply to every chat in it. A broad question that needs many sources and citations fits Research. Matching the feature to the shape of the work avoids wasted effort and allowance.",
+    "distractors": {
+      "B": "A single recent fact needs only web search; Research is slower and heavier.",
+      "C": "A one-off rewrite belongs in a regular chat; a Project adds set-up with no benefit.",
+      "E": "Something the team will keep editing and reuse is better as an artifact than an inline reply."
+    },
+    "difficulty": 2, "tags": ["feature-selection", "projects", "research"]
+  },
+  {
+    "id": "as-pc-006", "scenario": 0, "domain": 3, "task": "3.1", "type": "single", "select": 1,
+    "stem": "An analyst finds their usage allowance runs out early each week. Looking back, they used Research for almost everything, including simple definitions and rewording paragraphs. What is the best adjustment?",
+    "options": [
+      { "key": "A", "text": "Use a regular chat for simple tasks and keep Research for in-depth, multi-source questions." },
+      { "key": "B", "text": "Keep using Research for everything but switch to the most capable model." },
+      { "key": "C", "text": "Turn off web search permanently, including for the reports that genuinely need sources." },
+      { "key": "D", "text": "Create a separate Project for every individual question to spread the usage out." }
+    ],
+    "answer": ["A"],
+    "explanation": "Research runs many searches and uses the allowance faster than a normal chat, so it should be reserved for comprehensive, multi-source work. Definitions and rewording are simple tasks a regular chat handles well.",
+    "distractors": {
+      "B": "A more capable model typically uses more allowance, and the cost driver here is overusing Research.",
+      "C": "Turning off search entirely would also break the in-depth reports that need current sources.",
+      "D": "Projects do not reduce what Research uses; this adds clutter without fixing the cause."
+    },
+    "difficulty": 2, "tags": ["research", "usage", "feature-selection"]
+  },
+  {
+    "id": "as-pc-007", "scenario": 0, "domain": 3, "task": "3.2", "type": "single", "select": 1,
+    "stem": "A support team lead wants to tag 2,000 short customer comments by topic before a planning meeting this afternoon. Which description of a Claude model tier best matches this job?",
+    "options": [
+      { "key": "A", "text": "Opus, because the most capable tier is also the fastest for large volumes." },
+      { "key": "B", "text": "Sonnet, because it is the only tier that can sort text into categories." },
+      { "key": "C", "text": "Haiku, the fastest and lowest-cost tier, suited to high-volume, simple tasks." },
+      { "key": "D", "text": "Haiku, because it is the most capable tier and handles anything well." }
+    ],
+    "answer": ["C"],
+    "explanation": "Haiku is positioned as the fastest, lowest-cost tier for high-volume, straightforward work such as tagging and sorting. Short comments with simple topic labels fit that profile, and speed matters here.",
+    "distractors": {
+      "A": "Opus is the most capable tier, but it is slower and costlier, not the fastest.",
+      "B": "All tiers can classify text; Sonnet is the balanced everyday tier, not the only one able to sort.",
+      "D": "Haiku is the fastest and most economical tier, not the most capable."
+    },
+    "difficulty": 1, "tags": ["model-tiers", "haiku"]
+  },
+  {
+    "id": "as-pc-008", "scenario": 0, "domain": 3, "task": "3.2", "type": "single", "select": 1,
+    "stem": "A strategy analyst must combine three long reports with conflicting findings into a recommendation for the board, explaining the trade-offs. Which model tier best fits this task?",
+    "options": [
+      { "key": "A", "text": "Haiku, because it returns answers the fastest." },
+      { "key": "B", "text": "Any tier, because all three give the same quality of reasoning." },
+      { "key": "C", "text": "Sonnet, because only Sonnet can read long documents." },
+      { "key": "D", "text": "Opus, the most capable tier, for complex multi-step reasoning." }
+    ],
+    "answer": ["D"],
+    "explanation": "Opus is the most capable of the three tiers and suits complex, multi-step reasoning and demanding knowledge work. Weighing conflicting evidence for a high-stakes board recommendation is that kind of task, so the extra time and usage are worth it.",
+    "distractors": {
+      "A": "Speed is not the priority here; the fastest tier is suited to simple, high-volume work.",
+      "B": "The tiers differ in capability as well as speed and cost.",
+      "C": "Reading long documents is not limited to Sonnet; the deciding factor is reasoning depth."
+    },
+    "difficulty": 1, "tags": ["model-tiers", "opus"]
+  },
+  {
+    "id": "as-pc-009", "scenario": 0, "domain": 3, "task": "3.2", "type": "single", "select": 1,
+    "stem": "During team training a colleague says, \"Sonnet is just a slower Haiku, and Opus is just a pricier Sonnet.\" Which correction is most accurate?",
+    "options": [
+      { "key": "A", "text": "Haiku is fastest and lowest cost, Sonnet balances speed and intelligence, and Opus is most capable." },
+      { "key": "B", "text": "The three tiers are really the same underlying model sold under different names, and only the price you pay differs." },
+      { "key": "C", "text": "Sonnet is the most capable tier, and Opus is designed mainly for very short replies." },
+      { "key": "D", "text": "The tiers differ only in the languages they support, not in speed or capability." }
+    ],
+    "answer": ["A"],
+    "explanation": "The tiers are positioned on a trade-off: Haiku for speed and low cost, Sonnet as the balanced everyday choice, and Opus for the most demanding reasoning. Understanding that trade-off is what lets you match a tier to a task.",
+    "distractors": {
+      "B": "The tiers differ in capability and speed, not just in price.",
+      "C": "This reverses the positioning; Opus is the most capable of the three.",
+      "D": "Speed, cost and capability are exactly what distinguish the tiers."
+    },
+    "difficulty": 2, "tags": ["model-tiers", "sonnet"]
+  },
+  {
+    "id": "as-pc-010", "scenario": 0, "domain": 3, "task": "3.2", "type": "single", "select": 1,
+    "stem": "A department's internal guide tells staff to always choose a model by a specific version number listed in the guide. Several staff report that version is no longer in their model menu. What is the better guidance?",
+    "options": [
+      { "key": "A", "text": "Always pick whichever entry has the highest version number, regardless of the task." },
+      { "key": "B", "text": "Teach the tiers by their relative speed, cost and capability, since available versions change." },
+      { "key": "C", "text": "Ask Claude in a chat which version number the department should standardise on forever." },
+      { "key": "D", "text": "Stop using Claude for this work entirely until the exact version number listed in the guide becomes available again." }
+    ],
+    "answer": ["B"],
+    "explanation": "Specific model versions and what appears in the menu change over time, and admins may limit the options. Guidance based on tier positioning, fast and economical versus balanced versus most capable, stays useful when versions change.",
+    "distractors": {
+      "A": "The newest or largest entry is not automatically the right fit for every task's speed and cost needs.",
+      "C": "No fixed version can be standardised forever, and Claude's answer would not change what is available.",
+      "D": "Halting work is unnecessary when an equivalent tier is available."
+    },
+    "difficulty": 2, "tags": ["model-tiers", "volatile-facts"]
+  },
+  {
+    "id": "as-pc-011", "scenario": 0, "domain": 3, "task": "3.2", "type": "multi", "select": 2,
+    "stem": "A trainer is preparing a slide that summarises the Claude model tiers for new staff. Which TWO statements are accurate? (Select TWO.)",
+    "options": [
+      { "key": "A", "text": "Sonnet is designed only for programming tasks." },
+      { "key": "B", "text": "Haiku is the fastest, lowest-cost tier, suited to high-volume, straightforward tasks." },
+      { "key": "C", "text": "All three tiers give identical quality and differ only in response speed." },
+      { "key": "D", "text": "Haiku is the best default for high-stakes analysis because it is cheapest." },
+      { "key": "E", "text": "Opus is the most capable tier, suited to complex reasoning, but slower and uses more allowance." }
+    ],
+    "answer": ["B", "E"],
+    "explanation": "Haiku sits at the fast, economical end and suits volume work, while Opus sits at the capable end and suits complex reasoning at the cost of speed and usage. Sonnet balances the two for everyday work.",
+    "distractors": {
+      "A": "Sonnet is the balanced everyday tier for many kinds of work, such as writing and analysis.",
+      "C": "The tiers differ in capability as well as speed and cost.",
+      "D": "Choosing on cost alone for high-stakes analysis risks poor quality; complex work suits a more capable tier."
+    },
+    "difficulty": 1, "tags": ["model-tiers"]
+  },
+  {
+    "id": "as-pc-012", "scenario": 0, "domain": 3, "task": "3.2", "type": "single", "select": 1,
+    "stem": "A marketing manager brainstormed campaign ideas in a chat using a fast model. Now they want a careful, in-depth comparison of the five shortlisted ideas in the same conversation. What is the best action?",
+    "options": [
+      { "key": "A", "text": "Copy everything into a new account, because a model cannot be changed once a chat has started." },
+      { "key": "B", "text": "Keep the fast model, since the tier only affects speed and never the depth of the answer." },
+      { "key": "C", "text": "Switch to a more capable model or raise effort in the model menu; it applies from the next reply." },
+      { "key": "D", "text": "Delete the brainstorming chat and repeat the brainstorm on the most capable model first." }
+    ],
+    "answer": ["C"],
+    "explanation": "The model, effort and thinking settings can be changed mid-chat, and the change applies from the next response. Moving to a more capable tier or higher effort for the analytical step keeps the useful brainstorming context.",
+    "distractors": {
+      "A": "Models can be changed mid-chat, so no new account or copying is needed.",
+      "B": "Tiers differ in capability, so depth of analysis does depend on the model and effort.",
+      "D": "The brainstorm worked well on the fast model; redoing it wastes time and usage."
+    },
+    "difficulty": 2, "tags": ["model-tiers", "switching-models"]
+  },
+  {
+    "id": "as-pc-013", "scenario": 0, "domain": 3, "task": "3.3", "type": "single", "select": 1,
+    "stem": "An operations analyst has two steps: first sort 500 supplier emails into complaint categories, then write a nuanced risk assessment of the three suppliers with the most complaints for the COO. Which model plan best balances cost, speed and quality?",
+    "options": [
+      { "key": "A", "text": "The most capable tier for both steps, so nothing is ever missed." },
+      { "key": "B", "text": "The fastest tier for both steps, to keep the whole job cheap." },
+      { "key": "C", "text": "The balanced tier for the sorting and the fastest tier for the assessment." },
+      { "key": "D", "text": "A fast tier for sorting the emails and a capable tier for the assessment." }
+    ],
+    "answer": ["D"],
+    "explanation": "Aligning model choice with task requirements means using a fast, low-cost tier for simple, high-volume steps and reserving a capable tier for the complex, high-stakes step. Splitting the workflow gets speed where it is cheap and quality where it matters.",
+    "distractors": {
+      "A": "Using the top tier for simple bulk sorting wastes time and allowance.",
+      "B": "A nuanced assessment for the COO needs deeper reasoning than the fastest tier is suited to.",
+      "C": "This puts the least capable tier on the hardest, highest-stakes step."
+    },
+    "difficulty": 3, "tags": ["model-selection", "workflow"]
+  },
+  {
+    "id": "as-pc-014", "scenario": 0, "domain": 3, "task": "3.3", "type": "single", "select": 1,
+    "stem": "To save money, a legal operations team switched to the fastest, lowest-cost tier for summarising supplier contracts. The summaries now miss key obligations and renewal terms. What is the best next step?",
+    "options": [
+      { "key": "A", "text": "Move to a more capable tier or raise effort, retest on the same contracts, and keep human review." },
+      { "key": "B", "text": "Keep the current tier and accept the missing obligations as the price of lower cost." },
+      { "key": "C", "text": "Delete the longer clauses from each contract before uploading so the summaries are complete." },
+      { "key": "D", "text": "Move the whole team to a different AI platform instead of adjusting the Claude model or effort settings for this task." }
+    ],
+    "answer": ["A"],
+    "explanation": "When a smaller model falls short on complex documents, the fix is to move up a tier or raise effort and test again on real examples. Contract obligations are high stakes, so quality outweighs the savings and a human should still check the result.",
+    "distractors": {
+      "B": "Missing obligations in contracts is a serious quality failure, not an acceptable trade-off.",
+      "C": "Removing clauses would remove the very obligations the summary needs to capture.",
+      "D": "Switching platforms does not address the mismatch between task and model."
+    },
+    "difficulty": 2, "tags": ["model-selection", "quality"]
+  },
+  {
+    "id": "as-pc-015", "scenario": 0, "domain": 3, "task": "3.3", "type": "single", "select": 1,
+    "stem": "A team is setting up a new recurring task, turning meeting notes into action lists, and is unsure which model tier is good enough. Which approach is most appropriate?",
+    "options": [
+      { "key": "A", "text": "Pick the lowest-cost tier and never revisit it, since cost is the only measurable factor." },
+      { "key": "B", "text": "Start with a smaller tier, test it on real notes, and move up only where it falls short." },
+      { "key": "C", "text": "Pick the most capable tier permanently without testing, to avoid any risk at all." },
+      { "key": "D", "text": "Let each team member choose whichever tier they like and compare opinions later." }
+    ],
+    "answer": ["B"],
+    "explanation": "A sound way to choose is to start efficiency-first with a smaller model and upgrade only where real examples show a capability gap (or start capable and step down). Testing on actual meeting notes grounds the choice in evidence rather than guesswork.",
+    "distractors": {
+      "A": "Quality and speed also matter, and a choice that is never checked may silently underperform.",
+      "C": "Defaulting to the top tier without testing can waste time and allowance on a simple task.",
+      "D": "Unstructured personal preference gives inconsistent results and no evidence on fit."
+    },
+    "difficulty": 2, "tags": ["model-selection", "testing"]
+  },
+  {
+    "id": "as-pc-016", "scenario": 0, "domain": 3, "task": "3.3", "type": "single", "select": 1,
+    "stem": "A policy adviser is using the balanced, everyday tier to analyse a detailed regulation. The answers are fast and mostly right but a little shallow on multi-step implications. They would like more depth without changing model. What should they try first?",
+    "options": [
+      { "key": "A", "text": "Lower the effort level so Claude answers more quickly." },
+      { "key": "B", "text": "Switch to the fastest tier and ask the same question again." },
+      { "key": "C", "text": "Raise the effort level or use thinking for this analysis." },
+      { "key": "D", "text": "Start a new chat for every paragraph of the regulation." }
+    ],
+    "answer": ["C"],
+    "explanation": "Effort and thinking are levers on the same model: higher effort and thinking give more thorough reasoning on complex, multi-step problems, at the cost of speed and usage. Adjusting effort is often a better first move than switching models.",
+    "distractors": {
+      "A": "Lower effort makes answers quicker but less thorough, the opposite of what is needed.",
+      "B": "The fastest tier is suited to simple volume work and is unlikely to add depth.",
+      "D": "Splitting the regulation into isolated chats loses the connections between sections."
+    },
+    "difficulty": 3, "tags": ["effort", "thinking", "model-selection"]
+  },
+  {
+    "id": "as-pc-017", "scenario": 0, "domain": 3, "task": "3.3", "type": "multi", "select": 2,
+    "stem": "A manager notices the team's usage allowance runs out by midweek. Most work is routine reformatting and tagging, with a few complex client analyses each week. Which TWO changes best align model choice with task requirements? (Select TWO.)",
+    "options": [
+      { "key": "A", "text": "Run every task on the most capable model at maximum effort so fewer retries are needed." },
+      { "key": "B", "text": "Use a faster, lower-cost tier or lower effort for routine reformatting and tagging." },
+      { "key": "C", "text": "Switch everything, including the client analyses, to the cheapest tier." },
+      { "key": "D", "text": "Turn off Projects and artifacts across the team to cut usage." },
+      { "key": "E", "text": "Keep the most capable model and higher effort for the complex client analyses." }
+    ],
+    "answer": ["B", "E"],
+    "explanation": "Matching the tier and effort to each task saves allowance on routine work while protecting quality where it matters. Simple, high-volume tasks suit a faster, lower-cost setting; complex, high-stakes analysis justifies the most capable model.",
+    "distractors": {
+      "A": "Maximum capability and effort on routine tasks is the main reason the allowance runs out.",
+      "C": "Cost alone should not decide high-stakes client analysis, where quality matters most.",
+      "D": "Disabling features does not address the mismatch, and Projects can actually save usage."
+    },
+    "difficulty": 2, "tags": ["model-selection", "usage", "effort"]
+  },
+  {
+    "id": "as-pc-018", "scenario": 0, "domain": 3, "task": "3.3", "type": "single", "select": 1,
+    "stem": "An HR coordinator uses the most capable model at the highest effort to correct typos in short internal notices, and complains that each one takes a long time. What is the most appropriate change?",
+    "options": [
+      { "key": "A", "text": "Keep the current settings, because the largest model is always the safest choice." },
+      { "key": "B", "text": "Split each notice into several separate chats so each one is shorter." },
+      { "key": "C", "text": "Turn on Research so Claude can check each spelling against the web." },
+      { "key": "D", "text": "Use a faster tier or a lower effort level for simple proofreading." }
+    ],
+    "answer": ["D"],
+    "explanation": "Higher capability and effort make responses slower and use more allowance, which is wasted on simple edits. A faster tier or lower effort suits routine proofreading and keeps the work quick.",
+    "distractors": {
+      "A": "The largest model is not automatically the right fit; here it adds delay and usage with no benefit.",
+      "B": "Splitting short notices adds work and does nothing about the slow settings.",
+      "C": "Research is slower still and is meant for multi-source investigation, not spelling checks."
+    },
+    "difficulty": 1, "tags": ["model-selection", "effort", "speed"]
+  },
+  {
+    "id": "as-pc-019", "scenario": 0, "domain": 3, "task": "3.4", "type": "single", "select": 1,
+    "stem": "A project manager has used one chat for several weeks to cover three different projects. Responses are now slow and sometimes mix up details between the projects. What is the best action?",
+    "options": [
+      { "key": "A", "text": "Ask Claude to summarise the current project's decisions, then start a new chat with that summary." },
+      { "key": "B", "text": "Keep going in the same chat and repeat the project name at the start of every message." },
+      { "key": "C", "text": "Delete all past chats so Claude has a completely empty memory to work from." },
+      { "key": "D", "text": "Switch to the fastest tier so the long chat responds more quickly." }
+    ],
+    "answer": ["A"],
+    "explanation": "A long chat that drifts across topics uses more allowance with each message and invites confusion. Restarting with a concise summary of decisions keeps what matters and gives Claude a focused context for one topic.",
+    "distractors": {
+      "B": "Repeated reminders don't shrink the bloated, mixed conversation causing the problem.",
+      "C": "Deleting chats loses useful history and doesn't remove saved memories; a focused restart is enough.",
+      "D": "A faster model doesn't fix mixed-up context, and it may reduce quality on project work."
+    },
+    "difficulty": 1, "tags": ["context", "restart", "summarize"]
+  },
+  {
+    "id": "as-pc-020", "scenario": 0, "domain": 3, "task": "3.4", "type": "single", "select": 1,
+    "stem": "A communications officer wants every one of their chats to use UK spelling and metric units without having to repeat it. What is the best way to persist this preference?",
+    "options": [
+      { "key": "A", "text": "Paste the preference at the top of every message they send." },
+      { "key": "B", "text": "Add it to their account-wide Instructions for Claude." },
+      { "key": "C", "text": "Keep a single chat open forever so the preference stays in view." },
+      { "key": "D", "text": "Mention the preference once in an incognito chat." }
+    ],
+    "answer": ["B"],
+    "explanation": "Instructions for Claude are account-wide and apply to all of a person's conversations, which suits a stable personal preference. Persisting it once removes the need to repeat it and keeps chats focused.",
+    "distractors": {
+      "A": "Repeating it in every message works but wastes effort and is easy to forget.",
+      "C": "One endless chat grows costly and cluttered, and the preference still wouldn't reach new chats.",
+      "D": "Incognito chats aren't saved to memory or history, so nothing would persist."
+    },
+    "difficulty": 2, "tags": ["persist", "instructions", "memory"]
+  },
+  {
+    "id": "as-pc-021", "scenario": 0, "domain": 3, "task": "3.4", "type": "single", "select": 1,
+    "stem": "A teacher wants Claude's help phrasing a sensitive note about a student situation and does not want this conversation saved to chat history or to memory. School policy allows the task if no student names are shared. What is the most appropriate approach?",
+    "options": [
+      { "key": "A", "text": "Use a normal chat with the student's full name, then delete the chat afterwards." },
+      { "key": "B", "text": "Add the details to the class Project so they're stored with the rest of the course." },
+      { "key": "C", "text": "Use an incognito chat and leave out the student's name, as the policy requires." },
+      { "key": "D", "text": "Use a normal chat and ask Claude at the end to keep it confidential." }
+    ],
+    "answer": ["C"],
+    "explanation": "Incognito chats are not saved to chat history or memory and do not use existing memory, which fits a sensitive one-off. Leaving out the name still matters because policy governs what may be shared at all.",
+    "distractors": {
+      "A": "Sharing the name breaks policy, and deleting a chat does not remove memories already made from it.",
+      "B": "Project knowledge is shared context for every chat in the Project, the opposite of what is wanted.",
+      "D": "A request for confidentiality doesn't stop a normal chat being saved to history and memory."
+    },
+    "difficulty": 3, "tags": ["incognito", "memory", "sensitive-data"]
+  },
+  {
+    "id": "as-pc-022", "scenario": 0, "domain": 3, "task": "3.4", "type": "single", "select": 1,
+    "stem": "An analyst worked out a set of pricing conclusions in one chat inside a Project. The next day they open a new chat in the same Project and are surprised Claude doesn't know those conclusions. What is the cause and the best fix?",
+    "options": [
+      { "key": "A", "text": "The Project is broken; delete it and create a new one with the same files." },
+      { "key": "B", "text": "The model tier is too small; a more capable tier would recall the other chat." },
+      { "key": "C", "text": "Claude only remembers within one chat, so all future work must stay in the first chat." },
+      { "key": "D", "text": "Chats don't share context; add a summary of the conclusions to the Project knowledge." }
+    ],
+    "answer": ["D"],
+    "explanation": "Context is not shared between chats in a Project unless the information is added to the Project's knowledge. Saving a summary of the conclusions there makes them available to every future chat in that Project.",
+    "distractors": {
+      "A": "Nothing is broken; separate chats are designed not to share their conversation.",
+      "B": "Model capability doesn't make one chat see another chat's conversation.",
+      "C": "Keeping everything in one chat leads to an overlong conversation; persisting to knowledge is the better way."
+    },
+    "difficulty": 2, "tags": ["projects", "persist", "context"]
+  },
+  {
+    "id": "as-pc-023", "scenario": 0, "domain": 3, "task": "3.4", "type": "multi", "select": 2,
+    "stem": "A consultant's chat about a client's process redesign has become very long, and future work on the same engagement is planned in that client's Project. Which TWO actions best manage context? (Select TWO.)",
+    "options": [
+      { "key": "A", "text": "Re-paste all the earlier documents into the same chat to refresh Claude's view of them." },
+      { "key": "B", "text": "Switch to a smaller model so that more of the conversation fits." },
+      { "key": "C", "text": "Ask Claude for a concise summary of decisions and open questions, and continue in a new chat with it." },
+      { "key": "D", "text": "Delete the chat so Claude forgets it, and expect the next chat to recall the decisions anyway." },
+      { "key": "E", "text": "Save the final process map and decision log to the Project knowledge for future chats." }
+    ],
+    "answer": ["C", "E"],
+    "explanation": "Restarting with a summary keeps the essentials while dropping the bulk of a long conversation. Persisting durable outputs in Project knowledge makes them available to every later chat, since chats don't share context on their own.",
+    "distractors": {
+      "A": "Adding more material to an already long chat makes the context problem worse.",
+      "B": "A smaller model does not give more room and may reduce quality.",
+      "D": "Deleting the chat loses the work, and a new chat would not recall decisions that were never saved."
+    },
+    "difficulty": 2, "tags": ["context", "summarize", "persist"]
+  },
+  {
+    "id": "as-pc-024", "scenario": 0, "domain": 3, "task": "3.4", "type": "single", "select": 1,
+    "stem": "Months ago an account manager told Claude to remember a client's main contact. That contact has since left, yet Claude keeps suggesting the old name in new chats. What is the best fix?",
+    "options": [
+      { "key": "A", "text": "Delete the old chat in which the contact was first mentioned." },
+      { "key": "B", "text": "Tell Claude to update or forget it, or edit that memory topic directly." },
+      { "key": "C", "text": "Use only incognito chats from now on so memory is never used." },
+      { "key": "D", "text": "Reset all memory, permanently deleting everything Claude has saved." }
+    ],
+    "answer": ["B"],
+    "explanation": "Memory is saved as topics that you can view and edit, and you can tell Claude what to change or forget. Correcting the one outdated topic fixes the problem while keeping the rest of the useful memory.",
+    "distractors": {
+      "A": "Deleting a conversation does not remove memories that were created from it.",
+      "C": "Giving up memory and history entirely is an overreaction to one outdated fact.",
+      "D": "Resetting erases all memory, including useful topics, when only one needs correcting."
+    },
+    "difficulty": 3, "tags": ["memory", "maintenance"]
+  },
+  {
+    "id": "as-pc-025", "scenario": 0, "domain": 5, "task": "5.1", "type": "single", "select": 1,
+    "stem": "A procurement lead named a Project \"Vendor review, answer as a procurement analyst in a formal tone\" and repeated that in the project description. Claude's replies in the Project are casual and generic. What is the most likely cause?",
+    "options": [
+      { "key": "A", "text": "The Project has too many knowledge files for Claude to follow any tone at all." },
+      { "key": "B", "text": "The selected model cannot write formally inside a Project." },
+      { "key": "C", "text": "Claude cannot see the Project's name or description; this belongs in project instructions." },
+      { "key": "D", "text": "Tone requests only work when repeated at the start of each new chat." }
+    ],
+    "answer": ["C"],
+    "explanation": "The Project's name and description are not visible to Claude. Role and tone guidance must go into the project instructions, which apply to every chat in the Project.",
+    "distractors": {
+      "A": "The number of files does not stop Claude following clear instructions; here there are none it can see.",
+      "B": "Every tier can write formally; the guidance simply never reached Claude.",
+      "D": "Project instructions apply automatically to all chats, so repeating them each time is unnecessary."
+    },
+    "difficulty": 2, "tags": ["projects", "instructions"]
+  },
+  {
+    "id": "as-pc-026", "scenario": 0, "domain": 5, "task": "5.1", "type": "single", "select": 1,
+    "stem": "A support manager is setting up a Project to draft customer replies. Which split between project instructions and project knowledge is most appropriate?",
+    "options": [
+      { "key": "A", "text": "Paste the full text of every policy document into the instructions and leave the project knowledge completely empty." },
+      { "key": "B", "text": "Upload every file as knowledge and leave the instructions blank so nothing is restricted." },
+      { "key": "C", "text": "Put no rules in the Project and remind Claude of the tone and format in each message." },
+      { "key": "D", "text": "Tone, format and escalation rules in instructions; current FAQs and policies as knowledge." }
+    ],
+    "answer": ["D"],
+    "explanation": "Project instructions tell Claude how to behave in every chat, such as role, tone, format and when to escalate. Project knowledge holds what Claude should know, such as current policies and FAQs, as context for every chat.",
+    "distractors": {
+      "A": "Long reference text belongs in knowledge; instructions should stay short and focused on behaviour.",
+      "B": "Without instructions, replies will vary in tone, format and escalation handling.",
+      "C": "Repeating rules in each message is error-prone and defeats the purpose of a Project."
+    },
+    "difficulty": 2, "tags": ["projects", "instructions", "knowledge"]
+  },
+  {
+    "id": "as-pc-027", "scenario": 0, "domain": 5, "task": "5.1", "type": "single", "select": 1,
+    "stem": "A large Project holds dozens of files with names like \"doc1\" and \"final_v2\", including several unrelated to its purpose. Answers sometimes draw on the wrong document. Which change will most improve this?",
+    "options": [
+      { "key": "A", "text": "Give files clear descriptive names, remove unrelated ones, and name the document in questions." },
+      { "key": "B", "text": "Merge every file into one large untitled document so everything sits in one place." },
+      { "key": "C", "text": "Upload each file a second time so the important ones are more likely to be picked." },
+      { "key": "D", "text": "Rename the Project itself so its title describes all of the documents inside." }
+    ],
+    "answer": ["A"],
+    "explanation": "When project knowledge is large, Claude retrieves the relevant parts, and clear filenames, related content kept together and naming the document in your question all help it find the right one. Removing unrelated files also keeps answers focused.",
+    "distractors": {
+      "B": "One untitled mega-file makes it harder, not easier, to locate the right content.",
+      "C": "Duplicate files add clutter and can create conflicting versions.",
+      "D": "Claude cannot see the Project's name, so renaming it changes nothing."
+    },
+    "difficulty": 3, "tags": ["projects", "knowledge", "retrieval"]
+  },
+  {
+    "id": "as-pc-028", "scenario": 0, "domain": 5, "task": "5.1", "type": "multi", "select": 2,
+    "stem": "A product manager is configuring a Project to support a product launch with the marketing team. Which TWO steps follow good practice? (Select TWO.)",
+    "options": [
+      { "key": "A", "text": "Put the key audience details in the project description field." },
+      { "key": "B", "text": "Write short, specific instructions covering audience, tone and output format." },
+      { "key": "C", "text": "Upload every file from the shared drive in case something turns out to be useful." },
+      { "key": "D", "text": "Upload the current launch brief, messaging guide and FAQ with descriptive file names." },
+      { "key": "E", "text": "Give every colleague Can edit access so anyone can adjust the instructions." }
+    ],
+    "answer": ["B", "D"],
+    "explanation": "A well-configured Project pairs concise, specific instructions with current, relevant, clearly named knowledge files. Both apply to every chat in the Project, giving the team consistent results.",
+    "distractors": {
+      "A": "Claude cannot see the project description, so details placed there are ignored.",
+      "C": "Unrelated files dilute answers and use more allowance.",
+      "E": "Broad edit rights let instructions drift; Can edit is best kept for maintainers."
+    },
+    "difficulty": 1, "tags": ["projects", "configuration"]
+  },
+  {
+    "id": "as-pc-029", "scenario": 0, "domain": 5, "task": "5.1", "type": "single", "select": 1,
+    "stem": "On a Team plan, 20 sales representatives will use a sales-enablement Project to draft proposals. Only the enablement manager should change its instructions and files. How should the Project be shared?",
+    "options": [
+      { "key": "A", "text": "Give all 20 representatives Can edit so they can fix anything they spot." },
+      { "key": "B", "text": "Give the representatives Can view and the manager Can edit." },
+      { "key": "C", "text": "Email each representative the files to upload into their own chats." },
+      { "key": "D", "text": "Share it outside the organisation so access is never blocked." }
+    ],
+    "answer": ["B"],
+    "explanation": "Can view lets members see the knowledge and instructions and chat in the Project without changing them, while Can edit allows changing instructions, knowledge and members. Matching permissions to roles keeps one maintained configuration.",
+    "distractors": {
+      "A": "Giving everyone edit rights invites uncoordinated changes and drift.",
+      "C": "Separate uploads create many unmanaged copies that quickly go out of date.",
+      "D": "Sharing beyond the organisation is unnecessary and risks exposing internal material."
+    },
+    "difficulty": 2, "tags": ["projects", "sharing", "permissions"]
+  },
+  {
+    "id": "as-pc-030", "scenario": 0, "domain": 5, "task": "5.1", "type": "single", "select": 1,
+    "stem": "A lecturer wants Claude to give feedback on student drafts against the course rubric, consistently across every chat for the semester. What is the best configuration?",
+    "options": [
+      { "key": "A", "text": "Paste the full rubric into each new chat at the start, before asking Claude for feedback on the draft." },
+      { "key": "B", "text": "Rely on memory to recall the rubric from a chat earlier in the term." },
+      { "key": "C", "text": "A Project with the rubric as knowledge, instructions on feedback format, tested on samples." },
+      { "key": "D", "text": "Use Research to find a suitable rubric online for each draft." }
+    ],
+    "answer": ["C"],
+    "explanation": "A Project applies its knowledge and instructions to every chat, so placing the rubric there and describing the feedback format gives consistent results all semester. Testing on sample drafts confirms it works before relying on it.",
+    "distractors": {
+      "A": "Pasting each time is repetitive and invites using different rubric versions.",
+      "B": "Memory saves topics, not a reliable full copy of a reference document.",
+      "D": "An online rubric is not the course rubric and would make feedback inconsistent."
+    },
+    "difficulty": 1, "tags": ["projects", "knowledge", "education"]
+  },
+  {
+    "id": "as-pc-031", "scenario": 0, "domain": 5, "task": "5.2", "type": "single", "select": 1,
+    "stem": "A marketing team's price sheet is a Google Doc that is updated every week. The copy uploaded to their Project keeps going out of date, so Claude quotes old prices. What is the best fix?",
+    "options": [
+      { "key": "A", "text": "Upload a fresh copy of the price sheet into every chat that needs it." },
+      { "key": "B", "text": "Add an instruction telling Claude that prices may have changed." },
+      { "key": "C", "text": "Use Research to look up the company's prices on the public web." },
+      { "key": "D", "text": "Add the doc through the Google Drive connector so it stays synced." }
+    ],
+    "answer": ["D"],
+    "explanation": "An uploaded file is a snapshot, but Google Docs added through the Drive connector stay synced to the latest version. For a living document that changes weekly, connecting it removes the stale-copy problem.",
+    "distractors": {
+      "A": "Repeated uploads are tedious and easy to forget, so stale copies will reappear.",
+      "B": "A warning doesn't give Claude the new prices; it still only sees the old file.",
+      "C": "Public web results may be incomplete or outdated and are not the team's source of truth."
+    },
+    "difficulty": 2, "tags": ["connectors", "google-drive", "knowledge"]
+  },
+  {
+    "id": "as-pc-032", "scenario": 0, "domain": 5, "task": "5.2", "type": "single", "select": 1,
+    "stem": "A new employee plans to connect their work Gmail and the whole company Drive to every chat \"so Claude has everything\". The work they do is mostly drafting blog posts. What is the best guidance?",
+    "options": [
+      { "key": "A", "text": "Connect only trusted services the work needs, and only in chats that need them." },
+      { "key": "B", "text": "Connect everything now, because more data always makes Claude's answers better." },
+      { "key": "C", "text": "Connect everything, then ask Claude not to read any of the sensitive messages." },
+      { "key": "D", "text": "Share their passwords with an admin so the admin can connect everything for them." }
+    ],
+    "answer": ["A"],
+    "explanation": "Connecting a service lets Claude access and potentially modify data there, so you should connect only services you trust and need. Unneeded connectors also add noise and use allowance, so limit them to the chats where they help.",
+    "distractors": {
+      "B": "Extra data adds noise and exposure without improving blog drafts.",
+      "C": "An instruction is not an access control; the connection itself grants the access.",
+      "D": "Sharing passwords is unsafe; each person signs in to connectors with their own account."
+    },
+    "difficulty": 2, "tags": ["connectors", "least-access"]
+  },
+  {
+    "id": "as-pc-033", "scenario": 0, "domain": 5, "task": "5.2", "type": "single", "select": 1,
+    "stem": "Using the Gmail connector, an analyst asks Claude to summarise the contract PDF attached to a vendor's email. The summary covers the email but none of the contract's terms. What is the most likely reason and the best next step?",
+    "options": [
+      { "key": "A", "text": "The model is too small; switch to the most capable tier and ask again." },
+      { "key": "B", "text": "The connector sees attachment details, not contents; upload the PDF itself." },
+      { "key": "C", "text": "The connector is broken; remove it and reconnect it before trying again." },
+      { "key": "D", "text": "Claude is refusing to read contracts; rephrase the request more politely." }
+    ],
+    "answer": ["B"],
+    "explanation": "The Gmail connector can see attachment metadata but not the attachment's content. Uploading the PDF directly gives Claude the actual contract text to summarise.",
+    "distractors": {
+      "A": "No model tier can summarise content it was never given.",
+      "C": "The connector is working as designed, so reconnecting changes nothing.",
+      "D": "This is a limit on what the connector can see, not a refusal."
+    },
+    "difficulty": 3, "tags": ["connectors", "gmail"]
+  },
+  {
+    "id": "as-pc-034", "scenario": 0, "domain": 5, "task": "5.2", "type": "single", "select": 1,
+    "stem": "On a Team plan, a colleague says: \"Now the owner has enabled the Google Drive connector, Claude can read all of our company's Drive files for everyone.\" Which response is accurate?",
+    "options": [
+      { "key": "A", "text": "Correct; once enabled, Claude can read every file in the organisation's Drive." },
+      { "key": "B", "text": "Correct; enabling it signs every member in automatically with shared access." },
+      { "key": "C", "text": "Not quite; each person signs in, and Claude only sees what that person can see." },
+      { "key": "D", "text": "Not quite; Claude can open files you lack access to, but only if you ask it to." }
+    ],
+    "answer": ["C"],
+    "explanation": "An owner enabling a connector makes it available but does not grant access; each person still authenticates individually. Claude inherits that person's permissions in the connected service, so it cannot reach files they cannot reach.",
+    "distractors": {
+      "A": "Enabling makes the connector available; it doesn't open all files to Claude.",
+      "B": "Members still authenticate individually after the owner enables a connector.",
+      "D": "Claude inherits your permissions and cannot exceed them, whatever you ask."
+    },
+    "difficulty": 3, "tags": ["connectors", "permissions", "admin"]
+  },
+  {
+    "id": "as-pc-035", "scenario": 0, "domain": 5, "task": "5.2", "type": "multi", "select": 2,
+    "stem": "An operations coordinator wants Claude to work with the company's internal ticketing tool, which is not in the connector directory. Which TWO actions are appropriate? (Select TWO.)",
+    "options": [
+      { "key": "A", "text": "Paste their own login details for the tool into the chat so Claude can sign in." },
+      { "key": "B", "text": "Raise the need with an admin or a Claude Developer to evaluate a custom connector." },
+      { "key": "C", "text": "Find an unverified connector online and connect it without anyone reviewing it." },
+      { "key": "D", "text": "Meanwhile, export the relevant non-sensitive tickets and upload them to a chat." },
+      { "key": "E", "text": "Ask Claude to log into the tool directly and fetch the tickets itself." }
+    ],
+    "answer": ["B", "D"],
+    "explanation": "Building or adding a custom connector is technical work that owners and developers handle, so the Associate's role is to escalate the need. In the meantime, uploading a suitable export keeps the work moving without creating new access risks.",
+    "distractors": {
+      "A": "Sharing credentials in a chat is a security risk and does not create a connection.",
+      "C": "Unverified connectors can access and act on data, so they need review and approval first.",
+      "E": "Claude has no access to tools that are not connected, and may wrongly claim it does."
+    },
+    "difficulty": 2, "tags": ["connectors", "escalation"]
+  },
+  {
+    "id": "as-pc-036", "scenario": 0, "domain": 5, "task": "5.2", "type": "single", "select": 1,
+    "stem": "Using the Gmail connector, Claude has drafted a reply to a client and is asking for approval before sending it. What is the best practice?",
+    "options": [
+      { "key": "A", "text": "Turn off approvals for all future actions so drafts are sent without delay." },
+      { "key": "B", "text": "Approve it straight away, since Claude drafted the reply from the client's own email." },
+      { "key": "C", "text": "Assume the reply has already gone out and move on to the next task." },
+      { "key": "D", "text": "Check the draft's content and recipients, then approve, edit or decline it." }
+    ],
+    "answer": ["D"],
+    "explanation": "By default, actions Claude takes on your behalf through connectors need your explicit approval. That checkpoint only protects you if you read the draft and recipients before it goes to a client.",
+    "distractors": {
+      "A": "Removing the approval step lets mistakes reach clients unchecked.",
+      "B": "Approving without reading defeats the purpose of the review step.",
+      "C": "The reply hasn't been sent; it is waiting for approval."
+    },
+    "difficulty": 1, "tags": ["connectors", "gmail", "human-review"]
+  },
+  {
+    "id": "as-pc-037", "scenario": 0, "domain": 5, "task": "5.3", "type": "single", "select": 1,
+    "stem": "A Project's instructions say \"Be professional and helpful. Keep it short.\" Replies vary widely in tone and length. Which rewrite is most effective?",
+    "options": [
+      { "key": "A", "text": "\"Formal UK English, no contractions; under 150 words; end with one next step.\"" },
+      { "key": "B", "text": "\"Be very professional and very helpful, and please keep it really short.\"" },
+      { "key": "C", "text": "\"Be professional, polished, warm, engaging, crisp, helpful and brief.\"" },
+      { "key": "D", "text": "Delete the instructions so Claude can choose a suitable tone and length." }
+    ],
+    "answer": ["A"],
+    "explanation": "Effective standing instructions are specific and checkable, for example \"formal English, no contractions\" rather than \"be professional\". Concrete rules on tone, length and structure give consistent replies.",
+    "distractors": {
+      "B": "Intensifiers don't make a vague rule any more specific.",
+      "C": "More adjectives add vagueness and may conflict with each other.",
+      "D": "Removing the instructions makes replies even less consistent."
+    },
+    "difficulty": 1, "tags": ["instructions", "specificity"]
+  },
+  {
+    "id": "as-pc-038", "scenario": 0, "domain": 5, "task": "5.3", "type": "single", "select": 1,
+    "stem": "A consultant serves several clients. One client requires US spelling and its own product terms; all the others use UK spelling. Where should the client-specific rules go?",
+    "options": [
+      { "key": "A", "text": "In the consultant's account-wide Instructions for Claude." },
+      { "key": "B", "text": "In the project instructions of that client's Project." },
+      { "key": "C", "text": "Typed as a reminder at the start of every message." },
+      { "key": "D", "text": "In the organisation's instructions for all staff." }
+    ],
+    "answer": ["B"],
+    "explanation": "Project instructions apply only to chats within that Project, so they are the right home for one client's rules. Account-wide instructions should hold preferences that apply to all of the consultant's work.",
+    "distractors": {
+      "A": "Account-wide rules would push US spelling into every other client's work.",
+      "C": "Manual reminders are repetitive and easy to forget.",
+      "D": "Organisation instructions apply to everyone, not one consultant's single client."
+    },
+    "difficulty": 2, "tags": ["instructions", "scope", "projects"]
+  },
+  {
+    "id": "as-pc-039", "scenario": 0, "domain": 5, "task": "5.3", "type": "single", "select": 1,
+    "stem": "An Enterprise organisation's owners set an organization instruction to add a confidentiality line to drafted documents. One employee's personal instructions say never to add footers or disclaimers. What should the employee expect?",
+    "options": [
+      { "key": "A", "text": "The personal instruction wins, because it is more specific to that employee." },
+      { "key": "B", "text": "Claude alternates between the two rules from one document to the next." },
+      { "key": "C", "text": "The organization instruction takes precedence when the two conflict." },
+      { "key": "D", "text": "Whichever instruction was saved most recently is the one that applies." }
+    ],
+    "answer": ["C"],
+    "explanation": "Organization instructions apply to every conversation in the organisation and take precedence over individual instructions when they conflict. Employees should align their personal instructions with the organisation's rules.",
+    "distractors": {
+      "A": "On a conflict the organisation's instruction wins, not the personal one.",
+      "B": "Precedence is defined; Claude does not alternate between conflicting rules.",
+      "D": "Precedence depends on the level, not on when the instruction was saved."
+    },
+    "difficulty": 3, "tags": ["instructions", "organization"]
+  },
+  {
+    "id": "as-pc-040", "scenario": 0, "domain": 5, "task": "5.3", "type": "single", "select": 1,
+    "stem": "A Project's instructions have grown to 40 rules added by different people, including \"always use bullet points\" and \"never use lists\". Output format is now unpredictable. What is the best fix?",
+    "options": [
+      { "key": "A", "text": "Add one more rule telling Claude to follow whichever rule is most important." },
+      { "key": "B", "text": "Switch to the most capable model so it can work out what was meant." },
+      { "key": "C", "text": "Repeat the bullet-point rule three times so it outweighs the other one." },
+      { "key": "D", "text": "Consolidate into a short, consistent set without contradictions, then test." }
+    ],
+    "answer": ["D"],
+    "explanation": "Good instructions are concise, specific and consistent, because contradictions leave Claude guessing. Consolidating the rules and testing the result restores predictable output.",
+    "distractors": {
+      "A": "Claude has no way to tell which rule matters most, so the conflict remains.",
+      "B": "A stronger model cannot resolve genuinely contradictory instructions.",
+      "C": "Duplicating rules adds bloat and leaves the contradiction in place."
+    },
+    "difficulty": 2, "tags": ["instructions", "consistency"]
+  },
+  {
+    "id": "as-pc-041", "scenario": 0, "domain": 5, "task": "5.3", "type": "multi", "select": 2,
+    "stem": "A communications manager is writing standing instructions for a Project that drafts press releases. Which TWO additions would make the instructions more effective? (Select TWO.)",
+    "options": [
+      { "key": "A", "text": "\"Be amazing and engaging in every release.\"" },
+      { "key": "B", "text": "A short example of an approved opening paragraph." },
+      { "key": "C", "text": "A line telling Claude to ignore its safety guidelines for bolder headlines." },
+      { "key": "D", "text": "The reason behind a rule, such as \"journalists skim, so put the news in the first sentence\"." },
+      { "key": "E", "text": "Every preference the team has ever mentioned, pasted as one five-page block." }
+    ],
+    "answer": ["B", "D"],
+    "explanation": "Explaining why a rule matters helps Claude apply it sensibly, and a short example is one of the most reliable ways to steer tone and structure. Both keep instructions concise while making them clearer.",
+    "distractors": {
+      "A": "Vague adjectives give Claude no concrete standard to follow.",
+      "C": "Instructions cannot override Claude's safety behaviour and should never try to.",
+      "E": "Long, unfocused instructions are read with every message and invite contradictions."
+    },
+    "difficulty": 2, "tags": ["instructions", "examples", "context"]
+  },
+  {
+    "id": "as-pc-042", "scenario": 0, "domain": 5, "task": "5.3", "type": "single", "select": 1,
+    "stem": "Staff across many chats and Projects keep re-explaining the same multi-step procedure and house formatting for the monthly board report. Which approach best fits this need?",
+    "options": [
+      { "key": "A", "text": "Package the procedure as a skill, or ask the admin to provide one, so it loads when relevant." },
+      { "key": "B", "text": "Write the full procedure into the organization instructions so every chat always includes it." },
+      { "key": "C", "text": "Keep pasting the procedure into each chat, because there is no way to reuse it." },
+      { "key": "D", "text": "Ask Claude to remember the procedure once and rely on memory to reproduce it exactly." }
+    ],
+    "answer": ["A"],
+    "explanation": "Skills package a repeatable procedure that Claude loads only when the task is relevant, and they work across chats rather than inside one Project. Instructions, by contrast, are included in every conversation, so long procedures there add bulk to unrelated work.",
+    "distractors": {
+      "B": "Organization instructions are read in every conversation and should stay concise, not hold a long procedure.",
+      "C": "Skills exist precisely to avoid repeating a procedure in every chat.",
+      "D": "Memory saves topics as you chat and is not a reliable store for a detailed procedure."
+    },
+    "difficulty": 3, "tags": ["skills", "instructions"]
+  },
+  {
+    "id": "as-pc-043", "scenario": 0, "domain": 5, "task": "5.4", "type": "single", "select": 1,
+    "stem": "A travel-booking Project contains both last year's and this year's travel policy. Answers sometimes quote last year's spending limits. What is the best fix?",
+    "options": [
+      { "key": "A", "text": "Add an instruction to prefer the newer policy while keeping both files in place." },
+      { "key": "B", "text": "Remove last year's policy, keep the current one, and retest typical questions." },
+      { "key": "C", "text": "Tell users to double-check every spending limit Claude gives them." },
+      { "key": "D", "text": "Upload this year's policy a second time so it appears more often." }
+    ],
+    "answer": ["B"],
+    "explanation": "Conflicting versions in project knowledge produce inconsistent answers, so outdated files should be removed rather than kept alongside the new one. Retesting with typical questions confirms the fix.",
+    "distractors": {
+      "A": "Leaving the old policy in place keeps the conflict and still risks old limits appearing.",
+      "C": "This pushes the cost of stale knowledge onto users instead of fixing it.",
+      "D": "A duplicate adds clutter and leaves the outdated policy in the knowledge."
+    },
+    "difficulty": 2, "tags": ["maintenance", "knowledge", "versions"]
+  },
+  {
+    "id": "as-pc-044", "scenario": 0, "domain": 5, "task": "5.4", "type": "single", "select": 1,
+    "stem": "HR changed the parental leave policy today. The HR help Project still holds the old policy file and is used by staff across the company. What should the Project maintainer do?",
+    "options": [
+      { "key": "A", "text": "Correct Claude in each chat whenever someone notices an old answer." },
+      { "key": "B", "text": "Wait until employees complain, then decide whether a change is worth it." },
+      { "key": "C", "text": "Replace the policy file, update instructions if needed, and tell users." },
+      { "key": "D", "text": "Copy the Project with the new file and leave the old one available too." }
+    ],
+    "answer": ["C"],
+    "explanation": "Keeping a configuration current means fixing the source: replace the outdated knowledge, adjust instructions if the rules changed, and inform the people who rely on it. Fixing it once in the Project corrects every future chat.",
+    "distractors": {
+      "A": "Chat-by-chat corrections don't change the Project, so the old answer keeps coming back.",
+      "B": "Waiting means staff act on the wrong policy in the meantime.",
+      "D": "Two live Projects with different policies cause confusion over which is correct."
+    },
+    "difficulty": 1, "tags": ["maintenance", "knowledge", "communication"]
+  },
+  {
+    "id": "as-pc-045", "scenario": 0, "domain": 5, "task": "5.4", "type": "single", "select": 1,
+    "stem": "Thirty people use a shared reporting Project. Its maintainer plans to change the instructions so reports use a new section structure. What is the best practice?",
+    "options": [
+      { "key": "A", "text": "Make the change quietly so that users are not distracted by an announcement." },
+      { "key": "B", "text": "Let each of the 30 users rewrite the instructions to suit their own needs." },
+      { "key": "C", "text": "Email users the old instructions so they can keep using them if they prefer." },
+      { "key": "D", "text": "Test the new instructions on sample requests, then tell users what changed." }
+    ],
+    "answer": ["D"],
+    "explanation": "Changes to a shared configuration should be tested before rollout and communicated to the people who depend on it. Testing catches problems early, and informing users explains why their outputs now look different.",
+    "distractors": {
+      "A": "Silent changes surprise users and make unexpected output look like an error.",
+      "B": "Uncoordinated edits by many people make the instructions drift and conflict.",
+      "C": "Keeping old instructions in circulation splits the team across two formats."
+    },
+    "difficulty": 3, "tags": ["maintenance", "instructions", "communication"]
+  },
+  {
+    "id": "as-pc-046", "scenario": 0, "domain": 5, "task": "5.4", "type": "single", "select": 1,
+    "stem": "A marketing Project has collected dozens of files from campaigns that ended long ago. Answers now pull in details from old campaigns and the team's allowance runs low. What is the most effective change?",
+    "options": [
+      { "key": "A", "text": "Remove files that are no longer used and keep the instructions concise." },
+      { "key": "B", "text": "Add more files so the old campaigns are outweighed by the newer material." },
+      { "key": "C", "text": "Switch to the most capable model so it can ignore the irrelevant files." },
+      { "key": "D", "text": "Create a separate Project for every individual question the team asks." }
+    ],
+    "answer": ["A"],
+    "explanation": "Removing unused project files and keeping instructions short is recommended for saving context and usage, and it keeps answers focused on current material. A lean configuration fixes the cause instead of working around it.",
+    "distractors": {
+      "B": "More files add further noise and use rather than removing the outdated material.",
+      "C": "A more capable model uses more allowance and still sees the outdated files.",
+      "D": "A Project per question loses the shared context that makes Projects useful."
+    },
+    "difficulty": 2, "tags": ["maintenance", "knowledge", "usage"]
+  },
+  {
+    "id": "as-pc-047", "scenario": 0, "domain": 5, "task": "5.4", "type": "single", "select": 1,
+    "stem": "A department has several shared Projects but nobody is clearly responsible for them, and files and instructions are often out of date. Which approach best keeps them current?",
+    "options": [
+      { "key": "A", "text": "Give every user Can edit so anyone can update files whenever they notice a problem." },
+      { "key": "B", "text": "Name an owner per Project, set a review rhythm, keep a change note, and retest." },
+      { "key": "C", "text": "Review the Projects only when an output causes a serious, visible mistake." },
+      { "key": "D", "text": "Freeze each Project after launch so its answers never change." }
+    ],
+    "answer": ["B"],
+    "explanation": "Configurations go stale as sources change, so they need clear ownership and regular review. A named owner, a review schedule, a simple change record and retesting keep knowledge and instructions accurate.",
+    "distractors": {
+      "A": "Everyone editing without coordination produces drift and conflicting changes.",
+      "C": "Waiting for serious mistakes lets stale knowledge cause harm first.",
+      "D": "Freezing guarantees the knowledge goes out of date as policies change."
+    },
+    "difficulty": 2, "tags": ["maintenance", "governance", "ownership"]
+  },
+  {
+    "id": "as-pc-048", "scenario": 0, "domain": 5, "task": "5.4", "type": "single", "select": 1,
+    "stem": "A planner's answers keep including details from unrelated emails. They had turned on the Gmail connector for a past project but no longer need it for their current work. What is the most appropriate step?",
+    "options": [
+      { "key": "A", "text": "Delete the Gmail account so Claude can no longer reach it." },
+      { "key": "B", "text": "Turn on Research so Claude can filter the emails more carefully." },
+      { "key": "C", "text": "Turn off the Gmail connector for chats where it isn't needed." },
+      { "key": "D", "text": "Write longer prompts asking Claude to ignore all of the email." }
+    ],
+    "answer": ["C"],
+    "explanation": "Maintaining a configuration includes switching off connectors the work no longer needs. Unused connectors add irrelevant content, use allowance and keep unnecessary access open.",
+    "distractors": {
+      "A": "Deleting a whole email account is drastic and unnecessary; turning off the connector is enough.",
+      "B": "Research would search more sources, not fewer, and uses more allowance.",
+      "D": "Longer prompts work around the problem instead of removing the unneeded access."
+    },
+    "difficulty": 1, "tags": ["maintenance", "connectors"]
+  }
+]

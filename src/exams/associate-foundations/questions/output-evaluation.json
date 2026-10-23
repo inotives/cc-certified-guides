@@ -1,0 +1,806 @@
+[
+  {
+    "id": "as-oe-001", "scenario": 0, "domain": 2, "task": "2.1", "type": "single", "select": 1,
+    "stem": "A marketing coordinator asks Claude to summarize a 40-page customer survey report for a team meeting. The summary is well written and covers the first half of the report in detail, but says nothing about the final three sections, which cover pricing complaints. What is the most appropriate next step?",
+    "options": [
+      { "key": "A", "text": "Compare the summary with the report's sections and ask Claude to cover the missing ones." },
+      { "key": "B", "text": "Share the summary, since it is well written and already covers most of the report." },
+      { "key": "C", "text": "Ask Claude to tighten the wording and add headings so the team can skim it." },
+      { "key": "D", "text": "Ask Claude whether the summary is complete and share it if it says yes." }
+    ],
+    "answer": ["A"],
+    "explanation": "Completeness is judged against the source and the request, not against how good the output reads. The summary silently dropped three sections, including the pricing complaints the team most needs, so the gap must be found and filled before sharing.",
+    "distractors": {
+      "B": "Good writing does not make up for missing sections, and the omitted part is the most decision-relevant.",
+      "C": "Polishing the format leaves the content gap untouched.",
+      "D": "Claude's own claim of completeness is not verification; comparing with the source is."
+    },
+    "difficulty": 1,
+    "tags": ["completeness", "summarization"]
+  },
+  {
+    "id": "as-oe-002", "scenario": 0, "domain": 2, "task": "2.1", "type": "single", "select": 1,
+    "stem": "An operations analyst asks Claude to draft a quarterly board report from a spreadsheet of monthly figures. The draft reads well and includes a growth percentage in the opening paragraph. What should the analyst check first before passing the draft to the finance director?",
+    "options": [
+      { "key": "A", "text": "That the tone is formal enough for a board audience." },
+      { "key": "B", "text": "That the key figures and the growth percentage match the spreadsheet and are calculated correctly." },
+      { "key": "C", "text": "That the report uses the company's standard heading styles and fonts." },
+      { "key": "D", "text": "That the report follows the same structure and wording as last quarter's report, so directors can compare the two side by side." }
+    ],
+    "answer": ["B"],
+    "explanation": "Numbers and calculations are the highest-risk details in a business output, and a board report drives decisions. Tracing the figures back to the source data comes before any work on tone or presentation.",
+    "distractors": {
+      "A": "Tone matters, but a formal report with a wrong growth figure is still wrong.",
+      "C": "Formatting does not address whether the figures are correct.",
+      "D": "Matching last quarter's structure helps comparison but does nothing to confirm accuracy."
+    },
+    "difficulty": 2,
+    "tags": ["accuracy", "figures", "board-report"]
+  },
+  {
+    "id": "as-oe-003", "scenario": 0, "domain": 2, "task": "2.1", "type": "single", "select": 1,
+    "stem": "An HR coordinator gave Claude a checklist of eight topics that a new-hire welcome guide must include, and Claude returned a polished guide. What is the most efficient way to evaluate the guide for completeness?",
+    "options": [
+      { "key": "A", "text": "Read the guide for flow and tone, since a polished guide usually means all the topics were covered." },
+      { "key": "B", "text": "Ask Claude to rate how complete the guide is on a scale of 1 to 10." },
+      { "key": "C", "text": "Go through the eight-item checklist and confirm each topic is present and correct." },
+      { "key": "D", "text": "Send the guide to the next group of new hires and ask them to report anything missing." }
+    ],
+    "answer": ["C"],
+    "explanation": "The original requirements are the yardstick for completeness. Ticking the checklist off against the output is quick, objective and catches silent omissions before anyone relies on the guide.",
+    "distractors": {
+      "A": "Polish says nothing about whether every required topic is there.",
+      "B": "A self-rated score is not a reliable signal of completeness.",
+      "D": "Using new hires as testers exposes them to gaps that should have been caught first."
+    },
+    "difficulty": 1,
+    "tags": ["completeness", "requirements"]
+  },
+  {
+    "id": "as-oe-004", "scenario": 0, "domain": 2, "task": "2.1", "type": "single", "select": 1,
+    "stem": "A project manager asks Claude for a list of risks for an office move, with an owner and a due date for each. The list includes twelve sensible risks, but four of them have no owner. How should the project manager treat this output?",
+    "options": [
+      { "key": "A", "text": "Use it as it is, since the risks themselves are the important part of the list." },
+      { "key": "B", "text": "Discard the whole list, because any missing field shows the output cannot be trusted at all." },
+      { "key": "C", "text": "Ask Claude to turn the list into a table so the gaps are less noticeable to readers." },
+      { "key": "D", "text": "Treat it as incomplete and fill in the missing owners before using it." }
+    ],
+    "answer": ["D"],
+    "explanation": "The request asked for an owner for every risk, so the output is incomplete against its own brief. The useful content can be kept, but the gaps must be closed before the list drives any work.",
+    "distractors": {
+      "A": "Unowned risks are exactly the ones that get missed, so the gap matters.",
+      "B": "Throwing away twelve sensible risks over four missing fields wastes useful work.",
+      "C": "Reformatting hides the gap instead of fixing it."
+    },
+    "difficulty": 1,
+    "tags": ["completeness", "project-management"]
+  },
+  {
+    "id": "as-oe-005", "scenario": 0, "domain": 2, "task": "2.1", "type": "single", "select": 1,
+    "stem": "A training manager asks Claude to turn a 25-page compliance policy into a one-page quick reference for staff. Every statement in Claude's version is accurate. What is the main remaining risk the manager should evaluate?",
+    "options": [
+      { "key": "A", "text": "Whether important obligations or exceptions were left out when the policy was condensed." },
+      { "key": "B", "text": "Whether the quick reference sounds friendly enough for staff to read." },
+      { "key": "C", "text": "Whether Claude used its most capable model for the summary, since a stronger model guarantees nothing important is missed." },
+      { "key": "D", "text": "Whether the quick reference fits on less than one page." }
+    ],
+    "answer": ["A"],
+    "explanation": "Accuracy and completeness are separate checks: a condensed version can be true in every line and still omit an obligation staff must follow. For a compliance policy, a missing exception or duty is the most serious failure.",
+    "distractors": {
+      "B": "Tone is secondary to whether staff are told everything they must do.",
+      "C": "No model guarantees completeness; the output still has to be checked against the policy.",
+      "D": "Length is a formatting detail, not the main risk."
+    },
+    "difficulty": 3,
+    "tags": ["completeness", "compliance", "summarization"]
+  },
+  {
+    "id": "as-oe-006", "scenario": 0, "domain": 2, "task": "2.1", "type": "single", "select": 1,
+    "stem": "A sales lead asks Claude to answer five questions from a client's request for proposal using the company's product sheet. Claude answers four in detail and gives a vague, general reply to the fifth, about where customer data is stored, which the product sheet does not cover. What is the best action?",
+    "options": [
+      { "key": "A", "text": "Keep the general reply, since it is better than leaving the question unanswered." },
+      { "key": "B", "text": "Flag the fifth answer as unsupported and get the correct information from the product or legal team." },
+      { "key": "C", "text": "Ask Claude to rewrite the fifth answer so it sounds as detailed as the others." },
+      { "key": "D", "text": "Remove the fifth question from the response to the client." }
+    ],
+    "answer": ["B"],
+    "explanation": "The source material does not cover the fifth question, so any answer Claude gives there is not grounded. The gap should be filled by the people who own the facts, not papered over.",
+    "distractors": {
+      "A": "A vague answer on data storage can mislead a client on a contractual point.",
+      "C": "Asking for more detail without a source invites invented specifics, which is worse than vagueness.",
+      "D": "Dropping a required question makes the proposal incomplete."
+    },
+    "difficulty": 2,
+    "tags": ["completeness", "grounding", "proposal"]
+  },
+  {
+    "id": "as-oe-007", "scenario": 0, "domain": 2, "task": "2.1", "type": "multi", "select": 2,
+    "stem": "A communications officer is evaluating a Claude-drafted press release about a new community program before it goes to the director for approval. Which checks best evaluate the draft's accuracy and completeness? (Select TWO.)",
+    "options": [
+      { "key": "A", "text": "Confirm the dates, locations, names and figures against the program brief." },
+      { "key": "B", "text": "Confirm that every element the brief required, such as the spokesperson quote and contact details, is present." },
+      { "key": "C", "text": "Check that the release is longer than the previous one." },
+      { "key": "D", "text": "Ask Claude to confirm that its facts are correct." },
+      { "key": "E", "text": "Check that the headline uses strong, persuasive language." }
+    ],
+    "answer": ["A", "B"],
+    "explanation": "Accuracy means the specific details match the source, and completeness means everything the brief required is there. Checking details against the brief and ticking off required elements covers both before the release reaches an approver.",
+    "distractors": {
+      "C": "Length is not a measure of accuracy or completeness.",
+      "D": "Claude confirming its own facts is not independent verification.",
+      "E": "Headline style is an editing choice, not an accuracy or completeness check."
+    },
+    "difficulty": 2,
+    "tags": ["accuracy", "completeness", "press-release"]
+  },
+  {
+    "id": "as-oe-008", "scenario": 0, "domain": 2, "task": "2.2", "type": "single", "select": 1,
+    "stem": "A policy researcher asks Claude for academic studies supporting a proposal. Claude lists five studies with authors, years and journal names. The researcher cannot find two of them in any library database. What is the most likely explanation?",
+    "options": [
+      { "key": "A", "text": "The two studies are too new to be indexed, so they can still be cited." },
+      { "key": "B", "text": "The library databases are incomplete, so the researcher should cite them anyway." },
+      { "key": "C", "text": "Claude produced plausible-looking but invented references, a form of hallucination." },
+      { "key": "D", "text": "Claude described the studies under slightly different titles, so the citations only need small corrections before use." }
+    ],
+    "answer": ["C"],
+    "explanation": "Language models can generate references that look correctly formatted but do not exist. A citation that cannot be found in the original source should be treated as a hallucination and not used until it is located.",
+    "distractors": {
+      "A": "Assuming the studies exist without finding them is exactly the risk to avoid.",
+      "B": "Citing sources you cannot find puts invented evidence into the proposal.",
+      "D": "Guessing at corrected titles still means citing work no one has verified."
+    },
+    "difficulty": 1,
+    "tags": ["hallucination", "citations"]
+  },
+  {
+    "id": "as-oe-009", "scenario": 0, "domain": 2, "task": "2.2", "type": "single", "select": 1,
+    "stem": "A customer success manager, in a chat with no email or other tools connected, asks Claude to send a follow-up email to a client. Claude replies, \"Done, I've sent the email to the client.\" What should the manager conclude?",
+    "options": [
+      { "key": "A", "text": "The email was sent, because Claude confirmed it." },
+      { "key": "B", "text": "The email was probably sent, but the manager should ask the client to check their spam folder in case it was filtered." },
+      { "key": "C", "text": "Claude must have used the manager's default email account." },
+      { "key": "D", "text": "No email was sent, since Claude has no connected email tool; the manager should send it." }
+    ],
+    "answer": ["D"],
+    "explanation": "Claude can hallucinate about its own capabilities, such as claiming to have sent an email. It can only act through tools that are actually connected, so without an email connection nothing was sent.",
+    "distractors": {
+      "A": "Claude's confirmation is itself the hallucination; it is not evidence.",
+      "B": "This still assumes the email was sent, which it could not have been.",
+      "C": "Claude cannot reach an email account that has not been connected."
+    },
+    "difficulty": 2,
+    "tags": ["hallucination", "capabilities"]
+  },
+  {
+    "id": "as-oe-010", "scenario": 0, "domain": 2, "task": "2.2", "type": "single", "select": 1,
+    "stem": "An operations lead reviews a Claude-written incident summary. The first paragraph says the outage lasted 45 minutes, but the timeline below shows it started at 09:10 and ended at 10:40. What is the best way to handle this?",
+    "options": [
+      { "key": "A", "text": "Treat it as an inconsistency, check the incident log, and correct whichever figure is wrong." },
+      { "key": "B", "text": "Keep the 45-minute figure, because Claude writes the opening summary after reviewing all of the details below it." },
+      { "key": "C", "text": "Delete the timeline so that readers only see one figure." },
+      { "key": "D", "text": "Ask Claude to reword the paragraph so the difference is less noticeable." }
+    ],
+    "answer": ["A"],
+    "explanation": "An internal contradiction means at least one figure is wrong, and only the source record can say which. Checking the log and correcting the error keeps the summary trustworthy.",
+    "distractors": {
+      "B": "There is no basis for trusting one part of the output over another; the source decides.",
+      "C": "Removing the timeline hides the conflict and may keep the wrong figure.",
+      "D": "Rewording to hide a contradiction leaves the error in place."
+    },
+    "difficulty": 3,
+    "tags": ["inconsistency", "incident-report"]
+  },
+  {
+    "id": "as-oe-011", "scenario": 0, "domain": 2, "task": "2.2", "type": "single", "select": 1,
+    "stem": "A recruiter asks Claude to draft a job ad for a sales role. The draft refers to the ideal candidate as \"he\" throughout and stresses joining a \"young, energetic team\". What is the most appropriate response?",
+    "options": [
+      { "key": "A", "text": "Publish the ad, since AI-generated text is neutral by design." },
+      { "key": "B", "text": "Revise the biased wording to inclusive language and have HR review the ad before posting." },
+      { "key": "C", "text": "Stop using Claude for any hiring-related content from now on." },
+      { "key": "D", "text": "Ask Claude to make the ad more energetic and exciting, since stronger wording will attract a wider range of applicants." }
+    ],
+    "answer": ["B"],
+    "explanation": "Gendered and age-coded language is a bias that can discourage qualified applicants. Spotting it, revising for inclusive wording and involving the people responsible for hiring content is the right response.",
+    "distractors": {
+      "A": "AI output can reflect biases; it is not neutral by default.",
+      "C": "Abandoning the tool is an overreaction when review and revision fix the problem.",
+      "D": "More energetic wording does nothing about the biased language."
+    },
+    "difficulty": 2,
+    "tags": ["bias", "hiring"]
+  },
+  {
+    "id": "as-oe-012", "scenario": 0, "domain": 2, "task": "2.2", "type": "single", "select": 1,
+    "stem": "A strategy analyst asks Claude the same question about a competitor's market share in three separate chats and gets three different figures. None of the answers cites a source. What does this most strongly suggest?",
+    "options": [
+      { "key": "A", "text": "The average of the three figures is likely to be accurate." },
+      { "key": "B", "text": "The latest figure is the most reliable, because Claude learns from earlier chats." },
+      { "key": "C", "text": "The figure is not grounded in a reliable source and must be checked against a verified report." },
+      { "key": "D", "text": "The prompt was too short, so adding background will make the figure accurate." }
+    ],
+    "answer": ["C"],
+    "explanation": "Different answers to the same question across runs are a sign that the content is not grounded. The figure should come from a verified market source rather than from any of Claude's guesses.",
+    "distractors": {
+      "A": "Averaging unsupported guesses does not produce a reliable figure.",
+      "B": "A later answer is not more reliable just because it came later.",
+      "D": "Better prompting may help, but an unsourced figure still needs verification."
+    },
+    "difficulty": 3,
+    "tags": ["inconsistency", "hallucination", "research"]
+  },
+  {
+    "id": "as-oe-013", "scenario": 0, "domain": 2, "task": "2.2", "type": "single", "select": 1,
+    "stem": "A teacher asks Claude for a summary of a historical conflict for a lesson plan. The summary presents only one country's view and describes the other side mainly through negative stereotypes. What is the best next step?",
+    "options": [
+      { "key": "A", "text": "Use it, since students can form their own opinions." },
+      { "key": "B", "text": "Remove the topic from the lesson plan." },
+      { "key": "C", "text": "Keep the summary but cut it down to the key dates and names, so there is less room for the one-sided framing to show." },
+      { "key": "D", "text": "Ask for a balanced account with several perspectives, then check it against trusted sources." }
+    ],
+    "answer": ["D"],
+    "explanation": "One-sided framing and stereotypes are signs of bias. Asking explicitly for multiple perspectives and checking the result against trusted sources gives students a fair and accurate account.",
+    "distractors": {
+      "A": "Presenting biased material as teaching content passes the bias on to students.",
+      "B": "Dropping the topic avoids the problem instead of fixing it.",
+      "C": "Shortening keeps the slanted selection of facts and adds no balance."
+    },
+    "difficulty": 2,
+    "tags": ["bias", "education"]
+  },
+  {
+    "id": "as-oe-014", "scenario": 0, "domain": 2, "task": "2.2", "type": "multi", "select": 2,
+    "stem": "A marketing manager reviews a Claude-drafted product comparison for the company website. The manager provided only the company brochure as source material. Which details are the strongest warning signs of possible hallucination? (Select TWO.)",
+    "options": [
+      { "key": "A", "text": "A quote attributed to a named industry analyst that the manager did not provide." },
+      { "key": "B", "text": "An exact statistic, \"73% of users switch within a year\", with no source." },
+      { "key": "C", "text": "Short paragraphs with clear headings." },
+      { "key": "D", "text": "A friendly, confident tone throughout." },
+      { "key": "E", "text": "Product features that match the uploaded brochure word for word." }
+    ],
+    "answer": ["A", "B"],
+    "explanation": "Specific-looking details that were not in the source material, such as named quotes and exact statistics, are the classic signs of hallucination. Both must be traced to a real source or removed before publishing.",
+    "distractors": {
+      "C": "Layout says nothing about whether the content is grounded.",
+      "D": "Confident tone is not evidence either way; hallucinations often sound confident.",
+      "E": "Content matching the provided brochure is grounded in the source."
+    },
+    "difficulty": 2,
+    "tags": ["hallucination", "marketing"]
+  },
+  {
+    "id": "as-oe-015", "scenario": 0, "domain": 2, "task": "2.3", "type": "single", "select": 1,
+    "stem": "A communications officer used Claude with web search to draft a briefing on a new government grant scheme. Each claim in the briefing has a citation link. What is the most appropriate way to use the citations?",
+    "options": [
+      { "key": "A", "text": "Open the cited sources and confirm the key claims, since the originals may add context." },
+      { "key": "B", "text": "Treat the citations as proof that the briefing is accurate." },
+      { "key": "C", "text": "Remove the citations so that the briefing looks cleaner." },
+      { "key": "D", "text": "Ask Claude to add more citations to each paragraph, since a briefing with more sources behind it is more likely to be correct." }
+    ],
+    "answer": ["A"],
+    "explanation": "Citations make checking possible but are not proof. The original sources may contain conditions or context missing from Claude's summary, so the key claims should be confirmed against them.",
+    "distractors": {
+      "B": "A citation can be misread or summarized out of context, so it still needs opening.",
+      "C": "Removing citations makes the briefing harder to verify.",
+      "D": "More citations that nobody checks add no assurance."
+    },
+    "difficulty": 1,
+    "tags": ["fact-checking", "citations", "web-search"]
+  },
+  {
+    "id": "as-oe-016", "scenario": 0, "domain": 2, "task": "2.3", "type": "single", "select": 1,
+    "stem": "A legal operations coordinator is asking Claude questions about a 60-page supplier contract she uploaded. She needs answers she can trace back to the contract. Which prompting approach best supports validation?",
+    "options": [
+      { "key": "A", "text": "Ask Claude to answer from its broad knowledge of typical supplier contracts, which covers more situations than one document." },
+      { "key": "B", "text": "Ask Claude to quote the exact clauses that apply first, then answer using only those quotes." },
+      { "key": "C", "text": "Ask Claude for short answers without quotes, so the replies are easier to read." },
+      { "key": "D", "text": "Ask Claude to rate how confident it is in each answer." }
+    ],
+    "answer": ["B"],
+    "explanation": "For long documents, asking for word-for-word quotes first and basing the answer on them ties each answer to the text. The coordinator can then check every answer against the clause it came from.",
+    "distractors": {
+      "A": "General knowledge of other contracts is not this contract and cannot be traced to it.",
+      "C": "Removing quotes removes the link that makes checking possible.",
+      "D": "Self-rated confidence is not a reliable accuracy signal."
+    },
+    "difficulty": 2,
+    "tags": ["fact-checking", "quotes", "long-documents"]
+  },
+  {
+    "id": "as-oe-017", "scenario": 0, "domain": 2, "task": "2.3", "type": "single", "select": 1,
+    "stem": "A product manager asks Claude to summarize customer interview notes she uploaded. She wants to stop Claude from filling gaps with general assumptions about customers. Which instruction is most effective?",
+    "options": [
+      { "key": "A", "text": "\"Be as detailed and thorough as you possibly can.\"" },
+      { "key": "B", "text": "\"Write in a confident, professional voice.\"" },
+      { "key": "C", "text": "\"Use only the uploaded notes, and say 'not in the notes' when something isn't covered.\"" },
+      { "key": "D", "text": "\"Add industry background wherever the notes seem thin.\"" }
+    ],
+    "answer": ["C"],
+    "explanation": "Restricting Claude to the provided material and explicitly allowing it to say information is missing are two techniques that reduce unsupported content. Gaps then show up clearly instead of being filled with assumptions.",
+    "distractors": {
+      "A": "Pushing for detail without limiting the source encourages filler.",
+      "B": "A confident voice makes assumptions harder to spot, not less likely.",
+      "D": "This asks for exactly the outside assumptions she wants to avoid."
+    },
+    "difficulty": 2,
+    "tags": ["fact-checking", "grounding", "prompting"]
+  },
+  {
+    "id": "as-oe-018", "scenario": 0, "domain": 2, "task": "2.3", "type": "single", "select": 1,
+    "stem": "A nonprofit grants officer asks Claude for the eligibility rules of a foundation's funding program. Claude gives a clear list with no source. The application is due next week. What is the best validation step?",
+    "options": [
+      { "key": "A", "text": "Ask Claude to repeat the list in a new chat and check that the two lists match." },
+      { "key": "B", "text": "Ask a colleague whether the list sounds right to them." },
+      { "key": "C", "text": "Ask Claude to add a confidence rating next to each rule." },
+      { "key": "D", "text": "Check each rule against the foundation's official guidelines." }
+    ],
+    "answer": ["D"],
+    "explanation": "Eligibility rules must come from the authoritative source, and Claude may be out of date or wrong. Checking each rule against the foundation's own published guidelines is the reliable validation step.",
+    "distractors": {
+      "A": "Two matching answers from Claude can share the same error.",
+      "B": "A colleague's impression is not an authoritative source.",
+      "C": "Confidence ratings do not show whether the rules are correct."
+    },
+    "difficulty": 1,
+    "tags": ["fact-checking", "primary-source"]
+  },
+  {
+    "id": "as-oe-019", "scenario": 0, "domain": 2, "task": "2.3", "type": "single", "select": 1,
+    "stem": "An analyst uses Claude to answer a complex question about a 120-page industry report. To catch unsupported statements before sharing the answer, which technique is most effective?",
+    "options": [
+      { "key": "A", "text": "Ask Claude to back each claim with a quote from the report and withdraw any claim it can't support." },
+      { "key": "B", "text": "Ask Claude to rewrite the answer in simpler language so errors are easier to spot." },
+      { "key": "C", "text": "Raise the effort level, since a more thorough response from a stronger setting no longer needs checking against the report." },
+      { "key": "D", "text": "Ask Claude to double-check its answer and confirm that it is correct." }
+    ],
+    "answer": ["A"],
+    "explanation": "Requiring a supporting quote for each claim and retracting claims without one exposes unsupported statements. It also leaves the analyst with quotes to check against the report.",
+    "distractors": {
+      "B": "Simpler wording can hide errors as easily as reveal them, and provides nothing to check against.",
+      "C": "More effort can improve an answer but does not remove the need to verify it.",
+      "D": "A self-check is not independent verification."
+    },
+    "difficulty": 3,
+    "tags": ["fact-checking", "citations", "long-documents"]
+  },
+  {
+    "id": "as-oe-020", "scenario": 0, "domain": 2, "task": "2.3", "type": "single", "select": 1,
+    "stem": "A finance assistant asks Claude to calculate year-over-year growth from figures in an uploaded spreadsheet. Before using the result in a budget memo, what is the most appropriate validation?",
+    "options": [
+      { "key": "A", "text": "Accept the result, since computers do not make arithmetic mistakes." },
+      { "key": "B", "text": "Recalculate a few key figures yourself, or have Claude show its working and check it." },
+      { "key": "C", "text": "Ask again in a fresh chat and use the result if both numbers are close." },
+      { "key": "D", "text": "Round the result to a whole number so that small errors don't matter." }
+    ],
+    "answer": ["B"],
+    "explanation": "Calculations in a memo that informs budget decisions need to be checked, not assumed. Recalculating key figures or reviewing the working gives direct evidence that the result is right.",
+    "distractors": {
+      "A": "Claude can make calculation and data-reading errors like any generated content.",
+      "C": "Two similar answers can share the same mistake.",
+      "D": "Rounding hides errors rather than catching them."
+    },
+    "difficulty": 2,
+    "tags": ["fact-checking", "calculations"]
+  },
+  {
+    "id": "as-oe-021", "scenario": 0, "domain": 2, "task": "2.3", "type": "multi", "select": 2,
+    "stem": "A policy officer is using Claude to summarize public comments on a draft regulation for a ministerial briefing. Which techniques best reduce the chance of unsupported claims in the summary? (Select TWO.)",
+    "options": [
+      { "key": "A", "text": "Tell Claude to use only the uploaded comments and to say when it cannot find support for a point." },
+      { "key": "B", "text": "Ask for each key finding to be linked to direct quotes from the comments." },
+      { "key": "C", "text": "Ask Claude to write in a more authoritative voice." },
+      { "key": "D", "text": "Ask Claude to fill gaps with its general knowledge of the policy area." },
+      { "key": "E", "text": "Ask Claude for a confidence score per finding and keep only the high-scoring ones." }
+    ],
+    "answer": ["A", "B"],
+    "explanation": "Limiting Claude to the provided documents and tying findings to direct quotes are documented ways to reduce unsupported claims. Together they keep the summary grounded and make it easy to check.",
+    "distractors": {
+      "C": "An authoritative voice makes errors more convincing, not less likely.",
+      "D": "General knowledge introduces claims that are not in the public comments.",
+      "E": "Self-rated confidence does not reliably separate supported from unsupported findings."
+    },
+    "difficulty": 2,
+    "tags": ["fact-checking", "grounding", "quotes"]
+  },
+  {
+    "id": "as-oe-022", "scenario": 0, "domain": 2, "task": "2.4", "type": "single", "select": 1,
+    "stem": "A regional bank's operations team uses Claude for several tasks. Which of these outputs most needs review by a qualified person before it is used?",
+    "options": [
+      { "key": "A", "text": "A list of team-building activity ideas for an internal offsite." },
+      { "key": "B", "text": "A rough agenda outline for a manager's own planning." },
+      { "key": "C", "text": "A recommendation on whether to approve a specific customer's loan." },
+      { "key": "D", "text": "Ten subject-line options for the internal staff newsletter." }
+    ],
+    "answer": ["C"],
+    "explanation": "A financial decision about a specific person is a high-risk use: a qualified human must meaningfully review the recommendation and be able to change it before it is acted on. The other outputs are internal and low-stakes.",
+    "distractors": {
+      "A": "Internal activity ideas are low-stakes and easy to change.",
+      "B": "A manager's own planning outline needs only a quick read.",
+      "D": "Newsletter subject lines are low-risk and easily revised."
+    },
+    "difficulty": 1,
+    "tags": ["human-review", "high-risk"]
+  },
+  {
+    "id": "as-oe-023", "scenario": 0, "domain": 2, "task": "2.4", "type": "single", "select": 1,
+    "stem": "A marketing assistant uses Claude to brainstorm 30 possible code names for an internal project. The team will pick one at its next meeting. What level of review is appropriate?",
+    "options": [
+      { "key": "A", "text": "Formal legal review of every name before the team sees the list." },
+      { "key": "B", "text": "Fact-checking each name against external sources." },
+      { "key": "C", "text": "Approval from the communications director and the legal team before the brainstorm list is shared with anyone in the project team." },
+      { "key": "D", "text": "A quick read for anything inappropriate, since the list is internal and easy to change." }
+    ],
+    "answer": ["D"],
+    "explanation": "Review should match the stakes. An internal brainstorm list is low-risk and easily changed, so a quick read is enough; heavier review would slow the work for no benefit.",
+    "distractors": {
+      "A": "Legal review is out of proportion for internal brainstorm ideas.",
+      "B": "Brainstormed names contain no factual claims to check.",
+      "C": "Formal sign-off for an internal ideas list is over-reviewing."
+    },
+    "difficulty": 1,
+    "tags": ["human-review", "proportionality"]
+  },
+  {
+    "id": "as-oe-024", "scenario": 0, "domain": 2, "task": "2.4", "type": "single", "select": 1,
+    "stem": "A clinic administrator wants to use Claude to draft replies to patient messages asking about medication side effects. What is the most appropriate approach?",
+    "options": [
+      { "key": "A", "text": "Have a qualified clinician review and approve each draft before it is sent." },
+      { "key": "B", "text": "Send the drafts directly, since Claude has broad medical knowledge." },
+      { "key": "C", "text": "Add a line saying \"This message may contain errors\" and send each draft as written." },
+      { "key": "D", "text": "Have the administrator check the spelling before sending." }
+    ],
+    "answer": ["A"],
+    "explanation": "Medical advice to individual patients is high-stakes, so a qualified person must review and be able to change each reply before it reaches the patient. A disclaimer or proofreading does not provide that expertise.",
+    "distractors": {
+      "B": "Broad knowledge is not a substitute for clinical review of patient advice.",
+      "C": "A disclaimer does not make incorrect medical advice safe.",
+      "D": "Spelling checks do not catch clinical errors."
+    },
+    "difficulty": 1,
+    "tags": ["human-review", "high-risk", "healthcare"]
+  },
+  {
+    "id": "as-oe-025", "scenario": 0, "domain": 2, "task": "2.4", "type": "single", "select": 1,
+    "stem": "A team uses Claude for two outputs: an internal summary of research articles for the team's own reading, and a final recommendation to deny a named employee's promotion. How should the review of the two differ?",
+    "options": [
+      { "key": "A", "text": "Both need the same light review, since both come from the same tool." },
+      { "key": "B", "text": "The promotion recommendation needs a qualified reviewer who can change it; the summary needs a lighter check." },
+      { "key": "C", "text": "The research summary needs the heavier review, because it contains far more facts and figures than a single promotion recommendation does." },
+      { "key": "D", "text": "Neither needs review if the prompts were well written." }
+    ],
+    "answer": ["B"],
+    "explanation": "An employment decision about a specific person is high-risk and needs meaningful review by a qualified human who can change the outcome. Internal research summaries that are not the final recommendation need a lighter, proportionate check.",
+    "distractors": {
+      "A": "Review depends on the stakes of the output, not the tool that produced it.",
+      "C": "The number of facts matters less than the impact on a person's career.",
+      "D": "Good prompts reduce errors but never remove the need for review."
+    },
+    "difficulty": 3,
+    "tags": ["human-review", "high-risk", "employment"]
+  },
+  {
+    "id": "as-oe-026", "scenario": 0, "domain": 2, "task": "2.4", "type": "single", "select": 1,
+    "stem": "An events coordinator uses Claude to draft a public statement about a safety incident at a company event. The coordinator has already checked the facts. What else is most appropriate before publishing?",
+    "options": [
+      { "key": "A", "text": "Nothing further, since the facts have already been checked." },
+      { "key": "B", "text": "Ask Claude to review its own statement for legal risk." },
+      { "key": "C", "text": "Have communications and legal approve it, as it is public and about safety." },
+      { "key": "D", "text": "Publish it quickly and correct any issues afterwards if people complain about the wording." }
+    ],
+    "answer": ["C"],
+    "explanation": "Public statements about safety carry legal and reputational risk beyond factual accuracy. The right people must approve them, not only the person who prompted the draft.",
+    "distractors": {
+      "A": "Correct facts do not settle legal and reputational risk in a public safety statement.",
+      "B": "Claude reviewing its own draft is not an expert legal review.",
+      "D": "Public statements are hard to undo, so fixing them later is too late."
+    },
+    "difficulty": 2,
+    "tags": ["human-review", "public-communication"]
+  },
+  {
+    "id": "as-oe-027", "scenario": 0, "domain": 2, "task": "2.4", "type": "single", "select": 1,
+    "stem": "A business analyst with no technical background relies on weekly Claude summaries of thousands of sales records pulled in through a custom connection to the company's sales system. She wants to know whether the summaries are reliable at that scale. What is the best step?",
+    "options": [
+      { "key": "A", "text": "Stop checking, since IT set up the connection." },
+      { "key": "B", "text": "Personally spot-check one weekly summary each month and assume the rest are accurate if that one matches the system." },
+      { "key": "C", "text": "Ask Claude to confirm that every summary is accurate." },
+      { "key": "D", "text": "Escalate to a Claude Developer or Architect to design a proper validation process." }
+    ],
+    "answer": ["D"],
+    "explanation": "Validating a connected data workflow at this scale is technical work beyond the Associate role. Recognizing that and escalating to a Claude Developer or Architect is the expected action.",
+    "distractors": {
+      "A": "A working connection does not guarantee that the summaries are accurate.",
+      "B": "One manual check a month is too thin a sample to show the process is reliable.",
+      "C": "Claude confirming its own output is not verification."
+    },
+    "difficulty": 3,
+    "tags": ["human-review", "escalation"]
+  },
+  {
+    "id": "as-oe-028", "scenario": 0, "domain": 2, "task": "2.4", "type": "multi", "select": 2,
+    "stem": "A department is setting rules for which Claude-assisted outputs need additional human review before use. Which situations most clearly call for it? (Select TWO.)",
+    "options": [
+      { "key": "A", "text": "A reply telling a specific customer whether their insurance claim is covered." },
+      { "key": "B", "text": "A press release announcing the company's quarterly financial results." },
+      { "key": "C", "text": "A draft agenda for a weekly internal stand-up meeting." },
+      { "key": "D", "text": "Your own meeting notes rewritten as bullet points for personal use." },
+      { "key": "E", "text": "A list of icebreaker questions for a team lunch." }
+    ],
+    "answer": ["A", "B"],
+    "explanation": "An insurance decision about a specific customer is high-risk and needs qualified review. Public financial results carry legal and reputational stakes and need expert approval. The other outputs are internal, low-stakes and easy to change.",
+    "distractors": {
+      "C": "An internal stand-up agenda is low-stakes and easy to change.",
+      "D": "Personal notes affect only the author.",
+      "E": "Icebreaker questions carry no meaningful risk."
+    },
+    "difficulty": 2,
+    "tags": ["human-review", "high-risk", "proportionality"]
+  },
+  {
+    "id": "as-oe-029", "scenario": 0, "domain": 2, "task": "2.5", "type": "single", "select": 1,
+    "stem": "A project manager has a detailed technical status update and needs a version for the executive steering committee. Which instruction will most likely produce a useful version?",
+    "options": [
+      { "key": "A", "text": "\"Rewrite this for senior executives: decisions needed and business impact first, under 200 words.\"" },
+      { "key": "B", "text": "\"Make this better.\"" },
+      { "key": "C", "text": "\"Rewrite this to sound more professional.\"" },
+      { "key": "D", "text": "\"Add more technical detail so executives see how thorough the team is.\"" }
+    ],
+    "answer": ["A"],
+    "explanation": "Naming the audience, what they need first and a length limit gives Claude the context it lacks. Executives need decisions and impact, not technical depth.",
+    "distractors": {
+      "B": "Vague feedback gives Claude nothing to aim at.",
+      "C": "\"Professional\" does not tell Claude who the reader is or what they need.",
+      "D": "More technical detail is the opposite of what an executive audience needs."
+    },
+    "difficulty": 1,
+    "tags": ["audience", "executive-summary"]
+  },
+  {
+    "id": "as-oe-030", "scenario": 0, "domain": 2, "task": "2.5", "type": "single", "select": 1,
+    "stem": "A customer support lead asks Claude to simplify a refund policy explanation for customers. The new version is clear but drops the condition that refunds apply only within 30 days of purchase. What is the most appropriate action?",
+    "options": [
+      { "key": "A", "text": "Use it, since simpler text is better for customers." },
+      { "key": "B", "text": "Restore the 30-day condition in plain language and re-check the text against the policy." },
+      { "key": "C", "text": "Ask Claude to make it even shorter." },
+      { "key": "D", "text": "Send customers the original policy wording instead, since any simplified version risks changing what the policy means." }
+    ],
+    "answer": ["B"],
+    "explanation": "Simplifying can drop conditions that change meaning. Adapting for the audience must keep the facts intact, so the condition goes back in plain language and the result is re-checked against the source policy.",
+    "distractors": {
+      "A": "Customers would be misled about their refund rights.",
+      "C": "Further shortening is likely to drop even more detail.",
+      "D": "Abandoning the plain-language version fails the customer audience when a fix is easy."
+    },
+    "difficulty": 2,
+    "tags": ["audience", "simplification", "accuracy"]
+  },
+  {
+    "id": "as-oe-031", "scenario": 0, "domain": 2, "task": "2.5", "type": "single", "select": 1,
+    "stem": "A marketing team has two Claude-drafted versions of an email campaign and can't agree which is better. What is the best way to compare them?",
+    "options": [
+      { "key": "A", "text": "Pick the longer version, since it contains more information for readers." },
+      { "key": "B", "text": "Ask Claude which version it prefers, since it wrote both and understands the differences better than the team." },
+      { "key": "C", "text": "Agree criteria first, such as audience fit, call to action, accuracy and length, then score both." },
+      { "key": "D", "text": "Pick whichever version sounds the most polished." }
+    ],
+    "answer": ["C"],
+    "explanation": "Comparing outputs works best against criteria agreed in advance. Scoring both versions on audience fit, accuracy, call to action and length turns a matter of taste into a reasoned choice.",
+    "distractors": {
+      "A": "Length is not a measure of effectiveness.",
+      "B": "Claude's preference is not tied to the team's goals or audience.",
+      "D": "Polish can hide weaker content or a missing call to action."
+    },
+    "difficulty": 2,
+    "tags": ["comparing-outputs", "criteria"]
+  },
+  {
+    "id": "as-oe-032", "scenario": 0, "domain": 2, "task": "2.5", "type": "single", "select": 1,
+    "stem": "An educator asks Claude to adapt a university-level reading on climate science for a class of 11-year-olds. Claude produces a friendly, simple version. What should the educator check before using it?",
+    "options": [
+      { "key": "A", "text": "That it is about the same length as the original reading." },
+      { "key": "B", "text": "That it keeps all of the original's technical terms." },
+      { "key": "C", "text": "That Claude added several extra facts and fun examples of its own to make the reading more engaging for students." },
+      { "key": "D", "text": "That simplifying added no errors and the reading level suits the class." }
+    ],
+    "answer": ["D"],
+    "explanation": "Adapting for a young audience must keep the content accurate while matching their level. Simplification can introduce misleading statements, so both accuracy and fit need checking.",
+    "distractors": {
+      "A": "Matching the original's length defeats the purpose of adapting it.",
+      "B": "Keeping every technical term would make it unsuitable for 11-year-olds.",
+      "C": "Unrequested extra facts are new claims that would themselves need checking."
+    },
+    "difficulty": 2,
+    "tags": ["audience", "education", "simplification"]
+  },
+  {
+    "id": "as-oe-033", "scenario": 0, "domain": 2, "task": "2.5", "type": "single", "select": 1,
+    "stem": "After several rounds of \"make it punchier\" feedback, a communications officer finds that Claude's newsletter article is now short and lively but has lost two important dates and a contact name. What is the best way to continue refining?",
+    "options": [
+      { "key": "A", "text": "Give specific feedback: keep the tone, restore the two dates and the contact name, stay under the word limit." },
+      { "key": "B", "text": "Keep asking for \"punchier\" until the article feels right." },
+      { "key": "C", "text": "Start a new chat with the original prompt and no mention of tone." },
+      { "key": "D", "text": "Accept the current version, since tone matters more than details." }
+    ],
+    "answer": ["A"],
+    "explanation": "Effective refinement uses specific feedback that keeps what works and fixes what was lost. Naming the missing details and the constraints gets a version that is both lively and complete.",
+    "distractors": {
+      "B": "Repeating vague feedback is what caused the details to be lost.",
+      "C": "Restarting throws away the tone the officer wanted and still needs the same fixes.",
+      "D": "Readers need the dates and contact name; the article is incomplete without them."
+    },
+    "difficulty": 3,
+    "tags": ["refinement", "feedback"]
+  },
+  {
+    "id": "as-oe-034", "scenario": 0, "domain": 2, "task": "2.5", "type": "single", "select": 1,
+    "stem": "An HR manager needs to tell three groups about a detailed policy change: the leadership team, people managers and all staff. What is the most effective use of Claude?",
+    "options": [
+      { "key": "A", "text": "Send the same detailed version to all three groups." },
+      { "key": "B", "text": "Ask for three versions, each tailored to what that group needs to know and do." },
+      { "key": "C", "text": "Ask Claude for a single short version everyone can read, so all three groups get exactly the same message." },
+      { "key": "D", "text": "Send the policy document itself with no summary." }
+    ],
+    "answer": ["B"],
+    "explanation": "Different audiences need different emphasis: leaders need impact, managers need actions for their teams, and staff need what changes for them. Tailored versions from one source deliver that efficiently.",
+    "distractors": {
+      "A": "One detailed version overloads staff and buries what each group must do.",
+      "C": "One short version can't serve groups with different responsibilities.",
+      "D": "Sending the raw policy leaves each reader to work out what applies to them."
+    },
+    "difficulty": 1,
+    "tags": ["audience", "internal-communication"]
+  },
+  {
+    "id": "as-oe-035", "scenario": 0, "domain": 2, "task": "2.5", "type": "multi", "select": 2,
+    "stem": "A sales manager asks Claude to turn a technical product specification into a one-page customer brochure. Which prompt details will most improve the fit for the audience? (Select TWO.)",
+    "options": [
+      { "key": "A", "text": "Who the customers are and what problem they care about." },
+      { "key": "B", "text": "Examples of past brochure copy that match the brand voice." },
+      { "key": "C", "text": "An instruction to include every specification from the source." },
+      { "key": "D", "text": "An instruction to use as many industry terms as possible." },
+      { "key": "E", "text": "A request for the longest version Claude can produce." }
+    ],
+    "answer": ["A", "B"],
+    "explanation": "Claude lacks your context, so describing the audience and their needs focuses the content. Examples of house style are one of the most reliable ways to steer tone and format.",
+    "distractors": {
+      "C": "Every specification would overwhelm a one-page customer brochure.",
+      "D": "Heavy jargon works against a customer audience.",
+      "E": "Maximum length conflicts with the one-page format."
+    },
+    "difficulty": 2,
+    "tags": ["audience", "examples", "marketing"]
+  },
+  {
+    "id": "as-oe-036", "scenario": 0, "domain": 2, "task": "2.6", "type": "single", "select": 1,
+    "stem": "A manager asks Claude for a quick two-sentence definition of \"net promoter score\" to paste into a chat message to a colleague. Which output format fits best?",
+    "options": [
+      { "key": "A", "text": "An artifact containing a formatted document." },
+      { "key": "B", "text": "A downloadable spreadsheet." },
+      { "key": "C", "text": "A short inline reply in the conversation." },
+      { "key": "D", "text": "A short slide deck explaining the term." }
+    ],
+    "answer": ["C"],
+    "explanation": "Short answers that won't be edited or reused belong inline in the conversation. A heavier format adds steps without adding value.",
+    "distractors": {
+      "A": "Artifacts suit substantial, standalone content, not two sentences.",
+      "B": "A spreadsheet suits data to sort or filter, not a definition.",
+      "D": "A deck is out of proportion for a two-sentence answer."
+    },
+    "difficulty": 1,
+    "tags": ["output-format", "inline"]
+  },
+  {
+    "id": "as-oe-037", "scenario": 0, "domain": 2, "task": "2.6", "type": "single", "select": 1,
+    "stem": "An operations manager wants Claude to create a three-page onboarding checklist that the team will edit over several weeks and share with each new hire. Which format fits best?",
+    "options": [
+      { "key": "A", "text": "An inline chat reply that the manager copies into a new email each time a new hire starts or the list changes." },
+      { "key": "B", "text": "A table pasted into a chat message." },
+      { "key": "C", "text": "A plain list in chat, regenerated whenever something changes." },
+      { "key": "D", "text": "An artifact, since it is substantial and standalone and will be edited and shared." }
+    ],
+    "answer": ["D"],
+    "explanation": "Artifacts suit substantial, self-contained content that will be edited, reused and shared. The checklist can be revised in one place instead of copied from chat replies.",
+    "distractors": {
+      "A": "Copying chat text by hand creates version drift and extra work.",
+      "B": "A table in a chat message is hard to keep edited and shared over weeks.",
+      "C": "Regenerating the list risks losing earlier edits and producing inconsistent versions."
+    },
+    "difficulty": 2,
+    "tags": ["output-format", "artifacts"]
+  },
+  {
+    "id": "as-oe-038", "scenario": 0, "domain": 2, "task": "2.6", "type": "single", "select": 1,
+    "stem": "A procurement coordinator asks Claude to compare quotes from six suppliers on price, delivery time and warranty. She plans to sort and filter the results with colleagues. Which output format fits best?",
+    "options": [
+      { "key": "A", "text": "A table or spreadsheet with one row per supplier and one column per criterion." },
+      { "key": "B", "text": "A narrative report that discusses each supplier in turn, with a paragraph on price, delivery time and warranty for each." },
+      { "key": "C", "text": "A short inline paragraph naming the cheapest supplier." },
+      { "key": "D", "text": "A slide deck with one supplier on each slide." }
+    ],
+    "answer": ["A"],
+    "explanation": "Structured data suits content people will sort, filter and compare. One row per supplier and one column per criterion makes the comparison direct.",
+    "distractors": {
+      "B": "Prose cannot be sorted or filtered and makes side-by-side comparison harder.",
+      "C": "Naming only the cheapest supplier drops the delivery and warranty criteria.",
+      "D": "One supplier per slide prevents side-by-side comparison."
+    },
+    "difficulty": 2,
+    "tags": ["output-format", "structured-data"]
+  },
+  {
+    "id": "as-oe-039", "scenario": 0, "domain": 2, "task": "2.6", "type": "single", "select": 1,
+    "stem": "A program manager pasted notes from twelve stakeholder interviews into Claude and wants an update for the steering committee. Claude's draft repeats similar points many times, in the order the interviews happened. What is the best improvement?",
+    "options": [
+      { "key": "A", "text": "Ask Claude to include every comment word for word so nothing is lost." },
+      { "key": "B", "text": "Ask Claude to group the points into themes, rank them for the committee and remove repetition." },
+      { "key": "C", "text": "Keep the interview order so the committee sees the full history." },
+      { "key": "D", "text": "Convert the draft into a spreadsheet with one row per comment." }
+    ],
+    "answer": ["B"],
+    "explanation": "Curating means choosing what matters to the reader and organizing it. Grouping by theme, ranking by importance and removing repetition turns raw notes into a usable committee update.",
+    "distractors": {
+      "A": "Verbatim comments add volume, not clarity, for a steering committee.",
+      "C": "Chronological order is the cause of the repetition, not a fix for it.",
+      "D": "One row per comment keeps the repetition and adds no synthesis."
+    },
+    "difficulty": 2,
+    "tags": ["curation", "synthesis"]
+  },
+  {
+    "id": "as-oe-040", "scenario": 0, "domain": 2, "task": "2.6", "type": "single", "select": 1,
+    "stem": "A marketing analyst needs Claude to pull the product name, price and launch date from 200 product descriptions so a colleague can import them into the team's tracking spreadsheet. Which output request fits best?",
+    "options": [
+      { "key": "A", "text": "A summary paragraph describing the overall product range." },
+      { "key": "B", "text": "A designed document artifact with a heading and short description for each product, so the colleague can read it easily." },
+      { "key": "C", "text": "A table with fixed columns for name, price and launch date, one row per product." },
+      { "key": "D", "text": "Inline bullet points in whatever order suits each product." }
+    ],
+    "answer": ["C"],
+    "explanation": "Output that will be imported needs a consistent structure: the same fields in the same order for every item. A fixed-column table maps directly onto the tracking spreadsheet.",
+    "distractors": {
+      "A": "A summary paragraph loses the per-product fields entirely.",
+      "B": "A readable document is the wrong shape for data that has to be imported.",
+      "D": "Inconsistent ordering makes import unreliable."
+    },
+    "difficulty": 3,
+    "tags": ["output-format", "structured-data", "extraction"]
+  },
+  {
+    "id": "as-oe-041", "scenario": 0, "domain": 2, "task": "2.6", "type": "single", "select": 1,
+    "stem": "A trainer asks Claude for an interactive quiz that colleagues can open and use beside the conversation. She expects to revise it after a pilot session. Which format fits best?",
+    "options": [
+      { "key": "A", "text": "A plain text list of questions and answers in the chat." },
+      { "key": "B", "text": "A table of questions in a chat reply." },
+      { "key": "C", "text": "An email draft listing all the questions, with the answers placed at the bottom of the message." },
+      { "key": "D", "text": "An artifact, since it is a standalone interactive tool to revise and share." }
+    ],
+    "answer": ["D"],
+    "explanation": "Artifacts include small interactive tools that open beside the conversation and can be edited, revisited and shared. That matches an interactive quiz that will be revised after a pilot.",
+    "distractors": {
+      "A": "A plain list is not interactive and is awkward to revise and share.",
+      "B": "A table in chat is static and not an interactive quiz.",
+      "C": "An email is static and shows the answers to everyone."
+    },
+    "difficulty": 1,
+    "tags": ["output-format", "artifacts", "training"]
+  },
+  {
+    "id": "as-oe-042", "scenario": 0, "domain": 2, "task": "2.6", "type": "multi", "select": 2,
+    "stem": "A team lead is deciding how Claude should deliver different kinds of output. Which pairings are good format choices? (Select TWO.)",
+    "options": [
+      { "key": "A", "text": "A quick answer to a colleague's one-line question, as a short inline reply." },
+      { "key": "B", "text": "A ten-page proposal the team will edit and export, as an artifact." },
+      { "key": "C", "text": "A one-sentence confirmation, as a spreadsheet." },
+      { "key": "D", "text": "Monthly budget figures the team will filter, as a long narrative paragraph." },
+      { "key": "E", "text": "A two-line definition, as a slide deck." }
+    ],
+    "answer": ["A", "B"],
+    "explanation": "Format should follow how the reader will use the output. Quick answers belong inline, and long documents that will be edited and exported belong in an artifact.",
+    "distractors": {
+      "C": "A spreadsheet adds nothing to a one-sentence confirmation.",
+      "D": "Figures to filter need structured data, not prose.",
+      "E": "A slide deck is out of proportion for a two-line definition."
+    },
+    "difficulty": 2,
+    "tags": ["output-format"]
+  }
+]

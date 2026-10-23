@@ -1,0 +1,1197 @@
+[
+  {
+    "id": "s5-001",
+    "scenario": 5,
+    "domain": 4,
+    "task": "4.1",
+    "type": "single",
+    "select": 1,
+    "stem": "Your CI review job posts an average of 18 comments per pull request, and developers report that most are about naming, import order, and patterns the codebase already uses everywhere. A teammate added \"Be conservative and only report high-confidence findings\" to the review prompt, but a week of data shows the comment volume and dismissal rate are essentially unchanged. What is the most effective next change?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Have Claude attach a 1-10 confidence score to each finding and have the posting script drop everything scored below 8, so only findings the model is sure about reach the PR."
+      },
+      {
+        "key": "B",
+        "text": "Strengthen the existing wording to \"You will be penalized for every false positive; report only issues you are certain about,\" and move it to the top of the system prompt."
+      },
+      {
+        "key": "C",
+        "text": "Replace it with explicit categories to report (logic bugs, security flaws, resource leaks) and to skip (style, naming, established local patterns)."
+      },
+      {
+        "key": "D",
+        "text": "Run the review three times per PR and post only the findings that appear in at least two of the three runs."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "General instructions like \"be conservative\" or \"only report high-confidence findings\" do not improve precision because they don't tell the model which issues matter. Explicit categorical criteria defining what to report versus what to skip directly remove the style and local-pattern noise that is driving dismissals. This is the proportionate, root-cause fix before adding filtering infrastructure.",
+    "distractors": {
+      "A": "Self-reported confidence is poorly calibrated, so confidence-based filtering is weaker than defining which categories to report.",
+      "B": "This is just a more forceful version of the vague instruction that already failed; it still gives no criteria for what counts as an issue.",
+      "D": "Consensus voting adds cost and suppresses real bugs that are only caught intermittently, while consistently-flagged style noise still passes."
+    },
+    "difficulty": 2,
+    "tags": [
+      "false-positives",
+      "review-criteria",
+      "explicit-criteria"
+    ]
+  },
+  {
+    "id": "s5-002",
+    "scenario": 5,
+    "domain": 4,
+    "task": "4.1",
+    "type": "single",
+    "select": 1,
+    "stem": "Your automated PR reviewer reports findings in four categories: security, correctness, performance, and documentation accuracy. An audit shows security and correctness findings are about 90% accurate, but documentation-accuracy findings are wrong about 70% of the time. Developers have started bulk-dismissing every bot comment, including valid security findings. What should you do first?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Temporarily disable the documentation-accuracy category while you rewrite its criteria, leaving security and correctness active."
+      },
+      {
+        "key": "B",
+        "text": "Keep all categories but append a note to each documentation-accuracy comment saying it is experimental and may be ignored, so developers know to trust the others."
+      },
+      {
+        "key": "C",
+        "text": "Require developers to reply to each dismissed comment with a justification so the team can identify which findings were wrong."
+      },
+      {
+        "key": "D",
+        "text": "Downgrade every documentation-accuracy finding to an \"info\" severity label but continue posting them on each PR."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "A high false-positive category undermines developer trust in the accurate categories too, which is exactly why valid security findings are being dismissed. Temporarily disabling the noisy category restores trust in the remaining findings while you improve that category's criteria offline. Once its precision is fixed, it can be re-enabled.",
+    "distractors": {
+      "B": "The noisy comments are still posted, so the volume of wrong findings that erodes trust is unchanged.",
+      "C": "This shifts the burden onto developers and adds friction without reducing the false positives that are causing the problem.",
+      "D": "Relabeling severity doesn't make the findings correct; developers still see a stream of wrong comments alongside valid ones."
+    },
+    "difficulty": 2,
+    "tags": [
+      "false-positives",
+      "developer-trust",
+      "category-disabling"
+    ]
+  },
+  {
+    "id": "s5-003",
+    "scenario": 5,
+    "domain": 4,
+    "task": "4.1",
+    "type": "single",
+    "select": 1,
+    "stem": "Your pipeline uses each finding's severity to decide whether to block a merge (critical), request changes (major), or just leave a comment (minor). Reviewing a month of output, you find that an unchecked database error return was labeled critical in one PR and minor in another, and a hard-coded credential was labeled major. The prompt currently defines the levels as \"critical: serious problems; major: important problems; minor: small problems.\" What change will most improve classification consistency?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Add the instruction \"Apply severity levels consistently across all pull requests and use careful judgment when choosing a level.\""
+      },
+      {
+        "key": "B",
+        "text": "Set temperature to 0 so the same code always produces the same severity label, removing the run-to-run randomness that causes the drift between PRs."
+      },
+      {
+        "key": "C",
+        "text": "Have the posting script normalize every finding to major severity so merges are never blocked inconsistently."
+      },
+      {
+        "key": "D",
+        "text": "Redefine each severity level with explicit criteria and concrete code examples, e.g., hard-coded secrets and unchecked DB errors as critical."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "Severity labels drift because \"serious\", \"important\", and \"small\" leave the boundaries undefined. Explicit severity criteria paired with concrete code examples for each level give the model anchors to classify against, producing consistent results across PRs. This matters here because severity drives blocking decisions.",
+    "distractors": {
+      "A": "Asking for consistency and judgment adds no definition of where the boundaries are, so classification stays inconsistent.",
+      "B": "Determinism doesn't fix undefined criteria; the same pattern in different surrounding code will still be classified differently.",
+      "C": "Flattening severity throws away the signal the pipeline needs to block genuinely critical issues like leaked credentials."
+    },
+    "difficulty": 3,
+    "tags": [
+      "severity",
+      "review-criteria",
+      "consistency"
+    ]
+  },
+  {
+    "id": "s5-004",
+    "scenario": 5,
+    "domain": 4,
+    "task": "4.1",
+    "type": "multi",
+    "select": 2,
+    "stem": "Your review prompt includes the line \"Check that code comments are accurate and flag code quality problems.\" Developers dismiss most comment-related findings as nitpicks, and many quality findings flag patterns that are standard in your repository. Which two prompt changes would most effectively reduce false positives without suppressing genuine issues? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "Add \"Only report issues you are highly confident about, and when in doubt, leave it out.\""
+      },
+      {
+        "key": "B",
+        "text": "Change the comment criterion to \"Flag a comment only when the behavior it claims contradicts what the code actually does.\""
+      },
+      {
+        "key": "C",
+        "text": "Cap the output at the five most important findings per pull request so developers see less noise."
+      },
+      {
+        "key": "D",
+        "text": "Ask Claude to rate each finding's importance from 1 to 10 and post only findings rated 7 or higher."
+      },
+      {
+        "key": "E",
+        "text": "List categories to skip explicitly, such as minor style, naming preferences, and patterns already used consistently elsewhere in the codebase."
+      }
+    ],
+    "answer": [
+      "B",
+      "E"
+    ],
+    "explanation": "Explicit criteria outperform vague instructions: \"flag only when the claimed behavior contradicts the actual code\" defines a precise, checkable condition, and an explicit skip list removes the categories generating nitpicks. Both changes define what to report versus skip rather than relying on confidence-based filtering. Neither suppresses real bugs or security issues.",
+    "distractors": {
+      "A": "\"Only report high-confidence findings\" is the kind of general instruction that fails to improve precision compared to categorical criteria.",
+      "C": "An arbitrary cap can drop genuine bugs on large PRs while still allowing nitpicks into the top five.",
+      "D": "Self-rated importance is poorly calibrated and is still confidence-based filtering rather than explicit criteria."
+    },
+    "difficulty": 2,
+    "tags": [
+      "false-positives",
+      "explicit-criteria",
+      "review-criteria"
+    ]
+  },
+  {
+    "id": "s5-005",
+    "scenario": 5,
+    "domain": 4,
+    "task": "4.2",
+    "type": "single",
+    "select": 1,
+    "stem": "Your review prompt includes a detailed paragraph saying every finding must state the file and line, describe the issue, assign a severity, and suggest a fix. In practice, some findings omit the line number, others bury the fix in prose, and the ordering of fields varies, which makes the comments hard for developers to act on. What is the most effective way to get consistently formatted, actionable findings?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Repeat the formatting paragraph at both the beginning and end of the prompt, with the required fields in capital letters."
+      },
+      {
+        "key": "B",
+        "text": "Add two or three example findings to the prompt that show the exact desired format, each with location, issue, severity, and suggested fix."
+      },
+      {
+        "key": "C",
+        "text": "Write a post-processing script that uses regular expressions to fill in missing line numbers and reorder the fields."
+      },
+      {
+        "key": "D",
+        "text": "Increase max_tokens for the review call so the model has room to include every required field in each finding."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "When detailed instructions alone produce inconsistent output, few-shot examples are the most effective technique for achieving consistent, actionable formatting. Showing concrete findings with location, issue, severity, and suggested fix gives the model an unambiguous template to follow. This is a low-effort, high-leverage change to the prompt itself.",
+    "distractors": {
+      "A": "Repeating or emphasizing instructions that are already being interpreted inconsistently rarely fixes the inconsistency.",
+      "C": "Regex can't invent missing information like the correct line number, and it treats the symptom rather than the prompt.",
+      "D": "Findings are not being truncated; the problem is format inconsistency, which output length doesn't address."
+    },
+    "difficulty": 1,
+    "tags": [
+      "few-shot",
+      "output-format",
+      "actionable-feedback"
+    ]
+  },
+  {
+    "id": "s5-006",
+    "scenario": 5,
+    "domain": 4,
+    "task": "4.2",
+    "type": "single",
+    "select": 1,
+    "stem": "Your reviewer keeps flagging a retry wrapper that catches an exception, logs it with context, and re-raises it as \"swallowing errors.\" You added a rule naming that exact wrapper as acceptable, and the finding stopped, but the reviewer now flags slightly different variants (a decorator form, a context-manager form) that are equally fine. It also needs to keep catching genuine cases where exceptions are silently discarded. What is the most effective approach?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Keep adding each newly flagged variant to the named list of acceptable patterns as developers report it, so the allowlist grows to cover every form in use."
+      },
+      {
+        "key": "B",
+        "text": "Add a post-filter that drops any finding whose code snippet matches a regex for a logging call followed by a re-raise, so the variants are suppressed automatically."
+      },
+      {
+        "key": "C",
+        "text": "Add a few targeted examples contrasting acceptable log-and-re-raise handling with genuine swallowing, each explaining why it is or isn't an issue."
+      },
+      {
+        "key": "D",
+        "text": "Remove error handling from the list of review categories entirely, since it produces too many false positives to fix."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Few-shot examples that distinguish acceptable patterns from genuine issues, with the reasoning for each, let the model generalize its judgment to novel variants instead of matching only pre-specified cases. That reduces false positives on the decorator and context-manager forms while preserving detection of real silent swallowing. Two to four targeted examples are enough to convey the distinction.",
+    "distractors": {
+      "A": "An enumerated allowlist only matches the cases already seen and will keep missing new variants of the same acceptable pattern.",
+      "B": "A brittle regex filter won't recognize structurally different variants and may hide a real issue that happens to match the text pattern.",
+      "D": "This would throw away genuine catches of silently discarded exceptions when the problem is one narrow, fixable misjudgment."
+    },
+    "difficulty": 3,
+    "tags": [
+      "few-shot",
+      "false-positives",
+      "generalization"
+    ]
+  },
+  {
+    "id": "s5-007",
+    "scenario": 5,
+    "domain": 4,
+    "task": "4.3",
+    "type": "single",
+    "select": 1,
+    "stem": "Your team runs a custom review service that calls the Claude API directly and posts findings as inline PR comments. The prompt says \"Return your findings as a JSON array,\" but about 3% of responses contain a trailing explanation or a missing bracket, which crashes the comment-posting step. What is the most reliable fix?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Strengthen the instruction to \"Return only valid JSON with no other text\" and retry the request whenever parsing fails."
+      },
+      {
+        "key": "B",
+        "text": "Add several few-shot examples of correctly formatted JSON arrays to the system prompt."
+      },
+      {
+        "key": "C",
+        "text": "Define a report_findings tool with a JSON schema for the findings and leave tool_choice set to \"auto\"."
+      },
+      {
+        "key": "D",
+        "text": "Define a report_findings tool whose input schema describes the findings, and force that specific tool via tool_choice on every review call."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "Tool use with a JSON schema is the most reliable way to get schema-compliant structured output and eliminates JSON syntax errors. Forcing the specific tool with tool_choice guarantees the model returns its findings through that schema rather than as free text. The posting step can then read the tool_use input directly.",
+    "distractors": {
+      "A": "Prompt-only JSON remains probabilistic, and retries add cost and latency without removing the underlying failure mode.",
+      "B": "Few-shot examples improve consistency but cannot guarantee syntactically valid JSON on every response.",
+      "C": "With tool_choice \"auto\" the model may respond with text instead of calling the tool, so structured output is not guaranteed."
+    },
+    "difficulty": 2,
+    "tags": [
+      "structured-output",
+      "tool-use",
+      "tool-choice"
+    ]
+  },
+  {
+    "id": "s5-008",
+    "scenario": 5,
+    "domain": 4,
+    "task": "4.3",
+    "type": "single",
+    "select": 1,
+    "stem": "Your structured findings schema has a required string field suggested_fix and a category enum of [\"bug\", \"security\", \"performance\"]. Reviewers notice two problems: for subtle concurrency issues the model invents speculative fixes that are wrong, and findings about things like API contract changes get forced into \"bug\" or \"performance\". Which schema change best addresses both problems?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Keep suggested_fix required but add an instruction to propose a fix only when the correct change is certain."
+      },
+      {
+        "key": "B",
+        "text": "Make suggested_fix nullable, and add an \"other\" category value paired with a category_detail string."
+      },
+      {
+        "key": "C",
+        "text": "Remove the category field entirely and have the model describe the type of issue in the free-text description instead."
+      },
+      {
+        "key": "D",
+        "text": "Drop the schema and let the model write each finding as free-form markdown so it can explain nuance."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Required fields pressure the model to fabricate values when the information isn't available; making suggested_fix nullable lets it omit a fix it can't support. An \"other\" enum value plus a detail string gives an extensible escape hatch so issues outside the fixed categories aren't misclassified. Both keep the output machine-parseable for posting.",
+    "distractors": {
+      "A": "A required field still forces a value on every finding, so the instruction conflicts with the schema and fabrication continues.",
+      "C": "Removing categories loses structured data the pipeline can route and analyze, rather than fixing the enum's coverage gap.",
+      "D": "Free-form markdown breaks automated inline posting and loses all the benefits of structured output."
+    },
+    "difficulty": 3,
+    "tags": [
+      "schema-design",
+      "nullable-fields",
+      "enum-other"
+    ]
+  },
+  {
+    "id": "s5-009",
+    "scenario": 5,
+    "domain": 4,
+    "task": "4.4",
+    "type": "single",
+    "select": 1,
+    "stem": "Developers dismiss about 40% of your CI reviewer's findings using a \"Not useful\" button, and the dismissal event is logged with the finding's file, line, and description. You want to improve the prompt, but you can't tell which kinds of code are triggering the dismissed findings because the descriptions are worded differently every time. What is the most effective change?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Add a detected_pattern field to each finding recording the code construct that triggered it, then group dismissals by that field."
+      },
+      {
+        "key": "B",
+        "text": "Ask developers to type a free-text reason every time they dismiss a finding, and review those reasons weekly."
+      },
+      {
+        "key": "C",
+        "text": "Lower the overall number of findings by instructing the model to report only its most important issues per file."
+      },
+      {
+        "key": "D",
+        "text": "Send each dismissed finding back to Claude with the surrounding code and ask it to classify whether the original finding was a false positive and why."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "A detected_pattern field captures which code construct triggered each finding in a consistent, structured form. Joining that field with dismissal events enables systematic analysis of which patterns produce false positives, so you can target criteria or few-shot examples at the worst offenders. This builds a feedback loop without adding work for developers.",
+    "distractors": {
+      "B": "This shifts effort onto developers and produces unstructured text that is as hard to aggregate as the existing descriptions.",
+      "C": "A vague importance filter doesn't reveal which patterns cause dismissals and may cut valid findings.",
+      "D": "Asking the model to judge its own findings gives no structured pattern data and is a poor substitute for real developer feedback."
+    },
+    "difficulty": 2,
+    "tags": [
+      "detected-pattern",
+      "feedback-loop",
+      "dismissal-analysis"
+    ]
+  },
+  {
+    "id": "s5-010",
+    "scenario": 5,
+    "domain": 4,
+    "task": "4.5",
+    "type": "single",
+    "select": 1,
+    "stem": "Compliance requires that a dependency-security audit be posted for every merged commit within 28 hours of the merge. You plan to use the Message Batches API, which can take up to 24 hours to process, and posting results takes about an hour after a batch completes. Merges happen around the clock. How often must you submit batches to guarantee the requirement?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Once per day at midnight, since each batch has a 24-hour window and that is within the 28-hour requirement."
+      },
+      {
+        "key": "B",
+        "text": "Every 24 hours, timed to start immediately after the previous batch finishes processing."
+      },
+      {
+        "key": "C",
+        "text": "At least every 3 hours, so no commit waits longer than 3 hours before its batch is submitted."
+      },
+      {
+        "key": "D",
+        "text": "Immediately on each merge through the synchronous API, since batch processing can't meet a 28-hour requirement."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "The worst case is a commit merged just after a submission: it waits for the next submission, then up to 24 hours of processing, then about an hour to post. With a 28-hour requirement, that leaves at most 28 - 24 - 1 = 3 hours of waiting, so batches must be submitted at least every 3 hours. This keeps the 50% batch savings while still guaranteeing the deadline.",
+    "distractors": {
+      "A": "A commit merged just after midnight would wait almost 24 hours to be submitted, plus up to 24 hours of processing, missing the deadline.",
+      "B": "Submitting every 24 hours has the same worst-case wait problem, so commits can take well over 28 hours.",
+      "D": "Batch processing can meet the requirement with a proper submission cadence, so giving up the cost savings is unnecessary."
+    },
+    "difficulty": 3,
+    "tags": [
+      "batch-api",
+      "sla",
+      "submission-frequency"
+    ]
+  },
+  {
+    "id": "s5-011",
+    "scenario": 5,
+    "domain": 4,
+    "task": "4.5",
+    "type": "single",
+    "select": 1,
+    "stem": "Your nightly job submits 600 per-module test-generation requests through the Message Batches API, each with a custom_id of the module path. In the morning, 571 requests succeeded and 29 failed; most failures came from very large modules that exceeded the context limit. What is the best way to complete the run?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Resubmit only the 29 failed requests identified by custom_id, splitting the oversized modules into smaller chunks first."
+      },
+      {
+        "key": "B",
+        "text": "Resubmit the entire 600-request batch so all generated tests come from a single consistent run."
+      },
+      {
+        "key": "C",
+        "text": "Resubmit the 29 failed requests unchanged with the same custom_ids, since batch failures are usually transient capacity errors that succeed on retry."
+      },
+      {
+        "key": "D",
+        "text": "Move the whole nightly job to the synchronous API so failures can be detected and retried immediately."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "custom_id lets you correlate each result with its request, so you can resubmit only the failed items instead of paying for the whole batch again. Because these failures were caused by context-limit overflows, the resubmitted requests need to be modified, such as chunking the large modules, or they will fail again. The nightly job remains a good fit for batch processing.",
+    "distractors": {
+      "B": "Rerunning 571 successful requests wastes cost and time with no benefit.",
+      "C": "Context-limit failures are not transient; resubmitting the same oversized inputs will fail the same way.",
+      "D": "A latency-tolerant nightly job is exactly where batch processing fits, and switching would give up the 50% savings."
+    },
+    "difficulty": 2,
+    "tags": [
+      "batch-api",
+      "custom-id",
+      "failure-handling"
+    ]
+  },
+  {
+    "id": "s5-012",
+    "scenario": 5,
+    "domain": 4,
+    "task": "4.5",
+    "type": "multi",
+    "select": 2,
+    "stem": "Your platform team is deciding which CI workloads to move to the Message Batches API. Which two statements about the Batches API are correct for this decision? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "It is a good fit for a weekly full-repository architecture audit that engineers read the following Monday."
+      },
+      {
+        "key": "B",
+        "text": "It is a good fit for the blocking pre-merge review because the 50% savings outweighs occasional delays and status polling handles completion."
+      },
+      {
+        "key": "C",
+        "text": "Results are matched to their requests using each request's custom_id, so result ordering does not matter."
+      },
+      {
+        "key": "D",
+        "text": "A single batch request can call tools such as a test runner mid-request and continue reasoning with the returned results."
+      },
+      {
+        "key": "E",
+        "text": "Small batches are guaranteed to finish within one hour, which makes them suitable for interactive PR feedback."
+      }
+    ],
+    "answer": [
+      "A",
+      "C"
+    ],
+    "explanation": "The Batches API offers 50% cost savings with up to a 24-hour processing window and no latency SLA, making it ideal for latency-tolerant work like weekly audits. Each result is correlated to its request with custom_id, so ordering is irrelevant. It is not suitable for blocking workflows or for multi-turn tool calling within a request.",
+    "distractors": {
+      "B": "With no latency SLA and up to 24 hours of processing, batch is inappropriate for a blocking pre-merge check developers wait on.",
+      "D": "The Batches API does not support multi-turn tool calling within a single request, so tools cannot be executed mid-request.",
+      "E": "There is no guaranteed completion time for any batch size, so it can't back interactive feedback."
+    },
+    "difficulty": 1,
+    "tags": [
+      "batch-api",
+      "latency",
+      "custom-id"
+    ]
+  },
+  {
+    "id": "s5-013",
+    "scenario": 5,
+    "domain": 4,
+    "task": "4.6",
+    "type": "single",
+    "select": 1,
+    "stem": "In your CI pipeline, a Claude Code session fixes a failing test and then, in the same session, receives the follow-up prompt \"Now critically review the changes you just made and list any bugs.\" The self-review almost never finds problems, yet human reviewers regularly catch subtle issues in these automated fixes. What is the most effective change?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Enable extended thinking for the self-review step so the session reasons more deeply and step by step about the changes it just made."
+      },
+      {
+        "key": "B",
+        "text": "Strengthen the follow-up prompt to tell the session to assume its changes contain at least one bug and find it."
+      },
+      {
+        "key": "C",
+        "text": "Have the same session run its self-review twice and merge the findings from both passes."
+      },
+      {
+        "key": "D",
+        "text": "Review the diff in a separate, independent Claude instance that has no access to the generating session's reasoning or conversation history."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "A model that generated the code retains its reasoning context and is less likely to question its own decisions within the same session. An independent review instance without that context evaluates the diff on its own merits and is more effective at catching subtle issues than self-review instructions or extended thinking. This is the core rationale for session context isolation in CI review.",
+    "distractors": {
+      "A": "Extended thinking in the same session still reasons from the generator's assumptions, so it remains less effective than independent review.",
+      "B": "Stronger self-review instructions don't remove the generator's anchoring on its own reasoning and may produce invented issues.",
+      "C": "Repeating the same biased self-review doesn't add an independent perspective."
+    },
+    "difficulty": 1,
+    "tags": [
+      "independent-review",
+      "self-review",
+      "session-isolation"
+    ]
+  },
+  {
+    "id": "s5-014",
+    "scenario": 5,
+    "domain": 4,
+    "task": "4.6",
+    "type": "multi",
+    "select": 2,
+    "stem": "Your reviewer currently analyzes each changed file in a separate, isolated call. It produces solid per-file feedback, but last month it missed a bug where a PR renamed a field in a serializer without updating two consumers in other files. The two human reviewers who triage bot findings also say they spend too long verifying shaky findings and too little on the important ones. Which two changes best address these problems? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "Replace the per-file calls with one pass that reviews all changed files together so cross-file context is always present."
+      },
+      {
+        "key": "B",
+        "text": "Have the session that authored the PR's code also review the integration points, since it knows how the files relate."
+      },
+      {
+        "key": "C",
+        "text": "Keep the per-file passes and add a separate integration pass focused on cross-file data flow and interface changes."
+      },
+      {
+        "key": "D",
+        "text": "Have the reviewer report a confidence level with each finding so low-confidence findings are routed for human verification first."
+      },
+      {
+        "key": "E",
+        "text": "Run the per-file review three times and post only findings that appear in at least two runs to cut shaky findings."
+      }
+    ],
+    "answer": [
+      "C",
+      "D"
+    ],
+    "explanation": "A multi-pass architecture keeps focused per-file passes for local issues and adds a dedicated integration pass for cross-file data flow, which is where the renamed-field bug lives. Having findings carry self-reported confidence enables calibrated routing, so limited reviewer attention goes to the findings that most need verification. Together they address both the coverage gap and the triage problem.",
+    "distractors": {
+      "A": "A single all-files pass reintroduces attention dilution, giving uneven depth and contradictory findings across files.",
+      "B": "The generating session retains its reasoning context and is a poor reviewer of its own changes.",
+      "E": "Consensus voting suppresses real issues that are only caught intermittently and triples cost."
+    },
+    "difficulty": 3,
+    "tags": [
+      "multi-pass-review",
+      "integration-pass",
+      "confidence-routing"
+    ]
+  },
+  {
+    "id": "s5-015",
+    "scenario": 5,
+    "domain": 1,
+    "task": "1.6",
+    "type": "single",
+    "select": 1,
+    "stem": "Every PR in your monorepo must be checked for the same three things: security issues, performance regressions in hot paths, and missing test coverage for changed branches. Your current single prompt asks for all three at once, and the output tends to focus heavily on whichever aspect appears first while giving the others shallow treatment. Which decomposition approach is most appropriate?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Keep the single prompt but reorder the aspects randomly on each run so no one aspect is consistently favored."
+      },
+      {
+        "key": "B",
+        "text": "Use a fixed prompt chain with a focused step for each of the three aspects, then combine the step outputs into the final review comment."
+      },
+      {
+        "key": "C",
+        "text": "Use a coordinator agent that inspects each PR and dynamically decides which review subtasks to spawn and in what order."
+      },
+      {
+        "key": "D",
+        "text": "Let each PR author choose which of the three aspects the bot should review for their change."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "When the review aspects are known and the same for every PR, a fixed sequential pipeline (prompt chaining) is the appropriate decomposition. Each focused step gives its aspect full attention, avoiding the shallow coverage seen in the combined prompt. Dynamic decomposition is better reserved for open-ended tasks whose subtasks depend on what is discovered.",
+    "distractors": {
+      "A": "Randomizing the order just spreads the shallow coverage around instead of giving every aspect focused attention.",
+      "C": "Dynamic decomposition is over-engineered for a predictable, fixed set of review aspects.",
+      "D": "This shifts responsibility to developers and lets required checks be skipped."
+    },
+    "difficulty": 2,
+    "tags": [
+      "prompt-chaining",
+      "task-decomposition"
+    ]
+  },
+  {
+    "id": "s5-016",
+    "scenario": 5,
+    "domain": 1,
+    "task": "1.6",
+    "type": "single",
+    "select": 1,
+    "stem": "Alongside PR reviews, you want a scheduled Claude Code job to \"add meaningful test coverage to the legacy billing module,\" which has 140 files, almost no tests, and poorly understood dependencies between components. Which decomposition strategy is most appropriate for this job?",
+    "options": [
+      {
+        "key": "A",
+        "text": "A fixed chain that generates tests for each file in alphabetical order, then runs a final integration pass to check cross-file interactions."
+      },
+      {
+        "key": "B",
+        "text": "A single prompt that loads as many files as fit in the context window and generates tests for all of them at once."
+      },
+      {
+        "key": "C",
+        "text": "First map the module's structure, identify high-impact areas, then build a prioritized plan that adapts as dependencies are discovered."
+      },
+      {
+        "key": "D",
+        "text": "Reuse the PR review chain unchanged, treating the whole module as one large diff to be reviewed for missing tests."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "This is an open-ended task where the right subtasks depend on what is discovered, so dynamic adaptive decomposition fits better than a fixed pipeline. Mapping structure first, then prioritizing high-impact areas and adapting the plan as dependencies surface, focuses effort where coverage matters most. Fixed prompt chains suit predictable reviews, not exploratory work like this.",
+    "distractors": {
+      "A": "A fixed alphabetical order ignores impact and can't adapt when dependencies change what should be tested first.",
+      "B": "Loading everything at once causes attention dilution and gives no prioritization of high-impact code.",
+      "D": "A review chain is designed for predictable multi-aspect checks of a diff, not open-ended test creation in unknown code."
+    },
+    "difficulty": 3,
+    "tags": [
+      "dynamic-decomposition",
+      "test-generation",
+      "task-decomposition"
+    ]
+  },
+  {
+    "id": "s5-017",
+    "scenario": 5,
+    "domain": 5,
+    "task": "5.5",
+    "type": "single",
+    "select": 1,
+    "stem": "Today, two engineers triage every bot finding before it appears on a PR. Leadership proposes auto-posting all findings with model-reported confidence of 0.85 or higher without triage, citing that 94% of findings were accepted by developers last quarter. Before reducing human review, what should you do?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Measure accuracy separately by finding category and language using a labeled set, and calibrate the confidence threshold against it."
+      },
+      {
+        "key": "B",
+        "text": "Adopt the 0.85 threshold now, since a 94% overall acceptance rate shows the reviewer is already accurate enough."
+      },
+      {
+        "key": "C",
+        "text": "Raise the threshold to 0.95 to build in a safety margin over the 94% acceptance rate, then enable auto-posting for every finding category."
+      },
+      {
+        "key": "D",
+        "text": "Keep triaging only the high-confidence findings, since those are the ones that would be auto-posted."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "An aggregate 94% rate can mask poor performance in specific segments, such as concurrency findings or a less-common language. Validating accuracy by category and segment, and calibrating the confidence threshold against a labeled validation set, confirms the threshold actually corresponds to accuracy before triage is removed. Uncalibrated self-reported confidence is not a safe basis on its own.",
+    "distractors": {
+      "B": "The overall rate may hide segments where the reviewer performs badly, and the 0.85 threshold has never been calibrated.",
+      "C": "Picking a stricter uncalibrated number still doesn't tell you whether confidence tracks accuracy in each segment.",
+      "D": "This inverts routing, spending reviewer capacity on findings least likely to need it while low-confidence ones go unchecked."
+    },
+    "difficulty": 3,
+    "tags": [
+      "confidence-calibration",
+      "human-review",
+      "segment-accuracy"
+    ]
+  },
+  {
+    "id": "s5-018",
+    "scenario": 5,
+    "domain": 5,
+    "task": "5.5",
+    "type": "single",
+    "select": 1,
+    "stem": "After validating per-category accuracy, your team now auto-posts high-confidence findings and sends only low-confidence ones to human triage. You need an ongoing way to measure the error rate of the auto-posted findings and to notice new kinds of false positives as the codebase evolves. What is the best approach?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Have humans review only the findings that developers dismissed, since dismissals are where false positives are most likely to show up."
+      },
+      {
+        "key": "B",
+        "text": "Rely on developers to report bad findings in a feedback channel and investigate when complaints increase."
+      },
+      {
+        "key": "C",
+        "text": "Have humans review all low-confidence findings more thoroughly, since that's where errors are concentrated."
+      },
+      {
+        "key": "D",
+        "text": "Have humans audit a stratified random sample of auto-posted high-confidence findings across categories each week."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "Stratified random sampling of high-confidence findings gives an unbiased, ongoing measurement of the error rate in output that no longer gets human review. Stratifying across categories ensures each segment is represented, which surfaces novel error patterns as code changes. This keeps automation honest without returning to full triage.",
+    "distractors": {
+      "A": "Dismissed findings are a biased sample and miss accepted-but-wrong findings, so they can't measure the true error rate.",
+      "B": "Complaint-driven monitoring is reactive and unsystematic, so problems surface late and unmeasured.",
+      "C": "Low-confidence findings are already triaged; this says nothing about errors in the auto-posted high-confidence set."
+    },
+    "difficulty": 2,
+    "tags": [
+      "stratified-sampling",
+      "human-review",
+      "error-rate"
+    ]
+  },
+  {
+    "id": "s5-019",
+    "scenario": 5,
+    "domain": 3,
+    "task": "3.6",
+    "type": "single",
+    "select": 1,
+    "stem": "Your CI step runs claude -p \"Review the diff in pr.diff and list issues\" and pipes the output to a script that posts inline PR comments. The job completes, but the script fails because the output is human-readable prose whose structure varies from run to run. What is the correct way to get machine-parseable findings?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Add the --format=machine flag so Claude Code emits a fixed key-value layout that the posting script can parse line by line."
+      },
+      {
+        "key": "B",
+        "text": "Add --output-format json together with --json-schema describing the findings structure the script expects."
+      },
+      {
+        "key": "C",
+        "text": "Set the environment variable CLAUDE_OUTPUT=json in the CI job before invoking Claude Code."
+      },
+      {
+        "key": "D",
+        "text": "Append \"respond in JSON\" to the prompt and have the script extract the first JSON block with a regex."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "--output-format json combined with --json-schema are the documented Claude Code CLI flags for enforcing structured output in CI contexts. They produce machine-parseable findings that a script can post as inline PR comments reliably. Prompt-only formatting remains fragile.",
+    "distractors": {
+      "A": "--format=machine is not a Claude Code flag.",
+      "C": "CLAUDE_OUTPUT is not a real Claude Code environment variable.",
+      "D": "Prompt-only JSON plus regex extraction is fragile and can still break when the output varies."
+    },
+    "difficulty": 1,
+    "tags": [
+      "cli-flags",
+      "output-format",
+      "json-schema"
+    ]
+  },
+  {
+    "id": "s5-020",
+    "scenario": 5,
+    "domain": 3,
+    "task": "3.6",
+    "type": "single",
+    "select": 1,
+    "stem": "Your CI pipeline invokes Claude Code to generate tests for changed modules. The generated tests ignore your team's conventions: they build objects by hand instead of using shared fixtures, and they don't follow your naming and assertion standards. These conventions currently live only in an internal wiki page. What is the most effective way to give CI-invoked Claude Code this context?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Document the testing standards, naming rules, and available fixtures in the project's CLAUDE.md, committed to the repository with the code."
+      },
+      {
+        "key": "B",
+        "text": "Add the conventions to ~/.claude/CLAUDE.md on each developer's machine so everyone's Claude Code follows them."
+      },
+      {
+        "key": "C",
+        "text": "Ask PR authors to paste the relevant conventions into the PR description so the job can read them."
+      },
+      {
+        "key": "D",
+        "text": "Set a CLAUDE_TEST_STANDARDS environment variable in the CI job pointing at the wiki page URL."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "CLAUDE.md is the mechanism for providing project context such as testing standards, fixture conventions, and review criteria to CI-invoked Claude Code. A project-level CLAUDE.md committed to the repo is present in the CI checkout, so every run picks it up automatically. It also benefits developers using Claude Code locally.",
+    "distractors": {
+      "B": "User-level CLAUDE.md lives on individual machines and is not present on the CI runner.",
+      "C": "This shifts the burden to developers and produces inconsistent, often missing context.",
+      "D": "CLAUDE_TEST_STANDARDS is not a Claude Code environment variable, and a URL wouldn't supply the content anyway."
+    },
+    "difficulty": 1,
+    "tags": [
+      "claude-md",
+      "test-generation",
+      "ci-context"
+    ]
+  },
+  {
+    "id": "s5-021",
+    "scenario": 5,
+    "domain": 3,
+    "task": "3.6",
+    "type": "single",
+    "select": 1,
+    "stem": "Your review job runs on every push to a PR branch. After a developer pushes fixes for three of five reported issues, the next run posts all five issues again with slightly different wording, plus one new finding. Developers complain that they can't tell what is new. What is the most effective change?",
+    "options": [
+      {
+        "key": "A",
+        "text": "On re-runs, review only the diff of the newest commit so code that was already reviewed in an earlier run is never commented on again."
+      },
+      {
+        "key": "B",
+        "text": "Include the prior run's findings in context and instruct Claude to report only new issues or ones still unaddressed."
+      },
+      {
+        "key": "C",
+        "text": "Have the posting script skip any comment whose text exactly matches a comment already on the PR."
+      },
+      {
+        "key": "D",
+        "text": "Run the review only when a PR is first opened, and skip it on all subsequent pushes."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Including prior review findings in context lets Claude determine which issues were fixed, which remain, and which are new. Instructing it to report only new or still-unaddressed issues avoids duplicate comments while still tracking the two unresolved findings. This keeps re-reviews useful rather than noisy.",
+    "distractors": {
+      "A": "Reviewing only the latest commit misses interactions with earlier changes and loses track of still-unaddressed issues.",
+      "C": "Because wording varies between runs, exact-match deduplication won't catch the repeated findings.",
+      "D": "Skipping re-reviews means new issues introduced by later commits are never caught."
+    },
+    "difficulty": 2,
+    "tags": [
+      "prior-findings",
+      "duplicate-comments",
+      "re-review"
+    ]
+  },
+  {
+    "id": "s5-022",
+    "scenario": 5,
+    "domain": 3,
+    "task": "3.6",
+    "type": "single",
+    "select": 1,
+    "stem": "Your CI job asks Claude Code to propose additional test cases for each changed module. Developers report that roughly half of the proposals duplicate scenarios already covered in the module's existing test file, so they spend time deleting redundant tests. What is the most effective fix?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Add the instruction \"Do not propose tests that duplicate existing coverage\" to the test-generation prompt."
+      },
+      {
+        "key": "B",
+        "text": "Generate twice as many proposals and let developers pick the ones that are not duplicates."
+      },
+      {
+        "key": "C",
+        "text": "Run the proposed tests and discard any that pass on the first try, since a passing test is most likely exercising behavior already covered."
+      },
+      {
+        "key": "D",
+        "text": "Provide the module's existing test files in context so generation can avoid scenarios the suite already covers."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "Claude can only avoid duplicating existing scenarios if it can see them. Providing the existing test files in context lets test generation target gaps instead of re-proposing covered cases. This directly addresses the cause of the duplicates.",
+    "distractors": {
+      "A": "Without the existing tests in context, Claude has no way to know which scenarios are already covered.",
+      "B": "This increases noise and shifts the deduplication burden onto developers.",
+      "C": "Passing is not evidence of redundancy; a new test for an uncovered scenario should also pass on correct code."
+    },
+    "difficulty": 2,
+    "tags": [
+      "test-generation",
+      "existing-tests",
+      "duplicate-tests"
+    ]
+  },
+  {
+    "id": "s5-023",
+    "scenario": 5,
+    "domain": 3,
+    "task": "3.6",
+    "type": "multi",
+    "select": 2,
+    "stem": "You are writing a new CI step that runs Claude Code on each PR. It must finish without waiting for any human input, and its findings must be parsed by a script that posts them as inline comments. Which two options should the command include? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "The -p (--print) flag, so Claude Code runs non-interactively and exits after printing its result."
+      },
+      {
+        "key": "B",
+        "text": "The --no-tty flag, so Claude Code disables its interactive terminal interface."
+      },
+      {
+        "key": "C",
+        "text": "The environment variable CLAUDE_CI=1, so Claude Code switches into pipeline mode."
+      },
+      {
+        "key": "D",
+        "text": "The --output-format json and --json-schema flags, so findings match a schema the script can parse."
+      },
+      {
+        "key": "E",
+        "text": "The --batch flag, so the request is routed through the Message Batches API for lower cost."
+      }
+    ],
+    "answer": [
+      "A",
+      "D"
+    ],
+    "explanation": "The -p (--print) flag runs Claude Code in non-interactive mode, processing the prompt and exiting without waiting for input. --output-format json with --json-schema produces machine-parseable structured findings suitable for automated inline PR comments. Together they cover both requirements.",
+    "distractors": {
+      "B": "--no-tty is not a Claude Code flag.",
+      "C": "CLAUDE_CI is not a real Claude Code environment variable.",
+      "E": "--batch is not a Claude Code flag, and batch processing is inappropriate for blocking PR checks anyway."
+    },
+    "difficulty": 1,
+    "tags": [
+      "cli-flags",
+      "non-interactive",
+      "json-schema"
+    ]
+  },
+  {
+    "id": "s5-024",
+    "scenario": 5,
+    "domain": 3,
+    "task": "3.6",
+    "type": "single",
+    "select": 1,
+    "stem": "Your nightly CI job uses Claude Code to generate tests, and the project's CLAUDE.md currently says only \"Write thorough tests.\" The output is technically valid but mostly low-value: tests for trivial getters, assertions that a constructor doesn't throw, and mocks of every collaborator. Few tests target the error-handling and boundary conditions where your incidents have occurred. What is the most effective change?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Include the existing test files in the job's context so Claude can see what the suite already covers."
+      },
+      {
+        "key": "B",
+        "text": "Change the instruction to \"Write only high-quality, meaningful tests\" so Claude filters out trivial getter and constructor cases on its own."
+      },
+      {
+        "key": "C",
+        "text": "Expand CLAUDE.md to define what makes a test valuable, which cases to skip, and which fixtures are available."
+      },
+      {
+        "key": "D",
+        "text": "Cap generation at five tests per module so that only the most important tests are produced."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Documenting testing standards, criteria for valuable tests, and available fixtures in CLAUDE.md improves test generation quality and reduces low-value output. Explicit criteria such as prioritizing error paths and boundaries and skipping trivial accessors tell Claude what \"thorough\" means for this team. Because CLAUDE.md is loaded for CI runs, every nightly job benefits.",
+    "distractors": {
+      "A": "Existing tests in context prevent duplicate scenarios, but they don't define what makes a new test valuable.",
+      "B": "\"High-quality, meaningful\" is as vague as \"thorough\" and gives no criteria for what to target or skip.",
+      "D": "A cap limits volume but doesn't steer generation toward error handling and boundaries, so the five may still be trivial."
+    },
+    "difficulty": 2,
+    "tags": [
+      "claude-md",
+      "test-generation",
+      "test-quality"
+    ]
+  },
+  {
+    "id": "s5-025",
+    "scenario": 5,
+    "domain": 3,
+    "task": "3.2",
+    "type": "single",
+    "select": 1,
+    "stem": "Your CI review prompt has been tuned over several weeks. Developers want to run the exact same review locally before pushing, by typing /review-pr in Claude Code, and any future prompt changes should reach everyone automatically. Where should the command be defined?",
+    "options": [
+      {
+        "key": "A",
+        "text": "In ~/.claude/commands/ on each developer's machine, with a setup script that copies the file there."
+      },
+      {
+        "key": "B",
+        "text": "As a section of the project CLAUDE.md that describes the review steps for Claude to follow."
+      },
+      {
+        "key": "C",
+        "text": "In .claude/commands/ in the repository, so the command is shared through version control and updated along with the code."
+      },
+      {
+        "key": "D",
+        "text": "In a shared team document that developers paste into Claude Code when they want a review."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Project-scoped commands in .claude/commands/ are shared through version control, so every developer who pulls the repo gets /review-pr. Prompt updates are committed alongside the code and reach the whole team automatically. This keeps local reviews consistent with what CI runs.",
+    "distractors": {
+      "A": "User-scoped commands are personal; copies on each machine drift whenever the prompt changes.",
+      "B": "CLAUDE.md is always-loaded context, not an on-demand /review-pr command.",
+      "D": "Copy-pasting from a document is manual and error-prone, and versions drift from what CI uses."
+    },
+    "difficulty": 1,
+    "tags": [
+      "slash-commands",
+      "project-scope",
+      "version-control"
+    ]
+  },
+  {
+    "id": "s5-026",
+    "scenario": 5,
+    "domain": 3,
+    "task": "3.2",
+    "type": "single",
+    "select": 1,
+    "stem": "Your team built a Claude Code skill that analyzes a module's dependency graph and then writes new test files for it. When developers invoke it during a session, its long dependency analysis floods the conversation, and in one case it deleted an existing fixture file while \"cleaning up.\" How should you configure the skill's SKILL.md frontmatter?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Add argument-hint to prompt for the module name, and move the analysis instructions into CLAUDE.md."
+      },
+      {
+        "key": "B",
+        "text": "Set context: fork to run the skill in an isolated sub-agent context, and use allowed-tools to restrict it to the tools it needs."
+      },
+      {
+        "key": "C",
+        "text": "Move the skill to ~/.claude/skills/ so only the developer who invokes it is affected by its output."
+      },
+      {
+        "key": "D",
+        "text": "Convert the skill into a section of CLAUDE.md so its instructions are always loaded, avoiding a separate invocation that adds output to the session."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "context: fork runs the skill in an isolated sub-agent context, keeping its verbose analysis out of the main conversation. allowed-tools restricts which tools the skill can use during execution, preventing destructive actions like deleting fixtures. These two frontmatter options target the two problems directly.",
+    "distractors": {
+      "A": "argument-hint only prompts for parameters; it neither isolates output nor restricts tools.",
+      "C": "Moving to user scope changes who has the skill, not how much output it produces or what tools it can use.",
+      "D": "Making it always-loaded adds context to every session and still doesn't restrict destructive tool use."
+    },
+    "difficulty": 2,
+    "tags": [
+      "skills",
+      "context-fork",
+      "allowed-tools"
+    ]
+  },
+  {
+    "id": "s5-027",
+    "scenario": 5,
+    "domain": 3,
+    "task": "3.5",
+    "type": "single",
+    "select": 1,
+    "stem": "You are refining the review prompt for your CI pipeline. Each time you edit it, you check a couple of recent PRs by eye, and changes that fix one problem often quietly reintroduce false positives elsewhere. You have a collection of past PRs where you know which issues are real and which comments were noise. What is the most effective way to iterate on the prompt?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Turn the labeled PRs into a test suite of expected findings, run each revision against it, and share specific failures when refining."
+      },
+      {
+        "key": "B",
+        "text": "Make all planned prompt edits in one large revision, then evaluate it on whichever PRs arrive in the following week."
+      },
+      {
+        "key": "C",
+        "text": "Ask Claude to rewrite the prompt to be \"more precise\" and deploy the result if it reads better than the current version."
+      },
+      {
+        "key": "D",
+        "text": "Roll each prompt revision out to all PRs for a week and treat the change in the developer dismissal rate as the test result for that revision."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Test-driven iteration means defining expected behavior up front and iterating by sharing concrete failures. A labeled set of past PRs acts as a regression suite, catching changes that fix one problem but reintroduce false positives elsewhere. Sharing the specific failures guides each refinement toward measurable improvement.",
+    "distractors": {
+      "B": "Bundling edits and testing on unlabeled live PRs makes it impossible to tell which change caused a regression.",
+      "C": "A rewrite judged by how it reads has no objective check against known real issues and noise.",
+      "D": "Testing in production exposes developers to regressions and erodes trust before problems are detected."
+    },
+    "difficulty": 2,
+    "tags": [
+      "iterative-refinement",
+      "test-driven-iteration",
+      "prompt-evaluation"
+    ]
+  },
+  {
+    "id": "s5-028",
+    "scenario": 5,
+    "domain": 3,
+    "task": "3.5",
+    "type": "single",
+    "select": 1,
+    "stem": "A CI step asks Claude Code to turn raw linter and test-runner output into a short PR summary. You described the desired summary in a paragraph of prose, but the results vary widely: some runs group by file, others by tool, and some include passing checks. What is the most effective way to clarify the expected transformation?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Expand the prose description into several more paragraphs covering every grouping rule and exception in detail."
+      },
+      {
+        "key": "B",
+        "text": "Use the interview pattern so Claude asks you clarifying questions about the summary each time the step runs."
+      },
+      {
+        "key": "C",
+        "text": "Ask Claude to propose several summary layouts on each run and post whichever is shortest."
+      },
+      {
+        "key": "D",
+        "text": "Provide two or three concrete examples of raw tool output paired with the exact summary you expect."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "When prose descriptions are interpreted inconsistently, concrete input/output examples are the most effective way to communicate the expected transformation. Two or three pairs of raw output and the desired summary show grouping, inclusion rules, and format unambiguously. This produces consistent summaries across runs.",
+    "distractors": {
+      "A": "More prose adds more room for interpretation; the inconsistency comes from describing rather than showing.",
+      "B": "The interview pattern helps surface design considerations before implementing, but a non-interactive CI step can't stop to ask questions.",
+      "C": "Choosing by length doesn't enforce the intended grouping and leaves the format inconsistent."
+    },
+    "difficulty": 1,
+    "tags": [
+      "iterative-refinement",
+      "input-output-examples",
+      "consistency"
+    ]
+  }
+]
