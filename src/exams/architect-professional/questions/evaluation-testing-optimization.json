@@ -1,0 +1,1374 @@
+[
+  {
+    "id": "ap-eval-001",
+    "scenario": 1,
+    "domain": 4,
+    "task": "4.1",
+    "type": "single",
+    "select": 1,
+    "stem": "Before approving rollout of the visit-summary assistant to 40 clinics, the CMIO asks the architect to propose the success criteria the pilot will be judged against. Which proposal is most appropriate?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Drafts should be accurate, safe and well written, as judged by the clinical informatics team once the pilot clinics have used it for a quarter."
+      },
+      {
+        "key": "B",
+        "text": "An average judge score of at least 4 out of 5 across all pilot drafts, with the score produced by the same model that wrote the drafts."
+      },
+      {
+        "key": "C",
+        "text": "Agreed thresholds on a named, expert-labelled test set: no unflagged dosage or allergy errors in the high-risk subset, a target note-acceptance rate and a target cut in clinician editing time."
+      },
+      {
+        "key": "D",
+        "text": "A ROUGE similarity score above an agreed threshold when drafts are compared with the clinicians' own notes from the previous year."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Success criteria should be specific and measurable, name the test set and tie to the outcome stakeholders care about, here safety in high-risk cases and clinician time saved. Separating the high-risk subset with a stricter threshold stops a good average from hiding dangerous errors. Agreeing these up front also prevents the pilot result being re-litigated later.",
+    "distractors": {
+      "A": "Quality adjectives judged after the fact are neither measurable nor agreed in advance, so they cannot gate a rollout.",
+      "B": "An uncalibrated self-judging score averaged over everything hides high-risk failures and is not evidence of safety.",
+      "D": "Surface similarity to past notes does not measure clinical correctness or time saved, and penalises valid wording differences."
+    },
+    "difficulty": 2,
+    "tags": [
+      "success-criteria",
+      "risk-tiers",
+      "measurable"
+    ]
+  },
+  {
+    "id": "ap-eval-002",
+    "scenario": 5,
+    "domain": 4,
+    "task": "4.1",
+    "type": "single",
+    "select": 1,
+    "stem": "Executives sponsoring the merchandising insights system expect a 20% cut in analyst hours and reports by 7 a.m. every Monday. The architect must choose the primary metrics for the quarterly review. Which set best fits?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Analyst hours spent per weekly report, on-time completion rate against the Monday deadline, recommendation acceptance by category managers and cost per completed report."
+      },
+      {
+        "key": "B",
+        "text": "Total tokens consumed per week, number of subagent invocations per run, average time to first token for each subagent and the model tier used by each agent."
+      },
+      {
+        "key": "C",
+        "text": "Analyst hours saved per report, on-time completion rate against the Monday deadline and total model spend for the quarter, each shown as a weekly trend."
+      },
+      {
+        "key": "D",
+        "text": "Average judge score for report readability, the number of recommendations produced per category and the percentage of weeks without an error in the logs."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Metrics should map directly to the stated business outcome: analyst hours and the Monday deadline, plus whether the recommendations are actually used and what each report costs. Hours and deadlines alone can look healthy while the recommendations go unused. Operational counters and readability scores are useful diagnostics, but they do not show whether the investment delivered the promised value.",
+    "distractors": {
+      "B": "These are operational diagnostics that explain cost and speed, not measures of the business outcome executives were promised.",
+      "C": "Hours and timeliness can look good while managers ignore the recommendations, and total spend is not normalised per report, so the value delivered is unproven.",
+      "D": "Readability and output counts do not show time saved, deadline adherence or whether managers act on the recommendations."
+    },
+    "difficulty": 2,
+    "tags": [
+      "business-outcome",
+      "metrics",
+      "cost-per-task"
+    ]
+  },
+  {
+    "id": "ap-eval-003",
+    "scenario": 3,
+    "domain": 4,
+    "task": "4.1",
+    "type": "single",
+    "select": 1,
+    "stem": "Employees complain that the knowledge-search assistant often feels unresponsive. The dashboard shows average end-to-end latency well within target, and answers are streamed to the browser. Which metric should the architect add first to quantify the complaint?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Mean end-to-end response time broken down by department, so the slowest teams can be identified and compared."
+      },
+      {
+        "key": "B",
+        "text": "Average output tokens per answer, since longer answers take longer to generate and probably drive the complaints."
+      },
+      {
+        "key": "C",
+        "text": "Total requests per minute at peak, to confirm whether the service is overloaded during office hours."
+      },
+      {
+        "key": "D",
+        "text": "The p95 time to first token, segmented by language and query type, to expose the slow tail users feel."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "With streaming, users experience responsiveness as the wait before the first token, and complaints usually come from the tail rather than the average. A p95 time-to-first-token metric, segmented, shows how bad the slow experiences are and where they cluster. Averages of end-to-end time can look healthy while the tail is poor.",
+    "distractors": {
+      "A": "A mean, even per department, still hides the slow tail and measures total time rather than the wait before streaming starts.",
+      "B": "Output length affects total generation time, but with streaming the perceived delay is dominated by time to first token.",
+      "C": "Load is a possible cause to investigate later, not a metric that quantifies the user-facing experience."
+    },
+    "difficulty": 2,
+    "tags": [
+      "latency",
+      "ttft",
+      "p95"
+    ]
+  },
+  {
+    "id": "ap-eval-004",
+    "scenario": 4,
+    "domain": 4,
+    "task": "4.1",
+    "type": "multi",
+    "select": 2,
+    "stem": "The benefits-casework pipeline extracts data from uploaded application documents, some of which are free text written by applicants. The agency's security officer asks which security metrics the evaluation must report before go-live. Which TWO are most appropriate? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "Attack success rate on an adversarial set of documents containing embedded instructions that try to change flags or next steps."
+      },
+      {
+        "key": "B",
+        "text": "Average number of tokens per application, to detect unusually long documents that may contain hidden content."
+      },
+      {
+        "key": "C",
+        "text": "Rate at which outputs or logs contain another applicant's data or fields outside the minimum necessary for the case."
+      },
+      {
+        "key": "D",
+        "text": "Overall extraction accuracy on clean, typed forms submitted through the agency's online portal."
+      },
+      {
+        "key": "E",
+        "text": "Service uptime and error rate of the model API endpoint over the pilot period."
+      }
+    ],
+    "answer": [
+      "A",
+      "C"
+    ],
+    "explanation": "Security evaluation for a system reading untrusted content centres on injection resistance, measured as attack success rate on an adversarial set, and on data leakage across cases or into logs. These map directly to the threats the security officer owns. Accuracy, length and uptime are other metric families.",
+    "distractors": {
+      "B": "Token length is a weak heuristic, not a measure of whether injected instructions succeed.",
+      "D": "Accuracy on clean forms is a quality metric and excludes exactly the adversarial inputs security cares about.",
+      "E": "Availability is an operational metric, not a measure of injection resistance or data leakage."
+    },
+    "difficulty": 1,
+    "tags": [
+      "security",
+      "prompt-injection",
+      "leakage"
+    ]
+  },
+  {
+    "id": "ap-eval-005",
+    "scenario": 1,
+    "domain": 4,
+    "task": "4.1",
+    "type": "single",
+    "select": 1,
+    "stem": "Two designs for the clinical documentation assistant are being compared. Design X uses a cheaper model but clinicians reject or heavily rewrite more of its drafts; design Y uses a more capable model at a higher price per request. Which cost metric gives the fairest comparison?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Price per million input and output tokens for each model, multiplied by the expected monthly request volume across all 40 clinics."
+      },
+      {
+        "key": "B",
+        "text": "Total cost per signed note, including model calls, regenerations and the clinician time spent correcting or rewriting each draft."
+      },
+      {
+        "key": "C",
+        "text": "Average cost per API request for each design, measured over the same two-week pilot period in the same group of clinics."
+      },
+      {
+        "key": "D",
+        "text": "Total cost per accepted draft, counting model calls and regenerations until a clinician accepts it, measured over the same pilot clinics for both."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Cost should be measured per successfully completed task, including retries and the human rework a weaker output causes. A cheaper model that generates more rewriting can cost more per signed note once clinician time is counted. Per-token or per-request figures ignore that rework, and even cost per accepted draft misses the time spent rewriting drafts that are eventually accepted.",
+    "distractors": {
+      "A": "Token prices times volume ignore regenerations and the clinician time spent fixing drafts.",
+      "C": "Cost per request treats a rejected draft the same as an accepted one, so it favours the cheaper but less useful design.",
+      "D": "Counting only model calls until acceptance misses the clinician time spent heavily rewriting drafts that are accepted, which is where the weaker design costs most."
+    },
+    "difficulty": 3,
+    "tags": [
+      "cost-per-task",
+      "rework",
+      "model-choice"
+    ]
+  },
+  {
+    "id": "ap-eval-006",
+    "scenario": 3,
+    "domain": 4,
+    "task": "4.2",
+    "type": "single",
+    "select": 1,
+    "stem": "The knowledge-search team scores only final answers with an LLM judge. Scores dropped after a chunking change, and the team cannot tell whether the cause is retrieval or answer generation. What should the architect add to the evaluation framework?",
+    "options": [
+      {
+        "key": "A",
+        "text": "A labelled set of queries with their known relevant chunks, scored for retrieval recall at k independently of the answer quality score."
+      },
+      {
+        "key": "B",
+        "text": "A second LLM judge from a different model tier, so the two answer scores can be averaged and the noise in any single judge's scores is reduced."
+      },
+      {
+        "key": "C",
+        "text": "A larger set of end-to-end questions so that the change in the final answer score becomes statistically significant."
+      },
+      {
+        "key": "D",
+        "text": "User thumbs-up and thumbs-down feedback in production, compared week over week before and after the chunking change."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Evaluating retrieval separately from generation tells you which stage failed. A labelled query-to-relevant-chunk set lets you measure whether the right chunks come back at all; if recall dropped, the chunking change broke retrieval, and if it held, the problem is in generation. End-to-end scores alone cannot localise the fault.",
+    "distractors": {
+      "B": "Averaging two judges may reduce noise but still scores only the final answer, so the failing stage remains unknown.",
+      "C": "More end-to-end cases confirm that quality dropped but still cannot say whether retrieval or generation caused it.",
+      "D": "Production feedback is slow, noisy and also end-to-end, so it cannot separate retrieval from generation."
+    },
+    "difficulty": 2,
+    "tags": [
+      "rag-eval",
+      "retrieval-recall",
+      "stage-isolation"
+    ]
+  },
+  {
+    "id": "ap-eval-007",
+    "scenario": 1,
+    "domain": 4,
+    "task": "4.2",
+    "type": "single",
+    "select": 1,
+    "stem": "To scale evaluation of visit summaries, the team proposes an LLM judge that rates each draft for clinical completeness and correctness using a rubric. The CMIO is sceptical. What is the most effective way to make the judge's scores trustworthy evidence?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Use the most capable model tier as the judge and ask it to explain its reasoning before giving each score, then publish the explanations."
+      },
+      {
+        "key": "B",
+        "text": "Have clinicians review every draft in the pilot eval set of a few hundred visits, since that volume is manageable for experts."
+      },
+      {
+        "key": "C",
+        "text": "Have clinicians score a sample with the same rubric, measure agreement with the judge, and keep expert review for the high-risk dosage cases."
+      },
+      {
+        "key": "D",
+        "text": "Run the judge three times on each draft and take the median score, which removes randomness and makes the grading reliable."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "An LLM judge becomes credible when it is calibrated against human experts on the same rubric and shows acceptable agreement. High-risk items such as dosage and contraindications still warrant expert review rather than relying on the judge alone. This mixes scalable automated grading with expert judgement where it matters most.",
+    "distractors": {
+      "A": "A stronger judge with reasoning may grade better, but without comparison to clinicians there is no evidence it agrees with experts.",
+      "B": "Full expert review works once but cannot be repeated on every prompt or model change, and it never establishes whether the judge can carry the load.",
+      "D": "Repeated runs reduce variance but not systematic bias, so the median can still disagree with clinicians."
+    },
+    "difficulty": 3,
+    "tags": [
+      "llm-as-judge",
+      "calibration",
+      "expert-review"
+    ]
+  },
+  {
+    "id": "ap-eval-008",
+    "scenario": 4,
+    "domain": 4,
+    "task": "4.2",
+    "type": "single",
+    "select": 1,
+    "stem": "The casework extraction eval set has 200 clean, typed forms created by the project team, and scores are excellent. In the pilot, real submissions include phone photos of handwritten forms, missing pages and documents in several languages. How should the architect rebuild the eval dataset?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Expand the existing set to 2,000 synthetic typed forms generated by the model, so that scores are statistically more stable across releases."
+      },
+      {
+        "key": "B",
+        "text": "Keep the clean set as the release gate and run a separate monthly manual review of difficult pilot submissions picked by caseworkers."
+      },
+      {
+        "key": "C",
+        "text": "Replace the set with the 50 hardest pilot submissions, since only difficult cases reveal weaknesses in the extraction pipeline."
+      },
+      {
+        "key": "D",
+        "text": "Sample real submissions stratified by form type, language and scan quality, then add edge, adversarial and past-incident regression cases."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "An eval dataset must represent the real input distribution, stratified by the segments that matter, and then add edge cases, adversarial inputs and regression cases. A clean, team-written set measures a world that production does not resemble. Mixing representative and hard cases gives both a realistic score and coverage of risky inputs.",
+    "distractors": {
+      "A": "More synthetic clean forms add volume but keep the same distribution mismatch with real submissions.",
+      "B": "Leaving an unrepresentative set as the release gate means regressions on real inputs still ship.",
+      "C": "Only hard cases distort the overall score and drop coverage of the common inputs the system mostly sees."
+    },
+    "difficulty": 2,
+    "tags": [
+      "eval-dataset",
+      "representative-sampling",
+      "edge-cases"
+    ]
+  },
+  {
+    "id": "ap-eval-009",
+    "scenario": 5,
+    "domain": 4,
+    "task": "4.2",
+    "type": "multi",
+    "select": 2,
+    "stem": "The merchandising team is building a test framework for the weekly report. Each report contains competitor prices pulled from research, sales figures from the warehouse and narrative recommendations. Which TWO grading approaches best fit these outputs? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "Code-based checks that every price and sales figure in the report matches the source data within a defined tolerance."
+      },
+      {
+        "key": "B",
+        "text": "BLEU similarity between each new report and the analyst-written report for the same week last year."
+      },
+      {
+        "key": "C",
+        "text": "Pairwise comparisons in which category managers pick the more useful of two report variants built from the same data."
+      },
+      {
+        "key": "D",
+        "text": "Asking the synthesis agent to rate its own report from 1 to 10 at the end of each run."
+      },
+      {
+        "key": "E",
+        "text": "Having analysts hand-check every number in every report variant before any change can be evaluated."
+      }
+    ],
+    "answer": [
+      "A",
+      "C"
+    ],
+    "explanation": "Choose the grader per criterion: figures have a checkable ground truth, so code-based comparison is fast and reliable. Recommendation quality is open-ended, and pairwise judgements by the people who use the reports are more reliable than absolute scores when comparing variants.",
+    "distractors": {
+      "B": "Similarity to an old report rewards copying past wording, not correct figures or useful recommendations.",
+      "D": "Self-rating without a rubric or calibration is not independent evidence of quality.",
+      "E": "Manual checking of numbers that code can verify wastes expert time and slows iteration."
+    },
+    "difficulty": 2,
+    "tags": [
+      "code-based-grading",
+      "pairwise",
+      "mixed-methods"
+    ]
+  },
+  {
+    "id": "ap-eval-010",
+    "scenario": 3,
+    "domain": 4,
+    "task": "4.2",
+    "type": "single",
+    "select": 1,
+    "stem": "An incident showed the knowledge-search assistant answering questions about a superseded travel policy. The team fixed the index filter. A month later, a prompt change quietly reintroduced the same behaviour. What practice would most directly have prevented the recurrence?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Require a second engineer to approve every prompt change before merge, focusing on how the wording might affect policy questions."
+      },
+      {
+        "key": "B",
+        "text": "Add the incident's queries and expected answers to a regression suite that runs automatically on every prompt, model or index change."
+      },
+      {
+        "key": "C",
+        "text": "Release prompt changes as a canary to a small share of users and promote them only if the overall answer-quality score holds steady for a week."
+      },
+      {
+        "key": "D",
+        "text": "Increase the share of production answers sampled for human review in the weeks following every release to the assistant."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Every confirmed incident should become a regression case that runs automatically on each change, so a fix cannot silently be undone. Code review, canaries and post-release sampling are useful, but they depend on the specific failure moving a broad signal or being noticed again. A regression suite catches it before release.",
+    "distractors": {
+      "A": "Reviewers reading prompt diffs cannot reliably predict behaviour changes; only running the known failing cases shows them.",
+      "C": "A narrow regression barely moves an overall score and still reaches canary users; the known failing queries should be tested before release.",
+      "D": "Post-release sampling may catch it eventually, but only after the regression has shipped and only by chance."
+    },
+    "difficulty": 2,
+    "tags": [
+      "regression-suite",
+      "incidents"
+    ]
+  },
+  {
+    "id": "ap-eval-011",
+    "scenario": 1,
+    "domain": 4,
+    "task": "4.2",
+    "type": "single",
+    "select": 1,
+    "stem": "Each visit summary must include a medication list that matches the structured medication record for the visit, and must contain the required template sections. The team plans to use an LLM judge for all criteria. Which grading approach is best for these two criteria?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Code-based checks: parse the sections and compare the extracted medication list with the structured record as a set."
+      },
+      {
+        "key": "B",
+        "text": "An LLM judge with a detailed rubric, since medication names vary in spelling and only a model can interpret them reliably."
+      },
+      {
+        "key": "C",
+        "text": "Clinician review of every summary, since medication accuracy is high risk and must never be graded automatically."
+      },
+      {
+        "key": "D",
+        "text": "Code checks for the sections, with an LLM judge for the medication list, since brand and generic names need interpretation that code cannot do."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "When the output has a checkable structure and a ground truth, code-based grading is the fastest and most reliable method. Section presence and a set comparison of medications against the structured record are deterministic checks, with normalisation for spelling if needed. LLM judges and experts are better spent on open-ended clinical reasoning.",
+    "distractors": {
+      "B": "Spelling variants are handled by normalisation in code; a judge adds cost and variance to a deterministic check.",
+      "C": "Experts are needed for nuanced clinical judgement, not for list matching that code does reliably at scale.",
+      "D": "Brand and generic names can be mapped through a drug terminology lookup in code; a judge adds cost and variance to what is a set comparison."
+    },
+    "difficulty": 2,
+    "tags": [
+      "code-based-grading",
+      "structured-output"
+    ]
+  },
+  {
+    "id": "ap-eval-012",
+    "scenario": 3,
+    "domain": 4,
+    "task": "4.3",
+    "type": "single",
+    "select": 1,
+    "stem": "In one release, the knowledge-search team changed the chunk size, added a reranker and rewrote the answer prompt. The offline score improved overall, but answers to Japanese queries got noticeably worse. What should the architect do next?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Ship the reranker and chunk-size changes, which are unlikely to be language-specific, and hold back only the prompt rewrite until it is tested in Japanese."
+      },
+      {
+        "key": "B",
+        "text": "Roll back all three changes and restart with a full redesign of the retrieval pipeline that handles each language separately."
+      },
+      {
+        "key": "C",
+        "text": "Evaluate each change on its own against the baseline, with results broken down by language, to find which change caused the drop."
+      },
+      {
+        "key": "D",
+        "text": "Add more Japanese examples to the answer prompt as few-shot examples, then re-run the full offline evaluation on all three changes."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Bundled changes with mixed results cannot be attributed, so the next step is an ablation: test each change on its own, segmented by language. That shows which change helped and which hurt, so the good ones can ship without the regression. Guessing which change is language-specific is no substitute for changing one variable at a time.",
+    "distractors": {
+      "A": "Which change hurt Japanese is an untested assumption; chunking and ranking can affect languages differently, so it must be measured.",
+      "B": "Rolling back everything discards changes that may have helped, and a redesign is premature without a diagnosis.",
+      "D": "Adding a fourth change guesses at the cause and makes attribution even harder."
+    },
+    "difficulty": 3,
+    "tags": [
+      "ablation",
+      "one-change-at-a-time",
+      "segments"
+    ]
+  },
+  {
+    "id": "ap-eval-013",
+    "scenario": 5,
+    "domain": 4,
+    "task": "4.3",
+    "type": "single",
+    "select": 1,
+    "stem": "The team has a new synthesis prompt that they believe will make merchandising recommendations more actionable. Category managers rely on the Monday report, and a bad week would damage trust. What rollout approach is most appropriate?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Replace the prompt for all categories next Monday and ask category managers to report any problems by email during the week."
+      },
+      {
+        "key": "B",
+        "text": "Canary the new prompt on two categories next Monday, compare those managers' feedback with the other categories, and widen it if feedback is positive."
+      },
+      {
+        "key": "C",
+        "text": "Run the new prompt on the golden set and regression suite, and switch all categories next Monday if it beats the current prompt on every offline metric."
+      },
+      {
+        "key": "D",
+        "text": "Run it offline on the golden set and regression suite, then in shadow alongside the live report, then canary to a few categories with guardrails."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "Changes should pass offline evals first, then run in shadow on real inputs without being shown, and only then reach a small canary group with guardrail metrics such as accuracy of figures, latency and cost. Offline evals alone or a canary alone each skip a safeguard. Each stage gives a rollback point before the change reaches everyone.",
+    "distractors": {
+      "A": "Shipping to everyone and waiting for complaints risks the bad week the team is trying to avoid.",
+      "B": "A canary without offline evals or shadow testing exposes real managers to an unvalidated prompt and judges it on anecdotal feedback.",
+      "C": "Offline sets do not show how the prompt behaves on this week's live data, and switching everyone at once leaves no small group to absorb a bad week."
+    },
+    "difficulty": 3,
+    "tags": [
+      "shadow",
+      "canary",
+      "offline-first"
+    ]
+  },
+  {
+    "id": "ap-eval-014",
+    "scenario": 4,
+    "domain": 4,
+    "task": "4.3",
+    "type": "single",
+    "select": 1,
+    "stem": "An A/B test of a new triage prompt shows overall flagging accuracy up and caseworker time per case down. Broken down by group, the false-flag rate for applications submitted in languages other than English rose noticeably. What should the architect recommend?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Ship the prompt to all applications, since both primary metrics improved, and add a caveat to the release notes about other languages."
+      },
+      {
+        "key": "B",
+        "text": "Hold the rollout, treat the segment rate as a guardrail, and investigate the regression before deciding on a fix or a scoped release."
+      },
+      {
+        "key": "C",
+        "text": "Ship the prompt but tell caseworkers to double-check every flag raised on applications in other languages until a fix is ready."
+      },
+      {
+        "key": "D",
+        "text": "Discard the new prompt, since any regression in any group means the experiment failed and must be rerun from scratch later."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Averages can hide segment regressions, and in a system affecting citizens' eligibility, a higher false-flag rate for one language group is a fairness and quality guardrail, not a footnote. The right move is to hold, investigate the cause and decide whether to fix it or scope the release. Shipping would knowingly harm one group.",
+    "distractors": {
+      "A": "Shipping a known regression that disadvantages one group of applicants is not acceptable because the average improved.",
+      "C": "Pushing the defect onto caseworkers adds workload and still exposes applicants to unequal treatment.",
+      "D": "Discarding the whole change throws away real gains without understanding the regression, which may be fixable."
+    },
+    "difficulty": 2,
+    "tags": [
+      "ab-testing",
+      "segments",
+      "guardrail-metrics",
+      "fairness"
+    ]
+  },
+  {
+    "id": "ap-eval-015",
+    "scenario": 1,
+    "domain": 4,
+    "task": "4.3",
+    "type": "multi",
+    "select": 2,
+    "stem": "A newer, more capable model tier becomes available, and the vendor's published benchmarks show strong gains. The hospital network wants to upgrade the visit-summary assistant. Which TWO steps should come before any clinician sees drafts from the new model? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "Run the existing regression suite and expert-scored high-risk cases against the new model and compare with the current one."
+      },
+      {
+        "key": "B",
+        "text": "Run the new model in shadow on live visits, logging its drafts for comparison without showing them to clinicians."
+      },
+      {
+        "key": "C",
+        "text": "Rely on the vendor's benchmark gains as evidence of improvement and skip internal evaluation to save time."
+      },
+      {
+        "key": "D",
+        "text": "Switch all 40 clinics at once so results are not skewed by differences between clinic populations."
+      },
+      {
+        "key": "E",
+        "text": "Rewrite the prompt to exploit the new model's strengths at the same time, so only one release is needed."
+      }
+    ],
+    "answer": [
+      "A",
+      "B"
+    ],
+    "explanation": "A model upgrade is a change like any other: it must pass your own regression suite and high-risk expert cases, then prove itself on real inputs in shadow mode before clinicians are exposed. Public benchmarks do not measure your task, and bundling a prompt rewrite would make the outcome impossible to attribute.",
+    "distractors": {
+      "C": "Public benchmarks do not reflect this task, its data or its high-risk cases.",
+      "D": "A simultaneous switch removes the staged rollout and any comparison group.",
+      "E": "Changing the model and prompt together makes it impossible to tell which caused any change."
+    },
+    "difficulty": 1,
+    "tags": [
+      "model-upgrade",
+      "shadow",
+      "regression-suite"
+    ]
+  },
+  {
+    "id": "ap-eval-016",
+    "scenario": 3,
+    "domain": 4,
+    "task": "4.3",
+    "type": "single",
+    "select": 1,
+    "stem": "A team compares two retrieval configurations on 150 test queries, running each once. Variant B scores two percentage points higher than variant A, and the team wants to switch to B immediately. What is the most appropriate response?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Estimate the uncertainty of the difference, for example with confidence intervals or repeated runs on a larger set, before choosing."
+      },
+      {
+        "key": "B",
+        "text": "Switch to variant B now, since any improvement measured on the shared test set is evidence that it is the better configuration to ship to users."
+      },
+      {
+        "key": "C",
+        "text": "Keep variant A, because a gain this small is never worth the operational risk that comes with changing the configuration."
+      },
+      {
+        "key": "D",
+        "text": "Ask the team to run variant B against a different set of 150 queries and ship it if the score is higher again."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Small samples and run-to-run variation make small differences unreliable, so the decision should rest on an estimate of uncertainty, not a single point comparison. Confidence intervals or repeated runs on a larger set show whether the gain is real. Only then is a switch or a staged rollout justified.",
+    "distractors": {
+      "B": "A two-point difference on a small set run once may be noise, so it is not yet evidence.",
+      "C": "Dismissing small gains by rule ignores that they can be real and cumulative once confirmed.",
+      "D": "One more small sample with both variants not re-run together still gives no measure of uncertainty."
+    },
+    "difficulty": 2,
+    "tags": [
+      "statistical-significance",
+      "sample-size"
+    ]
+  },
+  {
+    "id": "ap-eval-017",
+    "scenario": 5,
+    "domain": 4,
+    "task": "4.4",
+    "type": "single",
+    "select": 1,
+    "stem": "A Monday report listed a competitor's price for a product that the competitor does not sell. The trace shows the pricing worker's web-fetch tool returned an HTTP error that the tool wrapper converted into an empty successful result, after which the worker reported a plausible price. What is the root cause to fix first?",
+    "options": [
+      {
+        "key": "A",
+        "text": "The pricing worker accepts any price it finds, so it should validate each price against the competitor's product catalogue and re-run research on a mismatch."
+      },
+      {
+        "key": "B",
+        "text": "The synthesis agent did not cross-check prices, so it needs a stronger instruction to verify every number in the report."
+      },
+      {
+        "key": "C",
+        "text": "The tool wrapper hides failures as empty successes, so the worker filled the gap; it should return explicit, structured errors."
+      },
+      {
+        "key": "D",
+        "text": "The worker's temperature is too high, so it invents values; lowering it to zero will stop the fabricated prices."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "The trace shows a tool error masked as success, which left the model with no data and invited a plausible fabrication. The first fix is at the source: return explicit, structured errors so the worker can retry, report the gap or escalate. Validation in the worker or downstream, model size and temperature do not address a failure the system concealed.",
+    "distractors": {
+      "A": "Validation would catch this symptom, but the tool would keep hiding failures as empty successes, inviting other fabrications that pass the check.",
+      "B": "Downstream verification is a useful extra layer, but it treats the symptom while the tool keeps hiding failures.",
+      "D": "Lower temperature does not give the model data it never received, and fabrication can still occur."
+    },
+    "difficulty": 3,
+    "tags": [
+      "tool-error",
+      "traces",
+      "hallucination"
+    ]
+  },
+  {
+    "id": "ap-eval-018",
+    "scenario": 4,
+    "domain": 4,
+    "task": "4.4",
+    "type": "single",
+    "select": 1,
+    "stem": "Caseworkers report that, for some long applications, the triage summary omits evidence that is clearly present in the uploaded documents. Short applications look fine. The team wants to start rewriting the prompt. What is the best first step?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Switch the summariser to the most capable model tier for all applications, then ask caseworkers whether the omissions continue."
+      },
+      {
+        "key": "B",
+        "text": "Rewrite the prompt to tell the model to read every page carefully and never omit evidence, then redeploy to all applications."
+      },
+      {
+        "key": "C",
+        "text": "Raise the maximum output token limit for summaries so that the model has room to include all the evidence it finds."
+      },
+      {
+        "key": "D",
+        "text": "Collect the failing cases, reproduce them with the logged inputs and inspect what text actually reached the model for each one."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "Diagnosis starts with reproduction and evidence: the trace will show whether the missing evidence reached the model at all, for example because of an extraction or page-splitting problem, or whether it was present but ignored. Only then can the team choose between a retrieval, preprocessing, prompt or model fix. Changing things first makes it impossible to confirm the cause.",
+    "distractors": {
+      "A": "Upgrading the model may hide an input or preprocessing bug and raises cost without a diagnosis.",
+      "B": "A prompt rewrite without reproduction is a guess, and it cannot help if the evidence never reached the model.",
+      "C": "Omissions are not shown to be caused by truncated output; raising the limit is a guess without evidence."
+    },
+    "difficulty": 2,
+    "tags": [
+      "reproduce-first",
+      "traces",
+      "diagnosis"
+    ]
+  },
+  {
+    "id": "ap-eval-019",
+    "scenario": 3,
+    "domain": 4,
+    "task": "4.4",
+    "type": "single",
+    "select": 1,
+    "stem": "An employee asks about the current parental leave policy. The trace shows the correct policy section was retrieved at rank 1 and included in the context, yet the answer states different entitlements that appear in no retrieved document. Which diagnosis and fix fit best?",
+    "options": [
+      {
+        "key": "A",
+        "text": "A retrieval failure: increase the number of chunks retrieved and add a reranker, so that more of the relevant policy reaches the model."
+      },
+      {
+        "key": "B",
+        "text": "A grounding failure: instruct the model to answer only from the provided sources, quote the supporting text and say when it cannot find an answer."
+      },
+      {
+        "key": "C",
+        "text": "An indexing failure: rebuild the whole index from scratch, since stale chunks from an older version of the policy must still be in the index somewhere."
+      },
+      {
+        "key": "D",
+        "text": "A model mismatch: route every policy question to the most capable model tier, since smaller tiers cannot reliably follow long policy text."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "The trace isolates the stage: the right content was present in context, but the answer contradicted it with unsupported claims, which is a generation and grounding failure, not a retrieval one. Restricting answers to the provided sources, requiring supporting quotes and allowing abstention are the documented ways to reduce such hallucinations.",
+    "distractors": {
+      "A": "Retrieval already returned the correct section at the top rank, so retrieving more does not address the fault.",
+      "C": "The invented entitlements appear in no retrieved document, so there is no evidence of stale chunks.",
+      "D": "Upgrading the tier is a guess; the first fix for content that is present but ignored is grounding."
+    },
+    "difficulty": 2,
+    "tags": [
+      "grounding",
+      "hallucination",
+      "stage-isolation"
+    ]
+  },
+  {
+    "id": "ap-eval-020",
+    "scenario": 4,
+    "domain": 4,
+    "task": "4.4",
+    "type": "single",
+    "select": 1,
+    "stem": "The triage pipeline uses Haiku for every step. Field extraction is accurate, but the 'missing evidence' check fails mainly on complex cases where eligibility rules must be compared across several documents. Re-running those failing cases with Sonnet passes most of them. What is the most likely issue and response?",
+    "options": [
+      {
+        "key": "A",
+        "text": "A model mismatch on the multi-document reasoning step: route that step, or the complex cases, to a more capable tier and confirm on the eval set."
+      },
+      {
+        "key": "B",
+        "text": "A prompt failure: add many more few-shot examples of complex cases to the Haiku prompt until it passes every one of them."
+      },
+      {
+        "key": "C",
+        "text": "A retrieval failure: the documents are probably not reaching the model, so the document loader should be replaced."
+      },
+      {
+        "key": "D",
+        "text": "A sampling issue: set temperature to zero for the evidence check so that Haiku gives consistent answers on complex cases."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Failures concentrated in the hardest reasoning step, while simpler steps pass and a stronger tier succeeds on the same inputs, point to a model capability mismatch. The efficient response is to route only that step or those cases to a more capable model, keep Haiku where it works, and confirm the change on the eval set.",
+    "distractors": {
+      "B": "Few-shot examples help with format and patterns but rarely close a reasoning-capability gap, and over-fitting to the test cases is a risk.",
+      "C": "A stronger model succeeds with the same inputs, so the documents are reaching the model.",
+      "D": "Temperature affects variability, not the ability to reason across several documents."
+    },
+    "difficulty": 2,
+    "tags": [
+      "model-mismatch",
+      "routing",
+      "diagnosis"
+    ]
+  },
+  {
+    "id": "ap-eval-021",
+    "scenario": 5,
+    "domain": 4,
+    "task": "4.4",
+    "type": "multi",
+    "select": 2,
+    "stem": "A Monday report contained a recommendation based on a sales trend that does not exist in the data. Several agents touched the result: a sales-analysis worker, a pricing worker and the lead agent that synthesises the report. Which TWO actions best isolate which stage introduced the error? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "Replay the synthesis step using the logged worker outputs from that run and check whether the false trend appears."
+      },
+      {
+        "key": "B",
+        "text": "Re-run the sales-analysis worker alone on the same warehouse query results and compare its output with the source data."
+      },
+      {
+        "key": "C",
+        "text": "Upgrade all three agents to the most capable model tier and regenerate the report for that week."
+      },
+      {
+        "key": "D",
+        "text": "Rewrite every agent's system prompt with stronger instructions about not inventing data, then regenerate."
+      },
+      {
+        "key": "E",
+        "text": "Increase the maximum tokens for each agent so that no reasoning is cut short during the run."
+      }
+    ],
+    "answer": [
+      "A",
+      "B"
+    ],
+    "explanation": "In a multi-agent pipeline, you isolate the faulty stage by holding inputs fixed and re-running one stage at a time. Replaying synthesis with recorded worker outputs shows whether the lead agent introduced the trend, and re-running the analysis worker on the same data shows whether it was already wrong. Blanket changes alter every stage at once and reveal nothing.",
+    "distractors": {
+      "C": "Changing every model at once can mask the fault without telling you which stage caused it.",
+      "D": "Rewriting all prompts is a broad change made before the faulty stage is known.",
+      "E": "There is no evidence of truncation, and longer limits do not locate the error."
+    },
+    "difficulty": 3,
+    "tags": [
+      "multi-agent",
+      "stage-isolation",
+      "traces"
+    ]
+  },
+  {
+    "id": "ap-eval-022",
+    "scenario": 1,
+    "domain": 4,
+    "task": "4.4",
+    "type": "single",
+    "select": 1,
+    "stem": "Clinicians notice that answers to guideline questions sometimes cite guideline sections that do not exist. Traces show this happens when retrieval returns no relevant guideline for the question, while the prompt says 'Always cite the guideline that supports your answer.' What is the most effective fix?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Switch to the most capable model tier, which hallucinates less, and keep the prompt instruction requiring a citation."
+      },
+      {
+        "key": "B",
+        "text": "Add a post-generation check that confirms each cited section exists in the guideline index, and regenerate the answer whenever a citation fails it."
+      },
+      {
+        "key": "C",
+        "text": "Allow the model to say no supporting guideline was found, and require each claim to quote retrieved text."
+      },
+      {
+        "key": "D",
+        "text": "Retrieve many more chunks for every question so the model always has some guideline text available to cite."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "The prompt forces a citation even when the context has no support, so the model invents one. Giving explicit permission to abstain and requiring claims to be backed by quotes from the retrieved text are documented ways to reduce hallucinations, and abstention when sources are missing is the safe behaviour for clinical content.",
+    "distractors": {
+      "A": "A stronger model still faces an instruction to cite something that is not there; the prompt design causes the fabrication.",
+      "B": "Regenerating under the same instruction to always cite just swaps a fake section for a real but irrelevant one, since no supporting guideline was retrieved.",
+      "D": "Padding the context with irrelevant chunks gives the model text to cite but not text that supports the answer."
+    },
+    "difficulty": 3,
+    "tags": [
+      "hallucination",
+      "abstention",
+      "citations"
+    ]
+  },
+  {
+    "id": "ap-eval-023",
+    "scenario": 4,
+    "domain": 4,
+    "task": "4.5",
+    "type": "single",
+    "select": 1,
+    "stem": "The agency processes tens of thousands of benefit applications each night for pre-processing that caseworkers review the next day. A small share are marked urgent and need results within minutes. The current design sends every application through real-time requests. What change best improves cost-performance?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Keep every application on the real-time path but cache the shared system prompt and form instructions, since all applications reuse the same long prefix."
+      },
+      {
+        "key": "B",
+        "text": "Queue urgent applications behind the nightly batch so that all work shares one pipeline and one set of operational dashboards."
+      },
+      {
+        "key": "C",
+        "text": "Run more real-time requests in parallel overnight so that the nightly backlog finishes sooner and the servers are idle by morning."
+      },
+      {
+        "key": "D",
+        "text": "Send the non-urgent nightly volume through batch processing and keep a separate real-time path for the applications marked urgent."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "Batch processing suits large, non-urgent workloads: it trades immediacy for lower cost and high throughput. Urgent cases still need a real-time path, so the design splits traffic by urgency. This lowers cost without changing the model or delaying urgent cases, and prompt caching can complement it but does not replace it.",
+    "distractors": {
+      "A": "Caching trims the repeated prefix but leaves the large non-urgent volume on the full real-time path when batch processing suits it.",
+      "B": "Putting urgent cases into a batch path risks missing their minutes-level requirement.",
+      "C": "More real-time parallelism finishes sooner but does not reduce cost for work that has no urgency."
+    },
+    "difficulty": 2,
+    "tags": [
+      "batch-processing",
+      "cost",
+      "routing-by-urgency"
+    ]
+  },
+  {
+    "id": "ap-eval-024",
+    "scenario": 3,
+    "domain": 4,
+    "task": "4.5",
+    "type": "single",
+    "select": 1,
+    "stem": "Every knowledge-search query runs on the most capable model tier, and cost per query is well over budget. Query logs and the labelled eval set show about 70% of queries are simple single-document lookups (\"Where is the travel policy for contractors?\") and 30% need synthesis across several documents. Which change best improves cost-performance?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Move every query to the smallest tier, accepting some loss of synthesis quality because simple lookups are most of the traffic and dominate the bill."
+      },
+      {
+        "key": "B",
+        "text": "Route lookups to a smaller, faster tier and keep the capable tier for synthesis, then confirm the eval scores for each query type hold before rollout."
+      },
+      {
+        "key": "C",
+        "text": "Cap every response at a short maximum output length, so that multi-document synthesis answers cost about the same as simple lookups."
+      },
+      {
+        "key": "D",
+        "text": "Retrieve fewer chunks for every query, so input tokens drop for both query types without changing the model or the prompt."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Matching the model tier to each segment of the workload cuts cost where the cheaper tier is good enough while protecting quality where it matters. Checking the eval scores per query type before rollout keeps the saving from silently degrading the harder segment.",
+    "distractors": {
+      "A": "Moving everything down trades away synthesis quality without measuring it, when routing can capture most of the saving safely.",
+      "C": "Truncating output cuts synthesis answers short and does not address the model cost of the simple majority of queries.",
+      "D": "Cutting retrieval depth blindly risks dropping the chunks that synthesis questions need, and was not shown to be the cost driver."
+    },
+    "difficulty": 2,
+    "tags": [
+      "model-routing",
+      "cost",
+      "segmentation"
+    ]
+  },
+  {
+    "id": "ap-eval-025",
+    "scenario": 5,
+    "domain": 4,
+    "task": "4.5",
+    "type": "single",
+    "select": 1,
+    "stem": "Every agent in the merchandising system runs on Opus, including workers that summarise several hundred competitor product pages each week. Cost per report is well above budget. What should the architect do?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Route the high-volume page summarisation to Haiku, keep a more capable tier for planning and synthesis, and confirm quality on the eval set."
+      },
+      {
+        "key": "B",
+        "text": "Move every agent to Haiku to minimise cost, then rely on category managers to flag any recommendations that look wrong."
+      },
+      {
+        "key": "C",
+        "text": "Cut the number of competitor pages researched by half, since fewer inputs will lower token usage across every agent in the run."
+      },
+      {
+        "key": "D",
+        "text": "Keep Opus on every agent but enable prompt caching for the shared instructions each worker receives, since repeated prefixes are the cheapest saving."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Model routing matches the tier to the subtask: smaller, faster models for high-volume extraction and summarisation, more capable models for planning and synthesis. Validating the routing on the eval set ensures the saving does not cost quality. Blanket downgrades or cutting inputs trade away quality or coverage without evidence.",
+    "distractors": {
+      "B": "A blanket downgrade risks the synthesis quality the report depends on, and relying on users to catch errors is not evaluation.",
+      "C": "Halving research coverage reduces the value of the report rather than matching the model to the task.",
+      "D": "The cost is driven by hundreds of unique pages flowing through the top tier; caching shared instructions trims little of that."
+    },
+    "difficulty": 2,
+    "tags": [
+      "model-routing",
+      "cost",
+      "multi-agent"
+    ]
+  },
+  {
+    "id": "ap-eval-026",
+    "scenario": 1,
+    "domain": 4,
+    "task": "4.5",
+    "type": "single",
+    "select": 1,
+    "stem": "Clinicians say they wait too long for the complete visit summary, which they read in full before signing. Analysis shows most time is spent generating output: drafts open with a paragraph restating the request, repeat large parts of the transcript and end with a disclaimer. What is the most effective change?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Raise the maximum output token limit, since drafts that are cut off force clinicians to regenerate them and wait twice."
+      },
+      {
+        "key": "B",
+        "text": "Stream the draft into the note editor as it is generated, so that clinicians can start reading the first sections while the rest is still being written."
+      },
+      {
+        "key": "C",
+        "text": "Constrain the output to the template sections, with no preamble or restated transcript, and check note quality on the eval set."
+      },
+      {
+        "key": "D",
+        "text": "Run the summary generation as an overnight batch job, so that every draft is ready and waiting for clinicians when they arrive the next morning."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Output tokens drive much of response time, so removing preamble, restated input and boilerplate directly cuts latency. Constraining the output to the template keeps everything clinicians need, and re-running the eval confirms the shorter notes are still complete and correct. Streaming only changes when text starts to appear, not how long the complete draft takes.",
+    "distractors": {
+      "A": "A higher limit allows even longer outputs and does nothing about the unnecessary content.",
+      "B": "Streaming improves the first impression, but clinicians still wait for the complete, padded draft before signing, and the padding stays in the note.",
+      "D": "Clinicians need the draft right after the visit, so a next-day batch does not fit this workflow."
+    },
+    "difficulty": 3,
+    "tags": [
+      "latency",
+      "output-length"
+    ]
+  },
+  {
+    "id": "ap-eval-027",
+    "scenario": 5,
+    "domain": 4,
+    "task": "4.5",
+    "type": "multi",
+    "select": 2,
+    "stem": "The weekly merchandising run has started missing the 7 a.m. deadline. Traces show the lead agent calls the research workers one after another, although their tasks are independent, and passes each worker's full raw output into the synthesis prompt. Which TWO changes best address the deadline while protecting quality? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "Run the independent research workers in parallel instead of sequentially."
+      },
+      {
+        "key": "B",
+        "text": "Have workers return condensed findings with sources, so synthesis gets a smaller, focused context."
+      },
+      {
+        "key": "C",
+        "text": "Submit the whole run through batch processing so that it completes faster overnight."
+      },
+      {
+        "key": "D",
+        "text": "Switch the synthesis agent to Haiku without re-running the evaluation, because it is the slowest step."
+      },
+      {
+        "key": "E",
+        "text": "Increase the maximum output tokens for every agent so that no worker needs a second call."
+      }
+    ],
+    "answer": [
+      "A",
+      "B"
+    ],
+    "explanation": "Independent subtasks can run in parallel to shorten wall-clock time, and condensed worker outputs reduce the tokens synthesis must process, which often improves quality as well. Both address the bottlenecks the trace shows without weakening the system's judgement.",
+    "distractors": {
+      "C": "Batch processing optimises cost and throughput, not completion time, so it is the wrong tool for a hard deadline.",
+      "D": "Downgrading the synthesis model without evaluation risks the quality of the recommendations.",
+      "E": "Higher output limits do not address sequential execution or bloated context."
+    },
+    "difficulty": 2,
+    "tags": [
+      "parallelism",
+      "context-trimming",
+      "latency"
+    ]
+  },
+  {
+    "id": "ap-eval-028",
+    "scenario": 3,
+    "domain": 4,
+    "task": "4.6",
+    "type": "single",
+    "select": 1,
+    "stem": "After a re-indexing job, the share of German-language queries answered with 'no relevant documents found' tripled for two weeks before anyone noticed. Global dashboards for latency, cost and the overall no-answer rate stayed within thresholds. What monitoring change would have caught this soonest?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Lower the global no-answer alert threshold sharply, so that even a small rise across all languages triggers a page."
+      },
+      {
+        "key": "B",
+        "text": "Run the full offline eval suite after every re-indexing job and block promotion of the new index if the overall score drops below its threshold."
+      },
+      {
+        "key": "C",
+        "text": "Ask employees to report problems through a feedback form, and review the submitted forms every Friday afternoon."
+      },
+      {
+        "key": "D",
+        "text": "Alert on deviation from baseline per language for quality proxies such as no-answer and citation rates."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "Global averages can stay flat while one segment collapses, so quality proxies need baselines and alerts per segment, here per language. A per-language no-answer or citation-rate alert would have fired within days of the re-indexing job. Lowering global thresholds mostly adds noise, and an overall eval score has the same blind spot as the global dashboards.",
+    "distractors": {
+      "A": "A tighter global threshold creates noisy alerts and can still miss a collapse in one smaller segment.",
+      "B": "German queries are a small share of the eval set, so an overall score can stay above threshold while one language collapses, as the global dashboards did.",
+      "C": "User reports are slow and incomplete, which is why the problem went unnoticed for two weeks."
+    },
+    "difficulty": 3,
+    "tags": [
+      "monitoring",
+      "segmented-alerts",
+      "drift"
+    ]
+  },
+  {
+    "id": "ap-eval-029",
+    "scenario": 1,
+    "domain": 4,
+    "task": "4.6",
+    "type": "single",
+    "select": 1,
+    "stem": "Engineers need traces to debug the clinical documentation assistant, but prompts and outputs contain protected health information. The privacy officer has raised concerns about the current practice of logging full prompts to a shared observability tool. What is the best logging design?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Turn off prompt and output logging completely, and debug problems by asking the clinicians involved to describe what they saw on their screens."
+      },
+      {
+        "key": "B",
+        "text": "Log structured metadata by default, redact PHI in content, and keep any full content in a restricted store with retention limits."
+      },
+      {
+        "key": "C",
+        "text": "Keep logging full prompts to the shared tool but restrict the dashboard to engineers who have completed privacy training."
+      },
+      {
+        "key": "D",
+        "text": "Encrypt the full prompts in the shared tool and give every engineer the decryption key so they can still debug incidents."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "PII-safe observability keeps what debugging needs, such as request ids, prompt version, model, document ids, token counts and latency, as structured metadata, and redacts sensitive fields from content. Where full content is required, it goes to a restricted, audited store with retention set by policy. This preserves the ability to diagnose without spreading PHI.",
+    "distractors": {
+      "A": "Disabling logging removes the ability to reproduce and audit failures, which a clinical system needs.",
+      "C": "Training does not change the fact that PHI sits in a broadly accessible tool beyond the minimum necessary.",
+      "D": "Encryption with a key every engineer holds gives the same broad access as plain text."
+    },
+    "difficulty": 2,
+    "tags": [
+      "pii-safe-logging",
+      "phi",
+      "observability"
+    ]
+  },
+  {
+    "id": "ap-eval-030",
+    "scenario": 4,
+    "domain": 4,
+    "task": "4.6",
+    "type": "single",
+    "select": 1,
+    "stem": "A redesigned application form went live in one region. For two weeks, the extraction pipeline silently left the household-income field empty for most of those forms, and caseworkers filled it in by hand without reporting it. What monitoring would have detected the problem fastest?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Per-field empty and validation-failure rates tracked by form version and region, alerting on deviation from each field's baseline."
+      },
+      {
+        "key": "B",
+        "text": "A monthly audit in which a caseworker reviews a random sample of extracted forms across every region the agency serves."
+      },
+      {
+        "key": "C",
+        "text": "An alert on the pipeline's overall error rate, so that any failed API call or crashed job is reported within the hour."
+      },
+      {
+        "key": "D",
+        "text": "A dashboard of average tokens and latency per application, since a new form layout would change both of these figures."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Silent quality failures show up as changes in quality proxies, such as a jump in empty or invalid fields, not as errors or outages. Tracking those proxies per field, form version and region against a baseline would have alerted within a day of the new form going live. Monthly audits and infrastructure metrics are too slow or blind to this failure.",
+    "distractors": {
+      "B": "A monthly sample review would find the problem weeks later and may miss a single region.",
+      "C": "The pipeline never errored; it returned valid but empty fields, so an error-rate alert stays silent.",
+      "D": "Tokens and latency may shift slightly, but they do not indicate which field is failing or that quality dropped."
+    },
+    "difficulty": 2,
+    "tags": [
+      "monitoring",
+      "quality-proxies",
+      "drift"
+    ]
+  },
+  {
+    "id": "ap-eval-031",
+    "scenario": 5,
+    "domain": 4,
+    "task": "4.6",
+    "type": "single",
+    "select": 1,
+    "stem": "The cost of each weekly merchandising run has doubled over a month. The only telemetry is the final report and the total API spend per day, so nobody can say which agent or step is responsible. What should the architect put in place?",
+    "options": [
+      {
+        "key": "A",
+        "text": "A daily spend cap that automatically stops the run when the budget is exceeded, so cost can never grow beyond the agreed weekly amount again."
+      },
+      {
+        "key": "B",
+        "text": "End-to-end tracing with a span per agent and tool call, recording model, token usage, latency and prompt version for every run."
+      },
+      {
+        "key": "C",
+        "text": "A weekly review in which an engineer reads the final reports to judge whether they have become longer than they were."
+      },
+      {
+        "key": "D",
+        "text": "A switch of all agents to a cheaper model tier until the cost returns to its previous level, then a gradual switch back."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Attributing a cost or latency change requires per-stage tracing: spans for each agent and tool call with token usage, model and prompt version show which step grew and when. With that data, the team can link the increase to a specific change and fix it. Caps and blanket downgrades act without knowing the cause.",
+    "distractors": {
+      "A": "A spend cap limits damage but could stop the Monday report and still does not reveal the cause.",
+      "C": "Reading final reports cannot show token use inside agents and tool calls.",
+      "D": "A blanket downgrade risks quality and hides the cause, which will return when the model is switched back."
+    },
+    "difficulty": 2,
+    "tags": [
+      "tracing",
+      "cost-attribution",
+      "multi-agent"
+    ]
+  },
+  {
+    "id": "ap-eval-032",
+    "scenario": 4,
+    "domain": 4,
+    "task": "4.6",
+    "type": "multi",
+    "select": 2,
+    "stem": "The agency wants ongoing evidence that triage suggestions remain accurate and fair after go-live, without caseworkers having to review every case for monitoring purposes. Which TWO practices should the monitoring plan include? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "Track caseworker override and edit rates of suggestions, segmented by applicant group and form type, with drift alerts."
+      },
+      {
+        "key": "B",
+        "text": "Sample outputs regularly for scoring by a calibrated LLM judge and a smaller human audit, and add confirmed failures to the eval set."
+      },
+      {
+        "key": "C",
+        "text": "Monitor API uptime and average latency, since a healthy service implies that suggestions are still accurate."
+      },
+      {
+        "key": "D",
+        "text": "Record the model's self-reported confidence for each suggestion and treat high confidence as proof of accuracy."
+      },
+      {
+        "key": "E",
+        "text": "Report the total number of applications processed each week as the primary indicator of system health."
+      }
+    ],
+    "answer": [
+      "A",
+      "B"
+    ],
+    "explanation": "Override and edit rates are a cheap, continuous quality proxy, and segmenting them by group surfaces fairness drift. Sampling outputs for calibrated automated and human review gives direct quality evidence without reviewing everything, and feeding failures back into the eval set closes the loop.",
+    "distractors": {
+      "C": "Service health says nothing about whether suggestions are correct or fair.",
+      "D": "Self-reported confidence is not calibrated evidence of accuracy.",
+      "E": "Throughput measures volume, not quality or fairness."
+    },
+    "difficulty": 1,
+    "tags": [
+      "monitoring",
+      "sampling",
+      "fairness",
+      "feedback-loop"
+    ]
+  }
+]

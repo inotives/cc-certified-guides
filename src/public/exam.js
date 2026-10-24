@@ -84,8 +84,8 @@
       <div class="qcard">
         ${!sc ? ''
           : !prevScenario || prevScenario !== it.scenario || cur === 0 || A.mode !== 'full'
-          ? `<div class="scenario-banner"><b>Scenario: ${esc(sc.name)}</b><div style="margin-top:4px">${esc(sc.context)}</div></div>`
-          : `<div class="small muted" style="margin-bottom:6px">Scenario: ${esc(sc.name)}</div>`}
+          ? `<div class="scenario-banner"><b>${CTX.scenarioWord}: ${esc(sc.name)}</b><div style="margin-top:4px">${esc(sc.context)}</div></div>`
+          : `<div class="small muted" style="margin-bottom:6px">${CTX.scenarioWord}: ${esc(sc.name)}</div>`}
         <div class="spread">
           <div class="row">${showMeta ? `<span class="badge"><span class="dot" style="background:${dm.color}"></span>${esc(dm.short)}</span><span class="badge">${CTX.term} ${it.task}</span>` : ''}
             ${it.type === 'multi' ? `<span class="badge amber">Select ${it.select}</span>` : ''}${it.official ? '<span class="badge sky">Official sample</span>' : ''}</div>

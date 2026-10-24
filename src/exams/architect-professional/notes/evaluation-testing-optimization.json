@@ -1,0 +1,568 @@
+[
+  {
+    "task": "4.1",
+    "knowledge": [
+      "Good success criteria are specific, measurable, achievable and relevant: they name the metric, the target, the test set and the business outcome they serve, not \"good quality\" or \"fast enough\".",
+      "Quality is multidimensional. A production system usually needs targets for task accuracy, latency, cost, safety and security at the same time, and a change that improves one can regress another.",
+      "Latency has several faces: time to first token (what a streaming user feels), end-to-end time (what a pipeline or deadline feels) and tail percentiles such as p95 (what the worst-served users feel). Averages hide tails.",
+      "Cost is best expressed per completed task (per signed note, per report, per resolved case), including retries, tool calls, rework and human review time, not per token or per request.",
+      "Safety metrics cover harmful or out-of-policy outputs, abstention when sources are missing and correct escalation; security metrics cover prompt-injection resistance (attack success rate on an adversarial set) and data leakage across users or into logs.",
+      "Metrics only matter when tied to the outcome stakeholders care about (clinician minutes saved, analyst hours, caseworker throughput) and agreed with them before the build, so the result is not re-litigated later."
+    ],
+    "skills": [
+      "Turn a vague goal (\"safe\", \"accurate\", \"fast\") into a measurable criterion with a threshold, a measurement method and a named test set.",
+      "Pick the latency metric that matches the experience: TTFT for interactive streaming, end-to-end and p95 for batch jobs and deadlines.",
+      "Define cost per successful task, including failure retries and human rework, and compare designs on it.",
+      "Add safety and security criteria (abstention rate on unanswerable cases, injection attack success rate, leakage rate) alongside accuracy, with stricter thresholds for high-risk cases."
+    ],
+    "examLens": [
+      "Prefer the answer that states a number, a test set and a business outcome over one that states a quality adjective.",
+      "When users complain about responsiveness but the average looks fine, look for p95 or TTFT rather than the mean.",
+      "When asked how to compare costs, prefer cost per completed or accepted task over cost per token or per call.",
+      "High-risk subsets (dosage, eligibility, money) get their own stricter thresholds instead of being averaged into one score."
+    ],
+    "traps": [
+      "A single blended accuracy score that hides failures in the high-risk minority of cases.",
+      "Token count, request volume or uptime offered as if they measured task quality.",
+      "Similarity scores (BLEU, ROUGE) against old reference outputs presented as the primary success metric for open-ended work.",
+      "Criteria set after the pilot, so the team chooses metrics that make the result look good."
+    ],
+    "links": [
+      {
+        "label": "Define success criteria and build evaluations",
+        "url": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests"
+      },
+      {
+        "label": "Reducing latency",
+        "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-latency"
+      },
+      {
+        "label": "Mitigate jailbreaks and prompt injections",
+        "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks"
+      }
+    ],
+    "cheat": [
+      [
+        "Sponsor asks for \"safe and accurate\" drafts",
+        "Agree measurable thresholds per risk tier on a named test set"
+      ],
+      [
+        "Streaming chat feels slow, average latency fine",
+        "Measure p95 time to first token"
+      ],
+      [
+        "Comparing two designs on cost",
+        "Cost per completed task, including retries and human rework"
+      ],
+      [
+        "Agent reads untrusted documents",
+        "Track injection attack success rate and leakage rate"
+      ]
+    ],
+    "diagrams": [
+      {
+        "kind": "layers",
+        "title": "Five metric families for one system",
+        "layers": [
+          {
+            "label": "Accuracy",
+            "note": "Task-level correctness on a named test set, high-risk cases scored separately.",
+            "tone": "accent"
+          },
+          {
+            "label": "Latency",
+            "note": "TTFT for streaming users, end-to-end and p95 for jobs and deadlines.",
+            "tone": "sky"
+          },
+          {
+            "label": "Cost",
+            "note": "Per completed task, including retries, tool calls and human rework.",
+            "tone": "amber"
+          },
+          {
+            "label": "Safety",
+            "note": "Out-of-policy output, abstention when sources are missing, escalation.",
+            "tone": "good"
+          },
+          {
+            "label": "Security",
+            "note": "Injection attack success rate and data leakage rate.",
+            "tone": "warn"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "task": "4.2",
+    "knowledge": [
+      "An eval dataset should mirror the real task distribution (sampled from production or realistic inputs) and add edge cases, adversarial inputs and regression cases from past incidents. A golden set has agreed reference answers or labels.",
+      "Volume and automation usually beat a handful of perfect hand-graded cases; prioritise many automatically gradable cases, with expert review reserved where judgement matters.",
+      "Code-based grading (exact match, set comparison, schema validation, numeric tolerance) is fastest and most reliable; use it whenever the output has a checkable structure.",
+      "LLM-as-judge scales open-ended grading with a clear rubric, but it must be calibrated against human expert scores on a sample before you trust it, and it should not be the only check on high-risk items.",
+      "Human expert review is the gold standard for high-stakes or nuanced judgements; pairwise comparison (which of two outputs is better) is often more reliable than absolute scores when comparing variants.",
+      "In RAG and agent systems, evaluate stages separately: retrieval (did the right chunks come back, recall at k) and generation (given the right context, is the answer faithful and complete)."
+    ],
+    "skills": [
+      "Assemble a dataset that mixes production samples, edge cases, adversarial cases and regression cases, stratified by the segments that matter (language, form type, risk tier).",
+      "Choose the grader per criterion: code for structure and facts, calibrated LLM judge for open-ended quality, experts for high-risk items, pairwise for variant comparisons.",
+      "Build a labelled query-to-relevant-chunk set so retrieval can be scored independently of the generated answer.",
+      "Convert every production incident into a regression case that runs on every change."
+    ],
+    "examLens": [
+      "If the output can be checked by code, the answer that uses code-based grading usually beats an LLM judge.",
+      "An LLM judge is acceptable only with a rubric and evidence of agreement with human experts.",
+      "If you cannot tell whether retrieval or generation is failing, the answer is a separate retrieval eval.",
+      "A dataset of clean, easy inputs is the problem when production looks different; prefer sampling the real distribution plus edge cases."
+    ],
+    "traps": [
+      "Using the same model, with no rubric or calibration, to judge its own outputs and treating the score as ground truth.",
+      "An eval set built only from happy-path examples written by the team.",
+      "Only scoring the final answer in a RAG system, so retrieval failures are misdiagnosed as prompt problems.",
+      "Having experts hand-grade everything, which caps volume and slows iteration."
+    ],
+    "links": [
+      {
+        "label": "Create strong empirical evaluations",
+        "url": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests"
+      },
+      {
+        "label": "Demystifying evals for AI agents",
+        "url": "https://www.anthropic.com/research/demystifying-evals-for-ai-agents"
+      },
+      {
+        "label": "Contextual retrieval",
+        "url": "https://www.anthropic.com/research/contextual-retrieval"
+      }
+    ],
+    "cheat": [
+      [
+        "Output has a fixed schema or list of values",
+        "Code-based grading: schema and set comparison"
+      ],
+      [
+        "Open-ended quality at scale",
+        "LLM judge with rubric, calibrated against experts"
+      ],
+      [
+        "Comparing two prompt variants",
+        "Pairwise comparison on the same inputs"
+      ],
+      [
+        "Wrong RAG answers, unknown cause",
+        "Score retrieval recall separately from generation"
+      ]
+    ],
+    "diagrams": [
+      {
+        "kind": "decision",
+        "title": "Pick the grader per criterion",
+        "question": "What does this criterion need?",
+        "branches": [
+          {
+            "when": "Structured or exact output",
+            "then": "Code-based check: match, schema, set",
+            "tone": "good"
+          },
+          {
+            "when": "Open-ended quality at volume",
+            "then": "LLM judge with rubric, calibrated",
+            "tone": "sky"
+          },
+          {
+            "when": "High-risk or nuanced judgement",
+            "then": "Human expert review",
+            "tone": "warn"
+          },
+          {
+            "when": "Which of two variants is better",
+            "then": "Pairwise comparison",
+            "tone": "accent"
+          },
+          {
+            "when": "RAG: did the right chunks return?",
+            "then": "Retrieval eval: recall at k",
+            "tone": "amber"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "task": "4.3",
+    "knowledge": [
+      "Iterate empirically: change one thing at a time (prompt, model, chunking, retrieval, tools) so any change in results can be attributed to it.",
+      "Run offline evals first (golden set plus regression suite); only promising variants go online, where real traffic reveals what the offline set missed.",
+      "Online, use shadow mode (new variant runs but is not shown), canary rollout (small share of traffic) or an A/B split, with guardrail metrics such as safety, latency and cost that must not regress.",
+      "Small samples are noisy and LLM outputs vary between runs; report uncertainty (confidence intervals, repeated runs) before declaring a winner.",
+      "Overall improvement can hide segment regressions: break results down by language, document type, user group or risk tier before shipping.",
+      "Model upgrades and prompt changes are both changes: they go through the same regression suite and staged rollout."
+    ],
+    "skills": [
+      "Design an experiment with one variable, a primary metric, guardrail metrics and a sample size large enough to detect the expected effect.",
+      "Sequence offline eval, shadow, canary and full rollout, with a rollback trigger at each stage.",
+      "Segment experiment results and block a rollout that regresses a protected or high-risk segment.",
+      "Run ablations when several changes were bundled, to find which one helped and which one hurt."
+    ],
+    "examLens": [
+      "Bundled changes with mixed results: the answer is to separate them and test one at a time.",
+      "\"Ship it and watch complaints\" loses to offline eval followed by shadow or canary with guardrails.",
+      "A small difference on a small sample is not a result; prefer more data or a significance check.",
+      "A gain in the average with a loss in one segment is a reason to investigate, not to ship."
+    ],
+    "traps": [
+      "Trusting public benchmark gains instead of your own eval set when upgrading models.",
+      "Declaring a winner from a one-day test with a handful of users.",
+      "Watching only the primary metric while latency, cost or safety regresses.",
+      "Changing prompt, model and retrieval in one release, then being unable to explain the outcome."
+    ],
+    "links": [
+      {
+        "label": "Create strong empirical evaluations",
+        "url": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests"
+      },
+      {
+        "label": "A statistical approach to model evaluations",
+        "url": "https://www.anthropic.com/research/statistical-approach-to-model-evals"
+      }
+    ],
+    "cheat": [
+      [
+        "Three changes shipped together, mixed results",
+        "Ablate: test each change on its own"
+      ],
+      [
+        "New model version available",
+        "Regression suite offline, then shadow or canary"
+      ],
+      [
+        "Overall up, one language down",
+        "Hold the rollout and investigate the segment"
+      ],
+      [
+        "2-point gain on 150 queries",
+        "Check uncertainty; enlarge the sample before deciding"
+      ]
+    ],
+    "diagrams": [
+      {
+        "kind": "flow",
+        "title": "From idea to rollout",
+        "steps": [
+          {
+            "label": "Change one variable",
+            "note": "Prompt, model, chunking or tool, not all at once.",
+            "tone": "sky"
+          },
+          {
+            "label": "Offline eval and regression suite",
+            "note": "Golden set, edge and adversarial cases, past incidents."
+          },
+          {
+            "label": "Shadow mode",
+            "note": "Runs on real traffic without being shown; compare outputs.",
+            "tone": "accent"
+          },
+          {
+            "label": "Canary or A/B with guardrails",
+            "note": "Primary metric plus safety, latency and cost; check segments.",
+            "tone": "amber"
+          },
+          {
+            "label": "Full rollout or rollback",
+            "tone": "good"
+          }
+        ],
+        "loop": "Every incident becomes a new regression case"
+      }
+    ]
+  },
+  {
+    "task": "4.4",
+    "knowledge": [
+      "Common root causes look alike from the outside: a prompt failure (unclear or buried instruction), a hallucination (unsupported content), a model mismatch (task too hard for the chosen tier), a retrieval failure (wrong, missing or stale chunks) and a tool error (failed call treated as success).",
+      "Diagnosis starts from evidence: collect failing cases, reproduce them with the same inputs, and read the traces or transcripts to see what the model actually received and returned at each step.",
+      "Isolate the stage: if the right content never reached the context, it is retrieval or tooling; if it was there and the answer ignored or contradicted it, it is prompting or grounding; if a stronger model succeeds on the same input, it is capability.",
+      "Hallucinations often appear when the system is asked for something its context does not support; allowing \"I don't know\", requiring quotes or citations from provided sources and verifying claims against them reduce them.",
+      "Tool errors returned as empty or generic results invite the model to fill gaps; structured, explicit error results let the model and orchestrator react correctly.",
+      "In multi-agent systems, replaying a stage with logged inputs (for example, feeding recorded worker outputs to the synthesiser) shows which agent introduced the fault."
+    ],
+    "skills": [
+      "Reproduce a reported failure from logged inputs before changing anything.",
+      "Read a trace and classify the failure as prompt, hallucination, model mismatch, retrieval or tool error.",
+      "Swap one component at a time (stronger model, fixed retrieval, fixed tool result) to confirm the root cause.",
+      "Pick the fix that matches the cause: grounding and abstention for hallucinations, routing for capability gaps, retrieval fixes for missing context, error handling for tools."
+    ],
+    "examLens": [
+      "Asked for the best first step, choose reproducing and reading the trace over rewriting prompts or switching models.",
+      "Correct content present in context but ignored points to prompting or grounding; absent content points to retrieval or tools.",
+      "Failures concentrated in the hardest cases while easy ones pass suggest a model-tier mismatch.",
+      "Invented citations or figures where sources were missing call for abstention and source-quoting, not a bigger model."
+    ],
+    "traps": [
+      "Blaming the model or its weights before checking inputs, retrieval and tool results.",
+      "Raising the model tier for every failure, which hides retrieval and tooling bugs and raises cost.",
+      "Tweaking temperature as a fix for missing or wrong context.",
+      "Rewriting the whole prompt without a reproduction, so you cannot tell whether the fix worked."
+    ],
+    "links": [
+      {
+        "label": "Reduce hallucinations",
+        "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations"
+      },
+      {
+        "label": "Increase output consistency",
+        "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/increase-consistency"
+      },
+      {
+        "label": "How we built our multi-agent research system",
+        "url": "https://www.anthropic.com/research/multi-agent-research-system"
+      }
+    ],
+    "cheat": [
+      [
+        "Right chunk was in context, answer ignored it",
+        "Grounding: answer only from sources, quote, allow abstention"
+      ],
+      [
+        "Worker reported a plausible value after a failed call",
+        "Tool error masked as success: return explicit errors"
+      ],
+      [
+        "Only the hardest cases fail on a small model",
+        "Model mismatch: route those cases to a stronger tier"
+      ],
+      [
+        "Citations to guidelines that don't exist",
+        "Hallucination: require quotes from retrieved text, allow \"not found\""
+      ]
+    ],
+    "diagrams": [
+      {
+        "kind": "decision",
+        "title": "Where did it go wrong?",
+        "question": "What does the trace show?",
+        "branches": [
+          {
+            "when": "Needed content never reached context",
+            "then": "Retrieval failure: fix index or query",
+            "tone": "amber"
+          },
+          {
+            "when": "A tool call failed or returned empty",
+            "then": "Tool error: return explicit errors",
+            "tone": "warn"
+          },
+          {
+            "when": "Content present but ignored",
+            "then": "Prompt or grounding failure",
+            "tone": "sky"
+          },
+          {
+            "when": "Claims not in any source",
+            "then": "Hallucination: quote sources, allow abstain",
+            "tone": "accent"
+          },
+          {
+            "when": "Stronger model passes same input",
+            "then": "Model mismatch: route by difficulty",
+            "tone": "good"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "task": "4.5",
+    "knowledge": [
+      "Prompt caching reuses an identical prefix (tools, system prompt, long static documents) across requests, cutting cost and time to first token; anything that changes in the prefix, such as a timestamp or user id, breaks the cache, so static content goes first and dynamic content after it.",
+      "Model routing matches tier to subtask: smaller, faster models (Haiku) for high-volume extraction, classification and summarisation; more capable models (Sonnet, Opus) for planning, synthesis and hard reasoning. Cascades escalate only cases a cheaper model cannot handle confidently.",
+      "Batch processing trades immediacy for lower cost and higher throughput: it suits large, non-urgent workloads, not interactive or deadline-critical paths.",
+      "Output tokens drive much of the latency, so constraining output length and format (no preamble, no restating input) speeds responses; streaming improves perceived latency but not total time.",
+      "Trimming context (retrieving fewer, better chunks; passing condensed results between agents) cuts tokens and often improves quality; independent subtasks can run in parallel to shorten wall-clock time.",
+      "Every optimisation is a change: measure quality on the eval set before and after, because a cheaper or faster system that fails the success criteria is not an optimisation."
+    ],
+    "skills": [
+      "Order prompts so stable content forms a cacheable prefix, and find what is breaking cache hits.",
+      "Route subtasks to model tiers and validate each routing decision on the eval set.",
+      "Move non-urgent bulk work to batch processing while keeping a real-time path for urgent items.",
+      "Cut latency by shortening outputs, parallelising independent steps and passing condensed context."
+    ],
+    "examLens": [
+      "Repeated long static prefix: the answer is caching with static content first.",
+      "Large volume, no urgency: batch processing; urgent items keep a separate real-time path.",
+      "Prefer routing by subtask with an eval check over switching the whole system to the smallest or largest model.",
+      "Missed deadlines in a multi-step pipeline often call for parallelising independent steps and trimming context, not a bigger max_tokens."
+    ],
+    "traps": [
+      "Truncating required context to save tokens.",
+      "Putting per-request values at the top of the prompt, which defeats caching.",
+      "Using batch processing to make an interactive or deadline path faster.",
+      "Downgrading the model across the board without checking quality on the eval set."
+    ],
+    "links": [
+      {
+        "label": "Prompt caching",
+        "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+      },
+      {
+        "label": "Batch processing",
+        "url": "https://platform.claude.com/docs/en/build-with-claude/batch-processing"
+      },
+      {
+        "label": "Choosing a model",
+        "url": "https://platform.claude.com/docs/en/about-claude/models/choosing-a-model"
+      },
+      {
+        "label": "Reducing latency",
+        "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-latency"
+      }
+    ],
+    "cheat": [
+      [
+        "Cache hit rate near zero despite a static prompt",
+        "Move timestamps and ids out of the prefix"
+      ],
+      [
+        "Thousands of non-urgent documents nightly",
+        "Batch processing, with a real-time path for urgent cases"
+      ],
+      [
+        "High-volume summarising on the top tier",
+        "Route that subtask to a smaller tier after an eval check"
+      ],
+      [
+        "Pipeline misses its deadline",
+        "Parallelise independent steps, trim context between them"
+      ]
+    ],
+    "diagrams": [
+      {
+        "kind": "compare",
+        "title": "Which lever for which pain",
+        "columns": [
+          {
+            "head": "Cost",
+            "items": [
+              "Cache the static prefix",
+              "Route bulk subtasks to Haiku",
+              "Batch non-urgent work"
+            ],
+            "tone": "amber"
+          },
+          {
+            "head": "Latency",
+            "items": [
+              "Shorter, structured outputs",
+              "Parallelise independent steps",
+              "Stream for perceived speed"
+            ],
+            "tone": "sky"
+          },
+          {
+            "head": "Always",
+            "items": [
+              "Trim context to what matters",
+              "Re-run evals before and after",
+              "Keep quality thresholds fixed"
+            ],
+            "tone": "good"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "task": "4.6",
+    "knowledge": [
+      "Production observability combines logs (what happened), traces (the path of one request through retrieval, tools and agents, with spans and token counts) and metrics on dashboards (rates and distributions over time).",
+      "Record enough to reproduce and attribute: request id, prompt and template version, model, retrieved document ids, tool calls and results, token usage, latency per stage and outcome.",
+      "Quality drifts silently when inputs change (new form versions, new document types, index changes). Monitor quality proxies such as schema failures, abstention or refusal rate, citation rate, user edits and overrides, alongside latency and cost.",
+      "Alert on deviation from a baseline per segment (language, form type, region, user group), because global averages can stay flat while one segment collapses.",
+      "Sample production outputs for scheduled review by a calibrated LLM judge and by humans, and feed confirmed failures back into the eval and regression sets.",
+      "Logs that contain prompts and outputs can contain personal or regulated data: redact or tokenise sensitive fields, restrict access, and set retention to what policy allows."
+    ],
+    "skills": [
+      "Instrument end-to-end tracing with per-stage spans, token usage and prompt version so cost and latency spikes can be attributed.",
+      "Build dashboards and alerts for quality proxies, cost per task, latency percentiles and refusal rates, segmented by the dimensions that matter.",
+      "Set up continuous sampling of outputs for automated and human review.",
+      "Design PII-safe logging: structured metadata by default, redacted content, controlled access and retention."
+    ],
+    "examLens": [
+      "If a regression went unnoticed, the answer adds a segmented quality signal with an alert, not just more uptime checks.",
+      "If cost or latency spiked and nobody can say why, the answer is per-stage tracing with token counts and prompt versions.",
+      "Sensitive data in logs: prefer redaction, metadata-first logging and access control over turning logging off.",
+      "Monitoring should close the loop: sampled failures become eval and regression cases."
+    ],
+    "traps": [
+      "Dashboards that track only uptime, request volume and average latency.",
+      "Logging full prompts and outputs with regulated data and broad access.",
+      "Disabling logs for privacy, leaving no way to debug or audit.",
+      "Global thresholds that miss a failure in one language or form type."
+    ],
+    "links": [
+      {
+        "label": "Usage and Cost API",
+        "url": "https://platform.claude.com/docs/en/manage-claude/usage-cost-api"
+      },
+      {
+        "label": "Claude Code monitoring",
+        "url": "https://code.claude.com/docs/en/monitoring-usage"
+      },
+      {
+        "label": "Demystifying evals for AI agents",
+        "url": "https://www.anthropic.com/research/demystifying-evals-for-ai-agents"
+      }
+    ],
+    "cheat": [
+      [
+        "Cost per run doubled, cause unknown",
+        "Per-agent, per-tool trace spans with tokens and prompt version"
+      ],
+      [
+        "Silent quality drop after an input change",
+        "Segmented quality proxies with baseline alerts"
+      ],
+      [
+        "Traces contain PHI or PII",
+        "Metadata-first logs, redaction, access control, retention"
+      ],
+      [
+        "Need ongoing quality evidence",
+        "Sample outputs for calibrated judge and human review"
+      ]
+    ],
+    "diagrams": [
+      {
+        "kind": "flow",
+        "title": "Observe, alert, learn",
+        "steps": [
+          {
+            "label": "Trace every request",
+            "note": "Prompt version, model, doc ids, tool calls, tokens, latency.",
+            "tone": "sky"
+          },
+          {
+            "label": "Dashboard by segment",
+            "note": "Quality proxies, cost per task, p95 latency, refusal rate."
+          },
+          {
+            "label": "Alert on baseline drift",
+            "note": "Per language, form type or user group, not only global.",
+            "tone": "warn"
+          },
+          {
+            "label": "Sample outputs for review",
+            "note": "Calibrated LLM judge plus human spot checks.",
+            "tone": "accent"
+          },
+          {
+            "label": "Add failures to eval sets",
+            "tone": "good"
+          }
+        ],
+        "loop": "Redact sensitive data and restrict log access throughout"
+      }
+    ]
+  }
+]

@@ -2,12 +2,11 @@
 
 This is a local study hub for Anthropic's Claude certifications. The home page (`/`) shows one card per exam on the path: Associate – Foundations (CCAO-F) → Developer – Foundations (CCDV-F) → Architect – Foundations (CCAR-F) → Architect – Professional (CCAR-P).
 
-Three exams have full study sites:
+All four exams have full study sites:
 - **Associate – Foundations** at `/associate-foundations`
 - **Developer – Foundations** at `/developer-foundations`
 - **Architect – Foundations** at `/architect-foundations`
-
-Architect – Professional is an intro card marked "Coming soon". Its study content is still to be designed with the user, so don't build it without discussing it first.
+- **Architect – Professional** at `/architect-professional`
 
 The app is built with TypeScript, Express and SQLite. The server renders the HTML pages; the browser only runs small JavaScript files for interactivity. It is for one user and runs only on localhost.
 
@@ -28,7 +27,7 @@ Environment variables:
 
 Requires Node ≥ 22.13, because the app uses the built-in `node:sqlite` module. Don't add `better-sqlite3` or any other native database driver.
 
-Before you finish a change, run `npm run typecheck` and `npm run validate`. If you changed behaviour, also start the server on a scratch `CCA_DATA_DIR` and a spare `PORT`, and exercise the affected routes for **all three** exam sites.
+Before you finish a change, run `npm run typecheck` and `npm run validate`. If you changed behaviour, also start the server on a scratch `CCA_DATA_DIR` and a spare `PORT`, and exercise the affected routes for **all four** exam sites.
 
 The user often has their own server running on port 4173. To stop a scratch server, kill it by its port (`lsof -ti tcp:<port> | xargs kill`), not with `pkill -f "tsx src/server.ts"`, which also matches `npm start`. `npm start` doesn't reload, so after code or content changes the user's server needs a restart to show them.
 
@@ -47,6 +46,9 @@ src/exams/
                                notes/*.json (study notes + diagrams per task), plan.ts, pages.ts, questions/*.json.
   architect-foundations/       CCAR-F: index.ts, domains.ts (5 domains / 30 task statements), scenarios.ts (6),
                                plan.ts, pages.ts (exam-focus + cheat-sheet bodies), questions/*.json.
+  architect-professional/      CCAR-P: index.ts, domains.ts (7 domains / 38 task statements, titles verbatim from the guide),
+                               scenarios.ts (6 unofficial study case studies), notes/*.json (study notes + diagrams per task),
+                               plan.ts, pages.ts, questions/*.json (one file per domain).
   developer-foundations/       CCDV-F: index.ts, domains.ts (8 domains / 25 weighted skills; official descriptions),
                                notes/*.json (study notes merged into domains by skill id), diagrams.ts (typed diagrams
                                per skill), plan.ts, pages.ts, questions/*.json.
@@ -71,8 +73,10 @@ data/cca-prep.db               The user's progress. Never commit it, delete it o
   - CCAR-F uses `s<N>-NNN` / `off-NN` / `d<NN>-…`.
   - CCDV-F uses `dv-<group>-NNN` / `dv-off-NN` / `dv-d<NN>-…`.
   - CCAO-F uses `as-<group>-NNN` / `as-off-NN` / `as-d<NN>-…`.
+  - CCAR-P uses `ap-<group>-NNN` / `ap-off-NN` / `ap-d<NN>-…`.
 - **Links:** write internal links as `href="${B}/…"` with `B = exam.base`, never hard-coded. Plan `href`s are base-relative; `planItem()` adds the prefix. Client scripts read the base from `<body data-base>`.
 - **Exams without scenarios** (CCDV-F, CCAO-F) use `scenario: 0` on every question. The Scenarios nav item, page, drills and breakdowns are hidden for them, and the full mock is chosen by domain targets alone.
+- **Case studies** (CCAR-P): `caseStudies: true` marks an exam's `scenarios` as this site's own study groupings, not official scenarios. Pages call them "case studies" (`scenarioTerm(exam)`) and say they're unofficial. The mock has no `scenariosPerSitting`, so it follows the domain targets alone. Questions outside a case study (the official samples) use `scenario: 0`.
 - **Wording:** objectives are "task statements" (CCAR-F, CCAO-F) or "skills" (CCDV-F, whose guide publishes skill weights). Use `objectiveTerm(exam)` instead of hard-coding either word.
 - **Per-exam settings:** the exam date is stored per exam (`settings` key `examDate:<slug>`, via `getExamDate`/`setExamDate`). The profile (`name`, `currentLevel`, `targetCert`) is shared.
 - **Adding an exam site:**
@@ -108,7 +112,11 @@ data/cca-prep.db               The user's progress. Never commit it, delete it o
 - **CCDV-F** (53 items, 8 domains, 25 skills with published weights, no scenarios):
   - The blueprint *includes* streaming, vision, thinking, caching, third-party vendors, websockets, security and secrets.
   - The guide gives one paragraph per skill (`description`, verbatim). The bullets in `notes/*.json` are study notes, not official text.
-- **Official samples:** CCAR-F has 12 (`official-samples.json`, ids `off-NN`), CCDV-F has 3 (`dv-off-NN`) and CCAO-F has 3 (`as-off-NN`), all tagged `official-sample`. Keep their wording and answers as published.
+- **CCAR-P** (63 items, 7 domains 17/13/19/16/14/14/7, 38 task statements without weights, no scenarios on the exam):
+  - Task titles are the guide's bullets, verbatim. Everything in `notes/*.json` and `scenarios.ts` is study material, not official text.
+  - The guide has no out-of-scope list; RAG, embeddings, authentication and authorization, and compliance (GDPR, HIPAA, FedRAMP) are in scope. Pitch content above CCAR-F/CCDV-F level (trade-offs, enterprise constraints, stakeholders).
+  - Teach compliance concepts. Don't state which Anthropic offerings hold which certifications or agreements.
+- **Official samples:** CCAR-F has 12 (`official-samples.json`, ids `off-NN`), CCDV-F has 3 (`dv-off-NN`), CCAO-F has 3 (`as-off-NN`) and CCAR-P has 3 (`ap-off-NN`), all tagged `official-sample`. Keep their wording and answers as published.
 - **Volatile facts:** avoid prices, exact limits, cache TTLs and model version strings unless the current official docs confirm them. Prefer relative wording ("a fraction of the base input price").
 
 ### Writing or editing questions
@@ -135,7 +143,7 @@ Quality bar:
 - Use backticks for code identifiers. `rich()` renders them as `<code>`. No HTML in content.
 - Removing a question from JSON deactivates it (`active = 0`) but keeps its history. Don't reuse an old id for a different question.
 
-### Study notes (CCDV-F and CCAO-F `notes/*.json`)
+### Study notes (CCDV-F, CCAO-F and CCAR-P `notes/*.json`)
 
 - Exams with notes set `studyNotes: true` in their `ExamContent`, so pages label the bullets "Know" / "Be able to" rather than as official text.
 - One object per skill or task statement: `task`, `knowledge` (≥ 3), `skills` (≥ 3), `examLens` (≥ 2), `traps` (≥ 2), `links` (≥ 1), `cheat` (≥ 2 `[situation, answer]` rows, which feed the cheat sheet), and optional `diagrams` (see below).
@@ -143,7 +151,7 @@ Quality bar:
 
 ### Diagrams
 
-- Each objective can carry `diagrams` (type `Diagram` in `types.ts`): `flow`, `decision`, `compare` or `layers`. CCDV-F keeps them in `diagrams.ts`; CCAO-F keeps them in each notes object.
+- Each objective can carry `diagrams` (type `Diagram` in `types.ts`): `flow`, `decision`, `compare` or `layers`. CCDV-F keeps them in `diagrams.ts`; CCAO-F and CCAR-P keep them in each notes object.
 - `views/diagram.ts` draws them as inline SVG, coloured through the `.dg-*` classes in `styles.css`, so they follow the theme and work offline. Text wraps by an estimated character width, so keep labels short.
 - When an objective has diagrams, the domain page shows the diagrams, then exam lens and traps, and folds the Know / Be able to lists into a "Full study notes" toggle.
 - Diagrams are study aids: they may only restate facts already in the notes or the guide.
@@ -160,6 +168,7 @@ Quality bar:
   - CCAR-F: 60 items in 120 min, 4 random scenarios with 15 each, grouped by scenario. Domain targets 16/11/12/12/9 are best-effort within the scenarios drawn.
   - CCDV-F: 53 items in 120 min, domain targets 8/18/2/1/9/6/4/5, shuffled.
   - CCAO-F: 60 items in 120 min, domain targets 8/13/7/10/7/9/6, shuffled.
+  - CCAR-P: 63 items in 120 min, domain targets 11/8/12/10/9/9/4, shuffled (case studies ignored).
   - All use deficit-based selection that prefers least-seen questions.
 - **Option shuffling:** `attempt_items.option_order` stores original keys in display order. The API speaks in display letters; the database stores original keys. Convert only in `attemptView` and `saveAnswer`.
 - **No answer leakage:** answers, explanations and per-option `correct`/`rationale` are only sent after submission, or per item after a feedback-mode check.

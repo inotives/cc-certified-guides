@@ -10,6 +10,8 @@ import { examPages } from './exam-pages.js';
 const domainOf = (exam: ExamContent, id: number) => exam.domains.find((d) => d.id === id)!;
 /** "task statement" for CCAR-F, "skill" for exams whose guide lists weighted skills. */
 export const objectiveTerm = (exam: ExamContent) => (exam.domains.some((d) => d.tasks.some((t) => t.weight !== undefined)) ? 'skill' : 'task statement');
+/** "case study" when the exam's scenarios are this site's own (unofficial), else "scenario". */
+export const scenarioTerm = (exam: ExamContent) => (exam.caseStudies ? 'case study' : 'scenario');
 
 const domainBadge = (exam: ExamContent, id: number) => {
   const d = domainOf(exam, id);
@@ -76,7 +78,7 @@ export function dashboardPage(exam: ExamContent) {
 
   const body = `
   ${pageHead('Claude Certified Architect – Foundations', greeting,
-    `${pos.complete ? 'Study plan complete' : `Day ${pos.day} of ${pos.totalDays}`}. ${examLine} ${exam.mock.items} ${scenarios.length ? 'scenario-based ' : ''}questions · ${exam.mock.minutes} minutes · pass at 720/1000.`)}
+    `${pos.complete ? 'Study plan complete' : `Day ${pos.day} of ${pos.totalDays}`}. ${examLine} ${exam.mock.items} ${scenarios.length && !exam.caseStudies ? 'scenario-based ' : ''}questions · ${exam.mock.minutes} minutes · pass at 720/1000.`)}
 
   <section class="grid g4">
     <div class="card stat"><div class="k">Current day</div><div class="v">${pos.complete ? '✓' : pos.day}<span class="muted" style="font-size:1.1rem"> / ${pos.totalDays}</span></div><div class="s">${pos.daysDone} day${pos.daysDone === 1 ? '' : 's'} completed</div></div>
@@ -253,23 +255,26 @@ export function scenariosPage(exam: ExamContent) {
 
   const st = stats(exam);
   const body = `
-  ${pageHead('Exam scenarios', 'The six production scenarios',
-    'Every sitting presents <b>4 of these 6</b>, chosen at random, and groups questions under each one. You can’t skip any, so be ready for all six.')}
+  ${exam.caseStudies
+    ? pageHead('Case studies', `${scenarios.length} enterprise case studies`,
+      'These case studies are <b>this site’s own study material, not part of the exam</b>: the official guide uses standalone questions with no scenarios. Each one groups questions in a single realistic setting so you can practise across domains, the way an architect meets problems. The full mock ignores them and follows the domain weights.')
+    : pageHead('Exam scenarios', 'The six production scenarios',
+      'Every sitting presents <b>4 of these 6</b>, chosen at random, and groups questions under each one. You can’t skip any, so be ready for all six.')}
   <div class="grid g2">
     ${scenarios.map((s) => {
       const ss = st.byScenario.find((x) => x.scenario === s.id);
       return `<div class="card mode-card">
-        <div class="spread"><span class="small muted">SCENARIO ${s.id}</span>${ss?.answered ? `<span class="badge clay">${pct(ss.correct / ss.answered)} accuracy</span>` : ''}</div>
+        <div class="spread"><span class="small muted">${exam.caseStudies ? 'CASE STUDY' : 'SCENARIO'} ${s.id}</span>${ss?.answered ? `<span class="badge clay">${pct(ss.correct / ss.answered)} accuracy</span>` : ''}</div>
         <h3 style="margin:0">${esc(s.name)}</h3>
         <p class="small" style="margin:0">${esc(s.context)}</p>
         <div class="row">${s.domains.map((id) => domainBadge(exam, id)).join('')}</div>
         <div class="lens"><h4>Watch for</h4><ul class="small" style="margin:0">${s.watchFor.map((w) => `<li>${rich(w)}</li>`).join('')}</ul></div>
-        <div class="row"><a class="btn primary sm" href="${B}/practice/start?mode=scenario&scenario=${s.id}&count=15">Exam-style drill (15)</a>
+        <div class="row"><a class="btn primary sm" href="${B}/practice/start?mode=scenario&scenario=${s.id}&count=15">${exam.caseStudies ? 'Timed-style drill (15)' : 'Exam-style drill (15)'}</a>
         <a class="btn sm" href="${B}/practice/start?mode=scenario&scenario=${s.id}&count=15&feedback=1">With feedback</a></div>
       </div>`;
     }).join('')}
   </div>`;
-  return layout({ exam, title: 'Scenarios', active: '/scenarios', body });
+  return layout({ exam, title: exam.caseStudies ? 'Case studies' : 'Scenarios', active: '/scenarios', body });
 }
 
 // ---------------- exam-specific pages ----------------

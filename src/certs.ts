@@ -106,7 +106,7 @@ export const certs: Cert[] = [
     role: 'Architect',
     level: 'Professional',
     code: 'CCAR-P',
-    base: null,
+    base: '/architect-professional',
     summary:
       'Validates that you can design, build and deliver production-grade AI solutions end to end: model and architecture selection, enterprise integration, evaluation, security, compliance and governance, and communicating decisions to stakeholders.',
     audience: 'Practitioners in an architect role who own the full lifecycle of Claude-powered systems.',

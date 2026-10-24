@@ -1,0 +1,922 @@
+[
+  {
+    "id": "ap-integ-001",
+    "scenario": 6,
+    "domain": 3,
+    "task": "3.1",
+    "type": "single",
+    "select": 1,
+    "stem": "During the pilot, engineers enable every approved internal MCP server in their personal configuration: 14 servers exposing about 150 tools, including separate search tools for the wiki, the ticket system, the code index and the design-docs store. Traces show Claude Code often calls the wrong search tool and a large share of the context is spent on tool definitions before any work begins. What is the most effective first change?",
+    "options": [
+      { "key": "A", "text": "Define per-repository project configurations that enable only the servers each team's workflows use, and give overlapping tools namespaced names with clear descriptions." },
+      { "key": "B", "text": "Add a section to the shared CLAUDE.md explaining in detail when each of the four search tools should be preferred over the others for typical engineering questions." },
+      { "key": "C", "text": "Enable tool search so that definitions from all 14 servers load on demand, keeping every server available while freeing the context used by definitions." },
+      { "key": "D", "text": "Merge all 14 servers into one large gateway MCP server so engineers only have a single connection to configure and approve in their personal settings." }
+    ],
+    "answer": ["A"],
+    "explanation": "The symptoms are capability bloat: too many overlapping tools cause selection errors and consume context. Scoping servers to the workflows that need them and namespacing similar tools removes the cause instead of compensating for it. Tool search would ease the context cost but leaves the overlapping tools that cause the selection errors.",
+    "distractors": {
+      "B": "More instructions about 150 tools add context and leave the overlapping tools in place, so selection errors persist.",
+      "C": "On-demand loading cuts the up-front context cost, but the four overlapping search tools still compete whenever a search is needed, so the wrong-tool calls remain.",
+      "D": "A single gateway still exposes all 150 tools to the model, so the selection and context problems are unchanged."
+    },
+    "difficulty": 3,
+    "tags": ["capability-bloat", "mcp", "tool-selection", "claude-code"]
+  },
+  {
+    "id": "ap-integ-002",
+    "scenario": 5,
+    "domain": 3,
+    "task": "3.1",
+    "type": "single",
+    "select": 1,
+    "stem": "The first design of the merchandising system has an orchestrator plus 11 sub-agents, one per product category, each with the same web, warehouse and drafting tools. Runs are slow, token use is high, and recommendations are inconsistent in format across categories. The work itself has three parts: competitor price research, sales analysis and drafting. What is the best redesign?",
+    "options": [
+      { "key": "A", "text": "Keep the 11 category agents but add a twelfth reviewer agent that rewrites every category section into a consistent format before the report is assembled." },
+      { "key": "B", "text": "Use an orchestrator with workers split by the three independent kinds of work, parameterised by category, each holding only the tools its part needs." },
+      { "key": "C", "text": "Give every category agent the full tool set of the orchestrator as well, so any agent can finish another agent's work when a run falls behind schedule." },
+      { "key": "D", "text": "Replace the system with one agent holding every tool that processes all categories sequentially in a single long conversation with full history kept." }
+    ],
+    "answer": ["B"],
+    "explanation": "Agents should be split along genuinely independent parts of the work, and each should hold only the tools its job requires. Category is a parameter, not a reason for a separate agent with duplicated tools. This removes coordination overhead and tool duplication while keeping parallelism where it helps.",
+    "distractors": {
+      "A": "Adding another agent increases cost and latency and leaves the duplicated category agents in place.",
+      "C": "Giving every agent more tools worsens capability bloat and selection errors.",
+      "D": "One agent with all tools and one long history trades bloat in agent count for bloat in tools and context, and loses useful parallelism."
+    },
+    "difficulty": 2,
+    "tags": ["capability-bloat", "multi-agent", "orchestrator-worker"]
+  },
+  {
+    "id": "ap-integ-003",
+    "scenario": 2,
+    "domain": 3,
+    "task": "3.1",
+    "type": "single",
+    "select": 1,
+    "stem": "To move quickly, the team generated one tool per core-banking REST endpoint: 34 tools such as `get_card`, `list_card_transactions`, `get_transaction`, `get_merchant` and `get_dispute_status`. To start a card dispute the agent typically chains seven or eight calls, sometimes passes the wrong id between them, and conversations are slow. What is the most effective improvement?",
+    "options": [
+      { "key": "A", "text": "Add a worked few-shot example to the system prompt showing the correct eight-call sequence for opening a card dispute, including how ids flow between calls." },
+      { "key": "B", "text": "Validate ids in the tool layer, rejecting calls whose ids do not belong to the dispute's card and returning a descriptive error so the agent can retry." },
+      { "key": "C", "text": "Replace the chained wrappers with a few task-oriented tools, such as one returning a transaction's full dispute context with only the needed fields." },
+      { "key": "D", "text": "Run the endpoint calls in parallel wherever possible, so that the seven or eight lookups complete sooner and the customer waits a noticeably shorter time." }
+    ],
+    "answer": ["C"],
+    "explanation": "Thin wrappers around every endpoint push orchestration work onto the model, which causes errors when ids are passed between calls and adds latency. Consolidating them into task-oriented tools that return high-signal context reduces both the number of calls and the chance of error. Validating ids or adding examples treats symptoms of the chain rather than removing it; tools should match the agent's tasks, not the shape of the underlying API.",
+    "distractors": {
+      "A": "A few-shot example may help a little but keeps the fragile multi-call chain and adds prompt tokens.",
+      "B": "Validation catches wrong ids after the fact but keeps the slow seven- or eight-call chain, so latency and retries remain.",
+      "D": "The calls depend on each other's ids, so most cannot run in parallel, and parallelism would not fix the wrong-id errors."
+    },
+    "difficulty": 3,
+    "tags": ["capability-bloat", "tool-design", "consolidation"]
+  },
+  {
+    "id": "ap-integ-004",
+    "scenario": 2,
+    "domain": 3,
+    "task": "3.1",
+    "type": "multi",
+    "select": 2,
+    "stem": "Before launch, you review the support agent's configuration against its role: answer account questions, explain fees, open card disputes and escalate to staff. Which TWO findings are capability bloat that should be removed? (Select TWO.)",
+    "options": [
+      { "key": "A", "text": "A generic `run_sql` tool connected to the core ledger with write permissions, added so the agent can answer unusual account questions." },
+      { "key": "B", "text": "A `send_email` tool that can send to any address, left over from a prototype and not used by any current flow." },
+      { "key": "C", "text": "Tool names are prefixed by system, such as `cards_get_dispute` and `accounts_get_balance`, to separate similar lookups." },
+      { "key": "D", "text": "The `open_dispute` tool checks in code that the card belongs to the authenticated customer before creating a case." },
+      { "key": "E", "text": "Transaction search returns paginated, filtered results instead of the customer's full history in one response." }
+    ],
+    "answer": ["A", "B"],
+    "explanation": "A general-purpose write-capable SQL tool and an unused arbitrary-email tool are capabilities the role does not need, and both widen the attack surface for prompt injection and misuse. Least privilege means removing them rather than relying on prompts or monitoring. The other findings are good practice for tool design and authorization.",
+    "distractors": {
+      "C": "Namespacing similar tools is a recommended practice that reduces selection errors.",
+      "D": "An ownership check in code is correct authorization, not bloat.",
+      "E": "Paginated, filtered results keep context lean and are good tool design."
+    },
+    "difficulty": 2,
+    "tags": ["capability-bloat", "least-privilege", "attack-surface"]
+  },
+  {
+    "id": "ap-integ-005",
+    "scenario": 1,
+    "domain": 3,
+    "task": "3.1",
+    "type": "single",
+    "select": 1,
+    "stem": "The guideline Q&A agent has a retrieval tool over the hospital's approved care guidelines and, from an early prototype, a general web search tool. Clinical reviewers find answers that cite public web pages instead of the hospital's guidelines, which the CMIO has said is unacceptable. What is the most effective change?",
+    "options": [
+      { "key": "A", "text": "Add a system prompt instruction telling the agent to prefer internal guideline sources and to fall back on web search only when no guideline covers the question." },
+      { "key": "B", "text": "Post-process every answer to strip citations that point outside the hospital's domain before the draft is shown to the clinician for sign-off." },
+      { "key": "C", "text": "Restrict web search to an allowlist of reputable medical publishers, so that any public source the agent cites comes from a recognised clinical authority." },
+      { "key": "D", "text": "Remove the web search tool, since the requirement is that answers come only from approved guidelines, and have the agent abstain when they lack coverage." }
+    ],
+    "answer": ["D"],
+    "explanation": "The web search tool is a capability the role must not use, so the most effective fix is to remove it and make the agent abstain when the guidelines do not cover a question. Prompt preferences, domain allowlists and citation stripping leave the unwanted capability in place and still let non-approved content shape the answer. Removing unneeded tools is both safer and simpler.",
+    "distractors": {
+      "A": "A prompt preference is not a control; the agent can still use the web and will do so whenever it judges coverage weak.",
+      "B": "Stripping citations hides where the content came from while leaving web-derived content in the answer.",
+      "C": "A reputable public source is still not one of the hospital's approved guidelines, which is the stated requirement."
+    },
+    "difficulty": 2,
+    "tags": ["capability-bloat", "least-privilege", "grounding"]
+  },
+  {
+    "id": "ap-integ-006",
+    "scenario": 3,
+    "domain": 3,
+    "task": "3.2",
+    "type": "single",
+    "select": 1,
+    "stem": "In the knowledge-search design, the retrieval service runs under a service account that can read all 2 million documents. Retrieved chunks are sent to Claude with a system prompt rule: \"Only use documents the current user is permitted to see; their groups are listed below.\" What is the main security gap?",
+    "options": [
+      { "key": "A", "text": "Authorization is left to the model; permissions must be enforced at retrieval with the user's identity and ACL metadata, before content reaches the model." },
+      { "key": "B", "text": "The list of the user's groups is placed after the documents in the prompt, so the model may give it less weight than the document text that precedes it." },
+      { "key": "C", "text": "The service account's credentials should be rotated more often, because a long-lived credential with broad read access is a high-value target for attackers." },
+      { "key": "D", "text": "Answers are not checked after generation; a filter should compare each cited document id with the user's ACL and block answers that cite restricted documents." }
+    ],
+    "answer": ["A"],
+    "explanation": "A prompt instruction is not an authorization control: once restricted content is in the context, the model can leak it through error, injection or paraphrase. Permissions must be applied deterministically at retrieval time with the requesting user's identity, so the model only ever sees documents that user may read. Prompt rules and output checks both act after restricted content has reached the model.",
+    "distractors": {
+      "B": "Prompt ordering may affect attention, but the gap is that the model is enforcing permissions at all.",
+      "C": "Rotation is good hygiene but does not stop restricted content from reaching users who lack access.",
+      "D": "An output check is a useful backstop, but restricted content is already in context and can be paraphrased without any citation."
+    },
+    "difficulty": 2,
+    "tags": ["authorization", "rag", "permissions", "least-privilege"]
+  },
+  {
+    "id": "ap-integ-007",
+    "scenario": 2,
+    "domain": 3,
+    "task": "3.2",
+    "type": "single",
+    "select": 1,
+    "stem": "The account tools take a `customer_id` argument that the model fills in from the conversation. The backend accepts any valid id because the agent's service credential can read all accounts. A red-team tester pastes text claiming to be from a staff member and gets the agent to read another customer's balance. What is the most effective fix?",
+    "options": [
+      { "key": "A", "text": "Add a system prompt rule stating that the agent must never look up any account other than the logged-in customer's, whatever the conversation says." },
+      { "key": "B", "text": "Bind the customer id server-side from the authenticated session and have the tools ignore model-supplied ids, so calls run with that customer's rights only." },
+      { "key": "C", "text": "Add an input classifier that detects messages claiming to come from bank staff and blocks them before the agent reads or acts on their content." },
+      { "key": "D", "text": "Log every account lookup with both the requested id and the session's customer id, and alert the fraud team whenever the two do not match in a conversation." }
+    ],
+    "answer": ["B"],
+    "explanation": "This is a confused-deputy gap: a privileged service credential acts on whatever id the model supplies, so manipulated input can steer it at other customers. Deriving identity from the authenticated session and enforcing it in code means the agent can only act within the end user's rights. Prompt rules, classifiers and alerts are weaker, partial controls.",
+    "distractors": {
+      "A": "A prompt rule can be bypassed by the same kind of injection the tester used.",
+      "C": "A classifier catches some phrasings but leaves the over-privileged tool exploitable by others.",
+      "D": "Alerts detect the breach after customer data has been exposed rather than preventing it."
+    },
+    "difficulty": 2,
+    "tags": ["authorization", "confused-deputy", "identity", "prompt-injection"]
+  },
+  {
+    "id": "ap-integ-008",
+    "scenario": 6,
+    "domain": 3,
+    "task": "3.2",
+    "type": "single",
+    "select": 1,
+    "stem": "Platform engineering has built a remote MCP server that wraps the deployment and incident tools. Today every engineer pastes the same static API key into their Claude Code configuration, and the server calls downstream systems with one powerful credential. Security asks for a design that fixes the identity gaps. Which approach is best?",
+    "options": [
+      { "key": "A", "text": "Store the shared key in each engineer's operating-system keychain instead of plain-text configuration, and rotate it every month through the platform team." },
+      { "key": "B", "text": "Have the MCP server accept each engineer's existing downstream tokens and pass them straight through to the deployment and incident systems unchanged." },
+      { "key": "C", "text": "Require per-user OAuth for the server as the MCP authorization spec describes, with tokens issued for this server and permissions applied per engineer." },
+      { "key": "D", "text": "Restrict the server to the corporate network and VPN, so that only devices inside the perimeter can reach it with the shared key in their configuration." }
+    ],
+    "answer": ["C"],
+    "explanation": "A shared key means the server cannot tell engineers apart, so it cannot apply per-user permissions or produce a meaningful audit trail. The MCP authorization spec uses OAuth so each user authorizes the client and the server receives tokens issued for it, then applies that user's permissions. Token passthrough is explicitly discouraged because the server cannot validate tokens meant for other services.",
+    "distractors": {
+      "A": "Safer storage of a shared secret still gives every engineer the same identity and the same rights.",
+      "B": "Passing client tokens through to upstream APIs is a known anti-pattern that bypasses the server's own validation and controls.",
+      "D": "Network restriction reduces exposure but does nothing about the shared identity and over-broad rights."
+    },
+    "difficulty": 3,
+    "tags": ["authentication", "mcp", "oauth", "least-privilege"]
+  },
+  {
+    "id": "ap-integ-009",
+    "scenario": 2,
+    "domain": 3,
+    "task": "3.2",
+    "type": "multi",
+    "select": 2,
+    "stem": "For disputes, the agent reads customer-uploaded evidence such as merchant emails and receipts, and the same agent has a tool that issues provisional credits to the card. The risk team worries that an uploaded document could contain instructions that trigger credits. Which TWO controls most effectively reduce this risk? (Select TWO.)",
+    "options": [
+      { "key": "A", "text": "Process uploaded evidence in a step or sub-agent that has only read and summarise tools, with no access to the credit tool." },
+      { "key": "B", "text": "Enforce credit limits and eligibility rules in code in the credit service, and require explicit confirmation outside the model above a threshold." },
+      { "key": "C", "text": "Add a system prompt sentence telling the agent to ignore any instructions found inside customer-uploaded documents." },
+      { "key": "D", "text": "Switch the dispute flow to the most capable model tier, which is less likely to follow instructions embedded in documents." },
+      { "key": "E", "text": "Encrypt uploaded evidence at rest and in transit so that documents cannot be modified between upload and processing." }
+    ],
+    "answer": ["A", "B"],
+    "explanation": "Injected instructions only matter if the component reading untrusted content can take high-impact actions. Separating that reading from the credit tool, and enforcing credit rules and confirmation in code, limits the damage even when the model is fooled. Prompt wording and model choice may reduce how often injection succeeds but do not bound the impact.",
+    "distractors": {
+      "C": "A prompt instruction helps somewhat but is not a reliable boundary against injected text.",
+      "D": "A stronger model may resist more attacks but still holds the credit tool when one succeeds.",
+      "E": "Encryption protects documents from tampering in transit, but the malicious instructions come from the customer's own upload."
+    },
+    "difficulty": 3,
+    "tags": ["prompt-injection", "authorization", "least-privilege", "untrusted-input"]
+  },
+  {
+    "id": "ap-integ-010",
+    "scenario": 1,
+    "domain": 3,
+    "task": "3.2",
+    "type": "single",
+    "select": 1,
+    "stem": "To let the documentation assistant fetch lab results, a developer added the EHR integration's API key to the tool description, so that the model includes it as an argument on every `get_lab_results` call. The feature works in testing. What is the most important problem with this design?",
+    "options": [
+      { "key": "A", "text": "The key appears to grant broad EHR access; it should be scoped to read-only lab results and rotated frequently to limit the impact of any misuse." },
+      { "key": "B", "text": "The key should be passed in the system prompt instead of the tool description, because system prompts are treated as more trusted by the model." },
+      { "key": "C", "text": "The model may sometimes forget to include the key as an argument, causing intermittent call failures in production that are hard to reproduce in testing." },
+      { "key": "D", "text": "A secret in the model's context can leak through outputs, logs or injection; it should stay in the tool execution layer, which adds it to calls itself." }
+    ],
+    "answer": ["D"],
+    "explanation": "Anything in the model's context can appear in outputs, traces and logs, or be extracted by injected instructions. Credentials belong in a secret manager used by the tool execution layer, which authenticates downstream calls without the model ever seeing the key. Key scope, reliability and token cost are secondary to that exposure.",
+    "distractors": {
+      "A": "Narrow scope and rotation reduce the blast radius, but the key still sits in model context where it can leak.",
+      "B": "The system prompt is still model context, so the key remains exposed to the same leaks.",
+      "C": "Reliability is a real but secondary issue; the key should never be in context at all."
+    },
+    "difficulty": 2,
+    "tags": ["secrets", "authentication", "phi", "tool-design"]
+  },
+  {
+    "id": "ap-integ-011",
+    "scenario": 2,
+    "domain": 3,
+    "task": "3.3",
+    "type": "single",
+    "select": 1,
+    "stem": "All conversations run on the most capable model tier with extended thinking enabled. The p95 response time is well above the agreed target for chat. Evals show a faster tier without thinking matches accuracy on fee explanations and balance questions, but makes more errors when judging dispute eligibility. What is the best configuration decision?",
+    "options": [
+      { "key": "A", "text": "Route fee and balance questions to the faster tier without thinking, keep the capable tier with thinking for dispute eligibility, and document the eval results behind each route." },
+      { "key": "B", "text": "Move all traffic to the faster tier without thinking, since most conversations are fee and balance questions and the overall accuracy average stays acceptable." },
+      { "key": "C", "text": "Keep the capable tier with thinking for everything, and ask the business to relax the response-time target because accuracy matters more in banking." },
+      { "key": "D", "text": "Keep the capable tier for everything but disable extended thinking across the board, since thinking is the main source of the extra latency." }
+    ],
+    "answer": ["A"],
+    "explanation": "When request types differ in difficulty, routing each to the cheapest configuration that meets its accuracy bar meets the latency target without sacrificing the hard cases. The decision is justified by measured eval results per request type. A single configuration for everything either wastes latency or loses accuracy where it matters.",
+    "distractors": {
+      "B": "An acceptable average hides the measured drop on dispute eligibility, which is the high-stakes path.",
+      "C": "This ignores evidence that most traffic can be served faster with no accuracy loss.",
+      "D": "Disabling thinking everywhere risks the dispute accuracy the evals showed depends on it, without measuring that."
+    },
+    "difficulty": 2,
+    "tags": ["accuracy-latency", "routing", "model-selection", "extended-thinking"]
+  },
+  {
+    "id": "ap-integ-012",
+    "scenario": 6,
+    "domain": 3,
+    "task": "3.3",
+    "type": "single",
+    "select": 1,
+    "stem": "The platform team's internal docs-search MCP server is used by Claude Code. Adding a reranker over the top 50 candidates raised answer accuracy clearly on the team's eval set, but adds latency to every search. An engineering director asks whether to ship it. What is the best way to make and justify the decision?",
+    "options": [
+      { "key": "A", "text": "Ship it to a random half of engineers for a month, then decide based on which group reports higher satisfaction and uses the search tool more often." },
+      { "key": "B", "text": "Measure p95 search latency with the reranker against the agreed budget on real queries, and present accuracy gained versus latency added, with options such as fewer candidates." },
+      { "key": "C", "text": "Ship it with the candidate count halved from the start, since fewer candidates should roughly halve the added latency while keeping most of the gain." },
+      { "key": "D", "text": "Rely on the reranker vendor's published benchmark results, which show strong accuracy gains on standard retrieval datasets at acceptable added latency." }
+    ],
+    "answer": ["B"],
+    "explanation": "Accuracy-latency decisions should be justified with measurements on representative data against an agreed budget. Presenting the measured gain, the measured cost and tunable options such as candidate count lets stakeholders decide on evidence. Usage experiments, assumed scaling and external benchmarks all substitute proxies or guesses for the two measurements the decision needs.",
+    "distractors": {
+      "A": "Satisfaction and usage are slow, noisy proxies that never set the measured accuracy gain against the latency budget the decision turns on.",
+      "C": "This assumes how latency and accuracy scale with candidate count instead of measuring it, and may give up much of the gain the eval showed.",
+      "D": "Public benchmarks do not reflect this corpus, these queries or this latency budget."
+    },
+    "difficulty": 3,
+    "tags": ["accuracy-latency", "reranking", "measurement", "stakeholders"]
+  },
+  {
+    "id": "ap-integ-013",
+    "scenario": 5,
+    "domain": 3,
+    "task": "3.3",
+    "type": "single",
+    "select": 1,
+    "stem": "The weekly merchandising run starts on Sunday evening and must deliver reports by 7 a.m. Monday. To keep it fast, the team runs every agent on the smallest, fastest model tier, and runs finish in under an hour. Category managers say the recommendations are shallow and miss obvious links between competitor prices and sales. What should the architect recommend?",
+    "options": [
+      { "key": "A", "text": "Keep the fast tier for all agents but add a longer, more detailed system prompt asking for deeper reasoning about the links between prices and sales." },
+      { "key": "B", "text": "Add a second pass in which the same fast-tier model reviews and improves its own recommendations before the report is assembled for the managers." },
+      { "key": "C", "text": "Use a more capable tier, with extended thinking if evals support it, for analysis and synthesis, since the overnight window leaves latency to spare." },
+      { "key": "D", "text": "Keep the fast tier but run each category's analysis three times and keep the recommendation the runs agree on most, to filter out shallow one-off answers." }
+    ],
+    "answer": ["C"],
+    "explanation": "Latency is not the binding constraint for an overnight batch with hours of slack, so the configuration should spend that budget on accuracy where reasoning matters. A capable tier for analysis and synthesis, validated on evals, addresses the quality complaint directly. Cheaper tiers can remain for high-volume collection steps.",
+    "distractors": {
+      "A": "Prompting for depth rarely compensates for a tier that lacks the reasoning the synthesis needs, and it leaves the spare time budget unused.",
+      "B": "A self-review by the same weak tier adds time without adding the missing reasoning capability.",
+      "D": "Sampling the same fast tier several times improves consistency, not depth, so the missed links between prices and sales remain."
+    },
+    "difficulty": 2,
+    "tags": ["accuracy-latency", "batch", "model-selection"]
+  },
+  {
+    "id": "ap-integ-014",
+    "scenario": 1,
+    "domain": 3,
+    "task": "3.3",
+    "type": "single",
+    "select": 1,
+    "stem": "Clinicians say the guideline Q&A feels slow. Traces show each question triggers four retrieval calls against different guideline collections, run one after another, and these take most of the end-to-end time. The calls do not depend on each other. Clinical reviewers are satisfied with answer accuracy. What is the best change?",
+    "options": [
+      { "key": "A", "text": "Switch answer generation to a smaller, faster model tier, since generation time adds to the total and clinicians care most about speed." },
+      { "key": "B", "text": "Reduce each retrieval call to return only the top two chunks, so that fewer passages are fetched, ranked and sent to the model." },
+      { "key": "C", "text": "Remove citations from answers, so that the model spends less time formatting references to guideline sections and sources." },
+      { "key": "D", "text": "Run the four independent retrieval calls in parallel, which cuts the dominant latency without changing what evidence the model sees." }
+    ],
+    "answer": ["D"],
+    "explanation": "The trace shows independent retrieval calls running sequentially, so parallelising them removes most of the delay without any change to the evidence or the model. No-regret latency fixes should come before changes that can lower accuracy. In a clinical setting, trading accuracy or citations for speed would also undermine the grounding requirement.",
+    "distractors": {
+      "A": "Generation is not where most time goes, and a weaker model risks the accuracy clinicians already accept.",
+      "B": "Cutting retrieval depth lowers recall and risks missing relevant guideline passages.",
+      "C": "Citations are a grounding requirement and are not the latency bottleneck shown in the trace."
+    },
+    "difficulty": 1,
+    "tags": ["accuracy-latency", "parallelism", "tracing"]
+  },
+  {
+    "id": "ap-integ-015",
+    "scenario": 3,
+    "domain": 3,
+    "task": "3.3",
+    "type": "multi",
+    "select": 2,
+    "stem": "The search assistant's median response time is too high. Every request sends the same long system prompt with citation rules, then runs lexical and semantic retrieval one after the other, reranks, and generates an answer. Evals show accuracy is at target. Which TWO changes reduce latency without lowering answer accuracy? (Select TWO.)",
+    "options": [
+      { "key": "A", "text": "Put the stable system prompt first and enable prompt caching for that prefix." },
+      { "key": "B", "text": "Run the lexical and semantic retrieval calls in parallel and merge their results." },
+      { "key": "C", "text": "Skip the reranker and send the top 30 merged results to the model instead." },
+      { "key": "D", "text": "Reduce retrieval to the top three semantic results and drop lexical search." },
+      { "key": "E", "text": "Move all requests to the smallest model tier to shorten generation time." }
+    ],
+    "answer": ["A", "B"],
+    "explanation": "Caching a stable prompt prefix and parallelising independent retrieval calls shorten the critical path without changing the evidence or the model, so accuracy is preserved. The other options change what the model sees or which model answers, which can lower accuracy. No-regret changes come first in accuracy-latency tuning.",
+    "distractors": {
+      "C": "Sending 30 unranked results adds input tokens and noise, which can slow generation and lower precision.",
+      "D": "Dropping lexical search loses exact matches on part numbers and codes, lowering recall.",
+      "E": "A smaller tier may lower accuracy and must be validated on evals first."
+    },
+    "difficulty": 2,
+    "tags": ["accuracy-latency", "prompt-caching", "parallelism", "retrieval"]
+  },
+  {
+    "id": "ap-integ-016",
+    "scenario": 5,
+    "domain": 3,
+    "task": "3.4",
+    "type": "single",
+    "select": 1,
+    "stem": "About one Monday in five, the merchandising report is missing the competitor-pricing section or contains stale prices. The system logs only the orchestrator's final report and total token use. The team cannot tell which agent or tool call went wrong. What is the best monitoring improvement?",
+    "options": [
+      { "key": "A", "text": "Add end-to-end tracing with one run id across the orchestrator and every sub-agent, recording each model call, tool call, input, output, tokens, latency and error." },
+      { "key": "B", "text": "Add schema validation on each sub-agent's output and automatically retry any worker whose competitor-pricing section comes back empty or malformed." },
+      { "key": "C", "text": "Add an automated grader that scores each final report for completeness and alerts the team by email when the competitor section is missing." },
+      { "key": "D", "text": "Increase the log level of the orchestrator so that its full reasoning text is written to the application log for each weekly run of the system." }
+    ],
+    "answer": ["A"],
+    "explanation": "Intermittent multi-step failures can only be localised if every step of the run is recorded and linked. A trace that spans the orchestrator and sub-agents shows which search returned nothing or which worker timed out. Output-level logging, validation and graders detect or mask that something failed but not where.",
+    "distractors": {
+      "B": "Retries may paper over some empty sections but cannot explain stale prices, and still do not show which step or tool call failed.",
+      "C": "A grader is useful for detection but does not reveal the root cause inside the run.",
+      "D": "Orchestrator reasoning alone misses sub-agent and tool-level detail, where the failure is likely to be."
+    },
+    "difficulty": 2,
+    "tags": ["observability", "tracing", "multi-agent"]
+  },
+  {
+    "id": "ap-integ-017",
+    "scenario": 1,
+    "domain": 3,
+    "task": "3.4",
+    "type": "single",
+    "select": 1,
+    "stem": "To debug draft quality, engineers want full prompts, retrieved passages and model outputs from the documentation assistant. These contain patient health information. The current plan writes everything to the shared application log platform used by all engineering teams. What is the best monitoring strategy?",
+    "options": [
+      { "key": "A", "text": "Disable prompt and response logging entirely, and debug quality issues only through clinicians' written feedback on the drafts they reject during sign-off." },
+      { "key": "B", "text": "Log structured metadata, redact or tokenise PHI in content logs, and keep raw content only in an access-controlled, audited store with set retention." },
+      { "key": "C", "text": "Keep the shared log platform but restrict log search to senior engineers, and add a banner reminding everyone that these logs may contain patient data." },
+      { "key": "D", "text": "Log full content to the shared platform but delete all logs after seven days, so that patient data does not accumulate in the logging system over time." }
+    ],
+    "answer": ["B"],
+    "explanation": "Observability and PHI protection can coexist: metadata and redacted content support most debugging, while raw content is kept only where access, audit and retention are controlled. This applies the minimum-necessary principle to logs. Turning logging off loses the ability to diagnose, and partial measures still expose PHI widely.",
+    "distractors": {
+      "A": "Without content logs, failures cannot be reproduced or diagnosed, and feedback alone is slow and incomplete.",
+      "C": "A banner is not a control, and PHI would still sit in a store not designed for it.",
+      "D": "A short retention period still exposes PHI broadly for a week and does not restrict access."
+    },
+    "difficulty": 2,
+    "tags": ["observability", "phi", "logging", "privacy"]
+  },
+  {
+    "id": "ap-integ-018",
+    "scenario": 6,
+    "domain": 3,
+    "task": "3.4",
+    "type": "single",
+    "select": 1,
+    "stem": "Six weeks into the rollout to 400 engineers, leadership asks for evidence of adoption, cost by team and impact on delivery. Today the only data is a survey and the monthly invoice. What is the best monitoring approach?",
+    "options": [
+      { "key": "A", "text": "Run the survey monthly with more detailed questions, and ask team leads to estimate time saved per engineer for the leadership report." },
+      { "key": "B", "text": "Ask each engineer to paste a weekly summary of their Claude Code sessions into a shared spreadsheet that the platform team reviews." },
+      { "key": "C", "text": "Export Claude Code usage telemetry through OpenTelemetry to a central backend, tagged by team, and join it with delivery metrics." },
+      { "key": "D", "text": "Divide the monthly invoice by the number of engineers in each team to estimate cost per team, and compare it with the team's ticket counts." }
+    ],
+    "answer": ["C"],
+    "explanation": "At this scale, centrally collected telemetry gives consistent usage, token and cost data per team, and joining it with delivery metrics gives evidence rather than anecdote. Claude Code can export metrics and events through OpenTelemetry for this purpose. Surveys and manual reports are useful context but not reliable measurement.",
+    "distractors": {
+      "A": "Estimates and surveys are anecdotal and cannot show real usage or cost by team.",
+      "B": "Manual reporting is inconsistent, burdensome and incomplete at 400 engineers.",
+      "D": "Dividing an invoice evenly assumes uniform usage and says nothing about adoption patterns."
+    },
+    "difficulty": 1,
+    "tags": ["observability", "telemetry", "claude-code", "adoption"]
+  },
+  {
+    "id": "ap-integ-019",
+    "scenario": 2,
+    "domain": 3,
+    "task": "3.4",
+    "type": "single",
+    "select": 1,
+    "stem": "The support agent handles about two million conversations a month. Storing full traces for every conversation is too costly, and the quality team can only review a few hundred by hand. They need to catch rare but serious failures such as wrong fee explanations or mishandled disputes. Which monitoring strategy is best?",
+    "options": [
+      { "key": "A", "text": "Store full traces for a fixed 1% random sample of conversations, and have the quality team review as many of those sampled traces as possible each week." },
+      { "key": "B", "text": "Store full traces only for conversations that end in an escalation or a complaint, and have the quality team review those each week." },
+      { "key": "C", "text": "Store only aggregate metrics such as conversation counts, average latency and token cost, since full traces are too expensive at this volume." },
+      { "key": "D", "text": "Keep metrics on all traffic and full traces for a sample plus every error, escalation and complaint, with automated graders flagging cases for review." }
+    ],
+    "answer": ["D"],
+    "explanation": "At scale, cheap metrics on all traffic plus sampled full traces control cost, while always-capture rules ensure rare serious failures are kept. Automated graders focus scarce human review on the conversations most likely to be wrong. A pure random sample misses rare events and metrics alone say nothing about quality.",
+    "distractors": {
+      "A": "A random sample alone will usually miss rare but serious failures.",
+      "B": "Many serious failures, such as a wrong fee explanation the customer accepts, never trigger a complaint or escalation, so they would never be captured.",
+      "C": "Aggregate operational metrics cannot reveal wrong explanations or mishandled disputes."
+    },
+    "difficulty": 2,
+    "tags": ["observability", "sampling", "scale", "quality-signals"]
+  },
+  {
+    "id": "ap-integ-020",
+    "scenario": 3,
+    "domain": 3,
+    "task": "3.4",
+    "type": "multi",
+    "select": 2,
+    "stem": "User complaints about wrong answers in the knowledge search assistant have doubled in a month. The team needs to know whether retrieval or generation is failing before changing anything. Which TWO signals should they add? (Select TWO.)",
+    "options": [
+      { "key": "A", "text": "Log the retrieved chunk ids per query and measure recall of the right chunks against a labelled query set." },
+      { "key": "B", "text": "Run a groundedness check that tests whether each answer's claims are supported by the retrieved chunks." },
+      { "key": "C", "text": "Track the average number of output tokens per answer across all users and languages each day." },
+      { "key": "D", "text": "Track p50 and p95 model latency per request and alert when either rises above its baseline." },
+      { "key": "E", "text": "Track daily active users and queries per user to see whether usage is changing with the complaints." },
+      { "key": "F", "text": "Monitor CPU and memory use on the index servers and alert when either crosses a threshold." }
+    ],
+    "answer": ["A", "B"],
+    "explanation": "Retrieval recall shows whether the right content reached the model, and groundedness shows whether the model used it faithfully. Together they locate the failing stage: poor recall points to retrieval, good recall with ungrounded answers points to generation. Operational metrics do not measure correctness.",
+    "distractors": {
+      "C": "Output length says little about whether answers are correct or which stage failed.",
+      "D": "Latency is an operational signal and does not explain wrong answers.",
+      "E": "Usage trends show demand, not where quality is breaking.",
+      "F": "Infrastructure load does not indicate whether retrieved content or answers are correct."
+    },
+    "difficulty": 2,
+    "tags": ["observability", "rag", "quality-signals", "groundedness"]
+  },
+  {
+    "id": "ap-integ-021",
+    "scenario": 3,
+    "domain": 3,
+    "task": "3.5",
+    "type": "single",
+    "select": 1,
+    "stem": "Engineering specifications are stored as long documents containing large parameter tables. The pipeline splits every document into fixed 500-token chunks. Users report answers that give the right parameter for the wrong product variant, and traces show retrieved chunks containing table rows without their column headers. What is the most effective fix?",
+    "options": [
+      { "key": "A", "text": "Chunk by document structure, keeping tables whole or as rows with their headers and the product variant, and store the specification's metadata on each chunk." },
+      { "key": "B", "text": "Keep 500-token chunks but add a generous overlap between neighbouring chunks, so that header rows are carried into the chunks that follow them." },
+      { "key": "C", "text": "Switch answer generation to a more capable model tier, which is better at inferring missing column headers from the values in the surrounding rows." },
+      { "key": "D", "text": "Raise the number of retrieved chunks from five to twenty so that the chunk containing the table headers is more likely to be included in context." }
+    ],
+    "answer": ["A"],
+    "explanation": "Fixed-size splitting cuts tables apart and separates values from their headers and subject, so even a strong model cannot tell which variant a number belongs to. Structure-aware chunking keeps each row meaningful on its own, and metadata supports filtering and citation. Chunking should follow the content's structure, not a token count.",
+    "distractors": {
+      "B": "Overlap repeats only part of the previous chunk, so rows far below a long table's header still lose it, and the product variant is still missing.",
+      "C": "The information needed is missing from the chunk; a stronger model can only guess.",
+      "D": "More chunks add noise and cost and still do not reattach headers to the right rows."
+    },
+    "difficulty": 2,
+    "tags": ["rag", "chunking", "tables", "metadata"]
+  },
+  {
+    "id": "ap-integ-022",
+    "scenario": 1,
+    "domain": 3,
+    "task": "3.5",
+    "type": "single",
+    "select": 1,
+    "stem": "Care guidelines are chunked by section. Reviewers notice that retrieval often misses relevant passages, and some retrieved chunks are ambiguous, for example \"Reduce the dose by half in this population\" with no mention of the drug or the population. What indexing change best addresses this?",
+    "options": [
+      { "key": "A", "text": "Merge every guideline into a single chunk per document, so that each passage always appears together with the drug and the population it refers to." },
+      { "key": "B", "text": "Before indexing, prepend to each chunk a short generated context naming its guideline, section, drug and population, then index that text." },
+      { "key": "C", "text": "Replace the embedding index with a lexical BM25 index only, since clinical terms are precise and exact matching avoids ambiguity in passages." },
+      { "key": "D", "text": "Store guideline, section, drug and population as metadata on each chunk and apply them as filters whenever the clinician's question names a drug or population." }
+    ],
+    "answer": ["B"],
+    "explanation": "Contextual retrieval adds chunk-specific context, such as the document, section and subject, to each chunk before embedding and lexical indexing. The chunk then matches the right queries and is unambiguous when the model reads it. Metadata filters alone can narrow results, but they neither improve matching for questions that do not name the subject nor make the chunk readable on its own.",
+    "distractors": {
+      "A": "Whole-document chunks dilute relevance, waste context and make precise citation harder.",
+      "C": "Lexical-only search loses paraphrase matching, and the chunk text still lacks the drug name.",
+      "D": "Filters help only when the question names the subject, and the chunk text that is embedded and shown to the model stays ambiguous."
+    },
+    "difficulty": 3,
+    "tags": ["rag", "contextual-retrieval", "chunking"]
+  },
+  {
+    "id": "ap-integ-023",
+    "scenario": 3,
+    "domain": 3,
+    "task": "3.5",
+    "type": "single",
+    "select": 1,
+    "stem": "The knowledge index over about two million documents was built in one bulk job three months ago. Since then, policies have been revised and some withdrawn, and the assistant still cites withdrawn policies confidently. The source systems emit change events when documents are created, updated or deleted. What is the best design change?",
+    "options": [
+      { "key": "A", "text": "Rebuild the entire index from the source systems every night, so that revised and withdrawn policies are reflected within a day at most." },
+      { "key": "B", "text": "Filter retrieval to documents modified in the last twelve months, so that older policies, which are the ones most likely withdrawn, drop out." },
+      { "key": "C", "text": "Index incrementally from change events, adding, updating and deleting chunks by document id, and store version and effective date on each chunk." },
+      { "key": "D", "text": "Add a reranker trained to favour recently modified documents, so that newer policy versions are placed above older ones in the final result list." }
+    ],
+    "answer": ["C"],
+    "explanation": "Stale indexes produce confident wrong answers because withdrawn content is still retrievable. An incremental pipeline driven by change events keeps the index aligned with the source of truth, including deletions, and version metadata supports filtering. Age filters or ranking cannot remove content that should no longer exist, and full rebuilds pay the whole indexing cost to catch a few changes.",
+    "distractors": {
+      "A": "A nightly full rebuild of two million documents is costly, still leaves up to a day of staleness and adds no version or effective-date metadata.",
+      "B": "Age is a poor proxy: long-standing valid policies disappear while recently withdrawn ones remain retrievable.",
+      "D": "Reranking cannot remove withdrawn documents, which can still be retrieved when nothing newer exists."
+    },
+    "difficulty": 3,
+    "tags": ["rag", "indexing", "freshness"]
+  },
+  {
+    "id": "ap-integ-024",
+    "scenario": 1,
+    "domain": 3,
+    "task": "3.5",
+    "type": "single",
+    "select": 1,
+    "stem": "Two engineers disagree on chunk size for the guideline index. One proposes whole sections of up to 3,000 tokens to keep context; the other proposes 150-token chunks for precision. Both cite blog posts. As the architect, how should you decide?",
+    "options": [
+      { "key": "A", "text": "Adopt the 150-token chunks and, at answer time, expand each retrieved chunk with its neighbouring chunks so that the model still sees the surrounding context." },
+      { "key": "B", "text": "Adopt the default chunk size recommended for the embedding model, since it was tuned on large public retrieval benchmarks and ends the debate." },
+      { "key": "C", "text": "Choose a size halfway between the two proposals with no overlap, since a compromise balances precision and context without extra evaluation work." },
+      { "key": "D", "text": "Chunk on section boundaries and test candidate sizes and overlaps on real clinician questions, choosing by retrieval recall and answer quality." }
+    ],
+    "answer": ["D"],
+    "explanation": "Chunk size trades precision against context, and the right balance depends on the corpus and the queries. Structure-aware boundaries plus measurement of retrieval recall and answer quality on real questions turn the debate into evidence. Defaults and compromises without evaluation are guesses.",
+    "distractors": {
+      "A": "Expanding small chunks with their neighbours is a valid technique, but adopting it without testing on this corpus is still a choice made without evidence.",
+      "B": "Public benchmark defaults do not reflect clinical guidelines or the questions clinicians actually ask.",
+      "C": "Splitting the difference is still a guess, and no overlap can cut statements in half."
+    },
+    "difficulty": 2,
+    "tags": ["rag", "chunking", "evaluation"]
+  },
+  {
+    "id": "ap-integ-025",
+    "scenario": 3,
+    "domain": 3,
+    "task": "3.5",
+    "type": "multi",
+    "select": 2,
+    "stem": "You are designing the index for the manufacturer's corpus: policies, specifications, support tickets and wiki pages in six languages, full of part numbers and error codes, with per-user document permissions. Which TWO indexing decisions are most important? (Select TWO.)",
+    "options": [
+      { "key": "A", "text": "Build a hybrid index with embeddings and a lexical index such as BM25, so exact part numbers and codes match alongside paraphrases." },
+      { "key": "B", "text": "Store metadata on every chunk, including source, document type, language, version and access-control groups, synced from the source systems." },
+      { "key": "C", "text": "Translate every document into English at index time and drop the originals, so that only one language needs to be embedded and searched." },
+      { "key": "D", "text": "Index only document titles and summaries, so that the index stays small and fast and the model can request full documents when needed." },
+      { "key": "E", "text": "Remove tables during parsing, since tabular data embeds poorly and mostly adds noise to the semantic index for prose questions." }
+    ],
+    "answer": ["A", "B"],
+    "explanation": "A hybrid index covers both exact identifiers and paraphrased questions, which this corpus clearly needs. Chunk metadata enables permission filtering at retrieval time, language and type scoping, versioning and citations. The other choices discard information the requirements depend on.",
+    "distractors": {
+      "C": "Dropping originals loses exact wording, citations in the source language and fidelity for non-English users.",
+      "D": "Titles and summaries miss most of the answerable detail, especially specifications and ticket content.",
+      "E": "Specifications live in tables, so removing them discards the most important engineering data."
+    },
+    "difficulty": 2,
+    "tags": ["rag", "indexing", "hybrid-search", "metadata", "permissions"]
+  },
+  {
+    "id": "ap-integ-026",
+    "scenario": 3,
+    "domain": 3,
+    "task": "3.6",
+    "type": "single",
+    "select": 1,
+    "stem": "Field engineers search with exact part numbers such as \"PX-4471-B\" or error codes like \"E-2093\". The current system uses semantic vector search only, and it often returns documents about similar-looking parts or neighbouring codes. What is the most effective retrieval change?",
+    "options": [
+      { "key": "A", "text": "Add lexical matching such as BM25 alongside semantic search and combine the results, so that exact identifiers are matched reliably." },
+      { "key": "B", "text": "Switch to a larger embedding model with more dimensions, which captures fine differences between similar part numbers more precisely." },
+      { "key": "C", "text": "Add a reranker over the top semantic results, so that the document matching the exact part number is moved to the top of the list sent to the model." },
+      { "key": "D", "text": "Increase the number of semantic results from ten to fifty so that the document for the exact part is more likely to be among them." }
+    ],
+    "answer": ["A"],
+    "explanation": "Exact identifiers are a lexical-match problem: embeddings place similar strings close together, which is exactly the failure seen here. Adding a lexical index and combining it with semantic search gives reliable exact matches while keeping paraphrase handling. Retrieval should match the query pattern.",
+    "distractors": {
+      "B": "A bigger embedding model still represents meaning, not exact strings, and similar ids stay close.",
+      "C": "A reranker only reorders what was retrieved; embeddings treat neighbouring ids as near-identical, so the exact document is often not retrieved at all.",
+      "D": "Returning more semantic results adds noise and may still miss the exact part."
+    },
+    "difficulty": 2,
+    "tags": ["retrieval", "hybrid-search", "lexical", "identifiers"]
+  },
+  {
+    "id": "ap-integ-027",
+    "scenario": 5,
+    "domain": 3,
+    "task": "3.6",
+    "type": "single",
+    "select": 1,
+    "stem": "Sales data lives in the data warehouse as tables of transactions by store, product and day. An engineer proposes exporting the rows to text, embedding them, and letting the analysis agent retrieve relevant rows to answer questions like \"How did sales in the outdoor category change week on week by region?\" Managers slice the data by store, product, region and period in ways that change from week to week. What should the architect recommend?",
+    "options": [
+      { "key": "A", "text": "Proceed with embeddings but add metadata on category, region and week to each row so that filters narrow the search to the relevant rows first." },
+      { "key": "B", "text": "Give the agent a structured query tool over the warehouse, such as validated SQL or parameterised queries, because aggregates need exact computation." },
+      { "key": "C", "text": "Pre-compute weekly sales summaries by category and region as text documents and embed those, so that retrieval returns ready-made aggregates." },
+      { "key": "D", "text": "Load the whole week's sales table into the model's context for each question, so that it can compute the totals directly without any retrieval step." }
+    ],
+    "answer": ["B"],
+    "explanation": "Aggregations over tabular data need exact computation across all relevant rows, which a database query does and similarity search cannot. A structured query tool matches the data shape and the varied query pattern, and the agent can then reason about the results. Pre-computed summaries help only for slices anticipated in advance, and retrieval method should follow the data, not default to embeddings.",
+    "distractors": {
+      "A": "Filters narrow the search, but similarity retrieval still returns a subset of rows, so totals are incomplete.",
+      "C": "Pre-computed summaries cover only the slices chosen in advance, so the varied ad hoc questions managers ask still cannot be answered exactly.",
+      "D": "Loading raw tables wastes context, may not fit, and asks the model to do arithmetic a database does exactly."
+    },
+    "difficulty": 3,
+    "tags": ["retrieval", "structured-data", "sql", "data-shape"]
+  },
+  {
+    "id": "ap-integ-028",
+    "scenario": 5,
+    "domain": 3,
+    "task": "3.6",
+    "type": "single",
+    "select": 1,
+    "stem": "Category managers ask questions like \"Why did our margin on grills drop last week, and which competitor moves explain it?\" Answering needs the margin change from sales data, then competitor price changes for the products that moved, then any promotions on those items. The current pipeline does one retrieval pass on the original question. What is the best retrieval approach?",
+    "options": [
+      { "key": "A", "text": "Increase the single pass to retrieve many more documents from every source, so that the needed facts are probably somewhere in the combined results." },
+      { "key": "B", "text": "Add a reranker to the single retrieval pass so that the most relevant documents from each source are placed at the top of the context window." },
+      { "key": "C", "text": "Let the agent search iteratively, using each result to form the next query, such as finding which products moved before looking up their prices." },
+      { "key": "D", "text": "Pre-compute a weekly embedding of every product's combined sales, price and promotion data, so one semantic search returns everything at once." }
+    ],
+    "answer": ["C"],
+    "explanation": "Multi-hop questions need intermediate results to form later queries: you cannot search for competitor prices on the products that moved until you know which products moved. Agentic, iterative retrieval lets the model plan and refine searches step by step. A single pass, however tuned, cannot ask questions it does not yet know to ask.",
+    "distractors": {
+      "A": "Broader single-pass retrieval adds noise and still cannot target products identified only by an earlier step.",
+      "B": "Reranking improves ordering but cannot retrieve facts the first query never asked for.",
+      "D": "Embedding combined numeric data loses exactness and still cannot answer a chained analytical question in one lookup."
+    },
+    "difficulty": 2,
+    "tags": ["retrieval", "agentic-search", "multi-hop"]
+  },
+  {
+    "id": "ap-integ-029",
+    "scenario": 1,
+    "domain": 3,
+    "task": "3.6",
+    "type": "single",
+    "select": 1,
+    "stem": "The guideline library keeps superseded versions for audit. Clinicians report answers based on an outdated sepsis protocol: the old version ranks above the current one because it contains more matching text. Each chunk carries status and effective-date metadata. What is the most effective retrieval change?",
+    "options": [
+      { "key": "A", "text": "Add an instruction to the system prompt telling the model to check the effective date of each passage and ignore any that appear to be outdated." },
+      { "key": "B", "text": "Remove all superseded versions from the document library entirely, so that only current guidelines can ever be found by the search engine." },
+      { "key": "C", "text": "Increase the number of retrieved chunks so that the current version is also included in context alongside the outdated version of the protocol." },
+      { "key": "D", "text": "Apply a metadata filter for current status before ranking, so that superseded versions are excluded from normal clinical answers by default." }
+    ],
+    "answer": ["D"],
+    "explanation": "When scope or version matters, a metadata filter applied before ranking ensures only eligible content competes, regardless of text similarity. The metadata already exists, so this is a precise, deterministic fix. Superseded versions stay in the library for audit and can still be searched explicitly when needed.",
+    "distractors": {
+      "A": "Relying on the model to spot outdated passages is unreliable when an outdated chunk is all it was given.",
+      "B": "The library must keep superseded versions for audit; the fix belongs in retrieval, not in deleting records.",
+      "C": "Including both versions creates conflicting evidence and still lets the outdated one dominate."
+    },
+    "difficulty": 1,
+    "tags": ["retrieval", "metadata-filter", "versioning"]
+  },
+  {
+    "id": "ap-integ-030",
+    "scenario": 3,
+    "domain": 3,
+    "task": "3.6",
+    "type": "single",
+    "select": 1,
+    "stem": "Retrieval analysis on a labelled query set shows the correct chunk is in the top 50 hybrid results for most queries, but in the top 5 that are passed to Claude for only about half of them. Answer quality tracks this closely. What is the most effective change?",
+    "options": [
+      { "key": "A", "text": "Add a reranking step that scores the top 50 candidates against the query and passes only the best few to the model." },
+      { "key": "B", "text": "Pass the top 15 hybrid results instead of the top 5, so that the correct chunk, which is usually among the top 50, reaches the model more often." },
+      { "key": "C", "text": "Re-chunk the whole corpus into much smaller pieces so that each chunk competes on a narrower topic during ranking." },
+      { "key": "D", "text": "Replace hybrid retrieval with semantic-only retrieval, which tends to place conceptually relevant chunks higher in the list." }
+    ],
+    "answer": ["A"],
+    "explanation": "Recall at 50 is good but precision at 5 is poor, which is exactly the problem a reranker solves: it scores a larger candidate set more carefully and keeps the best few. This raises the chance the right chunk reaches the model without flooding the context. Simply raising the cut-off trades precision for partial recall, while the measured metrics point directly at the ranking stage.",
+    "distractors": {
+      "B": "A larger cut-off adds noise and cost and only partly closes the gap, since the correct chunk can sit anywhere in the top 50.",
+      "C": "Re-chunking is a large change aimed at a ranking problem the data does not attribute to chunking.",
+      "D": "Dropping lexical retrieval loses exact-match recall and does not fix ranking precision."
+    },
+    "difficulty": 3,
+    "tags": ["retrieval", "reranking", "recall", "precision"]
+  },
+  {
+    "id": "ap-integ-031",
+    "scenario": 6,
+    "domain": 3,
+    "task": "3.7",
+    "type": "single",
+    "select": 1,
+    "stem": "The platform team wants to expose the internal ticketing system to Claude. It must work from Claude Code in all 30 repositories, from Claude desktop apps used by engineering managers, and from two internal agents being built with the Agent SDK. Security wants one place to apply authentication and permissions. Which integration mechanism best fits?",
+    "options": [
+      { "key": "A", "text": "Define the ticketing API calls as custom tools separately inside each client and agent, each with its own credentials and permission checks in its code." },
+      { "key": "B", "text": "Build one MCP server for the ticketing system, so every client discovers the same tools and authentication and permissions are enforced in one place." },
+      { "key": "C", "text": "Publish the ticketing system as a REST API behind the corporate API gateway, which already enforces authentication and permissions, for each client to call." },
+      { "key": "D", "text": "Build a dedicated ticketing agent and have every client delegate ticket work to it agent-to-agent, sending each request as a natural-language task." }
+    ],
+    "answer": ["B"],
+    "explanation": "When the same integration must serve several different clients and teams with standard discovery and central governance, MCP is the fitting mechanism. One server gives every client the same tools and puts authentication and permission checks in one place. Per-client integrations duplicate work and security logic.",
+    "distractors": {
+      "A": "Separate integrations in each client duplicate code, credentials and permission checks, which is what security wants to avoid.",
+      "C": "The gateway centralises authentication, but every client and agent still needs its own tool definitions and integration code, with no standard discovery.",
+      "D": "A separate agent adds latency and indirection for what are simple, well-defined tool calls."
+    },
+    "difficulty": 2,
+    "tags": ["mcp", "integration-mechanism", "reuse", "governance"]
+  },
+  {
+    "id": "ap-integ-032",
+    "scenario": 6,
+    "domain": 3,
+    "task": "3.7",
+    "type": "single",
+    "select": 1,
+    "stem": "Engineers already use `deployctl`, a mature, well-documented command-line tool for deployments, with clear subcommands and `--help` output. They want Claude Code to check deployment status and prepare rollbacks in their repositories. A platform engineer proposes building a new MCP server that wraps every `deployctl` command. What should the architect recommend?",
+    "options": [
+      { "key": "A", "text": "Build the MCP server as proposed, since MCP is the standard way to connect Claude to any tool and should be used for every integration." },
+      { "key": "B", "text": "Build a separate deployment agent that engineers' Claude Code sessions delegate to agent-to-agent whenever deployment work is needed." },
+      { "key": "C", "text": "Let Claude Code run `deployctl` through the shell, governed by permission rules that allow status commands and require approval for rollbacks." },
+      { "key": "D", "text": "Rewrite the `deployctl` functions as a REST API, then define direct API tools for it in each repository's shared Claude Code settings." }
+    ],
+    "answer": ["C"],
+    "explanation": "A coding agent working in a terminal can call an existing, well-documented CLI directly, and permission rules control which commands run automatically and which need approval. Wrapping the CLI in an MCP server or a new API adds build and maintenance cost without adding capability. MCP earns its place when reuse across many clients is needed.",
+    "distractors": {
+      "A": "MCP is not required for every integration; here it duplicates a CLI the agent can already use.",
+      "B": "An extra agent adds indirection and latency for simple command execution.",
+      "D": "Rewriting a mature CLI as an API is costly work with no benefit for a terminal-based agent."
+    },
+    "difficulty": 2,
+    "tags": ["integration-mechanism", "cli", "claude-code", "permissions"]
+  },
+  {
+    "id": "ap-integ-033",
+    "scenario": 2,
+    "domain": 3,
+    "task": "3.7",
+    "type": "single",
+    "select": 1,
+    "stem": "The support agent runs inside the bank's own backend application and needs to call the internal card-dispute service. No other client or team will use this integration, the calls are fixed (create a dispute and check its status), and the service already has a stable internal API. Which integration mechanism best fits?",
+    "options": [
+      { "key": "A", "text": "Build an MCP server for the dispute service so it follows the standard protocol and can be discovered by any future AI client in the bank." },
+      { "key": "B", "text": "Have the dispute team build its own agent and let the support agent delegate dispute creation to it through agent-to-agent messages." },
+      { "key": "C", "text": "Wrap the dispute API in a command-line tool and give the support agent shell access so that it can run the dispute commands directly." },
+      { "key": "D", "text": "Define the dispute calls as tools in the application, executed by backend code that calls the internal API with the customer's session." }
+    ],
+    "answer": ["D"],
+    "explanation": "For a single application with a fixed, well-defined integration to an existing API, defining tools in the application and executing them in backend code is the simplest fit. It keeps authorization in the bank's own code and avoids extra servers or protocols. MCP or delegation would add moving parts without a reuse or ownership need.",
+    "distractors": {
+      "A": "Building for hypothetical future clients adds a server and protocol layer the stated requirements do not need.",
+      "B": "Delegating to another agent adds latency and an extra failure point for two simple, fixed calls.",
+      "C": "Shell access in a customer-facing banking agent is an unnecessary and risky capability."
+    },
+    "difficulty": 2,
+    "tags": ["integration-mechanism", "api", "tool-use"]
+  },
+  {
+    "id": "ap-integ-034",
+    "scenario": 5,
+    "domain": 3,
+    "task": "3.7",
+    "type": "single",
+    "select": 1,
+    "stem": "Competitor price research is owned by the retailer's pricing team, which runs its own agent with licensed data feeds, its own scraping policies and credentials it cannot share. The merchandising system needs that team's competitor findings for the weekly report. What is the best integration approach?",
+    "options": [
+      { "key": "A", "text": "Delegate to the pricing team's agent agent-to-agent: send it a scoped research task and use the findings it returns, leaving tools and credentials with that team." },
+      { "key": "B", "text": "Copy the pricing team's tool definitions into the merchandising system and ask the team to issue a second set of credentials to the merchandising agents." },
+      { "key": "C", "text": "Give the merchandising system direct read access to the pricing team's raw data feeds and rebuild the competitor analysis in a new worker agent." },
+      { "key": "D", "text": "Ask the pricing team to email a weekly spreadsheet of competitor prices, which an analyst uploads to the merchandising system every Sunday evening." }
+    ],
+    "answer": ["A"],
+    "explanation": "When an independent agent owned by another team holds the tools, data, policies and credentials, delegating a task to that agent respects the ownership boundary. The merchandising system gets the result without duplicating capabilities or spreading credentials. Agent-to-agent integration fits exactly this cross-team case.",
+    "distractors": {
+      "B": "Copying tools and credentials ignores the stated constraint and duplicates capabilities across teams.",
+      "C": "Direct feed access bypasses the pricing team's policies and duplicates their analysis work.",
+      "D": "A manual spreadsheet adds human toil and delay, which works against the analyst-hours goal."
+    },
+    "difficulty": 2,
+    "tags": ["integration-mechanism", "agent-to-agent", "ownership"]
+  },
+  {
+    "id": "ap-integ-035",
+    "scenario": 6,
+    "domain": 3,
+    "task": "3.8",
+    "type": "single",
+    "select": 1,
+    "stem": "As more internal MCP servers are approved, platform engineers want every session to have access to all of them, about 25 servers with several hundred tools. Loading every tool definition up front consumes a large part of the context before the engineer's task starts, and tool selection is getting worse. Which strategy best fits?",
+    "options": [
+      { "key": "A", "text": "Load all tool definitions up front but shorten each description to a single line so that the full set takes less room in the context window." },
+      { "key": "B", "text": "Use tool search so that tool definitions are discovered and loaded on demand, keeping only what the current task needs in context." },
+      { "key": "C", "text": "Move every session to a model configuration with a larger context window so that all tool definitions fit with room to spare." },
+      { "key": "D", "text": "Split the servers alphabetically into two groups and ask engineers to restart their session with the other group when a tool is missing." }
+    ],
+    "answer": ["B"],
+    "explanation": "With hundreds of tools, monolithic loading wastes context and degrades selection. Progressive discovery through tool search loads definitions only when relevant, so access stays broad while context stays lean. Clear tool names and descriptions remain important so the right tools are found.",
+    "distractors": {
+      "A": "Shorter descriptions save some tokens but make selection among hundreds of tools even harder.",
+      "C": "A bigger window still fills with irrelevant definitions and does not fix selection accuracy.",
+      "D": "An arbitrary split forces manual restarts and does not match tools to tasks."
+    },
+    "difficulty": 2,
+    "tags": ["progressive-discovery", "tool-search", "mcp", "context"]
+  },
+  {
+    "id": "ap-integ-036",
+    "scenario": 2,
+    "domain": 3,
+    "task": "3.8",
+    "type": "single",
+    "select": 1,
+    "stem": "The bank's fee schedule is a three-page document that changes a few times a year and is relevant to most support conversations. An engineer proposes moving it into a retrieval index and loading only the relevant fee entries on demand, to keep the context lean. What should the architect recommend?",
+    "options": [
+      { "key": "A", "text": "Adopt on-demand retrieval as proposed, since it keeps each request's context small and lets fee changes be published without editing the system prompt." },
+      { "key": "B", "text": "Package the fee schedule as an Agent Skill, so that only its description is loaded and the full schedule is read when a fee question appears." },
+      { "key": "C", "text": "Keep the short, stable fee schedule in the system prompt and cache that prefix, since it is needed on most requests and retrieval adds misses." },
+      { "key": "D", "text": "Split the fee schedule into one tool per fee type, so that the agent calls the specific tool for the fee the customer is asking about." }
+    ],
+    "answer": ["C"],
+    "explanation": "Monolithic context is the right choice for small, stable material needed on most requests: it is simple and cannot miss, and prompt caching keeps the cost and latency of the repeated prefix low. Progressive discovery pays off when material is large, growing or rarely needed. Adding a retrieval or discovery step here adds latency and failure modes for little saving.",
+    "distractors": {
+      "A": "For short content needed in most conversations, retrieval saves little context but adds a step that can miss entries, and a few prompt updates a year are easy to version.",
+      "B": "A Skill adds a discovery step for content that is needed in most conversations anyway.",
+      "D": "Many fee tools create capability bloat and selection errors for information that fits easily in context."
+    },
+    "difficulty": 3,
+    "tags": ["monolithic-context", "progressive-discovery", "prompt-caching"]
+  },
+  {
+    "id": "ap-integ-037",
+    "scenario": 6,
+    "domain": 3,
+    "task": "3.8",
+    "type": "single",
+    "select": 1,
+    "stem": "A shared instruction file loaded into every Claude Code session has grown to several thousand lines: coding standards, plus detailed procedures for releases, database migrations, incident response and on-call handover. Engineers report that sessions start with a large context and that Claude sometimes applies the migration procedure during unrelated work. What is the best restructuring?",
+    "options": [
+      { "key": "A", "text": "Keep everything in the file but reorder it so that the most frequently used procedures appear at the top, where they are more likely to be followed." },
+      { "key": "B", "text": "Split the file into CLAUDE.md files in the subdirectories each procedure relates to, so that each one loads only when Claude works in that part of the repository." },
+      { "key": "C", "text": "Remove the procedures entirely and ask engineers to paste the relevant procedure into the conversation themselves whenever they need one of them." },
+      { "key": "D", "text": "Keep core standards in the shared file and package each procedure as a Skill, so only its description loads until a task needs the full procedure." }
+    ],
+    "answer": ["D"],
+    "explanation": "Skills use progressive disclosure: only each skill's name and description sit in context, and the full procedure loads when relevant. Keeping always-needed standards in the shared file and moving task-specific procedures into Skills reduces context use and stops irrelevant procedures from influencing unrelated work. The procedures remain shared and versioned for consistency.",
+    "distractors": {
+      "A": "Reordering keeps the same context load and the same risk of irrelevant procedures being applied.",
+      "B": "Releases, incidents and on-call handover are tasks rather than parts of the code tree, so directory scoping does not match when they are needed.",
+      "C": "Manual pasting loses consistency and depends on engineers remembering which procedure applies."
+    },
+    "difficulty": 3,
+    "tags": ["progressive-discovery", "skills", "claude-code", "context"]
+  },
+  {
+    "id": "ap-integ-038",
+    "scenario": 5,
+    "domain": 3,
+    "task": "3.8",
+    "type": "multi",
+    "select": 2,
+    "stem": "The analysis worker connects to MCP servers for the warehouse, the pricing feed and the promotions calendar, with dozens of tools in total. Tool results often return tens of thousands of rows that pass through the model's context before it computes a few weekly figures, and runs are slow and costly. Which TWO changes best reduce context use? (Select TWO.)",
+    "options": [
+      { "key": "A", "text": "Let the agent call the tools from code in an execution environment, filtering and aggregating rows there and returning only the summary figures." },
+      { "key": "B", "text": "Load tool definitions on demand as the task needs them, instead of placing every tool from every server in context at the start." },
+      { "key": "C", "text": "Move the analysis worker to a model configuration with a larger context window so the full row sets fit without truncation." },
+      { "key": "D", "text": "Raise the maximum output tokens so the model has room to list all relevant rows before computing the weekly figures." },
+      { "key": "E", "text": "Pass every tool result unchanged to a second summariser agent that condenses it before the analysis worker reads it." }
+    ],
+    "answer": ["A", "B"],
+    "explanation": "Code execution with MCP lets the agent process large intermediate results outside the model's context and return only what matters, while on-demand tool loading avoids carrying every definition up front. Both are progressive-discovery techniques that keep context lean as integrations grow. Larger windows or extra agents move the cost rather than remove it.",
+    "distractors": {
+      "C": "A larger window lets the bloat fit but keeps the cost and latency of processing every row through the model.",
+      "D": "Output limits do not affect input context, and listing rows makes runs slower still.",
+      "E": "A summariser agent still reads every row through a model and adds another step of latency and cost."
+    },
+    "difficulty": 2,
+    "tags": ["progressive-discovery", "code-execution", "mcp", "context"]
+  }
+]

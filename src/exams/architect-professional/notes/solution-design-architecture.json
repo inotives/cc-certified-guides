@@ -1,0 +1,566 @@
+[
+  {
+    "task": "1.1",
+    "knowledge": [
+      "Start from the business outcome and its owner (time saved, backlog cleared, errors avoided), not from a feature request such as \"build us an agent\". The request is a hypothesis about how to reach the outcome.",
+      "Map the current process before designing: who does each step, how often, with what inputs, where time goes, and what a mistake costs. The steps that consume the most time are where Claude can create value.",
+      "Claude fits steps that involve unstructured language and judgement (reading, summarising, classifying, drafting, explaining). Arithmetic, lookups, rule checks and anything that must be exactly right every time belong in deterministic code or existing systems.",
+      "Constraints shape the design from day one: data sensitivity (PHI, personal data), regulation, deployment authorisation, latency needs, and who must stay accountable for the decision.",
+      "Decide the human role explicitly: Claude drafts and a person approves, Claude assists a decision-maker, or Claude acts within a narrow, reversible scope. High-stakes decisions about people stay with accountable humans.",
+      "Prove feasibility early with a thin slice: a simple prototype tested against a small, representative set of real cases (including hard ones), scored against success criteria agreed with the business owner."
+    ],
+    "skills": [
+      "Run structured discovery with the people who do the work, the process owner, and risk, legal and security stakeholders, not only IT.",
+      "Split a process into steps and label each one as model work, deterministic code, or human judgement.",
+      "Write success criteria that are specific and measurable (for example, minutes per case and error rate) before building anything.",
+      "Reframe a risky request (full automation of a decision) into a viable one (assistive drafting with a human decision) and explain why."
+    ],
+    "examLens": [
+      "Asked for the best first step on a vague request, pick discovery of the current process and measurable success criteria over building, buying data or choosing a model.",
+      "When a step needs exact, repeatable results (fees, totals, eligibility windows), the answer puts it in code and lets Claude handle the language around it.",
+      "Prefer the option that keeps accountable humans on decisions that affect people's health, money or rights, with Claude preparing the work.",
+      "Feasibility is shown with representative data and agreed criteria, not with demos, vendor claims or public benchmark scores."
+    ],
+    "traps": [
+      "Jumping straight to a model choice or an impressive multi-agent prototype before the problem and success criteria are defined.",
+      "Using the model for work a database query or rules engine already does reliably.",
+      "Treating the model's own stated confidence as a safe trigger for automating a consequential decision.",
+      "Framing the goal so broadly (\"reduce burnout\", \"use AI everywhere\") that nothing can be measured."
+    ],
+    "links": [
+      {
+        "label": "Building effective agents",
+        "url": "https://www.anthropic.com/research/building-effective-agents"
+      },
+      {
+        "label": "Define success criteria and build evaluations",
+        "url": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests"
+      },
+      {
+        "label": "Use case guides",
+        "url": "https://platform.claude.com/docs/en/about-claude/use-case-guides/overview"
+      }
+    ],
+    "cheat": [
+      [
+        "Executive asks for \"an AI agent\" with no detail",
+        "Discovery first: current process, owner, volumes, measurable success criteria"
+      ],
+      [
+        "Step needs exact numbers or rule checks",
+        "Deterministic code; Claude explains or drafts around the result"
+      ],
+      [
+        "Request to automate decisions about people",
+        "Reframe: Claude prepares and explains, an accountable human decides"
+      ],
+      [
+        "How to show feasibility early",
+        "Simple prototype on representative real cases scored against agreed criteria"
+      ]
+    ],
+    "diagrams": [
+      {
+        "kind": "flow",
+        "title": "From business problem to Claude solution",
+        "steps": [
+          {
+            "label": "Name the outcome and its owner",
+            "note": "Time saved, backlog cleared, errors avoided: not \"build an agent\".",
+            "tone": "sky"
+          },
+          {
+            "label": "Map the current process",
+            "note": "Who does each step, how often, with what data, at what cost of error."
+          },
+          {
+            "label": "Label each step",
+            "note": "Model work, deterministic code, or human judgement.",
+            "tone": "accent"
+          },
+          {
+            "label": "Set success criteria and constraints",
+            "note": "Measurable targets, data sensitivity, regulation, latency, accountability."
+          },
+          {
+            "label": "Prototype a thin slice",
+            "note": "Simple design tested on representative real cases, hard ones included.",
+            "tone": "good"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "task": "1.2",
+    "knowledge": [
+      "An end-to-end design has four stages: input (ingest, validate, redact, separate untrusted content), processing (retrieval, prompt, model, tools), output (structure, validate, cite, review) and feedback (capture corrections, monitor, improve).",
+      "Validate at the boundaries. Check inputs before they reach the model, and check outputs against schemas, business rules and source data before they reach a person or system of record.",
+      "Authoritative values (amounts, dates, identifiers) should flow from tools and systems into the output, not be retyped by the model, so the output can be checked against the source.",
+      "Side-effecting actions need production engineering: idempotency keys, retries that cannot duplicate work, timeouts and clear failure states.",
+      "Failures should degrade visibly: route low-quality or failed items to a human exception queue, label gaps in a report, and alert the owner, instead of failing silently or letting the model fill gaps from its own knowledge.",
+      "Feedback loops turn production into improvement: human edits, rejections and escalations are categorised, sampled and added to the evaluation set, then drive prompt, retrieval or design changes."
+    ],
+    "skills": [
+      "Draw the input → processing → output → feedback path for a use case and name the control at each stage.",
+      "Place deterministic validation and human review gates where errors would otherwise reach a record or a customer.",
+      "Design human-edit capture (diffs plus error categories) so it feeds the eval set and change process.",
+      "Plan checkpoints and resumable stages for long or scheduled pipelines."
+    ],
+    "examLens": [
+      "When errors reach a record or customer unnoticed, the best answer adds a validation step and an exception path, not a stronger instruction in the prompt.",
+      "When the model misquotes a number it could get from a system, the answer takes the value from the tool or system and checks the output against it.",
+      "For duplicate side effects after timeouts, choose idempotency in the tool layer over prompt instructions.",
+      "Human corrections are the richest feedback signal: prefer designs that capture and categorise them and feed them into evals."
+    ],
+    "traps": [
+      "Trusting the model's self-reported confidence score as the gate for writing data into a record.",
+      "\"Be accurate\" or \"never call this twice\" instructions as the fix for a structural problem.",
+      "Letting the model fill missing data from its own knowledge so a pipeline \"always completes\".",
+      "Collecting feedback as a single satisfaction number that cannot tell you what to fix."
+    ],
+    "links": [
+      {
+        "label": "Building effective agents",
+        "url": "https://www.anthropic.com/research/building-effective-agents"
+      },
+      {
+        "label": "Create strong empirical evaluations",
+        "url": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests"
+      },
+      {
+        "label": "Prompting best practices: chain complex prompts",
+        "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices#chain-complex-prompts"
+      }
+    ],
+    "cheat": [
+      [
+        "Extraction errors land in records unnoticed",
+        "Schema and rule validation after extraction, failures to a human exception queue"
+      ],
+      [
+        "Model misquotes an amount it could look up",
+        "Take the value from the tool and check the output against it"
+      ],
+      [
+        "Duplicate actions after a timeout and retry",
+        "Idempotency keys enforced in the tool layer"
+      ],
+      [
+        "Clinicians or staff edit every draft",
+        "Capture diffs with error categories and feed them into the eval set"
+      ]
+    ],
+    "diagrams": [
+      {
+        "kind": "flow",
+        "title": "End-to-end architecture with a feedback loop",
+        "steps": [
+          {
+            "label": "Input",
+            "note": "Ingest, validate, redact, keep untrusted content as data.",
+            "tone": "sky"
+          },
+          {
+            "label": "Processing",
+            "note": "Retrieval, prompt, model and scoped tools."
+          },
+          {
+            "label": "Output",
+            "note": "Schema and rule checks, citations, human review gate.",
+            "tone": "accent"
+          },
+          {
+            "label": "Feedback",
+            "note": "Capture edits and rejections, monitor, grow the eval set.",
+            "tone": "good"
+          }
+        ],
+        "loop": "Feedback drives prompt, retrieval and design changes, re-tested on the eval set"
+      }
+    ]
+  },
+  {
+    "task": "1.3",
+    "knowledge": [
+      "Anthropic's guidance is to start with the simplest design that works: often a single LLM call augmented with retrieval and good examples. Add complexity only when it measurably improves results.",
+      "The augmented LLM (a model with retrieval, tools and memory) is the building block. Workflows orchestrate it along predefined code paths; agents let the model direct its own process and tool use.",
+      "Workflow patterns: prompt chaining (fixed sequence with checks between steps), routing (classify then send to a specialised path), parallelization (sectioning into independent parts, or voting for confidence), orchestrator-workers (a central model splits work it cannot predict in advance) and evaluator-optimizer (generate, critique against clear criteria, refine).",
+      "Workflows give predictability and consistency for well-defined tasks. Agents suit open-ended problems where the number of steps cannot be predicted, at the price of higher cost, latency and compounding errors.",
+      "Agents need guardrails proportionate to their autonomy: scoped tools, stopping conditions, checkpoints for human input, and testing in a sandboxed environment before production.",
+      "One product can mix patterns: route well-defined requests to workflows and keep agentic handling for the long tail that needs it."
+    ],
+    "skills": [
+      "Choose between augmented LLM, a named workflow pattern and an agent from the task's predictability and the cost of error.",
+      "Recognise when evaluator-optimizer pays off: clear evaluation criteria and evidence that iterative feedback improves the result.",
+      "Design a router that sends predictable intents to workflows and reserves agentic handling for open-ended cases.",
+      "Argue against unnecessary agency using cost, latency, testability and compounding-error risk."
+    ],
+    "examLens": [
+      "Fixed inputs, fixed template, predictable steps: choose a single augmented call or a workflow, not an agent.",
+      "The number of steps depends on what intermediate results reveal: an agent (with guardrails) is justified.",
+      "Distinct request types with different handling: routing. Independent parts: parallelization. Clear criteria plus measurable gains from feedback: evaluator-optimizer.",
+      "\"More autonomous\" or \"more future-proof\" is not a reason; pick the least complex pattern that meets the requirement."
+    ],
+    "traps": [
+      "One autonomous agent with every tool for every request type.",
+      "Adding an evaluator loop to every output when no clear criteria exist or a human review gate already covers it.",
+      "Treating a turn cap as a substitute for choosing the right pattern.",
+      "Believing an agent removes the need for evaluation or guardrails."
+    ],
+    "links": [
+      {
+        "label": "Building effective agents",
+        "url": "https://www.anthropic.com/research/building-effective-agents"
+      },
+      {
+        "label": "Agent SDK overview",
+        "url": "https://code.claude.com/docs/en/agent-sdk/overview"
+      },
+      {
+        "label": "Ticket routing guide",
+        "url": "https://platform.claude.com/docs/en/about-claude/use-case-guides/ticket-routing"
+      }
+    ],
+    "cheat": [
+      [
+        "Fixed inputs and a fixed output template",
+        "Single augmented call or prompt chain, not an agent"
+      ],
+      [
+        "Mixed request types, some routine, some open-ended",
+        "Router: workflows for routine intents, agent for the long tail"
+      ],
+      [
+        "Steps cannot be predicted in advance",
+        "Agent with scoped tools, stopping conditions and human checkpoints"
+      ],
+      [
+        "Clear quality criteria and revisions measurably help",
+        "Evaluator-optimizer loop"
+      ]
+    ],
+    "diagrams": [
+      {
+        "kind": "decision",
+        "title": "Pick the simplest pattern that works",
+        "question": "What does the task look like?",
+        "branches": [
+          {
+            "when": "One step, needs facts or tools",
+            "then": "Augmented LLM: retrieval plus tools",
+            "tone": "good"
+          },
+          {
+            "when": "Fixed sequence of steps",
+            "then": "Prompt chaining with checks between steps",
+            "tone": "sky"
+          },
+          {
+            "when": "Distinct request types",
+            "then": "Routing to specialised paths",
+            "tone": "sky"
+          },
+          {
+            "when": "Independent parts or need for votes",
+            "then": "Parallelization: sectioning or voting",
+            "tone": "sky"
+          },
+          {
+            "when": "Clear criteria, revisions help",
+            "then": "Evaluator-optimizer loop",
+            "tone": "accent"
+          },
+          {
+            "when": "Steps unknown until work starts",
+            "then": "Agent with guardrails and checkpoints",
+            "tone": "warn"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "task": "1.4",
+    "knowledge": [
+      "Multi-agent systems pay off for breadth-first work that splits into independent parts, such as researching many sources in parallel. They suit poorly work where every part needs the same shared context or depends tightly on the others.",
+      "Multiple agents consume substantially more tokens than a single agent, add latency and introduce coordination failures. The value of the task has to justify that cost.",
+      "Orchestrator-worker: a lead agent plans and decomposes, workers explore in their own context windows and return condensed results, and the lead synthesises.",
+      "Delegation quality decides outcomes: each worker needs a clear objective, scope boundaries, an output format and guidance on tools and sources. Vague tasks cause duplicated work, gaps and wrong scope.",
+      "Pass condensed, structured results between agents. Large artifacts can be stored outside the conversation and referenced, so the lead's context is not flooded.",
+      "Mix models by role: a more capable model to plan and synthesise, faster and cheaper models for high-volume, well-scoped subtasks. Scale the number of workers to the complexity of the request.",
+      "Hand-offs between agents must carry explicit state (verified identity, intent, facts gathered, actions taken), and worker failures must surface to the orchestrator or a human rather than vanish."
+    ],
+    "skills": [
+      "Decide whether a problem warrants multiple agents or a single agent or workflow.",
+      "Write delegation specifications: objective, boundaries, output schema, tools and sources.",
+      "Design structured hand-off payloads and condensed return formats between agents.",
+      "Control cost by scaling effort to task complexity and assigning model tiers by role."
+    ],
+    "examLens": [
+      "Workers duplicating effort or drifting off scope: fix the lead's task descriptions (objective, boundaries, output format), not the worker count or model.",
+      "Lead's context flooded by raw worker output: workers return condensed, structured findings with references to stored artifacts.",
+      "Tightly coupled work that must stay consistent (one document, one decision) points to a single agent or workflow, not parallel agents.",
+      "Cost overruns: scale workers to complexity and use cheaper tiers for high-volume subtasks while keeping a capable model for planning and synthesis."
+    ],
+    "traps": [
+      "Adding more agents or peer-to-peer chatter to fix coordination problems.",
+      "Giving every agent every tool \"for flexibility\".",
+      "Passing full transcripts and raw tool output between agents instead of structured state.",
+      "Letting workers write directly to systems of record without the orchestrator or a human seeing the result."
+    ],
+    "links": [
+      {
+        "label": "How we built our multi-agent research system",
+        "url": "https://www.anthropic.com/research/multi-agent-research-system"
+      },
+      {
+        "label": "Subagents in the Agent SDK",
+        "url": "https://code.claude.com/docs/en/agent-sdk/subagents"
+      },
+      {
+        "label": "Building effective agents",
+        "url": "https://www.anthropic.com/research/building-effective-agents"
+      }
+    ],
+    "cheat": [
+      [
+        "Workers duplicate work or research the wrong scope",
+        "Sharper delegation: objective, boundaries, output format, sources"
+      ],
+      [
+        "Lead agent's context filling with raw pages",
+        "Workers return condensed structured findings; store artifacts by reference"
+      ],
+      [
+        "Multi-agent token bill too high",
+        "Scale workers to complexity; cheaper tiers for workers, capable model for the lead"
+      ],
+      [
+        "Parts must stay consistent with each other",
+        "Single agent or workflow, not parallel agents"
+      ]
+    ],
+    "diagrams": [
+      {
+        "kind": "compare",
+        "title": "Single agent or orchestrator-workers?",
+        "columns": [
+          {
+            "head": "Single agent or workflow",
+            "tone": "good",
+            "items": [
+              "Parts share context or depend on each other",
+              "Output must stay internally consistent",
+              "Lower token cost and latency",
+              "Easier to test and trace"
+            ]
+          },
+          {
+            "head": "Orchestrator-workers",
+            "tone": "accent",
+            "items": [
+              "Work splits into independent parts",
+              "Breadth-first research across many sources",
+              "Substantially more tokens and coordination",
+              "Needs precise delegation and condensed returns"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "task": "1.5",
+    "knowledge": [
+      "Decompose by the shape of the work: sequential stages become a prompt chain, independent parts run in parallel (sectioning), distinct input types are routed, and subtasks that cannot be known in advance go to an orchestrator.",
+      "Each step should have one responsibility and an output you can check. Programmatic gates between steps catch errors early and show which step failed.",
+      "Split work between code and model: code computes, looks up and validates; Claude interprets, classifies and writes. Feeding the model computed tables beats asking it to do arithmetic over raw data.",
+      "Sectioning improves coverage (each check gets focused attention); voting improves confidence on one question. They solve different problems.",
+      "Granularity is a trade-off. Each extra call adds latency, cost and a hand-off; too few steps overload one prompt. Keep a split when it isolates a distinct failure mode or enables a gate, and merge steps that add neither.",
+      "Decomposition also enables evaluation: each step can be tested and improved on its own."
+    ],
+    "skills": [
+      "Break a monolithic prompt into chained or parallel steps with checks between them.",
+      "Assign each step to code, model or human, and justify the choice.",
+      "Identify which subtasks are independent enough to run in parallel and which must be sequential or centralised.",
+      "Measure whether a finer decomposition actually improves quality enough to justify its latency and cost."
+    ],
+    "examLens": [
+      "A single prompt doing many jobs with hard-to-diagnose errors: split into a chain with one responsibility per step and checks between steps.",
+      "A review that misses items across several distinct criteria: sectioning into focused parallel checks, not voting on the whole review.",
+      "Calculations over structured data belong in code; the model works from the computed results.",
+      "Too many sequential steps with no quality gain: merge the ones that add no gate or distinct failure isolation, and measure."
+    ],
+    "traps": [
+      "Fixing a monolithic prompt by adding more instructions and examples to it.",
+      "Parallelising steps that depend on each other's output.",
+      "Using voting when the problem is coverage of different criteria.",
+      "Assuming more steps always means higher quality."
+    ],
+    "links": [
+      {
+        "label": "Prompting best practices: chain complex prompts",
+        "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices#chain-complex-prompts"
+      },
+      {
+        "label": "Building effective agents",
+        "url": "https://www.anthropic.com/research/building-effective-agents"
+      },
+      {
+        "label": "How we built our multi-agent research system",
+        "url": "https://www.anthropic.com/research/multi-agent-research-system"
+      }
+    ],
+    "cheat": [
+      [
+        "One prompt classifies, extracts, checks and recommends",
+        "Prompt chain, one responsibility per step, gates between steps"
+      ],
+      [
+        "Review misses items across several criteria",
+        "Sectioning: focused parallel checks, results aggregated"
+      ],
+      [
+        "Model asked to compute totals from raw data",
+        "Compute in code; model interprets the computed tables"
+      ],
+      [
+        "Seven chained calls, slow, no better than two",
+        "Merge steps that add no gate or failure isolation; measure"
+      ]
+    ],
+    "diagrams": [
+      {
+        "kind": "compare",
+        "title": "Three ways to split work",
+        "columns": [
+          {
+            "head": "Sequential: prompt chain",
+            "tone": "sky",
+            "items": [
+              "Each step feeds the next",
+              "Gates between steps",
+              "Pinpoints the failing step"
+            ]
+          },
+          {
+            "head": "Parallel: sectioning or voting",
+            "tone": "good",
+            "items": [
+              "Independent parts run at once",
+              "Sectioning for coverage",
+              "Voting for confidence"
+            ]
+          },
+          {
+            "head": "Dynamic: orchestrator",
+            "tone": "accent",
+            "items": [
+              "Subtasks unknown in advance",
+              "Lead decides the split",
+              "Higher cost and coordination"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "task": "1.6",
+    "knowledge": [
+      "Business value pillars: efficiency (less time or effort per unit of work), productivity (more output per person), transformation (new capabilities or ways of working), cost (spend per outcome) and performance SLAs (latency, availability, deadlines).",
+      "Every design should trace from a business outcome to a pillar, a KPI and the system metrics that move it. Measure a baseline before the pilot, or no improvement can be shown.",
+      "Pair each value metric with a quality guardrail so the system cannot hit the number by doing worse work: containment with confirmed resolution, throughput with error or appeal rates, hours saved with acceptance of the output.",
+      "Activity metrics (reports generated, tokens used, conversations handled) are not value. Report outcomes the sponsor cares about.",
+      "SLAs drive architecture: interactive work needs a real-time path with a latency budget; high-volume work that is not time-sensitive can use batch processing at a lower cost, with a separate path for urgent items.",
+      "Cost is measured per outcome (per resolved case, per accepted report), not per call, and is traded off explicitly against quality and latency."
+    ],
+    "skills": [
+      "Map a sponsor's stated goal to a value pillar, a KPI with a baseline and a quality guardrail.",
+      "Choose real-time versus batch processing from the SLA of each workload.",
+      "Build a measurement plan for a pilot that can confirm or refute the business case.",
+      "Explain value trade-offs (cost, latency, quality) to executives in outcome terms."
+    ],
+    "examLens": [
+      "Asked how to prove value, pick the answer with a pre-pilot baseline, an outcome KPI and a quality guardrail, not usage counts or token totals.",
+      "A single metric that can be gamed (containment, auto-decision rate) is a trap; pair it with resolution or error measures.",
+      "Batch suits high-volume, non-urgent work; anything with an interactive or deadline SLA stays on the real-time path.",
+      "Cost questions are answered per outcome, never by downgrading quality the SLA or risk profile depends on."
+    ],
+    "traps": [
+      "Reporting reports generated, conversations handled or tokens used as business value.",
+      "Moving an interactive workload to batch to save money and breaking its SLA.",
+      "Measuring improvement without a baseline taken before the pilot.",
+      "Maximising automation rate as the goal for decisions that affect people."
+    ],
+    "links": [
+      {
+        "label": "Define success criteria and build evaluations",
+        "url": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests"
+      },
+      {
+        "label": "Batch processing",
+        "url": "https://platform.claude.com/docs/en/build-with-claude/batch-processing"
+      },
+      {
+        "label": "Choosing a model",
+        "url": "https://platform.claude.com/docs/en/about-claude/models/choosing-a-model"
+      }
+    ],
+    "cheat": [
+      [
+        "Sponsor promises a cut in staff hours",
+        "Baseline hours per task before the pilot; track with an acceptance-rate guardrail"
+      ],
+      [
+        "Support bot judged on containment alone",
+        "Pair containment with confirmed resolution and repeat-contact rate"
+      ],
+      [
+        "High-volume, non-urgent processing",
+        "Batch for cost; real-time path kept for urgent items"
+      ],
+      [
+        "Interactive draft needed before the next appointment",
+        "Real-time path with a latency budget, not batch"
+      ]
+    ],
+    "diagrams": [
+      {
+        "kind": "layers",
+        "title": "Trace the design to business value",
+        "layers": [
+          {
+            "label": "Business outcome",
+            "note": "What the sponsor wants: backlog cleared, hours saved, deadline met.",
+            "tone": "accent"
+          },
+          {
+            "label": "Value pillar",
+            "note": "Efficiency, productivity, transformation, cost or performance SLA."
+          },
+          {
+            "label": "KPI with a baseline",
+            "note": "Measured before the pilot, so improvement can be shown.",
+            "tone": "sky"
+          },
+          {
+            "label": "Quality guardrail",
+            "note": "Error, resolution or acceptance rate, so the KPI is not gamed.",
+            "tone": "warn"
+          },
+          {
+            "label": "System metrics",
+            "note": "Latency, cost per outcome, escalation and edit rates.",
+            "tone": "good"
+          }
+        ],
+        "axis": {
+          "label": "From business goal to what the system measures",
+          "dir": "down"
+        }
+      }
+    ]
+  }
+]

@@ -115,6 +115,11 @@ export interface ExamContent {
   domains: Domain[];
   /** Empty when the exam isn't scenario-based. */
   scenarios: Scenario[];
+  /**
+   * True when `scenarios` are this site's own study case studies rather than scenarios from the guide.
+   * Pages then call them "case studies", say they're unofficial, and questions outside them use scenario 0.
+   */
+  caseStudies?: boolean;
   plan: PlanWeek[];
   questionsDir: string;
   /** Path of the extracted official guide, relative to the repo root. */

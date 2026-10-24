@@ -1,0 +1,169 @@
+[
+  {
+    "task": "7.1",
+    "knowledge": [
+      "Claude Code settings come from several scopes. Highest precedence first: managed settings, command-line arguments, project local (`.claude/settings.local.json`), shared project (`.claude/settings.json`), then user (`~/.claude/settings.json`). A key set higher overrides the same key lower down.",
+      "Shared, version-controlled configuration gives every engineer the same baseline: commit `.claude/settings.json` (permissions, hooks), `CLAUDE.md` (conventions) and `.mcp.json` (team MCP servers) to each repository. Personal tweaks go in `.claude/settings.local.json`, which stays out of git.",
+      "Managed settings are deployed by the organization (a `managed-settings.json` file, MDM policy or server-managed settings from the admin console). Nothing in a user or project file overrides a managed key, so they are where security policy belongs.",
+      "Permission rules are evaluated deny, then ask, then allow; the first match wins and an allow rule cannot carve an exception out of a deny rule. Allow rules merge across scopes unless managed settings set `allowManagedPermissionRulesOnly`, and `disableBypassPermissionsMode` in managed settings stops anyone skipping prompts.",
+      "MCP control: project servers in `.mcp.json` need each user's approval before use. To restrict servers to a reviewed list, set `allowedMcpServers` with `allowManagedMcpServersOnly: true` in managed settings; without that flag, allowlists from every scope merge, so users can broaden them. Denylists always merge.",
+      "Usage telemetry is exported through OpenTelemetry (`CLAUDE_CODE_ENABLE_TELEMETRY` plus exporter variables). Claude Code ignores these variables in a repository's settings files, so an organization sets them in managed settings. Access should run through the organization's account with SSO, and managed settings can restrict login to that organization."
+    ],
+    "skills": [
+      "Decide which scope each setting belongs in: org-wide security in managed settings, team conventions in the shared project files, personal preferences in local or user settings.",
+      "Write least-privilege permission rules for a team: allow the routine test and build commands, deny secrets and destructive commands, and ask for the rest.",
+      "Set up an approved MCP catalog: review servers, commit the team's servers to `.mcp.json`, and lock the allowlist in managed settings.",
+      "Roll out telemetry and SSO-based access centrally so usage is attributable and offboarding removes access.",
+      "Use `/status` and `/permissions` to explain why a setting or rule is or is not in effect for an engineer."
+    ],
+    "examLens": [
+      "\"Must hold even if a team changes its repo\" means managed settings. Shared project settings are for consistency, not enforcement.",
+      "A guarantee is a configured control (deny rule, managed setting, allowlist), not an instruction in `CLAUDE.md` that the model may not follow.",
+      "When a narrower allow rule seems to be ignored, look for a broader deny or ask rule: deny is checked first.",
+      "Prefer central configuration that every engineer inherits over asking 400 people to edit their own files."
+    ],
+    "traps": [
+      "Putting security policy only in a repository's `.claude/settings.json`, where any team can edit or remove it.",
+      "Setting an MCP allowlist without `allowManagedMcpServersOnly`, so users widen it in their own settings.",
+      "Assuming `allowManagedPermissionRulesOnly` also locks MCP servers; it covers permission rules only.",
+      "Enabling telemetry through committed repository settings, which Claude Code ignores for the exporter variables.",
+      "Sharing one API key across the team, which breaks attribution and offboarding."
+    ],
+    "links": [
+      { "label": "Claude Code settings", "url": "https://code.claude.com/docs/en/settings" },
+      { "label": "Claude Code identity and access management", "url": "https://code.claude.com/docs/en/iam" },
+      { "label": "Claude Code monitoring (OpenTelemetry)", "url": "https://code.claude.com/docs/en/monitoring-usage" },
+      { "label": "Connect Claude Code to tools via MCP", "url": "https://code.claude.com/docs/en/mcp" }
+    ],
+    "cheat": [
+      ["Policy no team may override", "Managed settings"],
+      ["Same conventions and allowed commands in every repo", "Commit `.claude/settings.json`, `CLAUDE.md` and `.mcp.json`"],
+      ["Only reviewed MCP servers may run", "Managed `allowedMcpServers` + `allowManagedMcpServersOnly`"],
+      ["Allow rule ignored for a command", "A deny or ask rule matches first"],
+      ["Org-wide usage data", "OpenTelemetry variables in managed settings"]
+    ],
+    "diagrams": [
+      {
+        "kind": "layers",
+        "title": "Claude Code settings precedence",
+        "layers": [
+          { "label": "Managed settings", "note": "Org policy: deployed file, MDM or admin console. Cannot be overridden.", "tone": "warn" },
+          { "label": "Command-line arguments", "note": "Per session, e.g. a CI run." },
+          { "label": "Project local", "note": "`.claude/settings.local.json`: personal, not committed." },
+          { "label": "Shared project", "note": "`.claude/settings.json`: committed team baseline.", "tone": "accent" },
+          { "label": "User", "note": "`~/.claude/settings.json`: personal defaults." }
+        ],
+        "axis": { "label": "Higher wins", "dir": "up" }
+      }
+    ]
+  },
+  {
+    "task": "7.2",
+    "knowledge": [
+      "Repeatable team tasks belong in shared, version-controlled building blocks, not in long ad hoc prompts: slash commands or Skills for procedures, subagents for focused work in a separate context, and hooks for steps that must always happen.",
+      "Hooks are deterministic: they run on lifecycle events whether or not the model remembers. A `PostToolUse` hook can run a formatter after every edit, and a `PreToolUse` hook can block a tool call. `CLAUDE.md` instructions are guidance the model usually, but not always, follows.",
+      "Headless mode (`claude -p`) runs Claude Code without interaction for scripts and CI. Combine it with a scoped `--allowedTools` list and `--output-format json` for machine-readable results; `--bare` skips auto-discovered hooks, Skills, MCP servers and `CLAUDE.md` for predictable scripted runs.",
+      "A `-p` run shows no workspace trust dialog and no MCP approval prompt, and without `--bare` it runs the repository's hooks and `.mcp.json` servers. In CI, treat the repository's configuration as code you are executing.",
+      "The Claude Code GitHub Actions integration responds to `@claude` mentions and can run review workflows. Credentials go in GitHub secrets, never in workflow files or committed settings, and humans keep the merge decision.",
+      "Impact is measured, not asserted: Claude Code telemetry exports sessions, lines changed, commits, pull requests, tokens, active time and an approximate cost. Pair adoption data with delivery metrics agreed before rollout, such as lead time and change failure rate."
+    ],
+    "skills": [
+      "Turn a workflow that teams prompt for in different ways into one shared command or Skill with defined steps and output.",
+      "Choose between `CLAUDE.md`, a Skill, a subagent and a hook based on whether the step is always-on context, an on-demand procedure, isolated work or a guaranteed action.",
+      "Design a CI job with `claude -p` that has least-privilege tools, secret-managed credentials and parseable output.",
+      "Define a measurement plan: baseline delivery metrics, adoption telemetry by team, and comparison over time."
+    ],
+    "examLens": [
+      "\"Must happen every time\" points to a hook, not a stronger instruction in `CLAUDE.md`.",
+      "Long procedures used only sometimes belong in a Skill or command that loads on demand, not in `CLAUDE.md` that loads every session.",
+      "Proof of value means baselines plus telemetry and delivery metrics. Testimonials, lines of code alone or token spend alone are weak evidence.",
+      "In automation, prefer narrow tools and human approval for merges and deploys over bypassing permissions."
+    ],
+    "traps": [
+      "Using lines of code generated, or token spend, as the measure of productivity.",
+      "Running CI jobs with all permission checks bypassed on a runner that holds sensitive credentials.",
+      "Stuffing every team procedure into `CLAUDE.md`, which bloats the context of every session.",
+      "Committing an API key to the repository so a workflow can find it."
+    ],
+    "links": [
+      { "label": "Claude Code best practices", "url": "https://code.claude.com/docs/en/best-practices" },
+      { "label": "Run Claude Code programmatically (headless)", "url": "https://code.claude.com/docs/en/headless" },
+      { "label": "Claude Code GitHub Actions", "url": "https://code.claude.com/docs/en/github-actions" },
+      { "label": "Hooks reference", "url": "https://code.claude.com/docs/en/hooks" },
+      { "label": "Agent Skills in Claude Code", "url": "https://code.claude.com/docs/en/skills" }
+    ],
+    "cheat": [
+      ["Step must run after every edit", "`PostToolUse` hook in shared settings"],
+      ["Same procedure prompted differently by each team", "Shared Skill or slash command"],
+      ["Nightly scripted job", "`claude -p` + scoped `--allowedTools` + `--output-format json`"],
+      ["Leadership wants proof of impact", "Baseline delivery metrics + adoption telemetry"]
+    ],
+    "diagrams": [
+      {
+        "kind": "decision",
+        "title": "Where should a team workflow live?",
+        "question": "What does the workflow need?",
+        "branches": [
+          { "when": "Conventions every session should know", "then": "`CLAUDE.md`, committed and kept short" },
+          { "when": "A procedure run on demand", "then": "Shared Skill or slash command", "tone": "accent" },
+          { "when": "Focused work that floods context", "then": "Subagent with its own context" },
+          { "when": "A step that must always happen", "then": "Hook (deterministic)", "tone": "warn" },
+          { "when": "Runs unattended in scripts or CI", "then": "`claude -p` with scoped tools", "tone": "sky" }
+        ]
+      }
+    ]
+  },
+  {
+    "task": "7.3",
+    "knowledge": [
+      "Claude is effective at investigating incidents when it gets the evidence: full stack traces, relevant logs, the recent diff and a reproduction. A failing test or reproduction gives it something to verify a fix against.",
+      "Give the agent the right access, not the most access: read-only connections to logs, metrics and traces (for example an approved observability MCP server) are enough to diagnose. Production changes, rollbacks and deploys stay with accountable humans.",
+      "Tool and MCP failures are diagnosed before blaming the model: `/mcp` shows each server's status (connected, failed, pending approval), and `/doctor` checks installation, settings and context usage.",
+      "Permission denials usually come from a matching deny or ask rule at some scope, often managed settings; `/permissions` and `/status` show the rules and setting sources in effect.",
+      "Long sessions degrade when the context fills with verbose output. Use `/context` to see what fills it, `/compact` or `/clear` with a summary of confirmed findings, and subagents for large scans so only a summary returns.",
+      "Rate-limit (429) and overloaded (529) errors are operational. Claude Code retries internally and emits an `api_error` telemetry event once retries are exhausted; fixes include spreading out concurrent jobs and alerting on those events."
+    ],
+    "skills": [
+      "Set up an incident investigation: reproduce first, collect the trace, logs and recent changes, then ask Claude for ranked hypotheses to test.",
+      "Grant read-only observability access through an approved MCP server and keep write actions behind human approval.",
+      "Triage an operational complaint by category: tool or MCP connection, permission rule, context exhaustion, or rate and overload errors.",
+      "Use telemetry events and logs to find patterns across many engineers or jobs rather than debugging one session at a time."
+    ],
+    "examLens": [
+      "The best first step is usually to gather evidence (status, logs, reproduction), not to change models, reinstall or add instructions.",
+      "If only one repository or team is affected, compare its configuration (`.mcp.json`, settings) with a working one.",
+      "Answers that let the agent change production on its own are wrong in this domain; humans approve and apply production fixes."
+    ],
+    "traps": [
+      "Blaming the model for what is a disconnected MCP server, a deny rule or a full context window.",
+      "Pasting huge raw logs into the main conversation instead of filtering them or delegating the scan to a subagent.",
+      "Giving the debugging agent production write credentials \"to save time\".",
+      "Treating simultaneous 429 or 529 errors from many jobs as a model regression."
+    ],
+    "links": [
+      { "label": "Claude Code troubleshooting", "url": "https://code.claude.com/docs/en/troubleshooting" },
+      { "label": "Connect Claude Code to tools via MCP", "url": "https://code.claude.com/docs/en/mcp" },
+      { "label": "Create custom subagents", "url": "https://code.claude.com/docs/en/sub-agents" },
+      { "label": "Claude Code monitoring (OpenTelemetry)", "url": "https://code.claude.com/docs/en/monitoring-usage" }
+    ],
+    "cheat": [
+      ["Tool from an MCP server stopped working", "`/mcp` status, compare `.mcp.json` with a working repo"],
+      ["Answers degrade late in a long session", "`/context`, then `/compact` or `/clear` with a summary; subagents for scans"],
+      ["Many jobs fail with 429/529 at once", "Spread out concurrency; alert on `api_error` events"],
+      ["Production incident", "Read-only observability access; humans approve the fix"]
+    ],
+    "diagrams": [
+      {
+        "kind": "flow",
+        "title": "Debugging an operational issue with Claude",
+        "steps": [
+          { "label": "Reproduce and collect evidence", "note": "Stack trace, logs, recent diff, a failing test.", "tone": "sky" },
+          { "label": "Give read-only access to observability", "note": "Approved MCP server; no production write credentials." },
+          { "label": "Rule out tooling causes", "note": "`/mcp`, `/permissions`, `/context`, `api_error` events.", "tone": "accent" },
+          { "label": "Test ranked hypotheses", "note": "Verify each against the reproduction." },
+          { "label": "Human approves and applies the fix", "tone": "good" }
+        ]
+      }
+    ]
+  }
+]
