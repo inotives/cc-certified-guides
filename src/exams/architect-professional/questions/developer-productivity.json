@@ -1,0 +1,619 @@
+[
+  {
+    "id": "ap-devx-001",
+    "scenario": 6,
+    "domain": 7,
+    "task": "7.1",
+    "type": "single",
+    "select": 1,
+    "stem": "Platform engineering wants every one of the 30 repositories to give Claude Code the same coding conventions and the same pre-approved test and lint commands, while still letting individual engineers keep personal preferences for a project. Security has no extra requirement for this baseline. Which approach best fits?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Send every engineer a template to copy into `~/.claude/settings.json` and `~/.claude/CLAUDE.md`, and ask them to update it when the template changes."
+      },
+      {
+        "key": "B",
+        "text": "Commit `.claude/settings.json` and `CLAUDE.md` to each repository, with personal overrides in `.claude/settings.local.json`."
+      },
+      {
+        "key": "C",
+        "text": "Move all conventions and command approvals into managed settings so that no team or engineer can adjust anything for their own repository or workflow."
+      },
+      {
+        "key": "D",
+        "text": "Publish the conventions on the internal wiki and ask engineers to paste the relevant section into their prompt at the start of each session."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Version-controlled project files give everyone who clones a repository the same baseline, and changes to them go through normal code review. `.claude/settings.local.json` sits above the shared project file and stays out of git, so personal preferences do not need a commit. Managed settings are for policy that must not be overridden, which this baseline does not need.",
+    "distractors": {
+      "A": "User-level copies drift as soon as the template changes and cannot vary per repository.",
+      "C": "Managed settings are for enforcement; using them for every convention removes legitimate per-repository flexibility.",
+      "D": "Manual pasting is inconsistent and relies on 400 people remembering every session."
+    },
+    "difficulty": 1,
+    "tags": [
+      "claude-code",
+      "settings-scopes",
+      "shared-config"
+    ]
+  },
+  {
+    "id": "ap-devx-002",
+    "scenario": 6,
+    "domain": 7,
+    "task": "7.1",
+    "type": "single",
+    "select": 1,
+    "stem": "Security requires two guarantees across all 400 engineers: Claude Code must never read `.env` files, and nobody may run sessions that skip permission prompts. A pilot team already has an allow rule for broad `Read` access in its committed `.claude/settings.json`. Which configuration meets the requirement?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Add deny rules for `.env` files to every repository's committed `.claude/settings.json` and require code review on changes to that file."
+      },
+      {
+        "key": "B",
+        "text": "Add a section to each repository's `CLAUDE.md` stating that `.env` files must not be read and that bypassing permissions is forbidden."
+      },
+      {
+        "key": "C",
+        "text": "Distribute a recommended `~/.claude/settings.json` with the deny rules to every laptop and ask engineers not to edit it."
+      },
+      {
+        "key": "D",
+        "text": "Deploy managed settings with deny rules for `.env` files and `disableBypassPermissionsMode` set to disable; managed keys cannot be overridden, and deny is evaluated before any allow rule."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "Managed settings sit at the top of the precedence order, so no project, local or user file can override them. Permission rules are evaluated deny first, so the pilot team's broad allow rule cannot carve an exception out of the managed deny. `disableBypassPermissionsMode` in managed settings removes the option to skip prompts.",
+    "distractors": {
+      "A": "Repository settings are editable by each team, so they provide consistency rather than an organization-wide guarantee.",
+      "B": "`CLAUDE.md` is guidance the model may not follow; it is not an enforced control.",
+      "C": "User settings are the lowest scope and the engineer can change them, so they cannot enforce policy."
+    },
+    "difficulty": 2,
+    "tags": [
+      "claude-code",
+      "managed-settings",
+      "permissions",
+      "least-privilege"
+    ]
+  },
+  {
+    "id": "ap-devx-003",
+    "scenario": 6,
+    "domain": 7,
+    "task": "7.1",
+    "type": "multi",
+    "select": 2,
+    "stem": "Engineers currently add any MCP server they find to their own configuration. Security wants only the internal MCP servers it has reviewed to be usable, and platform engineering wants each repository's team to get its approved servers without manual setup. Which TWO actions together meet both goals? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "In managed settings, list the reviewed servers in `allowedMcpServers` and set `allowManagedMcpServersOnly` to true."
+      },
+      {
+        "key": "B",
+        "text": "Commit each team's approved servers to the repository's `.mcp.json` so everyone who clones it gets the same server definitions."
+      },
+      {
+        "key": "C",
+        "text": "Set `allowManagedPermissionRulesOnly` in managed settings so that only the organization's rules decide which MCP servers load."
+      },
+      {
+        "key": "D",
+        "text": "Add a line to every `CLAUDE.md` telling Claude not to call tools from servers that security has not reviewed."
+      },
+      {
+        "key": "E",
+        "text": "Add an `allowedMcpServers` list to each repository's `.claude/settings.json` and rely on code review to keep it accurate."
+      }
+    ],
+    "answer": [
+      "A",
+      "B"
+    ],
+    "explanation": "A managed allowlist with `allowManagedMcpServersOnly` is authoritative: allowlists from user, project and local settings are ignored, so unreviewed servers cannot load. Committing approved servers to `.mcp.json` gives every engineer on the repository the same definitions, which covers consistent setup. Together they separate enforcement (managed) from distribution (project).",
+    "distractors": {
+      "C": "`allowManagedPermissionRulesOnly` locks permission rules only and does not enforce the MCP allowlist.",
+      "D": "An instruction is not a control; the servers still load and their tools remain callable.",
+      "E": "Without the managed-only flag, allowlists merge across scopes, so engineers could broaden it in their own settings."
+    },
+    "difficulty": 3,
+    "tags": [
+      "claude-code",
+      "mcp",
+      "managed-settings",
+      "approved-servers"
+    ]
+  },
+  {
+    "id": "ap-devx-004",
+    "scenario": 6,
+    "domain": 7,
+    "task": "7.1",
+    "type": "single",
+    "select": 1,
+    "stem": "To give leadership usage data, platform engineering added `CLAUDE_CODE_ENABLE_TELEMETRY` and the OpenTelemetry exporter variables to the `env` block of every repository's committed `.claude/settings.json`. A week later the company's collector has received almost nothing. What is the most likely cause and fix?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Repository settings cannot enable telemetry export; set the variables in managed settings instead."
+      },
+      {
+        "key": "B",
+        "text": "OpenTelemetry export only works for headless runs, so engineers must start their sessions with `claude -p` for usage to be recorded."
+      },
+      {
+        "key": "C",
+        "text": "The collector only accepts the Prometheus exporter, so each repository's `env` block needs to switch from OTLP to Prometheus."
+      },
+      {
+        "key": "D",
+        "text": "Telemetry needs a per-engineer consent step in `/config`, so the team should email everyone a reminder to opt in."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Claude Code deliberately ignores the OpenTelemetry exporter variables in a repository's `.claude/settings.json` and `.claude/settings.local.json`, so a repository cannot turn telemetry on or redirect it. An organization rollout sets them in managed settings, which also lets it lock the destination. This is a configuration-scope problem, not a collector or mode problem.",
+    "distractors": {
+      "B": "Telemetry is exported from interactive sessions too; headless mode is not a requirement.",
+      "C": "The exporter type is not the issue; the variables are never applied from repository settings.",
+      "D": "There is no per-engineer consent step that explains the gap; the variables are being ignored at the scope they were set in."
+    },
+    "difficulty": 3,
+    "tags": [
+      "claude-code",
+      "telemetry",
+      "opentelemetry",
+      "managed-settings"
+    ]
+  },
+  {
+    "id": "ap-devx-005",
+    "scenario": 6,
+    "domain": 7,
+    "task": "7.1",
+    "type": "single",
+    "select": 1,
+    "stem": "During the pilot, some engineers ran Claude Code on company repositories with personal accounts or personal API keys. Security wants all usage tied to the company so access ends when someone leaves and usage can be attributed to a person and team. What is the most effective approach?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Create one organization API key, store it in the team password vault, and have every engineer use it."
+      },
+      {
+        "key": "B",
+        "text": "Ask engineers to sign out of personal accounts and confirm in writing that they will use only company credentials."
+      },
+      {
+        "key": "C",
+        "text": "Use the organization's Claude account with SSO, and restrict login to that organization in managed settings."
+      },
+      {
+        "key": "D",
+        "text": "Let engineers keep personal keys but rotate them monthly and reconcile each key's spend against expense reports."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Central identity through the organization's account and SSO means deprovisioning a user in the identity provider removes access, and usage is attributed to individuals. Managed settings can restrict login to the organization so personal accounts or stray API keys cannot be used on managed machines. This replaces reliance on individual behaviour with an enforced control.",
+    "distractors": {
+      "A": "A shared key loses per-user attribution and cannot be revoked for one leaver without breaking everyone.",
+      "B": "A written promise is not an enforced control and does not stop personal accounts being used.",
+      "D": "Personal keys stay outside company control, so offboarding and attribution remain unsolved."
+    },
+    "difficulty": 2,
+    "tags": [
+      "claude-code",
+      "authentication",
+      "sso",
+      "access-management"
+    ]
+  },
+  {
+    "id": "ap-devx-006",
+    "scenario": 6,
+    "domain": 7,
+    "task": "7.2",
+    "type": "single",
+    "select": 1,
+    "stem": "Twelve teams each ask Claude Code to draft release notes from merged pull requests, each with its own long prompt. The output format and the checks performed vary widely, and new hires do not know which prompt to use. What is the most effective way to make this workflow repeatable across the company?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Package it as a shared, version-controlled Skill or slash command that every team invokes."
+      },
+      {
+        "key": "B",
+        "text": "Ask the engineer who writes the best release notes to produce them for all twelve teams each sprint."
+      },
+      {
+        "key": "C",
+        "text": "Paste the complete release-note procedure into every repository's `CLAUDE.md` so it is loaded in every session, whatever the task."
+      },
+      {
+        "key": "D",
+        "text": "Move every team to the most capable model so that differently worded prompts converge on the same output."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "A shared Skill or command turns an ad hoc prompt into a reviewed, versioned workflow that loads only when invoked, so every team gets the same steps and format. Changes are made once and reach everyone. This is the scenario's guidance to package repeatable workflows rather than rely on long ad hoc prompts.",
+    "distractors": {
+      "B": "Routing work through one person does not scale and removes the productivity gain.",
+      "C": "`CLAUDE.md` loads in every session, so a long occasional procedure there bloats context for unrelated work.",
+      "D": "A stronger model does not remove the variation caused by twelve different prompts and checklists."
+    },
+    "difficulty": 1,
+    "tags": [
+      "claude-code",
+      "skills",
+      "slash-commands",
+      "workflow"
+    ]
+  },
+  {
+    "id": "ap-devx-007",
+    "scenario": 6,
+    "domain": 7,
+    "task": "7.2",
+    "type": "single",
+    "select": 1,
+    "stem": "A team's `CLAUDE.md` says to run the project formatter after editing any file. Code review shows Claude Code follows this most of the time, but unformatted files still reach pull requests a few times a week. What is the most effective change?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Rewrite the instruction in capitals at the top of `CLAUDE.md` so the model gives it more weight."
+      },
+      {
+        "key": "B",
+        "text": "Create a `/format` slash command and remind engineers to run it before they open a pull request."
+      },
+      {
+        "key": "C",
+        "text": "Configure a `PostToolUse` hook in the shared `.claude/settings.json` that runs the formatter after edit tools, so it happens on every edit without relying on the model to remember."
+      },
+      {
+        "key": "D",
+        "text": "Require engineers to work in plan mode so they review each change before Claude makes it."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Hooks are deterministic: a `PostToolUse` hook fires after every matching tool call whether or not the model recalls the instruction. Committing it to the shared settings applies it to everyone on the repository. Instructions in `CLAUDE.md` are guidance, which explains the occasional miss.",
+    "distractors": {
+      "A": "Emphasis may raise compliance but still relies on the model, so it cannot guarantee the step.",
+      "B": "A command still depends on a person remembering to run it.",
+      "D": "Plan mode adds review of intent but does not run the formatter."
+    },
+    "difficulty": 2,
+    "tags": [
+      "claude-code",
+      "hooks",
+      "determinism",
+      "workflow"
+    ]
+  },
+  {
+    "id": "ap-devx-008",
+    "scenario": 6,
+    "domain": 7,
+    "task": "7.2",
+    "type": "multi",
+    "select": 2,
+    "stem": "Platform engineering will add a GitHub Actions workflow that has Claude Code post a review comment on every pull request across the 30 repositories. Security has asked how the design limits risk. Which TWO design choices best address security's concern? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "Store the Claude credential as a GitHub Actions secret and pass it to the action from the workflow, rather than writing it into any file."
+      },
+      {
+        "key": "B",
+        "text": "Limit the tools available in the review run to what reviewing needs, such as reading code and commenting, with no push or deploy access."
+      },
+      {
+        "key": "C",
+        "text": "Run the review job with permission prompts bypassed so it never stalls waiting for an approval in CI."
+      },
+      {
+        "key": "D",
+        "text": "Commit the API key to `.claude/settings.json` so every repository's workflow can find it without extra setup."
+      },
+      {
+        "key": "E",
+        "text": "Let the workflow merge a pull request automatically whenever Claude's review finds no issues, to save reviewer time."
+      }
+    ],
+    "answer": [
+      "A",
+      "B"
+    ],
+    "explanation": "Credentials belong in the CI system's secret store, where they are not exposed in the repository and can be rotated centrally. A review job only needs to read and comment, so least privilege means removing write, push and deploy capability rather than guarding it. Humans keep the merge decision.",
+    "distractors": {
+      "C": "Bypassing permission checks removes guardrails on a runner that executes repository content unattended.",
+      "D": "Committing a key exposes it to everyone with repository access and to its history.",
+      "E": "Automatic merging removes human accountability for what ships."
+    },
+    "difficulty": 2,
+    "tags": [
+      "claude-code",
+      "github-actions",
+      "ci",
+      "least-privilege",
+      "secrets"
+    ]
+  },
+  {
+    "id": "ap-devx-009",
+    "scenario": 6,
+    "domain": 7,
+    "task": "7.2",
+    "type": "single",
+    "select": 1,
+    "stem": "Leadership wants proof that the Claude Code rollout improves delivery before funding the next phase. A director proposes collecting success stories from enthusiastic engineers. As the architect, what should you recommend?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Report the total lines of code Claude Code changed across all repositories each month, since a rising number shows the rollout is working."
+      },
+      {
+        "key": "B",
+        "text": "Hold a monthly showcase where teams present their best examples, and summarise the stories for leadership in a slide deck."
+      },
+      {
+        "key": "C",
+        "text": "Report monthly token spend by team, treating higher consumption as evidence of higher productivity."
+      },
+      {
+        "key": "D",
+        "text": "Capture baseline delivery metrics such as lead time and change failure rate, then compare them over time with adoption telemetry by team."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "Proof of value needs a baseline and outcome metrics agreed up front, compared against adoption data from telemetry (sessions, pull requests, commits) by team. That links usage to delivery outcomes rather than activity. Anecdotes, raw volume or spend do not show whether delivery improved.",
+    "distractors": {
+      "A": "Lines changed measures activity, not delivery outcomes, and can rise while quality falls.",
+      "B": "Showcases are self-selected anecdotes, not evidence of a change in delivery.",
+      "C": "Spend measures cost and usage, not whether delivery improved."
+    },
+    "difficulty": 2,
+    "tags": [
+      "claude-code",
+      "telemetry",
+      "metrics",
+      "business-value"
+    ]
+  },
+  {
+    "id": "ap-devx-010",
+    "scenario": 6,
+    "domain": 7,
+    "task": "7.2",
+    "type": "single",
+    "select": 1,
+    "stem": "A nightly job should run Claude Code against each repository to summarise flaky-test failures and file a draft ticket. It must run unattended, give output the job can parse, and use only the tools the task needs. Which setup best fits?",
+    "options": [
+      {
+        "key": "A",
+        "text": "An interactive session on a shared VM, with an on-call engineer approving tool prompts when they come in each morning."
+      },
+      {
+        "key": "B",
+        "text": "`claude -p` with a scoped `--allowedTools` list and `--output-format json`, with the job parsing the result."
+      },
+      {
+        "key": "C",
+        "text": "`claude -p` with permission checks bypassed, on the runner that holds the deploy credentials so it can also fix tests."
+      },
+      {
+        "key": "D",
+        "text": "A browser automation script that pastes each test log into a chat window and scrapes the reply text."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Headless mode runs Claude Code non-interactively for scripts and CI. A scoped `--allowedTools` list gives least privilege without prompts, and JSON output makes the result machine-readable for the next step. This is the standard pattern for unattended automation.",
+    "distractors": {
+      "A": "Waiting on a human to approve prompts defeats unattended operation.",
+      "C": "Bypassing checks next to deploy credentials gives an unattended job far more power than triage needs.",
+      "D": "Screen scraping a chat UI is brittle and gives no structured output or tool control."
+    },
+    "difficulty": 1,
+    "tags": [
+      "claude-code",
+      "headless",
+      "automation",
+      "least-privilege"
+    ]
+  },
+  {
+    "id": "ap-devx-011",
+    "scenario": 6,
+    "domain": 7,
+    "task": "7.3",
+    "type": "single",
+    "select": 1,
+    "stem": "After a deployment, error rates on the checkout service spike. The on-call engineer wants to use Claude Code to investigate. The service's database and deploy pipeline are both reachable from the engineer's machine. What is the most effective way to set up the investigation?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Give Claude Code the production admin credentials so it can query the database, find the cause and apply a fix immediately."
+      },
+      {
+        "key": "B",
+        "text": "Paste only the final line of the stack trace into the session to keep the context small and the analysis focused."
+      },
+      {
+        "key": "C",
+        "text": "Give read-only access to logs and traces via an approved MCP server; a human approves and applies any fix."
+      },
+      {
+        "key": "D",
+        "text": "Configure Claude Code to roll back the deployment automatically whenever the error rate crosses a threshold during the session."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Claude diagnoses well when it has the evidence (traces, logs, the recent change) and enough access to read it, which read-only observability provides. Production changes such as fixes and rollbacks stay with accountable humans. This balances speed of diagnosis with least privilege.",
+    "distractors": {
+      "A": "Production write access is far more than diagnosis needs and lets the agent change production unreviewed.",
+      "B": "A single line drops the context needed to find the root cause.",
+      "D": "Letting the agent roll back production on its own removes human control over production changes."
+    },
+    "difficulty": 2,
+    "tags": [
+      "claude-code",
+      "debugging",
+      "incident",
+      "human-in-the-loop",
+      "least-privilege"
+    ]
+  },
+  {
+    "id": "ap-devx-012",
+    "scenario": 6,
+    "domain": 7,
+    "task": "7.3",
+    "type": "single",
+    "select": 1,
+    "stem": "Since this morning, engineers in one repository report that Claude Code \"can't see Jira tickets anymore\". Engineers in other repositories that use the same internal Jira MCP server are unaffected. What is the best first step?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Run `/mcp` in the affected repository to check the Jira server's status, such as failed connection or pending approval, and compare its `.mcp.json` entry with a working repository."
+      },
+      {
+        "key": "B",
+        "text": "Switch the affected team to a more capable model, since the current one is ignoring the Jira tools."
+      },
+      {
+        "key": "C",
+        "text": "Reinstall Claude Code on every engineer's machine in the affected team."
+      },
+      {
+        "key": "D",
+        "text": "Add an instruction to the repository's `CLAUDE.md` telling Claude to use the Jira tools."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "The failure is limited to one repository, which points to its configuration rather than the model or the server. `/mcp` shows whether the server is connected, failed or waiting for approval, and diffing `.mcp.json` against a working repository isolates what changed. Gather evidence before changing anything.",
+    "distractors": {
+      "B": "Other repositories use the same model successfully, so the model is not the likely cause.",
+      "C": "Reinstalling is disruptive and does not explain why only one repository is affected.",
+      "D": "An instruction cannot help if the server's tools are not loaded in the session."
+    },
+    "difficulty": 1,
+    "tags": [
+      "claude-code",
+      "mcp",
+      "troubleshooting"
+    ]
+  },
+  {
+    "id": "ap-devx-013",
+    "scenario": 6,
+    "domain": 7,
+    "task": "7.3",
+    "type": "multi",
+    "select": 2,
+    "stem": "Two hours into debugging a memory leak, an engineer's Claude Code session has filled with long log dumps and search output. Claude now contradicts findings it confirmed earlier, and compaction warnings keep appearing. Which TWO actions are most effective? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "Write the confirmed findings to a notes file, then clear the session and continue from that short summary."
+      },
+      {
+        "key": "B",
+        "text": "Delegate the remaining large log and file scans to a subagent so verbose output stays in its own context and only a summary returns."
+      },
+      {
+        "key": "C",
+        "text": "Paste the complete log files into the conversation so Claude has every piece of evidence in one place."
+      },
+      {
+        "key": "D",
+        "text": "Add the full log excerpts to `CLAUDE.md` so they are reloaded automatically in every new session."
+      },
+      {
+        "key": "E",
+        "text": "Switch to a different model mid-session on the assumption that the current model is causing the contradictions."
+      }
+    ],
+    "answer": [
+      "A",
+      "B"
+    ],
+    "explanation": "The symptoms point to context exhaustion, not model failure. Saving confirmed findings and restarting from a short summary restores a clean context without losing progress. Moving verbose scans into a subagent keeps the main context for reasoning, since only the condensed result comes back.",
+    "distractors": {
+      "C": "Adding more raw logs worsens the context problem that caused the contradictions.",
+      "D": "`CLAUDE.md` loads in every session, so log dumps there waste context for every future task.",
+      "E": "Changing models does not remove the cluttered context that is degrading answers."
+    },
+    "difficulty": 2,
+    "tags": [
+      "claude-code",
+      "context-management",
+      "subagents",
+      "debugging"
+    ]
+  },
+  {
+    "id": "ap-devx-014",
+    "scenario": 6,
+    "domain": 7,
+    "task": "7.3",
+    "type": "single",
+    "select": 1,
+    "stem": "The nightly headless jobs for all 30 repositories start at the same minute. Several now fail intermittently, and their logs show 429 and 529 errors clustered in the first few minutes of the run. Prompts and the model have not changed. What is the most likely root cause and the best response?",
+    "options": [
+      {
+        "key": "A",
+        "text": "A silent model regression; pin the jobs to an older model version and compare output quality over the next week."
+      },
+      {
+        "key": "B",
+        "text": "A burst of concurrent requests; stagger start times, cap concurrency and alert on `api_error` events."
+      },
+      {
+        "key": "C",
+        "text": "Prompts that are too long; shorten every repository's `CLAUDE.md` so each request uses fewer tokens."
+      },
+      {
+        "key": "D",
+        "text": "Missing network permissions; add allow rules for outbound requests to each repository's `.claude/settings.json`."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Rate-limit and overloaded errors clustered when all jobs start together point to a concurrency spike, not a model or prompt change. Spreading out the load and capping concurrency addresses the cause, while retries with backoff absorb transient errors. Claude Code emits an `api_error` event when retries are exhausted, which makes a good alert signal.",
+    "distractors": {
+      "A": "Nothing about the model changed, and a regression would not produce rate and overload errors.",
+      "C": "Prompt length did not change, and the errors correlate with the simultaneous start, not request size.",
+      "D": "Permission rules govern Claude's tools, not its own API requests, and they would fail consistently rather than intermittently."
+    },
+    "difficulty": 3,
+    "tags": [
+      "claude-code",
+      "rate-limits",
+      "operations",
+      "telemetry"
+    ]
+  }
+]

@@ -1,0 +1,1457 @@
+[
+  {
+    "id": "ap-design-001",
+    "scenario": 5,
+    "domain": 1,
+    "task": "1.1",
+    "type": "single",
+    "select": 1,
+    "stem": "The retailer's COO tells you: \"We want an AI agent that does merchandising, and we want it live this quarter.\" No process documentation exists, and the analytics team says the weekly category reports \"take forever\". What is the most effective first step for you as the solution architect?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Build a quick multi-agent prototype on the most capable model tier so executives can react to something concrete before scoping."
+      },
+      {
+        "key": "B",
+        "text": "Benchmark the Haiku, Sonnet and Opus tiers on sample merchandising prompts so the model decision is settled before design begins."
+      },
+      {
+        "key": "C",
+        "text": "Map the current weekly reporting process with analysts and category managers, find where the hours go, and agree measurable success criteria."
+      },
+      {
+        "key": "D",
+        "text": "Procure licensed competitor-pricing feeds for every major competitor and region first, so the agent has complete, trusted data on the day it launches."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "A feature request like \"an AI agent\" is a hypothesis, not a problem statement. Discovery of the current process shows which steps consume analyst hours and how the output is used, and measurable success criteria let you judge any design against the executives' 20% target. Prototypes, model choices and data purchases come after the problem is understood.",
+    "distractors": {
+      "A": "A prototype built before the problem is understood anchors stakeholders on an architecture that may not address where the hours actually go.",
+      "B": "Model selection depends on the tasks and success criteria, which have not been defined yet.",
+      "D": "Buying data before knowing which decisions it supports risks spending on feeds the solution may never need."
+    },
+    "difficulty": 2,
+    "tags": [
+      "discovery",
+      "problem-framing",
+      "success-criteria"
+    ]
+  },
+  {
+    "id": "ap-design-002",
+    "scenario": 1,
+    "domain": 1,
+    "task": "1.1",
+    "type": "single",
+    "select": 1,
+    "stem": "The hospital network's CMIO says the goal of the Claude programme is \"to reduce clinician burnout\". You need to turn this into a solution that can be built, piloted and measured. Which framing is the best starting point?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Claude drafts visit summaries from the encounter record for clinician review and sign-off, measured against a baseline of documentation minutes per visit."
+      },
+      {
+        "key": "B",
+        "text": "Claude signs low-risk visit notes automatically so clinicians only need to review complex visits, measured by the share of notes needing no clinician time."
+      },
+      {
+        "key": "C",
+        "text": "A general-purpose Claude assistant is offered to all hospital staff for any task, measured by quarterly staff wellbeing survey results."
+      },
+      {
+        "key": "D",
+        "text": "A custom model is trained on all historical notes before any pilot, so drafts match local style, measured by similarity to past notes."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "A good framing names a concrete task, keeps the required human gate, and has a measurable baseline tied to the sponsor's goal. Drafting summaries for clinician sign-off targets documentation time, a major driver of the stated problem, and keeps clinicians accountable for every note.",
+    "distractors": {
+      "B": "The case requires clinician sign-off on every note, so automatic signing removes a mandatory human gate.",
+      "C": "A broad assistant with a survey-based measure gives no specific task to design for and no metric the system can directly move.",
+      "D": "Training a custom model before validating a simple approach is premature, and similarity to past notes says nothing about time saved or safety."
+    },
+    "difficulty": 2,
+    "tags": [
+      "problem-framing",
+      "human-in-the-loop",
+      "baseline"
+    ]
+  },
+  {
+    "id": "ap-design-003",
+    "scenario": 4,
+    "domain": 1,
+    "task": "1.1",
+    "type": "single",
+    "select": 1,
+    "stem": "The agency director wants to clear a benefits backlog and asks you to have Claude \"approve or deny the straightforward applications automatically\". Caseworkers currently spend most of their time gathering missing evidence and summarising files. Applicants can appeal decisions. How should you respond?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Automate approvals only, since an approval cannot harm an applicant, and send every potential denial to a caseworker for a full, documented manual review."
+      },
+      {
+        "key": "B",
+        "text": "Automate decisions only where Claude reports confidence above a threshold, and send every lower-confidence case to the caseworker queue."
+      },
+      {
+        "key": "C",
+        "text": "Decline the request, because generative models should not be used anywhere in processes that affect citizens' benefit eligibility."
+      },
+      {
+        "key": "D",
+        "text": "Reframe so Claude extracts data, flags missing evidence and drafts a case summary with reasons, while caseworkers make every eligibility decision."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "Eligibility decisions affect citizens' rights and must stay with accountable humans; the time sink is evidence gathering and summarisation, which is where Claude can help. Reframing to assistive preparation addresses the backlog while preserving accountability, explainability and the appeal process.",
+    "distractors": {
+      "A": "Wrong approvals also harm the public interest and fairness across applicants, and automating any eligibility outcome removes the accountable human decision.",
+      "B": "Self-reported model confidence is not a calibrated basis for automating consequential decisions about people.",
+      "C": "Refusing outright ignores safe, high-value assistive uses such as extraction and summarisation that keep humans in charge of the decision."
+    },
+    "difficulty": 3,
+    "tags": [
+      "problem-framing",
+      "human-accountability",
+      "public-sector"
+    ]
+  },
+  {
+    "id": "ap-design-004",
+    "scenario": 2,
+    "domain": 1,
+    "task": "1.1",
+    "type": "multi",
+    "select": 2,
+    "stem": "You are splitting the bank's support journeys into model work and deterministic code. Which two steps should be implemented in deterministic code rather than left to Claude? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "Understanding a customer's free-text description of a card charge they do not recognise."
+      },
+      {
+        "key": "B",
+        "text": "Calculating the fee owed from the account's fee schedule and transaction history."
+      },
+      {
+        "key": "C",
+        "text": "Explaining in plain language why a monthly maintenance fee was charged."
+      },
+      {
+        "key": "D",
+        "text": "Enforcing the dispute filing window and amount limits before a dispute is submitted."
+      },
+      {
+        "key": "E",
+        "text": "Recognising which of several intents a rambling customer message expresses."
+      }
+    ],
+    "answer": [
+      "B",
+      "D"
+    ],
+    "explanation": "Fee calculations and dispute eligibility rules must be exact, repeatable and auditable, so they belong in code that the agent calls. Claude adds value on the language-heavy steps around them: interpreting free text, recognising intent and explaining results in plain language.",
+    "distractors": {
+      "A": "Interpreting unstructured customer descriptions is a language task where Claude is a strong fit.",
+      "C": "Explaining a computed fee in plain language is a good use of Claude, provided the amount itself comes from code.",
+      "E": "Intent recognition over messy text is a classic model task, typically the first step of a routing workflow."
+    },
+    "difficulty": 2,
+    "tags": [
+      "deterministic-vs-model",
+      "problem-fit",
+      "banking"
+    ]
+  },
+  {
+    "id": "ap-design-005",
+    "scenario": 5,
+    "domain": 1,
+    "task": "1.1",
+    "type": "single",
+    "select": 1,
+    "stem": "Category managers list four things they want from the merchandising system. Which one is the weakest fit for Claude and should be handled by existing data tooling instead?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Summarising the promotions competitors announced this week from their scraped web pages."
+      },
+      {
+        "key": "B",
+        "text": "Computing weekly sales totals and gross margin by category from the sales warehouse."
+      },
+      {
+        "key": "C",
+        "text": "Drafting narrative recommendations that explain why a price change is suggested."
+      },
+      {
+        "key": "D",
+        "text": "Grouping free-text store manager comments into recurring themes for each category."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Aggregating sales and margin is exact arithmetic over structured data, which a warehouse query does reliably and cheaply. Claude should receive the computed figures and do the language work: summarising, theming and explaining.",
+    "distractors": {
+      "A": "Summarising unstructured web content is a strong fit for Claude.",
+      "C": "Writing explanations from computed data is core language work Claude does well.",
+      "D": "Theming free-text comments is a classification and summarisation task that suits Claude."
+    },
+    "difficulty": 1,
+    "tags": [
+      "problem-fit",
+      "deterministic-vs-model"
+    ]
+  },
+  {
+    "id": "ap-design-006",
+    "scenario": 1,
+    "domain": 1,
+    "task": "1.1",
+    "type": "single",
+    "select": 1,
+    "stem": "Before committing budget for 40 clinics, the CMIO asks how you will show early that drafting visit summaries with Claude is feasible and safe enough to pursue. What is the most effective approach?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Test a simple prototype on a representative, properly governed set of real encounters, hard cases included, scored against criteria clinicians define."
+      },
+      {
+        "key": "B",
+        "text": "Run a pilot in one clinic with full production access to patient records, and judge feasibility from a clinician satisfaction survey after the first month."
+      },
+      {
+        "key": "C",
+        "text": "Rely on published benchmark scores for medical question answering to demonstrate that the chosen model tier is capable enough."
+      },
+      {
+        "key": "D",
+        "text": "Collect case studies from other hospitals using generative AI for documentation and present their reported time savings as evidence."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Feasibility is shown on your own data against criteria the domain owners agree, including the high-risk cases that determine safety. A simple prototype keeps the test cheap and tells you whether added complexity is even needed.",
+    "distractors": {
+      "B": "A live pilot exposes patients to an unvalidated system, and satisfaction surveys do not measure accuracy or safety.",
+      "C": "Public benchmarks do not reflect this network's notes, templates or risk cases.",
+      "D": "Other organisations' results do not demonstrate feasibility on this network's data, workflows and safety bar."
+    },
+    "difficulty": 3,
+    "tags": [
+      "feasibility",
+      "evaluation",
+      "healthcare"
+    ]
+  },
+  {
+    "id": "ap-design-007",
+    "scenario": 1,
+    "domain": 1,
+    "task": "1.2",
+    "type": "single",
+    "select": 1,
+    "stem": "In the visit-summary pilot, clinicians edit most drafts before signing. Product wants to use those edits to improve the system over time. Which feedback-loop design is most effective?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Retrain a model automatically each night on the latest signed notes so that it learns every clinician's corrections without any manual review step in between."
+      },
+      {
+        "key": "B",
+        "text": "Track the percentage of drafts edited as a single satisfaction metric and report it to the CMIO each month."
+      },
+      {
+        "key": "C",
+        "text": "Capture draft-to-signed diffs with error categories, review samples regularly, and add recurring failures to the eval set before changing prompts."
+      },
+      {
+        "key": "D",
+        "text": "Insert recent edits from all clinicians into each new prompt at runtime so the model sees the latest corrections immediately."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Human edits are the richest production signal, but only when categorised so you know what kind of error occurred. Feeding recurring failures into the eval set lets every change be tested before release, closing the loop from output back to design.",
+    "distractors": {
+      "A": "Unreviewed automatic retraining can learn individual preferences and errors and has no evaluation gate before changes go live.",
+      "B": "An edit percentage shows that something is wrong but not what, so it cannot guide fixes.",
+      "D": "Injecting other patients' notes into prompts mixes PHI across encounters and bloats context with unvetted examples."
+    },
+    "difficulty": 2,
+    "tags": [
+      "feedback-loop",
+      "eval-set",
+      "human-edits"
+    ]
+  },
+  {
+    "id": "ap-design-008",
+    "scenario": 2,
+    "domain": 1,
+    "task": "1.2",
+    "type": "single",
+    "select": 1,
+    "stem": "The banking agent calls a `get_fee_schedule` tool and then explains fees to customers. Audits find that in a small share of conversations the amount quoted to the customer differs from the amount the tool returned. Which design change most effectively addresses this?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Strengthen the system prompt with an explicit instruction that every amount quoted to a customer must exactly match the figures in the tool result."
+      },
+      {
+        "key": "B",
+        "text": "Lower the sampling temperature for fee conversations so the model reproduces numbers from its context more faithfully."
+      },
+      {
+        "key": "C",
+        "text": "Move fee conversations to the most capable model tier, since larger models copy figures from tool results more reliably."
+      },
+      {
+        "key": "D",
+        "text": "Render amounts into the reply from the tool's structured data and check outgoing figures against the tool result before sending."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "Authoritative values should flow from the system of record into the output and be validated at the output boundary. That makes misquoted amounts structurally impossible or caught, rather than less likely.",
+    "distractors": {
+      "A": "A stronger instruction may reduce errors but provides no guarantee and no check on what is sent.",
+      "B": "Temperature changes may shift error rates slightly but do not verify the amount before it reaches the customer.",
+      "C": "A more capable model still has no output validation, and it raises cost for every fee conversation."
+    },
+    "difficulty": 2,
+    "tags": [
+      "output-validation",
+      "authoritative-data",
+      "banking"
+    ]
+  },
+  {
+    "id": "ap-design-009",
+    "scenario": 4,
+    "domain": 1,
+    "task": "1.2",
+    "type": "single",
+    "select": 1,
+    "stem": "The agency's pipeline extracts fields from scanned application forms and writes them to the case record. Caseworkers discover wrong dates of birth and household sizes in records, mostly from poor-quality scans. Which end-to-end change most effectively stops these errors reaching records?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Ask Claude to output a confidence score alongside every extracted field, and write only the fields it scores above 0.9 directly to the case record."
+      },
+      {
+        "key": "B",
+        "text": "Validate extracted fields against the schema and business rules, and route failures or unreadable fields to a caseworker exception queue."
+      },
+      {
+        "key": "C",
+        "text": "Run the extraction twice on every form and keep whichever output is longer, since it is likely to have captured more fields."
+      },
+      {
+        "key": "D",
+        "text": "Upgrade every extraction call to the most capable model tier so that poor-quality scans are read more accurately overall."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Errors that reach a system of record need a deterministic gate between extraction and write, plus a visible exception path to a human. Schema and rule checks (valid dates, plausible household sizes, cross-field consistency) catch failures without relying on the model to judge itself.",
+    "distractors": {
+      "A": "Self-reported confidence is not calibrated, so wrong values can still be scored high and written.",
+      "C": "Output length is not a measure of correctness, and the approach has no validation step.",
+      "D": "A stronger model may reduce errors but still writes unvalidated data and raises cost on every form."
+    },
+    "difficulty": 2,
+    "tags": [
+      "validation",
+      "exception-queue",
+      "extraction"
+    ]
+  },
+  {
+    "id": "ap-design-010",
+    "scenario": 5,
+    "domain": 1,
+    "task": "1.2",
+    "type": "single",
+    "select": 1,
+    "stem": "The weekly merchandising pipeline runs overnight on Sunday. Twice this quarter the competitor-pricing stage failed partway, the whole run aborted, and no report reached category managers by 7 a.m. Monday. What is the most effective design change?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Start the pipeline several hours earlier on Sunday so there is more time to rerun the entire job manually if any stage fails."
+      },
+      {
+        "key": "B",
+        "text": "Wrap the whole pipeline in an automatic retry loop that restarts it from the beginning until it completes successfully."
+      },
+      {
+        "key": "C",
+        "text": "Let the agents fill in any missing competitor prices from their own knowledge so that the report always completes on time."
+      },
+      {
+        "key": "D",
+        "text": "Persist each stage's results so reruns resume, and on stale or failed inputs publish on time with gaps labelled and the owner alerted."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "Scheduled pipelines need checkpoints and graceful degradation: resuming from saved stage outputs avoids repeating completed work, and an on-time report with clearly labelled gaps meets the SLA without hiding the failure. Alerting the owner makes the failure visible so it is fixed rather than silently repeated.",
+    "distractors": {
+      "A": "More slack helps only if someone notices in time, and a full manual rerun still repeats work that already succeeded.",
+      "B": "Restarting from scratch repeats completed work and can loop past the deadline if the failing source stays down.",
+      "C": "Model-invented prices would be presented as data, producing confident but fabricated recommendations."
+    },
+    "difficulty": 3,
+    "tags": [
+      "checkpointing",
+      "graceful-degradation",
+      "sla"
+    ]
+  },
+  {
+    "id": "ap-design-011",
+    "scenario": 1,
+    "domain": 1,
+    "task": "1.2",
+    "type": "multi",
+    "select": 2,
+    "stem": "You are designing the end-to-end architecture for clinicians' questions about internal care guidelines. Which two components most directly make the answers safe to rely on? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "Retrieve the relevant guideline passages and cite them in each answer so clinicians can verify the source."
+      },
+      {
+        "key": "B",
+        "text": "Cache answers to frequent questions indefinitely so clinicians always receive the same wording."
+      },
+      {
+        "key": "C",
+        "text": "Abstain and say so when no supporting guideline passage is retrieved, rather than answering anyway."
+      },
+      {
+        "key": "D",
+        "text": "Let the model fill gaps from its general medical knowledge so every question gets a complete answer."
+      },
+      {
+        "key": "E",
+        "text": "Log full prompts and answers, including patient details, to a shared analytics workspace for later review."
+      }
+    ],
+    "answer": [
+      "A",
+      "C"
+    ],
+    "explanation": "Grounding answers in retrieved guideline passages with citations lets clinicians verify them, and abstaining when no source supports an answer prevents confident unsupported claims. Together they keep answers tied to the network's approved guidance.",
+    "distractors": {
+      "B": "Indefinite caching serves stale answers after guidelines change, which is unsafe for clinical guidance.",
+      "D": "Unsourced general knowledge may conflict with local guidelines and cannot be verified by the clinician.",
+      "E": "Copying PHI into a shared analytics workspace breaks minimum-necessary handling and access controls."
+    },
+    "difficulty": 3,
+    "tags": [
+      "grounding",
+      "citations",
+      "abstention"
+    ]
+  },
+  {
+    "id": "ap-design-012",
+    "scenario": 2,
+    "domain": 1,
+    "task": "1.2",
+    "type": "single",
+    "select": 1,
+    "stem": "The banking agent calls a `file_dispute` tool. When the card system responds slowly, the call times out, the agent retries, and some customers end up with two identical disputes. What is the most effective fix?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Make the dispute tool idempotent with a key per customer request, so the tool layer ignores a repeat of a dispute it already filed."
+      },
+      {
+        "key": "B",
+        "text": "Add an instruction to the system prompt telling the agent never to call the dispute tool more than once in a conversation."
+      },
+      {
+        "key": "C",
+        "text": "Raise the tool timeout well above the card system's normal response times so that slow responses no longer trigger retries from the agent at all."
+      },
+      {
+        "key": "D",
+        "text": "Have the agent ask the customer whether a dispute was already filed before it calls the dispute tool a second time."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Side-effecting operations must be safe to retry, and idempotency enforced in the tool layer guarantees one dispute per request regardless of timeouts or model behaviour. Prompt rules and longer timeouts only make duplicates less likely.",
+    "distractors": {
+      "B": "A prompt rule cannot guarantee behaviour and would also block legitimate disputes on separate charges.",
+      "C": "A longer timeout reduces but does not eliminate retries, and makes customers wait longer when the system is slow.",
+      "D": "The customer cannot know whether a timed-out call succeeded, so asking them does not prevent duplicates."
+    },
+    "difficulty": 1,
+    "tags": [
+      "idempotency",
+      "side-effects",
+      "reliability"
+    ]
+  },
+  {
+    "id": "ap-design-013",
+    "scenario": 2,
+    "domain": 1,
+    "task": "1.3",
+    "type": "single",
+    "select": 1,
+    "stem": "Most bank support contacts are routine (balance questions, fee explanations, card freezes), handled the same way each time. A smaller share are complex disputes where the steps depend on what account lookups reveal. Which architecture best fits?",
+    "options": [
+      {
+        "key": "A",
+        "text": "A single autonomous agent with access to every tool that decides for itself how to handle each request it receives."
+      },
+      {
+        "key": "B",
+        "text": "A multi-agent system with one specialist agent per banking product that negotiates which of them should answer."
+      },
+      {
+        "key": "C",
+        "text": "A router that sends routine intents to fixed workflows and reserves agentic handling for the complex dispute cases."
+      },
+      {
+        "key": "D",
+        "text": "An evaluator-optimizer loop that drafts and then critiques every reply, routine or complex, before it reaches the customer."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Routing lets predictable requests run through consistent, testable workflows while open-ended cases get the flexibility of an agent. This applies the principle of using the least complex pattern that meets each requirement, rather than one pattern for everything.",
+    "distractors": {
+      "A": "Giving one agent every tool for routine requests adds cost, unpredictability and risk where a fixed path would do.",
+      "B": "Agents negotiating ownership add coordination overhead with no benefit for well-defined intents.",
+      "D": "A critique loop on every routine reply adds latency and cost without clear benefit for predictable answers."
+    },
+    "difficulty": 2,
+    "tags": [
+      "routing",
+      "workflow-vs-agent",
+      "pattern-selection"
+    ]
+  },
+  {
+    "id": "ap-design-014",
+    "scenario": 4,
+    "domain": 1,
+    "task": "1.3",
+    "type": "single",
+    "select": 1,
+    "stem": "The agency receives five known form types. For each application the steps are always the same: identify the form type, extract its fields, validate them and list missing evidence. Which pattern best fits?",
+    "options": [
+      {
+        "key": "A",
+        "text": "An autonomous agent that decides which steps to take for each application and in what order to take them."
+      },
+      {
+        "key": "B",
+        "text": "A prompt-chaining workflow with a fixed sequence of steps and programmatic checks between each of them."
+      },
+      {
+        "key": "C",
+        "text": "A multi-agent debate in which several agents argue over each field until they reach a consensus value."
+      },
+      {
+        "key": "D",
+        "text": "An orchestrator-workers design where a lead model invents a fresh set of subtasks for every application."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "When the steps are known and fixed, a workflow gives predictability, consistency and easy testing. Prompt chaining with gates between steps matches a stable sequence such as classify, extract, validate and check evidence.",
+    "distractors": {
+      "A": "Agency adds cost and unpredictability when the steps never change.",
+      "C": "Debate adds many calls per field without addressing a real need in a fixed extraction task.",
+      "D": "Orchestrator-workers suits subtasks that cannot be predicted in advance, which is not the case here."
+    },
+    "difficulty": 1,
+    "tags": [
+      "prompt-chaining",
+      "workflow",
+      "pattern-selection"
+    ]
+  },
+  {
+    "id": "ap-design-015",
+    "scenario": 5,
+    "domain": 1,
+    "task": "1.3",
+    "type": "single",
+    "select": 1,
+    "stem": "Category managers have a written checklist for the weekly recommendation narrative (cites data for each claim, states the price impact, flags stock risks), and in testing, drafts revised against checklist feedback score clearly higher. Which pattern best fits the drafting step?",
+    "options": [
+      {
+        "key": "A",
+        "text": "An evaluator-optimizer loop in which one call drafts and another critiques against the checklist until it passes or a limit is hit."
+      },
+      {
+        "key": "B",
+        "text": "Parallel voting in which three drafts are generated independently and the version that most closely matches the other two is sent to category managers."
+      },
+      {
+        "key": "C",
+        "text": "A routing workflow that classifies each category and sends it to one of several specialised drafting prompts."
+      },
+      {
+        "key": "D",
+        "text": "A single drafting call with the checklist appended, its output then sent straight to category managers for review."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Evaluator-optimizer fits when there are clear evaluation criteria and iterative feedback demonstrably improves the result, both of which hold here. A cap on iterations keeps cost and latency bounded.",
+    "distractors": {
+      "B": "Voting raises confidence on a single answer but does not apply the checklist feedback that was shown to improve drafts.",
+      "C": "Routing addresses different input types, not the quality gap the checklist feedback closes.",
+      "D": "A single call ignores the measured gain from critique and revision, leaving managers to catch checklist failures."
+    },
+    "difficulty": 2,
+    "tags": [
+      "evaluator-optimizer",
+      "pattern-selection"
+    ]
+  },
+  {
+    "id": "ap-design-016",
+    "scenario": 1,
+    "domain": 1,
+    "task": "1.3",
+    "type": "single",
+    "select": 1,
+    "stem": "An engineer proposes building visit summaries as an autonomous agent that decides which record sources to query and which tools to call. Every summary uses the same inputs (transcript, problem list, medications) and the same template, and each draft is signed off by a clinician. What should you advise?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Build the agent because it will adapt to future requirements, and cap its turns so that cost stays bounded meanwhile."
+      },
+      {
+        "key": "B",
+        "text": "Split the summary across parallel agents, one per template section, and merge their sections with a final agent."
+      },
+      {
+        "key": "C",
+        "text": "Add an evaluator loop on the most capable model tier that critiques and revises every draft before it reaches a clinician."
+      },
+      {
+        "key": "D",
+        "text": "Use a single augmented call with fixed inputs and template, and add agency only if evaluation shows it is needed."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "Anthropic's guidance is to start with the simplest solution that works and add complexity only when it demonstrably helps. Fixed inputs and a fixed template are a well-defined task, so an agent would add cost, latency and compounding-error risk without benefit.",
+    "distractors": {
+      "A": "Future-proofing is not a reason to accept agentic cost and unpredictability now, and a turn cap does not make it the right pattern.",
+      "B": "Template sections depend on shared context and must stay consistent, which parallel agents make harder.",
+      "C": "Clinician sign-off is already the review gate, and an extra loop on every draft adds latency and cost without evidence it is needed."
+    },
+    "difficulty": 3,
+    "tags": [
+      "start-simple",
+      "augmented-llm",
+      "workflow-vs-agent"
+    ]
+  },
+  {
+    "id": "ap-design-017",
+    "scenario": 2,
+    "domain": 1,
+    "task": "1.3",
+    "type": "multi",
+    "select": 2,
+    "stem": "The risk team asks you to justify using an agent, rather than a workflow, for complex card-dispute cases. Which two statements are valid justifications? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "The steps needed cannot be predicted in advance because they depend on what transaction and merchant lookups reveal."
+      },
+      {
+        "key": "B",
+        "text": "Agents are cheaper per case than workflows because they skip steps that are not needed for a given dispute."
+      },
+      {
+        "key": "C",
+        "text": "The bank accepts higher cost and latency for these cases, and the agent runs with scoped tools, stopping conditions and human checkpoints."
+      },
+      {
+        "key": "D",
+        "text": "An agent removes the need for an evaluation set, because it can check and correct its own work as it goes."
+      },
+      {
+        "key": "E",
+        "text": "Disputes are the highest-volume contact type and every case follows the same sequence of checks."
+      }
+    ],
+    "answer": [
+      "A",
+      "C"
+    ],
+    "explanation": "Agents are justified for open-ended problems where the number and order of steps cannot be fixed in advance, and when the business accepts the trade-off of higher cost and latency. Their autonomy must be bounded by scoped tools, stopping conditions and human checkpoints.",
+    "distractors": {
+      "B": "Agents usually cost more than workflows because of repeated model calls and accumulated context.",
+      "D": "Agents still need evaluation; their errors can compound across steps, which makes testing more important.",
+      "E": "High volume with an identical sequence of checks is the profile of a workflow, not an agent."
+    },
+    "difficulty": 3,
+    "tags": [
+      "workflow-vs-agent",
+      "guardrails",
+      "trade-offs"
+    ]
+  },
+  {
+    "id": "ap-design-018",
+    "scenario": 4,
+    "domain": 1,
+    "task": "1.3",
+    "type": "single",
+    "select": 1,
+    "stem": "Caseworkers want to ask questions about the agency's benefits policy manual and get answers with section references. Which design best fits this need?",
+    "options": [
+      {
+        "key": "A",
+        "text": "An orchestrator that spawns one worker per manual chapter for every question and merges what they all return."
+      },
+      {
+        "key": "B",
+        "text": "An autonomous agent with web search that looks for the latest public guidance on benefit rules for each question."
+      },
+      {
+        "key": "C",
+        "text": "An augmented LLM: retrieve the relevant manual sections and answer from them, citing the sections used."
+      },
+      {
+        "key": "D",
+        "text": "A chain that rewrites the question, answers it from model knowledge, then critiques the answer for tone."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Question answering over a known document set is the classic augmented-LLM case: retrieval supplies the relevant passages and the model answers with citations. It is the simplest pattern that meets the need for grounded, referenced answers.",
+    "distractors": {
+      "A": "Fanning out to every chapter for every question multiplies cost and latency when retrieval can find the relevant sections directly.",
+      "B": "Public web guidance may differ from the agency's own manual, which is the authoritative source here.",
+      "D": "Answering from model knowledge is not grounded in the manual and cannot produce reliable section references."
+    },
+    "difficulty": 1,
+    "tags": [
+      "augmented-llm",
+      "retrieval",
+      "pattern-selection"
+    ]
+  },
+  {
+    "id": "ap-design-019",
+    "scenario": 5,
+    "domain": 1,
+    "task": "1.4",
+    "type": "single",
+    "select": 1,
+    "stem": "In the competitor-pricing stage, a lead agent spawns workers with instructions such as \"research competitor pricing for snacks\". Logs show workers researching overlapping retailers, some pulling last year's prices, and each returning results in a different shape. What is the most effective fix?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Spawn more workers per category so that gaps left by one worker are likely to be covered by another one."
+      },
+      {
+        "key": "B",
+        "text": "Have the lead give each worker an objective, boundaries (retailers, dates), an output schema and allowed sources."
+      },
+      {
+        "key": "C",
+        "text": "Move every worker to the most capable model tier so that each one infers the intended scope by itself."
+      },
+      {
+        "key": "D",
+        "text": "Let workers message each other directly during research so they can agree on who covers which retailer."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "In orchestrator-worker systems, delegation quality decides outcomes. Vague task descriptions cause duplicated work, wrong scope and inconsistent returns, so each worker needs a clear objective, boundaries, output format and guidance on sources.",
+    "distractors": {
+      "A": "More workers with the same vague instructions increases duplication and token cost.",
+      "C": "A stronger model cannot reliably infer boundaries the lead never stated, and it raises cost across every worker.",
+      "D": "Peer-to-peer coordination adds complexity and tokens; the lead should assign non-overlapping scopes up front."
+    },
+    "difficulty": 2,
+    "tags": [
+      "orchestrator-workers",
+      "delegation",
+      "multi-agent"
+    ]
+  },
+  {
+    "id": "ap-design-020",
+    "scenario": 5,
+    "domain": 1,
+    "task": "1.4",
+    "type": "single",
+    "select": 1,
+    "stem": "The merchandising system works, but its token spend is several times the forecast. Every category gets the same large team of workers, and all agents run on the most capable model tier. Executives ask you to cut cost without hurting report quality. What is the best change?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Scale workers to each category's complexity, run high-volume workers on a cheaper tier, and keep a capable model for planning and synthesis."
+      },
+      {
+        "key": "B",
+        "text": "Apply one identical token cap to every agent, the lead included, so that total spend becomes predictable each week."
+      },
+      {
+        "key": "C",
+        "text": "Collapse the system into a single agent that loads all sales and pricing data for every category into one context."
+      },
+      {
+        "key": "D",
+        "text": "Move every agent, the lead included, to the cheapest tier, since the workers only fetch and summarise web pages."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Multi-agent systems consume substantially more tokens, so effort should scale with task complexity and model tiers should match roles. Cheaper models handle well-scoped, high-volume subtasks, while planning and synthesis keep the capability that drives report quality.",
+    "distractors": {
+      "B": "A uniform cap starves the lead and complex categories while still over-funding simple ones.",
+      "C": "Loading everything into one context risks overflow and degraded attention, and loses the parallelism the research step benefits from.",
+      "D": "Downgrading the lead risks the planning and synthesis quality the executives care about."
+    },
+    "difficulty": 3,
+    "tags": [
+      "token-cost",
+      "model-mix",
+      "multi-agent"
+    ]
+  },
+  {
+    "id": "ap-design-021",
+    "scenario": 5,
+    "domain": 1,
+    "task": "1.4",
+    "type": "single",
+    "select": 1,
+    "stem": "Each pricing worker returns the full text of every competitor page it read. As the week's scope grows, the lead agent's synthesis gets worse: it misses findings from early workers and contradicts itself. What is the most effective change?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Move the lead to a larger model tier so it can attend to more of the raw page text returned by the workers."
+      },
+      {
+        "key": "B",
+        "text": "Truncate the lead's context automatically by dropping the oldest worker results whenever its total size passes a configured threshold."
+      },
+      {
+        "key": "C",
+        "text": "Have workers return condensed structured findings with source references, storing full pages for retrieval on demand."
+      },
+      {
+        "key": "D",
+        "text": "Have the lead re-scrape any competitor page itself whenever a worker's findings seem to be incomplete or unclear."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Workers exist to explore in their own context and hand back condensed results, keeping the lead's context focused on what synthesis needs. Storing full artifacts outside the conversation and referencing them keeps detail available without flooding the lead.",
+    "distractors": {
+      "A": "A larger model still suffers when its context is flooded with low-signal raw text, and it raises cost.",
+      "B": "Dropping the oldest results discards findings, which is exactly the omission already observed.",
+      "D": "Re-scraping duplicates the workers' effort and pushes even more raw text into the lead's context."
+    },
+    "difficulty": 3,
+    "tags": [
+      "context-management",
+      "orchestrator-workers",
+      "condensed-results"
+    ]
+  },
+  {
+    "id": "ap-design-022",
+    "scenario": 1,
+    "domain": 1,
+    "task": "1.4",
+    "type": "single",
+    "select": 1,
+    "stem": "To cut latency, a team proposes generating each visit summary with parallel agents: one writes the history, one the assessment and one the plan, each from the full transcript. Clinicians require the assessment and plan to follow from the history. What should you advise?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Proceed, and add a final merge agent that rewrites the three sections so that they read as one consistent note."
+      },
+      {
+        "key": "B",
+        "text": "Proceed, but run each section agent three times and keep the version that most of the three runs agree on."
+      },
+      {
+        "key": "C",
+        "text": "Proceed, but give each section agent the other agents' outputs as well so that they can align with one another."
+      },
+      {
+        "key": "D",
+        "text": "Keep one call for the summary, since its sections are interdependent, and use parallel calls only for independent checks."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "Parallel agents suit work that splits into independent parts. Sections that must follow from each other share context and dependencies, so splitting them creates consistency problems that cost more to repair than the latency saved.",
+    "distractors": {
+      "A": "A merge agent adds another call and another place to introduce errors, patching a split that should not have been made.",
+      "B": "Voting improves confidence in each section but does not make the sections consistent with each other.",
+      "C": "Sharing outputs between parallel agents makes them sequential in practice, removing the latency benefit."
+    },
+    "difficulty": 2,
+    "tags": [
+      "multi-agent-fit",
+      "parallelization",
+      "healthcare"
+    ]
+  },
+  {
+    "id": "ap-design-023",
+    "scenario": 2,
+    "domain": 1,
+    "task": "1.4",
+    "type": "single",
+    "select": 1,
+    "stem": "In the bank's design, a triage agent verifies the customer and identifies intent, then hands complex disputes to a disputes agent. Customers complain that after the hand-off they must repeat who they are and what happened. What is the best fix?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Merge both roles into one agent with the triage and dispute tools combined, so that no hand-off between agents is ever needed and context is never lost."
+      },
+      {
+        "key": "B",
+        "text": "Pass a structured hand-off payload with verified identity, intent, facts collected and actions taken, which the disputes agent consumes."
+      },
+      {
+        "key": "C",
+        "text": "Forward the complete raw transcript and every tool result to the disputes agent so that it has all the context it could need."
+      },
+      {
+        "key": "D",
+        "text": "Ask the customer to type a short summary of the issue just before the transfer, so the disputes agent can read it first."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Hand-offs between agents must carry explicit state rather than relying on the receiving agent to re-derive it. A structured payload gives the disputes agent exactly what it needs, keeps verified identity authoritative and avoids flooding its context.",
+    "distractors": {
+      "A": "Merging roles gives one agent a broader toolset than either role needs, which works against least privilege.",
+      "C": "Raw transcripts and tool output bloat context and leave the receiving agent to re-derive state, including identity verification.",
+      "D": "This still makes the customer repeat themselves and treats unverified customer text as the hand-off state."
+    },
+    "difficulty": 2,
+    "tags": [
+      "handoff",
+      "state",
+      "multi-agent"
+    ]
+  },
+  {
+    "id": "ap-design-024",
+    "scenario": 4,
+    "domain": 1,
+    "task": "1.4",
+    "type": "multi",
+    "select": 2,
+    "stem": "The agency pilots an orchestrator-workers design: for each application, an orchestrator sends each evidence document (payslips, tenancy agreements, identity documents) to a worker, then prepares a case summary for the caseworker. Which two design choices most reduce coordination failures? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "Workers have narrow, non-overlapping assignments with a defined output schema, and the orchestrator alone assembles the case summary."
+      },
+      {
+        "key": "B",
+        "text": "Workers message each other directly to resolve conflicts between documents before reporting back to the orchestrator."
+      },
+      {
+        "key": "C",
+        "text": "Every worker gets every tool, including case-record write access, so it can handle any document type it receives."
+      },
+      {
+        "key": "D",
+        "text": "A worker that fails or cannot read a document reports that explicitly, and the orchestrator surfaces the gap to the caseworker."
+      },
+      {
+        "key": "E",
+        "text": "Workers write their extracted values directly into the case record so caseworkers see results as soon as possible."
+      }
+    ],
+    "answer": [
+      "A",
+      "D"
+    ],
+    "explanation": "Clear, non-overlapping delegation with a fixed return format and a single point of synthesis keeps orchestrator-worker systems coherent. Explicit failure reporting means a missing or unreadable document becomes a visible gap for the caseworker instead of a silent omission.",
+    "distractors": {
+      "B": "Peer-to-peer negotiation adds coordination complexity; conflicts between documents should go to the orchestrator and the caseworker.",
+      "C": "Giving every worker every tool, including write access, is capability bloat and breaks least privilege.",
+      "E": "Direct writes bypass the orchestrator and the caseworker review, so unvalidated values reach the record."
+    },
+    "difficulty": 3,
+    "tags": [
+      "orchestrator-workers",
+      "failure-handling",
+      "least-privilege"
+    ]
+  },
+  {
+    "id": "ap-design-025",
+    "scenario": 4,
+    "domain": 1,
+    "task": "1.5",
+    "type": "single",
+    "select": 1,
+    "stem": "The agency's prototype uses one long prompt that classifies the form, extracts fields, checks evidence against policy and suggests next steps. Errors are frequent, and when a case is wrong nobody can tell which part failed. What is the most effective change?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Split it into a chain with one responsibility per step, programmatic checks between steps, and an evaluation of each step."
+      },
+      {
+        "key": "B",
+        "text": "Add more detailed instructions and several worked examples to the existing prompt, one set for each of its four separate responsibilities."
+      },
+      {
+        "key": "C",
+        "text": "Run the same long prompt three times on each application and keep the output that the majority of the runs agree on."
+      },
+      {
+        "key": "D",
+        "text": "Move the long prompt to the most capable model tier so that it can handle all four responsibilities more reliably."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Decomposing a multi-job prompt into chained steps gives each call one task to do well, and gates between steps catch errors early. It also makes failures diagnosable, because each step can be tested and improved on its own.",
+    "distractors": {
+      "B": "Adding instructions to an overloaded prompt rarely fixes it and still leaves failures impossible to localise.",
+      "C": "Voting may smooth random variation but does not make failures diagnosable or fix systematic errors in one stage.",
+      "D": "A stronger model may help somewhat but leaves the design undiagnosable and raises cost on every application."
+    },
+    "difficulty": 2,
+    "tags": [
+      "prompt-chaining",
+      "decomposition",
+      "diagnosability"
+    ]
+  },
+  {
+    "id": "ap-design-026",
+    "scenario": 1,
+    "domain": 1,
+    "task": "1.5",
+    "type": "single",
+    "select": 1,
+    "stem": "Pharmacist reviewers want every draft summary checked for medication reconciliation, allergy conflicts and missing follow-up instructions. A single review prompt covering all three often catches one problem and misses the others. Which decomposition is most effective?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Run the same combined review prompt three times and flag every issue that a majority of the runs report as present."
+      },
+      {
+        "key": "B",
+        "text": "Chain the three checks so that each one edits the note before passing it on to the next check in the sequence."
+      },
+      {
+        "key": "C",
+        "text": "Run three focused checks in parallel, each with its own criteria, and aggregate the findings for clinician review."
+      },
+      {
+        "key": "D",
+        "text": "Give one agent all three checklists and let it decide how many review passes over the note are needed for each."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Sectioning splits a task into independent parts that run in parallel, giving each criterion focused attention. That addresses a coverage problem, and the aggregated findings go to the clinician, who remains the sign-off gate.",
+    "distractors": {
+      "A": "Voting raises confidence in the same combined review but does not fix the coverage gap across criteria.",
+      "B": "The checks are independent, so chaining adds latency, and letting checks edit the note bypasses clinician control.",
+      "D": "Agentic control adds unpredictability for a fixed set of checks that a workflow handles directly."
+    },
+    "difficulty": 3,
+    "tags": [
+      "sectioning",
+      "parallelization",
+      "coverage"
+    ]
+  },
+  {
+    "id": "ap-design-027",
+    "scenario": 5,
+    "domain": 1,
+    "task": "1.5",
+    "type": "single",
+    "select": 1,
+    "stem": "The analysis agent receives raw weekly sales exports and is asked to calculate margin changes and write recommendations. Category managers find arithmetic mistakes in some reports. How should you decompose this step?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Add an instruction to show all working step by step so that the model's arithmetic over the raw exports is more reliable."
+      },
+      {
+        "key": "B",
+        "text": "Add a second model call that recalculates every figure from the raw exports and flags any that differ from the first."
+      },
+      {
+        "key": "C",
+        "text": "Give the agent a spreadsheet-style tool it may optionally call whenever it judges that a calculation is complex enough."
+      },
+      {
+        "key": "D",
+        "text": "Compute metrics and price deltas in code, have Claude interpret those tables, then assemble the report from a template."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "Calculations over structured data belong in deterministic code, which is exact and auditable. Claude works from the computed tables to interpret trends and write recommendations, which is the part of the job that needs language and judgement.",
+    "distractors": {
+      "A": "Showing working may reduce errors but still leaves exact arithmetic to the model.",
+      "B": "A second model doing the same arithmetic adds cost and can repeat the same mistakes.",
+      "C": "Leaving tool use optional means the model may still compute some figures itself."
+    },
+    "difficulty": 2,
+    "tags": [
+      "code-vs-model",
+      "decomposition"
+    ]
+  },
+  {
+    "id": "ap-design-028",
+    "scenario": 2,
+    "domain": 1,
+    "task": "1.5",
+    "type": "single",
+    "select": 1,
+    "stem": "A team decomposed the bank's fee-explanation flow into seven chained model calls (intent, entity extraction, policy lookup, draft, tone check, compliance check, final polish). Latency now misses the chat target, and evals show quality no better than an earlier two-step design. What should you do?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Run all seven calls in parallel instead of in sequence so that total latency drops to roughly that of the slowest call."
+      },
+      {
+        "key": "B",
+        "text": "Merge steps that add no gate or isolate no distinct failure, keep the compliance check, and confirm the result on the evals."
+      },
+      {
+        "key": "C",
+        "text": "Move all seven calls to the fastest model tier so that the chain fits the latency target without changing its structure."
+      },
+      {
+        "key": "D",
+        "text": "Keep all seven steps, since finer decomposition always improves reliability, and raise the chat latency target instead."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Each extra step adds latency, cost and a hand-off, so a split must earn its place by enabling a gate or isolating a distinct failure mode. Merging the steps that do neither, while keeping the compliance gate and re-checking on the eval set, restores latency without losing quality.",
+    "distractors": {
+      "A": "The steps depend on each other's output, so they cannot simply run in parallel.",
+      "C": "Downgrading every step risks quality on the steps that need capability and leaves the unnecessary steps in place.",
+      "D": "More steps do not automatically improve reliability, and the evals already show no gain over the simpler design."
+    },
+    "difficulty": 3,
+    "tags": [
+      "granularity",
+      "latency",
+      "decomposition"
+    ]
+  },
+  {
+    "id": "ap-design-029",
+    "scenario": 5,
+    "domain": 1,
+    "task": "1.5",
+    "type": "multi",
+    "select": 2,
+    "stem": "You are deciding which parts of the weekly merchandising work to hand to parallel subagents. Which two tasks are good candidates for parallel execution? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "Gathering current prices from each of several competitor websites."
+      },
+      {
+        "key": "B",
+        "text": "Writing the final recommendation that trades off price moves across all categories."
+      },
+      {
+        "key": "C",
+        "text": "Analysing promotion performance separately for each product category."
+      },
+      {
+        "key": "D",
+        "text": "Reconciling conflicting price figures reported by different subagents."
+      },
+      {
+        "key": "E",
+        "text": "Writing the executive summary that ranks the week's top three actions."
+      }
+    ],
+    "answer": [
+      "A",
+      "C"
+    ],
+    "explanation": "Parallel subagents suit breadth-first work that splits into independent parts, such as separate sources or separate categories. Tasks that weigh everything together or resolve conflicts between results need a single view and belong with the lead.",
+    "distractors": {
+      "B": "Cross-category trade-offs need the full picture, so this is synthesis work for the lead agent.",
+      "D": "Reconciling conflicts between subagents requires seeing all their results together, which is the lead's job.",
+      "E": "Ranking the week's top actions depends on every analysis, so it cannot be split into independent parts."
+    },
+    "difficulty": 2,
+    "tags": [
+      "parallelization",
+      "decomposition",
+      "multi-agent-fit"
+    ]
+  },
+  {
+    "id": "ap-design-030",
+    "scenario": 5,
+    "domain": 1,
+    "task": "1.6",
+    "type": "single",
+    "select": 1,
+    "stem": "Executives expect the merchandising system to cut analyst hours by 20%. The pilot starts in two weeks. Which measurement plan best lets you confirm or refute that business case?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Count the number of reports and recommendations the system produces each week and compare it with the analysts' output."
+      },
+      {
+        "key": "B",
+        "text": "Track total token usage and cost per report so that finance can see the system's efficiency improve over the pilot period."
+      },
+      {
+        "key": "C",
+        "text": "Baseline analyst hours per report before the pilot, then track hours, on-time delivery and the share of recommendations accepted."
+      },
+      {
+        "key": "D",
+        "text": "Survey category managers at the end of the pilot on whether they feel the reports have saved their team a meaningful amount of time."
+      }
+    ],
+    "answer": [
+      "C"
+    ],
+    "explanation": "Proving value needs a pre-pilot baseline for the outcome the sponsor cares about, paired with quality and SLA guardrails so hours are not saved by producing worse or late reports. Acceptance rate and on-time delivery show the saved hours are real.",
+    "distractors": {
+      "A": "Output volume is an activity metric and says nothing about analyst hours saved.",
+      "B": "Token cost matters but does not measure the analyst-hours outcome the business case promised.",
+      "D": "Perceptions without a baseline cannot confirm a specific percentage reduction."
+    },
+    "difficulty": 2,
+    "tags": [
+      "value-measurement",
+      "baseline",
+      "productivity"
+    ]
+  },
+  {
+    "id": "ap-design-031",
+    "scenario": 4,
+    "domain": 1,
+    "task": "1.6",
+    "type": "single",
+    "select": 1,
+    "stem": "The agency's sponsor wants to report the casework assistant's value to its oversight board. The stated goal is clearing the backlog without lowering decision quality. Which primary metric and guardrail pairing best fits?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Median time from application to decision and cases per caseworker per day, with appeal-overturn and error rates as guardrails."
+      },
+      {
+        "key": "B",
+        "text": "The share of applications that pass through the pipeline without needing any caseworker involvement, as an automation rate."
+      },
+      {
+        "key": "C",
+        "text": "Model cost per API call and average response latency, reported weekly against the budget agreed for the programme."
+      },
+      {
+        "key": "D",
+        "text": "The model's extraction accuracy on a public document benchmark, reported alongside the number of forms processed per month."
+      }
+    ],
+    "answer": [
+      "A"
+    ],
+    "explanation": "Value reporting traces the outcome (backlog cleared) to efficiency and productivity KPIs, paired with quality guardrails so throughput cannot rise at the expense of correct decisions. Appeal-overturn and error rates show decision quality held.",
+    "distractors": {
+      "B": "Maximising cases with no caseworker involvement conflicts with keeping humans accountable for eligibility decisions.",
+      "C": "Per-call cost and latency are system metrics, not the backlog outcome the board cares about.",
+      "D": "A public benchmark does not reflect the agency's forms, and form counts are activity, not outcome."
+    },
+    "difficulty": 3,
+    "tags": [
+      "value-pillars",
+      "guardrail-metrics",
+      "public-sector"
+    ]
+  },
+  {
+    "id": "ap-design-032",
+    "scenario": 1,
+    "domain": 1,
+    "task": "1.6",
+    "type": "single",
+    "select": 1,
+    "stem": "Clinicians need each visit-summary draft ready to review before their next patient. Finance proposes moving all Claude processing to batch processing to reduce cost. The network also runs a retrospective quality audit of last month's notes. What should you recommend?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Move all processing to batch, and ask clinicians to review their drafts at the end of each day once batch results return."
+      },
+      {
+        "key": "B",
+        "text": "Keep everything on the real-time path, since batch processing is not suitable for any work involving clinical data."
+      },
+      {
+        "key": "C",
+        "text": "Move visit summaries to batch but use a cheaper model tier for them, so the cost saving offsets any delay in delivery."
+      },
+      {
+        "key": "D",
+        "text": "Keep visit summaries on the real-time path to meet their SLA, and move the non-urgent retrospective audit to batch processing."
+      }
+    ],
+    "answer": [
+      "D"
+    ],
+    "explanation": "SLAs drive the architecture: interactive drafts with a before-the-next-patient deadline need the real-time path, while high-volume, non-urgent work such as a retrospective audit suits batch processing at lower cost. Matching each workload to its SLA serves both the performance and cost pillars.",
+    "distractors": {
+      "A": "End-of-day review breaks the clinicians' SLA and moves documentation time back into their evenings.",
+      "B": "Whether work can use batch depends on its urgency, not on whether the data is clinical; the audit is a good batch candidate.",
+      "C": "A cheaper model does not fix the delay problem, and batch results do not arrive before the next patient."
+    },
+    "difficulty": 2,
+    "tags": [
+      "performance-sla",
+      "batch-vs-realtime",
+      "cost"
+    ]
+  },
+  {
+    "id": "ap-design-033",
+    "scenario": 2,
+    "domain": 1,
+    "task": "1.6",
+    "type": "multi",
+    "select": 2,
+    "stem": "The bank's business case for the support agent is built on containment (the share of conversations that end without reaching staff). The head of service worries the agent could look successful while customers stay unhappy. Which two metrics should be paired with containment? (Select TWO.)",
+    "options": [
+      {
+        "key": "A",
+        "text": "Confirmed resolution, such as no repeat contact on the same issue within a set period."
+      },
+      {
+        "key": "B",
+        "text": "Average number of messages per conversation, with fewer messages counted as better."
+      },
+      {
+        "key": "C",
+        "text": "Quality of escalations: whether hand-offs to staff were appropriate and arrived with complete context."
+      },
+      {
+        "key": "D",
+        "text": "Total tokens consumed per month, as a measure of how efficiently the agent answers."
+      },
+      {
+        "key": "E",
+        "text": "Number of conversations handled per day, compared against the old scripted chatbot."
+      }
+    ],
+    "answer": [
+      "A",
+      "C"
+    ],
+    "explanation": "Containment alone can be gamed by unhelpful answers or by failing to escalate. Pairing it with confirmed resolution shows customers' problems were actually solved, and escalation quality shows the agent hands off the right cases with the context staff need.",
+    "distractors": {
+      "B": "Short conversations can mean customers gave up, so fewer messages is not evidence of value.",
+      "D": "Token usage is a cost input, not a measure of whether customers were helped.",
+      "E": "Conversation volume is an activity metric that says nothing about outcomes."
+    },
+    "difficulty": 2,
+    "tags": [
+      "value-metrics",
+      "guardrail-metrics",
+      "containment"
+    ]
+  },
+  {
+    "id": "ap-design-034",
+    "scenario": 4,
+    "domain": 1,
+    "task": "1.6",
+    "type": "single",
+    "select": 1,
+    "stem": "The agency receives a steady stream of routine applications that can wait until the next working day, plus a small number of urgent hardship cases that must be triaged within hours. Leadership wants to minimise processing cost. Which design best fits?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Send every application through batch processing overnight, urgent hardship cases included, to get the lowest unit cost."
+      },
+      {
+        "key": "B",
+        "text": "Process routine applications with batch processing and send urgent hardship cases through a separate real-time path."
+      },
+      {
+        "key": "C",
+        "text": "Process every application in real time on the most capable model tier so that no case ever waits in a queue."
+      },
+      {
+        "key": "D",
+        "text": "Reduce volume by processing only a random sample of routine applications and having caseworkers handle the rest."
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": "Batch processing suits high-volume work that is not time-sensitive and lowers its cost, while urgent cases need a real-time path to meet their SLA. Splitting by urgency serves both the cost and performance pillars.",
+    "distractors": {
+      "A": "Overnight batch would miss the hours-level SLA for urgent hardship cases.",
+      "C": "Real-time processing on the top tier for routine work pays a premium for speed nobody needs.",
+      "D": "Sampling leaves most applications unassisted and does not address the backlog the system exists to clear."
+    },
+    "difficulty": 1,
+    "tags": [
+      "batch-vs-realtime",
+      "cost",
+      "performance-sla"
+    ]
+  }
+]

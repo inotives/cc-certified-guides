@@ -1,0 +1,74 @@
+[
+  {
+    "id": "ap-off-01",
+    "scenario": 0,
+    "domain": 3,
+    "task": "3.1",
+    "type": "single",
+    "select": 1,
+    "stem": "A team exposes a customer-support agent that can read tickets, draft replies, issue refunds, and delete user accounts. Support staff only ever need to read tickets and draft replies. Applying least-privilege principles, which change best reduces risk?",
+    "options": [
+      { "key": "A", "text": "Add logging to the refund and delete tools so misuse can be audited later." },
+      { "key": "B", "text": "Remove the refund and delete tools from the agent's configuration entirely." },
+      { "key": "C", "text": "Keep all tools but add a confirmation prompt before refunds and deletions." },
+      { "key": "D", "text": "Replace the agent with a larger model that follows instructions more reliably." }
+    ],
+    "answer": ["B"],
+    "explanation": "Least privilege means removing capabilities the role does not require, eliminating the attack surface rather than monitoring or guarding it.",
+    "distractors": {
+      "A": "Logging is a detective control, not removal of unnecessary privilege.",
+      "C": "Confirmations are a compensating control, not removal of unnecessary privilege.",
+      "D": "Model size is unrelated to authorization scope."
+    },
+    "difficulty": 1,
+    "tags": ["official-sample", "least-privilege", "capability-bloat"]
+  },
+  {
+    "id": "ap-off-02",
+    "scenario": 0,
+    "domain": 2,
+    "task": "2.5",
+    "type": "single",
+    "select": 1,
+    "stem": "An application sends the same 8,000-token system prompt and policy document on every request, followed by a short, varying user message. Latency and cost are both concerns. Which optimization most directly addresses both?",
+    "options": [
+      { "key": "A", "text": "Truncate the policy document to the first 1,000 tokens." },
+      { "key": "B", "text": "Switch to the smallest available model regardless of task fit." },
+      { "key": "C", "text": "Place the static system prompt and policy before the dynamic content and enable prompt caching." },
+      { "key": "D", "text": "Move the policy document into a few-shot example block." }
+    ],
+    "answer": ["C"],
+    "explanation": "Ordering stable content first and enabling prompt caching lets repeated prefixes be reused, reducing both time-to-first-token and per-request cost without discarding required context.",
+    "distractors": {
+      "A": "Truncation loses needed policy.",
+      "B": "Downsizing blindly risks quality.",
+      "D": "Relocating to few-shot does not create a cacheable, reusable prefix."
+    },
+    "difficulty": 1,
+    "tags": ["official-sample", "prompt-caching", "cost", "latency"]
+  },
+  {
+    "id": "ap-off-03",
+    "scenario": 0,
+    "domain": 4,
+    "task": "4.4",
+    "type": "single",
+    "select": 1,
+    "stem": "A RAG system suddenly returns confident but incorrect answers after a document refresh, while latency and model version are unchanged. What is the most likely first place to investigate?",
+    "options": [
+      { "key": "A", "text": "The model weights have silently changed." },
+      { "key": "B", "text": "The retrieval/indexing step is returning irrelevant or stale chunks." },
+      { "key": "C", "text": "The temperature setting is too low." },
+      { "key": "D", "text": "The context window has shrunk." }
+    ],
+    "answer": ["B"],
+    "explanation": "Confident-but-wrong answers following a document refresh, with model and latency unchanged, point to retrieval feeding the model poor context, for example a broken re-index or mismatched embeddings. The other options would not be triggered specifically by a document refresh.",
+    "distractors": {
+      "A": "The model version is unchanged, and a silent weight change would not be triggered specifically by a document refresh.",
+      "C": "A low temperature would not be triggered specifically by a document refresh.",
+      "D": "A shrinking context window would not be triggered specifically by a document refresh."
+    },
+    "difficulty": 1,
+    "tags": ["official-sample", "rag", "diagnosis", "retrieval"]
+  }
+]

@@ -1,0 +1,679 @@
+[
+  {
+    "id": "ap-stake-001",
+    "scenario": 4,
+    "domain": 6,
+    "task": "6.1",
+    "type": "single",
+    "select": 1,
+    "stem": "The agency's kickoff for the benefits triage project was attended by the CIO's office and two infrastructure leads, who supplied a list of form fields to extract and a target go-live date. You have been asked to start the solution design next week. What is the most effective next step?",
+    "options": [
+      {"key": "A", "text": "Extend discovery to caseworkers, policy owners, legal and security, and record how applications are triaged today with baseline time and error figures."},
+      {"key": "B", "text": "Build an extraction prototype for the listed form fields so the infrastructure leads can confirm the scope before the design starts next week."},
+      {"key": "C", "text": "Run a requirements workshop with the CIO's office to turn the field list into user stories, acceptance criteria and a delivery plan for go-live."},
+      {"key": "D", "text": "Confirm which cloud deployment options the agency's security office has authorized, then size the model tier and throughput needed to meet the go-live date."}
+    ],
+    "answer": ["A"],
+    "explanation": "Discovery that includes only IT misses the people who own the process, the policy and the risk, and their constraints will surface later as blockers. Caseworkers know the real workflow, policy owners and legal define what the system may influence, and security sets deployment limits. A documented current process with baseline metrics is also what later proves the solution helped.",
+    "distractors": {
+      "B": "A prototype built from IT's field list tests the wrong scope if caseworkers, policy and legal have not yet shaped the requirements.",
+      "C": "Refining requirements with the same IT attendees still leaves out the caseworkers, policy, legal and security owners whose constraints shape the design.",
+      "D": "Deployment authorization matters, but it is one constraint among several and sizing before understanding the workflow and success criteria is premature."
+    },
+    "difficulty": 2,
+    "tags": ["discovery", "stakeholder-map", "baseline"]
+  },
+  {
+    "id": "ap-stake-002",
+    "scenario": 1,
+    "domain": 6,
+    "task": "6.1",
+    "type": "single",
+    "select": 1,
+    "stem": "In the first discovery workshop the CMIO says the goal is simply to \"give clinicians their evenings back\" and asks you to propose success criteria for the visit-summary assistant. Which proposal best fits structured discovery?",
+    "options": [
+      {"key": "A", "text": "Adopt a target of at least 95% accuracy on generated summaries, measured by an automated grader, since clinicians already review every note before sign-off."},
+      {"key": "B", "text": "Measure current documentation minutes per visit and after-hours charting in pilot clinics, then agree time-saved and clinically significant error-rate targets with clinical leads."},
+      {"key": "C", "text": "Use clinician satisfaction scores collected after the first month of rollout as the primary success measure, because the goal is about workload and wellbeing."},
+      {"key": "D", "text": "Track the number of summaries drafted per clinic per week, since adoption volume is the clearest signal that the tool is saving clinicians time."}
+    ],
+    "answer": ["B"],
+    "explanation": "Success criteria need a measured baseline, a target and a measurement method agreed with the business owner. Baseline documentation time makes \"evenings back\" measurable, and an error-rate target agreed with clinicians covers the safety side that time savings alone would hide. This also gives the CMIO the evidence base requested before rollout.",
+    "distractors": {
+      "A": "An accuracy figure from an automated grader, set by the architect and with no baseline, neither measures time saved nor reflects expert judgement of clinical errors.",
+      "C": "Satisfaction collected after rollout has no baseline and is subjective, so it cannot show whether the stated goal was achieved.",
+      "D": "Drafting volume measures usage, not time saved or note quality; heavy use of drafts that need extensive rework could even add time."
+    },
+    "difficulty": 2,
+    "tags": ["success-criteria", "baseline", "discovery"]
+  },
+  {
+    "id": "ap-stake-003",
+    "scenario": 5,
+    "domain": 6,
+    "task": "6.1",
+    "type": "single",
+    "select": 1,
+    "stem": "During discovery for the merchandising agents, the data owner mentions that point-of-sale data lands in the warehouse on a two-day lag, and the competitor price feed has gaps for about a third of SKUs. Executives have already announced Monday 7 a.m. reports and a 20% cut in analyst hours. What is the best next step?",
+    "options": [
+      {"key": "A", "text": "Design the agents to fill missing competitor prices by estimating them from category averages, so the Monday reports can still cover every SKU."},
+      {"key": "B", "text": "Narrow the first release to the SKUs that have complete competitor price data, and state clearly in each weekly report which SKUs were excluded and the reason."},
+      {"key": "C", "text": "Prototype on a recent week of real data, measure coverage and recommendation quality, and take the data constraints and options back to the executive sponsor."},
+      {"key": "D", "text": "Ask engineering to estimate the effort of moving the warehouse to a daily load and to buy a second price feed before any agent design starts."}
+    ],
+    "answer": ["C"],
+    "explanation": "Data freshness and completeness decide feasibility, and executive targets that depend on them must be tested rather than assumed. A short prototype on real data quantifies the impact, which lets the sponsor choose among options with evidence. Surfacing the constraint in discovery is far cheaper than discovering it after the commitment is missed.",
+    "distractors": {
+      "A": "Silently estimating missing prices fabricates inputs and risks confident but wrong recommendations to category managers.",
+      "B": "Cutting scope unilaterally drops a third of SKUs from the executives' target without their agreement, and ignores the two-day sales lag.",
+      "D": "Upgrading data infrastructure may be one option, but committing to it before measuring the actual impact skips the feasibility evidence the decision needs."
+    },
+    "difficulty": 3,
+    "tags": ["data-quality", "feasibility", "prototype", "constraints"]
+  },
+  {
+    "id": "ap-stake-004",
+    "scenario": 3,
+    "domain": 6,
+    "task": "6.1",
+    "type": "multi",
+    "select": 2,
+    "stem": "You are leading discovery for the manufacturer's knowledge search. Which questions are most important to answer before committing to an architecture? (Select TWO.)",
+    "options": [
+      {"key": "A", "text": "How document permissions are represented in each source system, and whether data owners and security will accept enforcing them at retrieval time."},
+      {"key": "B", "text": "Which embedding model and vector database the team prefers, so that procurement can start in parallel with discovery."},
+      {"key": "C", "text": "Whether the business would prefer the answers to be generated by the most capable model tier for every query."},
+      {"key": "D", "text": "What employees actually search for today, by role and language, and how long it currently takes them to find a reliable answer."},
+      {"key": "E", "text": "How many agents the solution should use, so that the orchestration framework can be selected at the start."}
+    ],
+    "answer": ["A", "D"],
+    "explanation": "Permission enforcement is a hard constraint owned by data owners and security, and it shapes indexing and retrieval design from the start. Real query patterns and the current time to answer define both the retrieval requirements and the baseline against which success is measured. The other questions are solution choices that should follow from these findings.",
+    "distractors": {
+      "B": "Tool preferences are implementation choices that depend on the data and query findings, not discovery questions.",
+      "C": "Model tier should be chosen on evaluation trade-offs later, not by asking stakeholders for a preference up front.",
+      "E": "Agent count is a design decision derived from the problem's decomposition, not something to fix during discovery."
+    },
+    "difficulty": 2,
+    "tags": ["discovery", "permissions", "baseline", "query-patterns"]
+  },
+  {
+    "id": "ap-stake-005",
+    "scenario": 6,
+    "domain": 6,
+    "task": "6.1",
+    "type": "single",
+    "select": 1,
+    "stem": "Leadership wants proof that the Claude Code rollout improves delivery, and the platform team plans to enable it for all 400 engineers next month. What should you secure during discovery so that proof is possible later?",
+    "options": [
+      {"key": "A", "text": "A survey after three months asking engineers how much faster they feel, since perceived productivity is what drives continued adoption."},
+      {"key": "B", "text": "Counts of Claude Code sessions and accepted edits per engineer, collected from the first week of usage and reported to leadership as the main delivery measure."},
+      {"key": "C", "text": "A comparison three months after rollout between teams with high and low Claude Code usage, on cycle time and change failure rate per team."},
+      {"key": "D", "text": "Baseline delivery metrics such as cycle time, review turnaround and change failure rate per team, captured before rollout and agreed with leadership."}
+    ],
+    "answer": ["D"],
+    "explanation": "Proof of improvement needs a pre-rollout baseline on outcome metrics that leadership agrees are meaningful. Capturing cycle time, review turnaround and change failure rate per team before enablement allows a before-and-after or pilot-versus-comparison analysis. Comparisons assembled only after rollout are confounded, and once everyone is enabled the baseline can no longer be recovered.",
+    "distractors": {
+      "A": "A post-hoc perception survey has no baseline and measures sentiment rather than delivery outcomes.",
+      "B": "Usage counts show adoption, not whether delivery improved, and starting in the first week of use means there is no baseline.",
+      "C": "Teams that choose heavy usage differ in other ways, and without a pre-rollout baseline the comparison cannot separate the tool's effect from those differences."
+    },
+    "difficulty": 3,
+    "tags": ["baseline", "success-criteria", "telemetry"]
+  },
+  {
+    "id": "ap-stake-006",
+    "scenario": 1,
+    "domain": 6,
+    "task": "6.1",
+    "type": "single",
+    "select": 1,
+    "stem": "A vendor-built demo of the visit-summary assistant, run on synthetic patient notes, impressed the hospital's executive team, and they want to commit to rollout across 40 clinics. Clinicians have not yet used it. What is the main gap in the evidence so far?",
+    "options": [
+      {"key": "A", "text": "Feasibility has not been shown on representative real notes under approved PHI controls, scored by clinicians on time saved and clinically significant errors."},
+      {"key": "B", "text": "The demo did not use the most capable model tier, so its quality is likely understated relative to what a production deployment could achieve."},
+      {"key": "C", "text": "The synthetic notes were not long enough to test the model's context window, so the demo cannot show how it handles complex patient histories."},
+      {"key": "D", "text": "The executive team has not yet seen the system's projected latency and cost per summary at full volume, which are the deciding factors for a rollout of this size."}
+    ],
+    "answer": ["A"],
+    "explanation": "Demos on synthetic or curated data routinely overstate production quality, because real notes contain the messiness, abbreviations and edge cases that cause errors. A feasibility check must use representative real data handled under the agreed controls and be scored by the domain experts who own the outcome. Without it, the commitment rests on an unvalidated assumption.",
+    "distractors": {
+      "B": "Model tier is a tuning choice; the core gap is that no realistic evidence exists for any tier.",
+      "C": "Context length is one narrow technical factor and does not address the absence of real data and clinician evaluation.",
+      "D": "Latency and cost matter, but they are secondary to whether the drafts are safe and useful on real notes."
+    },
+    "difficulty": 2,
+    "tags": ["feasibility", "prototype", "real-data", "phi"]
+  },
+  {
+    "id": "ap-stake-007",
+    "scenario": 5,
+    "domain": 6,
+    "task": "6.2",
+    "type": "single",
+    "select": 1,
+    "stem": "You presented the merchandising architecture to the executive steering committee using the same 40-slide deck you reviewed with engineering, covering agent topology, tool schemas and token budgets. The committee ended without a decision and asked for \"something they can act on\". What is the most effective change?",
+    "options": [
+      {"key": "A", "text": "Shorten the engineering deck to ten slides by removing the tool schemas and token budgets, keeping the agent topology diagram as the centrepiece of the presentation."},
+      {"key": "B", "text": "Lead with a live demo of a Monday report produced by the system, then take the committee through the architecture slides as questions arise."},
+      {"key": "C", "text": "Prepare a one-page brief on analyst hours saved, report timeliness, cost per weekly run, key risks and the decision needed, with design detail in an appendix."},
+      {"key": "D", "text": "Send the full engineering deck with a recorded walkthrough so each committee member can review it at their own pace before the next meeting."}
+    ],
+    "answer": ["C"],
+    "explanation": "Executives decide on outcome, risk, cost and timeline, so the message must be framed in those terms with an explicit ask. Engineering detail belongs in a separate document or appendix for those who need it. Tailoring the same decision to each audience is the core communication skill here.",
+    "distractors": {
+      "A": "A shorter technical deck is still organised around architecture rather than the business outcome and the decision required.",
+      "B": "A demo shows the output but still gives the committee no view of cost, risk or the decision being asked of them.",
+      "D": "Self-paced review of the same material does not change its framing, so it still fails to give executives something they can act on."
+    },
+    "difficulty": 2,
+    "tags": ["executive-communication", "audience", "decision"]
+  },
+  {
+    "id": "ap-stake-008",
+    "scenario": 3,
+    "domain": 6,
+    "task": "6.2",
+    "type": "single",
+    "select": 1,
+    "stem": "Your team chose hybrid lexical-plus-semantic retrieval with reranking for the knowledge search, which adds roughly a second of latency. Six months from now a new platform owner will likely ask why a simpler semantic-only design was rejected. What is the best way to record the decision?",
+    "options": [
+      {"key": "A", "text": "Add a detailed comment in the retrieval service code explaining that reranking was added to improve precision on part numbers, so engineers see it next to the implementation."},
+      {"key": "B", "text": "Write an ADR covering the context, the options considered, eval results on recall and answer quality per option, the latency trade-off accepted and when to revisit."},
+      {"key": "C", "text": "Write a design page on the team wiki describing the hybrid retrieval architecture, its components and the latency budget agreed with operations."},
+      {"key": "D", "text": "Update the architecture diagram to show the reranker as a component, with a note on its expected latency budget for the operations team."}
+    ],
+    "answer": ["B"],
+    "explanation": "An architecture decision record preserves the context, the alternatives, the evidence and the trade-off accepted, so the reasoning outlives the meeting and the people involved. Attaching eval results such as recall on part-number queries turns the choice from opinion into evidence. Revisit criteria tell the future owner when the decision should be reopened.",
+    "distractors": {
+      "A": "A code comment records what was built but not the rejected options, the evidence or the trade-off accepted.",
+      "C": "A design description records what was built but not the rejected options, the evidence or the trade-off accepted.",
+      "D": "A diagram shows the chosen design and its budget but cannot explain the options considered or the reasoning."
+    },
+    "difficulty": 2,
+    "tags": ["adr", "trade-offs", "documentation"]
+  },
+  {
+    "id": "ap-stake-009",
+    "scenario": 1,
+    "domain": 6,
+    "task": "6.2",
+    "type": "single",
+    "select": 1,
+    "stem": "At the go/no-go review, the CMIO asks you directly: \"Can you guarantee the assistant will never invent a medication or dosage in a draft?\" How should you respond?",
+    "options": [
+      {"key": "A", "text": "Confirm that it will not, because the system prompt instructs the model to use only information from the visit record and never to add medications or doses of its own."},
+      {"key": "B", "text": "Say the model alone cannot guarantee it, but that mandatory clinician sign-off means no invented medication will ever reach a patient record."},
+      {"key": "C", "text": "Offer to set temperature to zero so that outputs become deterministic, which removes the risk of the model inventing new content in drafts."},
+      {"key": "D", "text": "Say it cannot be guaranteed, then give the measured rate on clinician-scored high-risk cases, the mitigations, mandatory sign-off and how errors are monitored."}
+    ],
+    "answer": ["D"],
+    "explanation": "No LLM design can guarantee zero hallucinations, and overpromising to a clinical leader destroys trust when the first error appears. The honest answer quantifies the residual risk from expert-scored evals, explains the layered mitigations such as grounding, citations and required clinician sign-off, and describes how errors will be caught in production. Sign-off reduces the risk but does not turn it into a guarantee.",
+    "distractors": {
+      "A": "A prompt instruction reduces but does not eliminate fabrication, so presenting it as a guarantee is an overpromise.",
+      "B": "This moves the guarantee onto reviewers, who can miss plausible errors, so it is still an overpromise and invites automation bias.",
+      "C": "Lower temperature reduces variability but does not make outputs fully deterministic or prevent the model from producing unsupported content."
+    },
+    "difficulty": 3,
+    "tags": ["hallucination", "honesty", "executive-communication", "limitations"]
+  },
+  {
+    "id": "ap-stake-010",
+    "scenario": 4,
+    "domain": 6,
+    "task": "6.2",
+    "type": "multi",
+    "select": 2,
+    "stem": "The agency's legal counsel and policy director must approve the triage design before the pilot. They are concerned about who is responsible when an application is mishandled and whether some applicant groups will be treated worse. Which communication approaches will be most effective? (Select TWO.)",
+    "options": [
+      {"key": "A", "text": "Share the complete system prompt and tool definitions so they can review exactly what instructions the model is given."},
+      {"key": "B", "text": "Explain the decision boundary: Claude flags and suggests, the caseworker decides, and every flag is logged with the reason shown to the caseworker."},
+      {"key": "C", "text": "Reassure them that the model has been trained by its provider to avoid bias, so fairness testing on agency data is not required."},
+      {"key": "D", "text": "Defer the accountability and fairness questions until after the pilot, when there will be real cases to discuss with them."},
+      {"key": "E", "text": "Present flag accuracy broken down by applicant group from the evaluation set, including known limits and how disparities will be monitored."}
+    ],
+    "answer": ["B", "E"],
+    "explanation": "Legal and policy audiences need accountability and evidence framed in their terms. A clear statement that eligibility decisions stay with an accountable caseworker, backed by an audit trail of what was flagged and why, answers the responsibility question. Disaggregated eval results with stated limits and ongoing monitoring answer the fairness question with evidence rather than assurance.",
+    "distractors": {
+      "A": "Raw prompts and tool schemas are engineering artifacts that do not directly answer questions about accountability or disparate impact.",
+      "C": "Provider training does not establish fairness on this agency's applicants, and claiming it does is an unsupported overpromise.",
+      "D": "Deferring legal and fairness concerns past the approval gate means piloting on citizens without the review that the stakeholders requested."
+    },
+    "difficulty": 2,
+    "tags": ["accountability", "fairness", "legal", "human-in-the-loop"]
+  },
+  {
+    "id": "ap-stake-011",
+    "scenario": 6,
+    "domain": 6,
+    "task": "6.2",
+    "type": "single",
+    "select": 1,
+    "stem": "Security wants to block every MCP server not built in-house, while several engineering teams argue that two third-party servers are essential to their workflows. The CTO asks you to resolve the dispute. What is the most effective approach?",
+    "options": [
+      {"key": "A", "text": "Set out the options with their risk and productivity impact, recommend a reviewed allowlist enforced through managed settings, and record the decision with criteria to revisit it."},
+      {"key": "B", "text": "Side with security for now, because blocking all external servers is the lowest-risk option, and invite teams to raise the issue again next quarter."},
+      {"key": "C", "text": "Let each engineering team decide which servers to use in its own repository settings, since teams understand their workflows better than security does."},
+      {"key": "D", "text": "Ask both groups to send their arguments to the CTO in writing so that leadership can decide without the architect having to take a position."}
+    ],
+    "answer": ["A"],
+    "explanation": "Contested decisions are best resolved by making the trade-off explicit: options, risks, impact and a reasoned recommendation, recorded so it can be revisited. A reviewed allowlist enforced centrally addresses security's control requirement while preserving the workflows teams depend on. Recording revisit criteria keeps the decision open to new evidence without reopening it every week.",
+    "distractors": {
+      "B": "Defaulting to one side without presenting the trade-off ignores real productivity costs and leaves the dispute unresolved.",
+      "C": "Uncontrolled per-team choices abandon the central control security legitimately needs and produce inconsistent risk across repositories.",
+      "D": "The architect's role is to frame the trade-off and recommend; handing over raw arguments leaves leadership without an analysis."
+    },
+    "difficulty": 2,
+    "tags": ["trade-offs", "security", "decision-record", "mcp"]
+  },
+  {
+    "id": "ap-stake-012",
+    "scenario": 5,
+    "domain": 6,
+    "task": "6.2",
+    "type": "single",
+    "select": 1,
+    "stem": "The retail CFO questions your design, which uses a capable model for the orchestrator and a smaller, faster tier for the pricing-research workers: \"Why aren't we using the best model everywhere? I don't want cheap analysis.\" What is the most effective response?",
+    "options": [
+      {"key": "A", "text": "Agree to use the most capable tier for every agent to remove the concern, and absorb the extra cost and latency in the project's contingency budget for the first year."},
+      {"key": "B", "text": "Explain that smaller models are the industry norm for worker agents and cite public benchmark scores showing they are close to larger tiers."},
+      {"key": "C", "text": "Show eval results for both configurations on recent real weeks: recommendation quality, cost per weekly run and completion time against the 7 a.m. deadline."},
+      {"key": "D", "text": "Run the capable tier everywhere alongside the mixed design for a month, and let the CFO choose based on which reports managers prefer."}
+    ],
+    "answer": ["C"],
+    "explanation": "Trade-off decisions should be justified with evidence from the client's own data, translated into the terms the stakeholder cares about. Comparing configurations on recommendation quality, cost per run and deadline compliance shows whether the mixed design meets the quality bar more cheaply and quickly. If it does not, the same evidence justifies changing the design.",
+    "distractors": {
+      "A": "Conceding without evidence adds cost and latency that may put the Monday deadline at risk and does not show the quality concern was real.",
+      "B": "Industry norms and public benchmarks do not show how the design performs on this retailer's data and tasks.",
+      "D": "A month of double running adds cost and rests on preference, when evals on real weeks can already compare quality, cost and timeliness."
+    },
+    "difficulty": 2,
+    "tags": ["model-selection", "eval-evidence", "cost", "executive-communication"]
+  },
+  {
+    "id": "ap-stake-013",
+    "scenario": 3,
+    "domain": 6,
+    "task": "6.3",
+    "type": "single",
+    "select": 1,
+    "stem": "The manufacturer's business owner proposes an internal SLA for knowledge search: \"answers must be 100% accurate and returned in under one second.\" How should you respond?",
+    "options": [
+      {"key": "A", "text": "Accept the one-second latency target as written, and replace 100% accuracy with a commitment that every answer cites a source document, which can be checked automatically."},
+      {"key": "B", "text": "Propose SLOs for p95 latency, availability that names upstream model dependencies, and citation-correct answer rate on an agreed eval set, each with a measurement method."},
+      {"key": "C", "text": "Decline to agree an SLA for answer quality, because model outputs are non-deterministic, and limit the commitment to latency and availability only."},
+      {"key": "D", "text": "Agree the latency target and promise accuracy by requiring the model to answer only when retrieved documents contain the information needed."}
+    ],
+    "answer": ["B"],
+    "explanation": "Service commitments must be measurable and achievable. Because LLM outputs are non-deterministic, quality is expressed as a rate on a defined eval set or sampled review rather than an absolute promise, and latency as a percentile. Availability should acknowledge upstream provider dependencies, and each target needs an agreed measurement method.",
+    "distractors": {
+      "A": "A cited answer can still be wrong, so citation presence is not a quality measure, and an absolute one-second limit ignores how latency is distributed.",
+      "C": "Quality can and should be committed to as a measured rate; excluding it leaves the most important expectation unmanaged.",
+      "D": "Abstention reduces errors but cannot guarantee 100% accuracy, so this still overpromises."
+    },
+    "difficulty": 3,
+    "tags": ["sla", "slo", "non-determinism", "expectations"]
+  },
+  {
+    "id": "ap-stake-014",
+    "scenario": 1,
+    "domain": 6,
+    "task": "6.3",
+    "type": "single",
+    "select": 1,
+    "stem": "Three pilot clinics have used the visit-summary assistant for two weeks. Feedback arrives as hallway comments to the clinic manager, mostly that drafts are \"too long\", and one engineer has started trimming the prompt in response. What is the most effective way to manage feedback?",
+    "options": [
+      {"key": "A", "text": "Run a satisfaction survey at the end of the pilot so feedback can be gathered from all clinicians at once, then adjust the prompt based on the results."},
+      {"key": "B", "text": "Let the engineer continue trimming the prompt in response to comments, since quick iteration shows clinicians that their feedback is being acted on."},
+      {"key": "C", "text": "Ask the clinic manager to compile the hallway comments into a weekly email to the project team, and have the team prioritise prompt fixes for the most frequent complaints."},
+      {"key": "D", "text": "Add in-workflow ratings with reason codes and capture clinician edits, triage them weekly, and add recurring issues to the eval set before changing the prompt."}
+    ],
+    "answer": ["D"],
+    "explanation": "Pilot feedback should be captured in the workflow in a structured form, so it is representative and linked to specific outputs. Captured edits show what clinicians actually changed, and turning recurring issues into eval cases lets prompt changes be checked against all quality criteria, including high-risk content, before release. Ad hoc prompt edits driven by anecdotes risk silently breaking other behaviour.",
+    "distractors": {
+      "A": "An end-of-pilot survey arrives too late, is subjective and is not tied to specific drafts that could become eval cases.",
+      "B": "Unevaluated prompt changes based on hallway comments can shorten drafts by dropping clinically important content without anyone noticing.",
+      "C": "A summary of comments is still anecdotal and second-hand, and does not connect feedback to outputs or to the eval suite."
+    },
+    "difficulty": 2,
+    "tags": ["feedback-loop", "pilot", "eval-set"]
+  },
+  {
+    "id": "ap-stake-015",
+    "scenario": 5,
+    "domain": 6,
+    "task": "6.3",
+    "type": "single",
+    "select": 1,
+    "stem": "Four weeks into the merchandising pilot, a senior executive asks the team to also have the agents draft supplier negotiation emails, starting next week. The current scope is still two points below its agreed recommendation-quality target. What should you do?",
+    "options": [
+      {"key": "A", "text": "Assess the request against the agreed success criteria, show its effect on quality, cost and the Monday deadline, and let the sponsor decide whether it waits or replaces work."},
+      {"key": "B", "text": "Add the email drafting as a new worker agent next week, since it reuses existing pricing research and shows responsiveness to a senior stakeholder."},
+      {"key": "C", "text": "Add the request to the backlog for after the pilot, and tell the executive the team will pick it up once the quality target has been met."},
+      {"key": "D", "text": "Start building the email drafting in parallel with a separate team so that the current scope's quality work is not delayed by the new request."}
+    ],
+    "answer": ["A"],
+    "explanation": "Scope creep is managed through a change process anchored on the agreed success criteria. Making the impact on the unmet quality target, cost and deadline visible lets the sponsor make an informed trade-off instead of the team absorbing or deciding it silently. The request is neither accepted nor deferred by default.",
+    "distractors": {
+      "B": "Accepting new scope while the core target is unmet dilutes effort and risks missing the commitments the pilot is measured on.",
+      "C": "Deferring by default decides the priority for the sponsor without showing the trade-off, which the sponsor may weigh differently.",
+      "D": "Parallel work still consumes shared resources, data access and review time, and bypasses the sponsor's decision on priorities."
+    },
+    "difficulty": 3,
+    "tags": ["scope-creep", "change-control", "expectations"]
+  },
+  {
+    "id": "ap-stake-016",
+    "scenario": 6,
+    "domain": 6,
+    "task": "6.3",
+    "type": "multi",
+    "select": 2,
+    "stem": "Platform engineering is writing an internal service agreement for Claude Code and the internal MCP servers. During a recent model provider incident, engineers saw slow responses and errors and flooded the help channel. What should the agreement include? (Select TWO.)",
+    "options": [
+      {"key": "A", "text": "An explicit list of upstream dependencies, including the model provider, with the degraded-mode behaviour and incident communication path when one is impaired."},
+      {"key": "B", "text": "A guarantee that the same prompt in the same repository will always produce the same code change, so results are reproducible across engineers."},
+      {"key": "C", "text": "Objectives for error rate and latency percentiles measured from the platform's own telemetry, with an error budget and a named owner."},
+      {"key": "D", "text": "A commitment to 100% availability for Claude Code, backed by an escalation to the model provider whenever any engineer reports a problem."},
+      {"key": "E", "text": "A target for the number of licences activated per team each quarter, reported as the main measure of service health."}
+    ],
+    "answer": ["A", "C"],
+    "explanation": "A realistic service agreement names the dependencies it cannot control and states what happens when they degrade, so engineers know what to expect and where status is communicated. Objectives measured from the platform's own telemetry with an error budget and an owner make the service accountable. Promises of determinism or perfect availability cannot be kept.",
+    "distractors": {
+      "B": "Model outputs are non-deterministic, so identical code changes for identical prompts cannot be guaranteed.",
+      "D": "Perfect availability is unachievable with upstream dependencies, and escalating every report is not an operating model.",
+      "E": "Licence activation measures adoption, not whether the service is performing for engineers."
+    },
+    "difficulty": 1,
+    "tags": ["sla", "dependencies", "non-determinism", "telemetry"]
+  },
+  {
+    "id": "ap-stake-017",
+    "scenario": 4,
+    "domain": 6,
+    "task": "6.3",
+    "type": "single",
+    "select": 1,
+    "stem": "Midway through the triage pilot, the program director forwards a complaint: an applicant's case was flagged as missing evidence that had in fact been submitted. The director wants the pilot stopped immediately. What is the best response?",
+    "options": [
+      {"key": "A", "text": "Stop the pilot as requested, because any error affecting a citizen's application is unacceptable, and restart only once the model has been shown to make no such errors."},
+      {"key": "B", "text": "Explain that occasional errors are expected from any LLM system, and continue the pilot unchanged because caseworkers review every flag anyway."},
+      {"key": "C", "text": "Investigate the case, then compare flag precision and caseworker override rates with the pause criteria agreed before the pilot, and present the evidence."},
+      {"key": "D", "text": "Add a rule that suppresses missing-evidence flags for this document type, so the same complaint cannot recur while the pilot continues."}
+    ],
+    "answer": ["C"],
+    "explanation": "Expectations are reset with evidence, not with anecdotes or reassurance. Investigating the specific failure shows whether it reveals a systemic issue, and comparing measured rates with pause criteria agreed in advance lets the director make a decision on an objective basis. If the criteria are breached, pausing is the right call.",
+    "distractors": {
+      "A": "Stopping on a single case without investigation abandons the agreed criteria, and a zero-error restart condition can never be met.",
+      "B": "Dismissing the complaint without investigation or evidence damages trust and may hide a systemic problem.",
+      "D": "Suppressing a whole flag type to avoid one complaint can create missed-evidence errors elsewhere and is an unevaluated change."
+    },
+    "difficulty": 2,
+    "tags": ["expectations", "pause-criteria", "evidence", "pilot"]
+  },
+  {
+    "id": "ap-stake-018",
+    "scenario": 5,
+    "domain": 6,
+    "task": "6.3",
+    "type": "single",
+    "select": 1,
+    "stem": "Three months after launch, the merchandising reports arrive by 7 a.m. every Monday and meet the agreed quality score, but analyst hours have not fallen and category managers say they \"skim\" the reports. What is the most likely root cause of the gap?",
+    "options": [
+      {"key": "A", "text": "The quality score threshold was set too low during design, so the recommendations are not good enough for category managers to rely on without their own re-analysis."},
+      {"key": "B", "text": "The feedback loop tracks delivery and quality but not whether category managers act on recommendations, so the value gap went unnoticed and unexplored."},
+      {"key": "C", "text": "The orchestrator's model tier is too small to produce persuasive narratives, so category managers do not find the recommendations convincing."},
+      {"key": "D", "text": "The report is delivered too early on Monday, before category managers have time to read it, so they fall back on their usual analyst requests."}
+    ],
+    "answer": ["B"],
+    "explanation": "The system meets its system-level targets but not the business outcome, which points to a feedback loop that never measured whether users act on the output. Without adoption and decision-use signals, the team cannot tell whether the cause is trust, relevance, format or workflow fit. Adding those measures and talking to category managers is the next step.",
+    "distractors": {
+      "A": "The threshold may or may not be the issue; without measures of use and user feedback, this is a guess rather than a diagnosis.",
+      "C": "Jumping to model tier is premature when there is no evidence on why managers skim the reports.",
+      "D": "Delivery time was agreed with stakeholders and is an unlikely explanation for reports being skimmed throughout the week."
+    },
+    "difficulty": 3,
+    "tags": ["feedback-loop", "adoption", "business-value"]
+  },
+  {
+    "id": "ap-stake-019",
+    "scenario": 3,
+    "domain": 6,
+    "task": "6.4",
+    "type": "multi",
+    "select": 2,
+    "stem": "Your consulting team is handing the knowledge search system over to the manufacturer's internal platform team, who will run it without you. Which artifacts are most important in the handoff package? (Select TWO.)",
+    "options": [
+      {"key": "A", "text": "The full recordings and transcripts of every design workshop, so the platform team can trace how each requirement emerged."},
+      {"key": "B", "text": "The final steering committee deck summarising the business case, architecture and pilot results at an executive level."},
+      {"key": "C", "text": "Runbooks for re-indexing, permission-sync failures and stale-answer symptoms, with alerts, rollback steps and escalation contacts."},
+      {"key": "D", "text": "The production prompts exported to a shared document, with notes on why each instruction was added."},
+      {"key": "E", "text": "The eval suite with golden queries per language and document type, graders and pass thresholds, runnable by the platform team."}
+    ],
+    "answer": ["C", "E"],
+    "explanation": "A handoff package must let the receiving team operate and safely change the system. Runbooks keyed to observable symptoms let them respond to the known failure modes of a RAG system, and a runnable eval suite acts as the living specification that gates every future change. Records of how decisions were made are useful context but do not make the team operationally ready.",
+    "distractors": {
+      "A": "Raw transcripts are hard to use and do not tell the team how to operate or test the system.",
+      "B": "An executive deck is not operational documentation and lacks the detail needed to run or change the system.",
+      "D": "A document copy is not versioned or linked to eval results; prompts belong in source control where changes can be gated."
+    },
+    "difficulty": 2,
+    "tags": ["handoff", "runbooks", "eval-suite", "documentation"]
+  },
+  {
+    "id": "ap-stake-020",
+    "scenario": 1,
+    "domain": 6,
+    "task": "6.4",
+    "type": "single",
+    "select": 1,
+    "stem": "An engineer edited the production system prompt to make visit summaries sound warmer. A week later, clinicians report that drafts now omit medication changes, and nobody can say exactly what the prompt looked like before. What implementation guidance best prevents a repeat?",
+    "options": [
+      {"key": "A", "text": "Restrict prompt editing to the lead architect, who reviews each proposed change by reading it carefully before it is applied to production."},
+      {"key": "B", "text": "Keep prompts in source control with a change log, and require a second engineer to review and approve each prompt pull request before it is deployed to production."},
+      {"key": "C", "text": "Freeze the system prompt for the rest of the rollout and route tone and style requests to a separate post-processing step instead."},
+      {"key": "D", "text": "Keep prompts in source control with a change log, and require the eval suite, including high-risk medication cases, to pass before any version is promoted."}
+    ],
+    "answer": ["D"],
+    "explanation": "Prompts are versioned artifacts that change system behaviour as much as code does. Source control provides history and diffs, and an eval gate that includes high-risk cases catches regressions such as dropped medication changes before clinicians see them. Human review alone cannot reliably predict how a prompt change affects model output.",
+    "distractors": {
+      "A": "Reading a prompt cannot reveal how it changes outputs, and a single gatekeeper is neither scalable nor evidence-based.",
+      "B": "History and review help, but reading a diff cannot show that a change drops medication changes from drafts; only running the evals can.",
+      "C": "Freezing prompts blocks legitimate improvement, and post-processing adds complexity without addressing the missing change process."
+    },
+    "difficulty": 3,
+    "tags": ["prompt-versioning", "eval-gate", "implementation-guidance"]
+  },
+  {
+    "id": "ap-stake-021",
+    "scenario": 6,
+    "domain": 6,
+    "task": "6.4",
+    "type": "single",
+    "select": 1,
+    "stem": "A shared hook blocks Claude Code from reading `.env` files and credential directories. Several teams have quietly removed it from their project settings because it \"gets in the way\", and the security team only found out during an audit. What should be done first?",
+    "options": [
+      {"key": "A", "text": "Document the hook's rationale, the risk it mitigates, its owner and an exception process next to the configuration, and move it into managed settings."},
+      {"key": "B", "text": "Remove the hook from the shared configuration, since teams have shown it blocks their work, and rely on secret scanning in the CI pipeline to catch any leaked credentials later."},
+      {"key": "C", "text": "Send a company-wide reminder that removing security hooks is against policy, and ask team leads to confirm compliance by the end of the month."},
+      {"key": "D", "text": "Replace the hook with a broader rule that blocks reading any file outside the `src` directory, so that the restriction is harder to work around."}
+    ],
+    "answer": ["A"],
+    "explanation": "Guardrails without documented rationale look like arbitrary friction and get removed. Recording why the control exists, who owns it and how to request an exception gives teams a legitimate path for real needs, and managed settings prevent silent removal. Together they address both the understanding gap and the enforcement gap.",
+    "distractors": {
+      "B": "Dropping the control trades a preventive guard for a later detective one and ignores why it was needed.",
+      "C": "A reminder neither explains the risk nor prevents removal, so the same bypass is likely to recur.",
+      "D": "A broader restriction increases friction without explaining the rationale, making further workarounds more likely."
+    },
+    "difficulty": 2,
+    "tags": ["guardrail-rationale", "documentation", "managed-settings"]
+  },
+  {
+    "id": "ap-stake-022",
+    "scenario": 4,
+    "domain": 6,
+    "task": "6.4",
+    "type": "single",
+    "select": 1,
+    "stem": "The agency's security authorization team must approve the triage system before applicant data can be processed. Which documentation will most directly support their review?",
+    "options": [
+      {"key": "A", "text": "A detailed prompt library with every system prompt and few-shot example, showing reviewers how the model is instructed to handle applicant forms."},
+      {"key": "B", "text": "The pilot results summary, showing extraction accuracy, flag precision and caseworker time saved, to show the system is ready."},
+      {"key": "C", "text": "A data flow diagram showing where applicant data travels, the deployment boundary it stays within, what is logged and retained, and each trust boundary."},
+      {"key": "D", "text": "The model provider's completed security questionnaire and audit reports, describing its certifications, encryption and data handling."}
+    ],
+    "answer": ["C"],
+    "explanation": "Security authorization reviewers need to see where sensitive data goes, which boundaries it crosses, what is stored and for how long, and how components trust each other. A data flow diagram with these elements maps directly onto their controls review. Quality results and component diagrams matter to other audiences but do not answer the reviewers' questions.",
+    "distractors": {
+      "A": "Prompts show model instructions, not where data flows, is stored or crosses boundaries.",
+      "B": "Pilot quality metrics answer whether the system works, not whether it handles data within authorized controls.",
+      "D": "Provider documents describe the vendor, not where this system sends, logs and retains applicant data."
+    },
+    "difficulty": 2,
+    "tags": ["data-flow", "security-review", "documentation", "fedramp"]
+  },
+  {
+    "id": "ap-stake-023",
+    "scenario": 5,
+    "domain": 6,
+    "task": "6.4",
+    "type": "single",
+    "select": 1,
+    "stem": "A separate development team will build the pricing and sales-analysis worker agents from your design, while your team builds the orchestrator. Early integration shows workers returning long free-text narratives the orchestrator struggles to synthesise. What implementation guidance would most effectively prevent this?",
+    "options": [
+      {"key": "A", "text": "A detailed narrative design document describing each worker's purpose and the overall business goals, so the team understands the intent behind the design."},
+      {"key": "B", "text": "An interface contract per worker with input fields, a condensed output schema, size limits and eval cases with pass thresholds that each worker must meet."},
+      {"key": "C", "text": "Weekly syncs between the two teams where the orchestrator team reviews sample worker outputs and suggests changes to the worker prompts informally."},
+      {"key": "D", "text": "An instruction to the orchestrator to summarise any worker output that exceeds a length threshold before it begins synthesising the weekly report."}
+    ],
+    "answer": ["B"],
+    "explanation": "Implementation guidance for a team building components should be testable: explicit contracts with input and output schemas, condensed result formats and eval cases with thresholds. That turns the integration requirement into something each worker can be checked against before integration. Prose and informal reviews leave the format open to interpretation.",
+    "distractors": {
+      "A": "Narrative intent is useful context but leaves the output format undefined, which is exactly what failed.",
+      "C": "Informal reviews depend on meetings rather than a testable specification and do not scale or persist.",
+      "D": "Patching the orchestrator adds cost and latency and hides the missing contract instead of fixing it."
+    },
+    "difficulty": 2,
+    "tags": ["interface-contract", "implementation-guidance", "multi-agent"]
+  },
+  {
+    "id": "ap-stake-024",
+    "scenario": 1,
+    "domain": 6,
+    "task": "6.5",
+    "type": "single",
+    "select": 1,
+    "stem": "The model the visit-summary assistant uses has been given a retirement date by the provider, and a newer model in the same tier is available. Clinical leadership asks how the change will be handled. What is the best plan?",
+    "options": [
+      {"key": "A", "text": "Switch once the provider's release notes confirm the newer model matches or exceeds the current one on summarisation benchmarks."},
+      {"key": "B", "text": "Keep using the current model until its retirement date, then switch over in one step to avoid disrupting clinicians before it is strictly necessary."},
+      {"key": "C", "text": "Run the eval suite on the new model and switch all clinics on the retirement date if it passes, so clinicians face only one transition."},
+      {"key": "D", "text": "Run the existing eval suite, including expert-scored high-risk cases, on the new model, fix regressions, then stage the rollout well before the retirement date."}
+    ],
+    "answer": ["D"],
+    "explanation": "Model upgrades are planned, eval-gated changes. Running the existing suite, including the high-risk dosage and contraindication cases scored by clinicians, shows whether the new model meets the agreed thresholds and where prompts need adjustment. A staged rollout ahead of retirement leaves time to roll back and avoids a forced, untested cutover.",
+    "distractors": {
+      "A": "Provider benchmarks do not measure this task or its high-risk cases, so they cannot show the new model is safe here.",
+      "B": "Waiting until retirement forces an untested big-bang switch with no time to fix problems or roll back.",
+      "C": "Evaluating first is right, but a single cutover on the deadline leaves no time to fix regressions found in live use or to roll back."
+    },
+    "difficulty": 2,
+    "tags": ["model-upgrade", "deprecation", "eval-suite", "staged-rollout"]
+  },
+  {
+    "id": "ap-stake-025",
+    "scenario": 3,
+    "domain": 6,
+    "task": "6.5",
+    "type": "single",
+    "select": 1,
+    "stem": "Four months after the consulting team handed over the knowledge search, employees complain that answers about recently revised policies are wrong. Investigation shows the re-indexing job has failed silently for nine weeks. What is the underlying lifecycle failure?",
+    "options": [
+      {"key": "A", "text": "No named owner was made accountable after handoff for monitoring index freshness and answer quality against alert thresholds."},
+      {"key": "B", "text": "The re-indexing job lacked retries and failure alerts; automatic retries and an alert to the consulting team's on-call channel would have caught it."},
+      {"key": "C", "text": "The pilot was too short to show the failure, so the consulting team should have extended it by several more months."},
+      {"key": "D", "text": "The eval suite was too small at launch, so the system should have been held back until many more golden queries had been added for each language."}
+    ],
+    "answer": ["A"],
+    "explanation": "Handoff is a transition of ownership, not the end of the lifecycle. A silent failure lasting weeks shows that nobody was accountable for monitoring freshness and quality, and no alert threshold triggered action. Assigning an owner with monitoring and runbooks is the fix that addresses the lifecycle gap.",
+    "distractors": {
+      "B": "Alerts need someone accountable to receive and act on them; routing them to a team that has left shows the gap is ownership, not tooling.",
+      "C": "A longer pilot does not replace ongoing production monitoring, because failures can start at any time after launch.",
+      "D": "A larger launch eval suite would not detect an operational failure that began months later without someone running it."
+    },
+    "difficulty": 3,
+    "tags": ["handoff", "ownership", "monitoring", "index-freshness"]
+  },
+  {
+    "id": "ap-stake-026",
+    "scenario": 4,
+    "domain": 6,
+    "task": "6.5",
+    "type": "multi",
+    "select": 2,
+    "stem": "The benefits triage pilot in two regional offices is ending, and the agency wants to decide whether to roll out to all offices. Which should be exit criteria for moving from pilot to rollout? (Select TWO.)",
+    "options": [
+      {"key": "A", "text": "Caseworkers in the pilot offices report that they like the tool and would recommend it to colleagues in other regional offices."},
+      {"key": "B", "text": "Extraction accuracy and flag precision met the pre-agreed thresholds, with no material disparity across applicant groups on eval and live samples."},
+      {"key": "C", "text": "All features requested by stakeholders during the pilot, including the extra report formats, have been built and deployed to the pilot offices."},
+      {"key": "D", "text": "An operating team is named and trained, with runbooks, monitoring dashboards and alert thresholds in place for the wider rollout."},
+      {"key": "E", "text": "The system has been upgraded to the newest available model so that the rollout starts on the most capable technology available."}
+    ],
+    "answer": ["B", "D"],
+    "explanation": "Phase gates should rest on evidence and readiness. Meeting the thresholds agreed before the pilot, including fairness across applicant groups, shows the system performs as required, and a trained, equipped operating team shows it can be run safely at scale. Satisfaction, feature completeness and model novelty are not evidence of either.",
+    "distractors": {
+      "A": "Caseworker enthusiasm is useful feedback but is not evidence that accuracy and fairness thresholds were met.",
+      "C": "Feature completeness is scope, not readiness, and adding features late can introduce new risk.",
+      "E": "Changing the model just before rollout introduces an unevaluated change rather than demonstrating readiness."
+    },
+    "difficulty": 1,
+    "tags": ["exit-criteria", "pilot", "rollout", "fairness"]
+  },
+  {
+    "id": "ap-stake-027",
+    "scenario": 6,
+    "domain": 6,
+    "task": "6.5",
+    "type": "single",
+    "select": 1,
+    "stem": "Platform engineering has finished the shared Claude Code configuration and the approved MCP servers, and proposes enabling everything for all 400 engineers on the same day to \"get maximum impact quickly\". What is the most effective rollout plan?",
+    "options": [
+      {"key": "A", "text": "Enable all engineers on the same day with conservative permission rules and a rollback switch, and measure impact against last quarter's metrics."},
+      {"key": "B", "text": "Enable only the platform team first, since they built the configuration and can fix problems fastest, then open it to everyone after one month."},
+      {"key": "C", "text": "Pilot with representative teams across repository types, with feedback channels and baseline comparison, then expand in stages as exit criteria are met."},
+      {"key": "D", "text": "Let each team opt in whenever it decides it is ready, so that adoption grows organically and teams that are resistant are not forced onto the new tooling early."}
+    ],
+    "answer": ["C"],
+    "explanation": "A representative pilot surfaces configuration, permission and workflow issues across different repositories before they affect everyone, and a baseline comparison gives leadership the delivery evidence it wants. Staged expansion against exit criteria keeps risk contained and lets lessons feed each wave. This is the build-and-pilot phase done deliberately rather than skipped.",
+    "distractors": {
+      "A": "Guardrails limit damage, but a single launch exposes every team at once, and a prior-quarter comparison has no control group to isolate the tool's effect.",
+      "B": "The platform team is not representative of other teams' repositories and workflows, so its experience will miss many issues.",
+      "D": "Self-selected adoption biases the evidence and gives no controlled stages or exit criteria."
+    },
+    "difficulty": 2,
+    "tags": ["staged-rollout", "pilot", "lifecycle"]
+  },
+  {
+    "id": "ap-stake-028",
+    "scenario": 5,
+    "domain": 6,
+    "task": "6.5",
+    "type": "single",
+    "select": 1,
+    "stem": "The retailer will retire its current competitor price feed in eight weeks and replace it with a new provider whose data has different SKU mappings and update times. The merchandising agents depend on the feed. What is the best first step?",
+    "options": [
+      {"key": "A", "text": "Swap the tool's endpoint to the new provider on the cutover date, since the agents' prompts describe the data generically and should adapt automatically."},
+      {"key": "B", "text": "Inventory every agent, tool, prompt and eval case that depends on the feed, then plan evaluation of the new source and tell category managers what will change."},
+      {"key": "C", "text": "Ask the new provider to match the old SKU mappings and update schedule exactly, so that no changes are needed to the agents or their prompts."},
+      {"key": "D", "text": "Freeze all other changes to the merchandising agents for eight weeks so that the team can focus entirely on the provider migration work."}
+    ],
+    "answer": ["B"],
+    "explanation": "Deprecation planning starts with knowing what depends on the component being retired. An inventory of agents, tools, prompts and eval cases reveals the impact, evaluation of the replacement on real data shows whether recommendations stay within targets, and early communication lets category managers adjust expectations about any change in coverage or freshness.",
+    "distractors": {
+      "A": "An unevaluated swap on cutover day risks silent errors from mismatched SKUs and different update timing.",
+      "C": "Asking the vendor to adapt may help, but it is not a plan and gives no evidence of the impact on the agents.",
+      "D": "A blanket change freeze is a scheduling tactic that does not identify dependencies or evaluate the new source."
+    },
+    "difficulty": 2,
+    "tags": ["deprecation", "dependencies", "lifecycle", "communication"]
+  }
+]

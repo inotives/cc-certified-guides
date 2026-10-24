@@ -2,7 +2,9 @@ import type { ExamContent } from '../exams/types.js';
 import { db, parseQuestion, type QuestionRow } from '../db.js';
 import { attemptView, estimateScaled, stats } from '../practice.js';
 import { DOMAIN_COLORS, esc, fmtDateTime, icons, layout, pageHead, pct, rich } from './layout.js';
-import { objectiveTerm } from './pages.js';
+import { objectiveTerm, scenarioTerm } from './pages.js';
+
+const cap = (s: string) => s[0].toUpperCase() + s.slice(1);
 
 const PASS_PCT = 0.72; // practice target that roughly corresponds to the 720 cut on a linear scale
 
@@ -29,7 +31,7 @@ export function practicePage(exam: ExamContent, error?: string) {
   const feedbackToggle = '<label class="switch"><input type="checkbox" name="feedback" value="1" checked> Instant feedback</label>';
   const body = `
   ${pageHead('Practice', 'Simulated exams & drills',
-    `${st.bank} ${scenarios.length ? 'scenario-based ' : ''}questions, written against the ${domains.reduce((n, d) => n + d.tasks.length, 0)} official ${term}s and including the ${exam.officialSamples} official sample questions. Options are shuffled every attempt, and drills serve the questions you've seen least first.`)}
+    `${st.bank} ${scenarios.length && !exam.caseStudies ? 'scenario-based ' : ''}questions, written against the ${domains.reduce((n, d) => n + d.tasks.length, 0)} official ${term}s and including the ${exam.officialSamples} official sample questions. Options are shuffled every attempt, and drills serve the questions you've seen least first.`)}
   ${error ? `<div class="callout" style="margin-bottom:16px">${esc(error)}</div>` : ''}
 
   <div class="card" style="margin-bottom:18px;border-color:var(--clay)">
@@ -41,7 +43,7 @@ export function practicePage(exam: ExamContent, error?: string) {
   </div>
 
   <div class="grid g3">
-    <div class="card mode-card"><h3>Quick mixed set</h3><p class="small muted">Random across every domain${scenarios.length ? ' and scenario' : ''}, good as a daily warm-up.</p>
+    <div class="card mode-card"><h3>Quick mixed set</h3><p class="small muted">Random across every domain${scenarios.length ? ` and ${scenarioTerm(exam)}` : ''}, good as a daily warm-up.</p>
       <form action="${B}/practice/start"><input type="hidden" name="mode" value="quick">
         <select name="count">${[10, 15, 20, 30, 40].map((n) => `<option ${n === 15 ? 'selected' : ''}>${n}</option>`).join('')}</select>
         ${feedbackToggle}<button class="btn primary sm">Start</button></form></div>
@@ -52,7 +54,7 @@ export function practicePage(exam: ExamContent, error?: string) {
         <select name="count">${[10, 20, 30].map((n) => `<option ${n === 20 ? 'selected' : ''}>${n}</option>`).join('')}</select>
         ${feedbackToggle}<button class="btn primary sm">Start</button></form></div>
 
-    ${scenarios.length ? `<div class="card mode-card"><h3>Scenario drill</h3><p class="small muted">Practise inside one production context, like an exam section.</p>
+    ${scenarios.length ? `<div class="card mode-card"><h3>${cap(scenarioTerm(exam))} drill</h3><p class="small muted">${exam.caseStudies ? 'Practise inside one enterprise case study (unofficial study grouping).' : 'Practise inside one production context, like an exam section.'}</p>
       <form action="${B}/practice/start"><input type="hidden" name="mode" value="scenario">
         <select name="scenario">${scenarios.map((s) => `<option value="${s.id}">S${s.id} · ${esc(s.name)}</option>`).join('')}</select>
         <select name="count">${[10, 15, 25].map((n) => `<option ${n === 15 ? 'selected' : ''}>${n}</option>`).join('')}</select>
@@ -89,6 +91,7 @@ export function examPage(exam: ExamContent, id: number, label: string) {
 
   const clientCtx = JSON.stringify({
     term: objectiveTerm(exam) === 'skill' ? 'Skill' : 'Task',
+    scenarioWord: cap(scenarioTerm(exam)),
     scenarios: Object.fromEntries(scenarios.map((s) => [s.id, { name: s.name, context: s.context }])),
     domains: Object.fromEntries(domains.map((d) => [d.id, { name: d.name, short: d.short, color: DOMAIN_COLORS[d.id] }])),
     tasks: Object.fromEntries(domains.flatMap((d) => d.tasks.map((t) => [t.id, t.title]))),
@@ -159,7 +162,7 @@ export function reviewPage(exam: ExamContent, id: number) {
 
   <section class="grid g2" style="margin-top:18px">
     <div class="card"><h3>By domain</h3>${breakdownTable(byDomain.map(([d, e]) => ({ name: `D${d} · ${domainById(d)!.short}`, color: DOMAIN_COLORS[d], ...e })))}</div>
-    ${scenarios.length ? `<div class="card"><h3>By scenario</h3>${breakdownTable(byScenario.map(([s, e]) => ({ name: `S${s} · ${scenarioById(s)?.name ?? ''}`, ...e })))}</div>`
+    ${scenarios.length ? `<div class="card"><h3>By ${scenarioTerm(exam)}</h3>${breakdownTable(byScenario.map(([s, e]) => ({ name: `S${s} · ${scenarioById(s)?.name ?? ''}`, ...e })))}</div>`
       : `<div class="card"><h3>By ${objectiveTerm(exam)}</h3>${breakdownTable(tally((i) => i.task).map(([t, e]) => ({ name: `${t} · ${taskById(t)?.title ?? ''}`, ...e })))}</div>`}
   </section>
 
@@ -232,7 +235,7 @@ export function historyPage(exam: ExamContent) {
 
   <section class="grid g2" style="margin-top:18px">
     <div class="card"><h3>Accuracy by domain (all time)</h3>${breakdownTable(st.byDomain.map((d) => ({ name: `D${d.domain} · ${domainById(d.domain)!.short}`, color: DOMAIN_COLORS[d.domain], correct: d.correct, total: d.answered })))}</div>
-    ${scenarios.length ? `<div class="card"><h3>Accuracy by scenario (all time)</h3>${breakdownTable(st.byScenario.map((s) => ({ name: `S${s.scenario} · ${scenarioById(s.scenario)?.name ?? ''}`, correct: s.correct, total: s.answered })))}</div>`
+    ${scenarios.length ? `<div class="card"><h3>Accuracy by ${scenarioTerm(exam)} (all time)</h3>${breakdownTable(st.byScenario.map((s) => ({ name: `S${s.scenario} · ${scenarioById(s.scenario)?.name ?? ''}`, correct: s.correct, total: s.answered })))}</div>`
       : `<div class="card"><h3>Weakest ${objectiveTerm(exam)}s (all time)</h3>${breakdownTable(st.byTask.filter((t) => t.answered).sort((a, b) => a.correct / a.answered - b.correct / b.answered).slice(0, 8).map((t) => ({ name: `${t.task} · ${taskById(t.task)?.title ?? ''}`, correct: t.correct, total: t.answered })))}</div>`}
   </section>
 

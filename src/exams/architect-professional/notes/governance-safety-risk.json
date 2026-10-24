@@ -1,0 +1,498 @@
+[
+  {
+    "task": "5.1",
+    "knowledge": [
+      "Defence in depth: no single control is reliable on its own, so a production system layers input screening, system-prompt rules, least-privilege tools, authorization enforced in code, output validation and rate or scope limits. Each layer catches failures the others miss.",
+      "System-prompt instructions shape behaviour but are probabilistic. Hard constraints (who may move money, which records a user may see, what may never be written) belong in code the model cannot talk its way around: tool backends, permission checks, schemas and service credentials.",
+      "Least privilege is the strongest guardrail: a tool the agent does not have cannot be misused. Scope each tool to the role and act with the end user's own permissions, never a broader service identity.",
+      "Prompt-injection mitigations: treat documents, emails, web pages and tool results as untrusted data; keep them separate from instructions (for example in clearly labelled tags); screen inputs with a lightweight classifier; and split work so a step that reads untrusted content holds no consequential tools.",
+      "Output validation runs after generation: schema and business-rule checks, grounding or citation checks, and classifiers for policy, PII or leaked instructions. Failures are blocked or routed to a person, not silently retried forever.",
+      "Platform guardrails count as layers too: for teams using Claude Code, centrally managed settings and permission rules enforce what individual users and repositories cannot override."
+    ],
+    "skills": [
+      "Map each risk in a design to the layer that should stop it, and flag any hard constraint that currently relies only on a prompt instruction.",
+      "Move consequential limits (amounts, payees, eligibility, data scope) into tool backends that check the authenticated user's context and return a structured refusal.",
+      "Design a two-step pattern for untrusted content: a tool-less step extracts structured fields, and only those fields reach the agent that can act.",
+      "Specify output checks (schema, range, grounding, PII) and the routing for failures.",
+      "Choose where platform-wide restrictions live (managed policy versus project or user settings) so they cannot be weakened locally."
+    ],
+    "examLens": [
+      "When the stem describes a rule that must never be broken, the best answer enforces it in code or configuration, not with stronger prompt wording.",
+      "Prefer removing or narrowing a capability over monitoring it; logging and audits are detective controls, not prevention.",
+      "For prompt injection, pick the answer that limits what injected text could make the system do, not the one that only tells the model to ignore it.",
+      "A larger or newer model is almost never the answer to a guardrail question."
+    ],
+    "traps": [
+      "Repeating or capitalising a system-prompt rule as the fix for a hard constraint.",
+      "Relying on an after-the-fact audit or log review where an irreversible action needs prevention.",
+      "Blocking a whole input type (all attachments, all tools) when a narrower control keeps the feature and removes the risk.",
+      "Putting organisation-wide restrictions in places a team or user can edit."
+    ],
+    "links": [
+      {
+        "label": "Mitigate jailbreaks and prompt injections",
+        "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks"
+      },
+      {
+        "label": "Reduce prompt leak",
+        "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-prompt-leak"
+      },
+      {
+        "label": "Claude Code identity and access management",
+        "url": "https://code.claude.com/docs/en/iam"
+      },
+      {
+        "label": "Writing tools for agents",
+        "url": "https://www.anthropic.com/research/writing-tools-for-agents"
+      }
+    ],
+    "cheat": [
+      [
+        "Agent must never exceed a transfer limit",
+        "Enforce the limit in the tool backend against the user's session, not in the prompt"
+      ],
+      [
+        "Documents the agent reads may carry instructions",
+        "Treat as data; extract fields in a tool-less step; gate actions in code"
+      ],
+      [
+        "Org-wide rules for 400 Claude Code users",
+        "Managed settings with deny rules that projects and users cannot override"
+      ],
+      [
+        "Extraction output feeds a system of record",
+        "Schema and business-rule validation before writing; failures go to a person"
+      ]
+    ],
+    "diagrams": [
+      {
+        "kind": "layers",
+        "title": "Defence in depth for a Claude agent",
+        "layers": [
+          {
+            "label": "Input screening",
+            "note": "Classify or filter user input and untrusted content before the model.",
+            "tone": "sky"
+          },
+          {
+            "label": "System-prompt rules",
+            "note": "Shape behaviour and tone; never the only barrier for a hard rule."
+          },
+          {
+            "label": "Least-privilege tools",
+            "note": "Only the tools the role needs, scoped to the user's own permissions.",
+            "tone": "accent"
+          },
+          {
+            "label": "Authorization enforced in code",
+            "note": "Limits, payees, data scope checked in the tool backend.",
+            "tone": "accent"
+          },
+          {
+            "label": "Output validation",
+            "note": "Schema, grounding, policy and PII checks; failures go to a person.",
+            "tone": "good"
+          },
+          {
+            "label": "Rate, scope and spend limits",
+            "note": "Caps and monitoring bound the damage when other layers fail.",
+            "tone": "amber"
+          }
+        ],
+        "axis": {
+          "label": "Request flows through every layer",
+          "dir": "down"
+        }
+      }
+    ]
+  },
+  {
+    "task": "5.2",
+    "knowledge": [
+      "Hallucination: fluent, confident claims not supported by the source or by fact. Mitigations are grounding in retrieved sources, quoting or citing evidence, explicit permission to say 'I don't know', and verification steps that drop unsupported claims.",
+      "Prompt injection: direct (the user tries to override instructions) or indirect (instructions hidden in documents, web pages, emails or tool results the model reads). Indirect injection is the bigger risk for agents with tools, because the attacker never talks to the system.",
+      "Data leakage: the model reveals data the user should not see (another customer's record, system-prompt contents, secrets in context). The root fix is not putting that data in context for that user, plus output checks.",
+      "Over-reliance (automation bias): people approve AI output without real checking, especially when it is usually right. It turns review steps into rubber stamps and lets rare, high-impact errors through.",
+      "Other limits to design for: non-determinism (same input, different output), stale knowledge (training cutoff or an out-of-date index), sycophancy (agreeing with the user's pushback over the evidence), runaway agent loops that burn time and tokens, and tool misuse (calling the right tool with wrong or harmful arguments).",
+      "Each failure mode has a typical signal: unsupported claims in outputs, actions that trace to text in a document, answers that flip under pushback, repeated identical tool calls with climbing spend, or answers that were right until a source changed."
+    ],
+    "skills": [
+      "Classify an incident from its symptoms into the right failure mode before choosing a mitigation.",
+      "Pick mitigations that bound the impact (caps, gates, scoped tools) as well as reduce the likelihood (prompting, grounding).",
+      "Set hard limits in the agent harness: maximum turns or iterations, token or cost budgets, timeouts, and stop-and-escalate on repeated failures.",
+      "Design review and evaluation so they resist sycophancy and automation bias: independent context, evidence-based findings, measured catch rates.",
+      "Keep knowledge fresh by tying indexes to the source of truth and retiring superseded documents."
+    ],
+    "examLens": [
+      "Diagnose first: the correct answer names the failure mode the symptoms actually show, then fixes that, not a neighbouring one.",
+      "Limits enforced by the harness or the backend beat instructions asking the model to limit itself.",
+      "Stale answers from internal documents are an indexing problem, not a model training-cutoff problem.",
+      "Lower temperature reduces variation; it does not make answers true or remove hallucination."
+    ],
+    "traps": [
+      "Treating indirect injection through a document or tool result as a user jailbreak and fixing only the chat input.",
+      "Upgrading the model to fix stale internal knowledge.",
+      "Telling the model never to change its mind as a cure for sycophancy, which also blocks valid corrections.",
+      "Adding a disclaimer instead of fixing grounding or abstention."
+    ],
+    "links": [
+      {
+        "label": "Reduce hallucinations",
+        "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations"
+      },
+      {
+        "label": "Mitigate jailbreaks and prompt injections",
+        "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks"
+      },
+      {
+        "label": "Increase output consistency",
+        "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/increase-consistency"
+      },
+      {
+        "label": "Building effective agents",
+        "url": "https://www.anthropic.com/research/building-effective-agents"
+      }
+    ],
+    "cheat": [
+      [
+        "Summary mentions a drug not in the transcript",
+        "Hallucination: cite source spans, allow 'not documented', verify and drop unsupported claims"
+      ],
+      [
+        "Agent acted on text inside a customer document",
+        "Indirect prompt injection: treat as data, keep decisions in deterministic code"
+      ],
+      [
+        "Headless agent retried for hours, large spend",
+        "Runaway loop: turn, budget and time caps in the harness, escalate on repeat failure"
+      ],
+      [
+        "Model withdrew a correct finding after pushback",
+        "Sycophancy: independent review context, evidence-based findings, humans settle disputes"
+      ]
+    ],
+    "diagrams": [
+      {
+        "kind": "decision",
+        "title": "From symptom to failure mode",
+        "question": "What did you observe?",
+        "branches": [
+          {
+            "when": "Confident claim not in the source",
+            "then": "Hallucination: ground, cite, allow abstention",
+            "tone": "warn"
+          },
+          {
+            "when": "Action traces to text in a document",
+            "then": "Indirect injection: treat as data, gate in code",
+            "tone": "warn"
+          },
+          {
+            "when": "Answer flips when the user pushes back",
+            "then": "Sycophancy: independent, evidence-based review",
+            "tone": "amber"
+          },
+          {
+            "when": "Same tool call repeats, spend climbs",
+            "then": "Runaway loop: turn, budget and time caps",
+            "tone": "amber"
+          },
+          {
+            "when": "Right until a source document changed",
+            "then": "Stale index: re-index, retire old versions",
+            "tone": "sky"
+          },
+          {
+            "when": "Reviewers approve without real checks",
+            "then": "Automation bias: risk-tiered review, audits",
+            "tone": "sky"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "task": "5.3",
+    "knowledge": [
+      "Human-in-the-loop is risk-tiered: the depth of review follows the impact and reversibility of the action, not a single policy for everything.",
+      "Approval gates sit before irreversible or consequential actions (moving money, sending external communications, changing a person's status, merging to production). Reviewing after the fact is an audit, not a gate.",
+      "Routing to a person should use explicit criteria: failed validation, missing or conflicting evidence, high-impact fields, policy triggers and value thresholds. A model's self-reported confidence is not calibrated enough to be the only router.",
+      "Sampling audits of auto-accepted work measure the real error rate and catch drift; they are what make a low-touch tier defensible.",
+      "Reviewer UX decides whether review is real: show source evidence beside the output, highlight what is new, inferred or high-risk, and require explicit confirmation of critical items. Reviewing everything equally at high volume produces rubber-stamping.",
+      "Human corrections are data: capture structured override reasons and feed confirmed errors into eval and regression sets so the system and its prompts improve."
+    ],
+    "skills": [
+      "Classify a system's actions by impact and reversibility and assign each tier a review mode: automatic, sampled, criteria-routed or always approved.",
+      "Define routing criteria that are observable and testable rather than based on the model's own judgement of when to escalate.",
+      "Design review screens that put evidence next to claims and make critical fields impossible to skip.",
+      "Measure review quality (seeded-error catch rate, time per item, override rate) and act when it degrades.",
+      "Close the loop from overrides to evals, prompt changes and retrieval fixes."
+    ],
+    "examLens": [
+      "If the action cannot be undone or affects a customer, citizen or patient directly, the answer puts a human approval before it.",
+      "Prefer the risk-tiered option over 'review everything' (unscalable, leads to rubber-stamping) and over 'review nothing' (unsafe).",
+      "Choose deterministic, observable routing criteria over 'let the model decide when to escalate'.",
+      "When reviewers are approving too fast, fix the review design and measure catch rates; a timer or a disclaimer does not make review real."
+    ],
+    "traps": [
+      "Using the model's self-reported confidence score as the only routing signal.",
+      "Post-hoc sampling of actions that were irreversible when taken.",
+      "Requiring approval of every step or tool call, which causes approval fatigue.",
+      "Automatically retraining or re-prompting on every override without vetting the corrections."
+    ],
+    "links": [
+      {
+        "label": "Building effective agents",
+        "url": "https://www.anthropic.com/research/building-effective-agents"
+      },
+      {
+        "label": "Create strong empirical evaluations",
+        "url": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests"
+      }
+    ],
+    "cheat": [
+      [
+        "Agent can send letters or move money",
+        "Human approval gate before the action, with evidence shown"
+      ],
+      [
+        "High volume, reviewers cannot check everything",
+        "Criteria-based routing plus random sampling audits of auto-accepted work"
+      ],
+      [
+        "Clinicians sign notes in seconds",
+        "Redesign review UX: evidence side by side, highlight high-risk items, measure catch rate"
+      ],
+      [
+        "Caseworker overrides go nowhere",
+        "Capture reasons, vet them, add confirmed errors to the eval set"
+      ]
+    ],
+    "diagrams": [
+      {
+        "kind": "flow",
+        "title": "Risk-tiered human-in-the-loop",
+        "steps": [
+          {
+            "label": "Classify each action by impact",
+            "note": "How consequential is it, and can it be undone?",
+            "tone": "sky"
+          },
+          {
+            "label": "Low risk: automate, sample-audit",
+            "note": "Random audits measure the real error rate."
+          },
+          {
+            "label": "Route by explicit criteria",
+            "note": "Failed checks, missing evidence, high-impact fields, thresholds.",
+            "tone": "amber"
+          },
+          {
+            "label": "Approval gate before irreversible acts",
+            "note": "Money, external messages, status changes, merges.",
+            "tone": "accent"
+          },
+          {
+            "label": "Reviewer sees evidence beside output",
+            "note": "Highlight inferred and high-risk items; require confirmation."
+          },
+          {
+            "label": "Feed corrections into evals",
+            "note": "Vetted overrides become regression cases.",
+            "tone": "good"
+          }
+        ],
+        "loop": "Eval results adjust the tiers"
+      }
+    ]
+  },
+  {
+    "task": "5.4",
+    "knowledge": [
+      "Treat regulation as design constraints gathered in discovery, not a review at the end: it decides which data may enter prompts, where it may be processed, how long logs live and who must approve.",
+      "GDPR (EU personal data): every processing purpose needs a lawful basis (consent is only one of several); purpose limitation and data minimisation restrict what goes into prompts and what transcripts may be reused for; data subject rights such as access and erasure must reach every copy, including logs, caches, vector indexes and eval sets, subject to legal retention duties; a data processing agreement is needed with processors; and transfers outside the EEA need a valid transfer mechanism.",
+      "HIPAA (US health data): protected health information may only go to a vendor under a business associate agreement that covers the specific services used; the minimum necessary standard limits how much PHI each request carries; access controls follow the user's role and treatment relationship; and audit logs record who accessed which PHI.",
+      "FedRAMP (US federal cloud): agency systems must run on cloud offerings authorized at the impact level the data requires. The architect confirms that the chosen deployment option, region and features sit inside an authorization boundary at that level before production data flows.",
+      "Contracts and certifications differ by provider, deployment option and feature, and they change. Confirm with the provider and your legal or compliance team which options are covered; do not assume a commercial endpoint inherits them.",
+      "Encryption, de-identification and zero-retention settings reduce risk but do not by themselves satisfy lawful basis, minimum necessary, contractual or authorization requirements."
+    ],
+    "skills": [
+      "Build a data map for the solution: which personal or regulated data enters prompts, tools, logs, indexes and eval sets, and where each is stored and processed.",
+      "Design erasure and access requests to propagate through every store, keyed by a subject identifier, with documented exceptions for legal retention.",
+      "Apply minimum necessary and data minimisation by retrieving only the fields a request needs and scoping retrieval to the user's permissions.",
+      "Choose a deployment option whose contractual coverage (DPA, BAA) and authorization (for example FedRAMP level) match the data, and record the evidence.",
+      "Bring legal, privacy and security owners into discovery and design reviews."
+    ],
+    "examLens": [
+      "The best first step with regulated data is usually confirming contractual or authorization coverage for the exact deployment and features, before any real data flows.",
+      "Prefer answers that limit what data reaches the model over answers that only protect it in transit.",
+      "Erasure answers must cover derived copies: logs, embeddings, caches and eval datasets, not just the primary record.",
+      "Be wary of absolutes: consent is not the only GDPR basis, and erasure is not absolute where law requires retention."
+    ],
+    "traps": [
+      "Assuming encryption or stripping names makes data non-personal or non-PHI.",
+      "Treating a SOC 2 report or a security questionnaire as a substitute for a BAA or a FedRAMP authorization.",
+      "Deleting the account record and forgetting the vector index, logs and eval samples.",
+      "Assuming GDPR does not apply because the model provider is outside the EU."
+    ],
+    "links": [
+      {
+        "label": "Data Processing Addendum",
+        "url": "https://privacy.claude.com/en/articles/7996862-how-do-i-view-and-sign-your-data-processing-addendum-dpa"
+      },
+      {
+        "label": "API and data retention",
+        "url": "https://platform.claude.com/docs/en/manage-claude/api-and-data-retention"
+      },
+      {
+        "label": "Usage Policy",
+        "url": "https://www.anthropic.com/legal/aup"
+      }
+    ],
+    "cheat": [
+      [
+        "Pilot will use real patient data",
+        "Confirm and sign a BAA that covers the exact services and features first"
+      ],
+      [
+        "EU customer asks for erasure",
+        "Propagate through logs, vector index, caches and eval sets; document legal retention exceptions"
+      ],
+      [
+        "Agency prototype ran on a commercial endpoint",
+        "Move to a deployment option authorized at the required FedRAMP impact level"
+      ],
+      [
+        "Full patient chart sent with every question",
+        "Minimum necessary: retrieve only needed sections, scoped to the user's access"
+      ]
+    ],
+    "diagrams": [
+      {
+        "kind": "compare",
+        "title": "Three regimes as design constraints",
+        "columns": [
+          {
+            "head": "GDPR",
+            "items": [
+              "Lawful basis per purpose",
+              "Minimise data in prompts",
+              "Rights reach logs and indexes",
+              "DPA and transfer mechanism"
+            ],
+            "tone": "sky"
+          },
+          {
+            "head": "HIPAA",
+            "items": [
+              "BAA covering services used",
+              "Minimum necessary PHI",
+              "Role-based access control",
+              "Audit who accessed PHI"
+            ],
+            "tone": "accent"
+          },
+          {
+            "head": "FedRAMP",
+            "items": [
+              "Authorized cloud offering",
+              "Required impact level",
+              "Features inside the boundary",
+              "Confirm before data flows"
+            ],
+            "tone": "amber"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "task": "5.5",
+    "knowledge": [
+      "Bias testing compares outcomes across groups: matched test cases that differ only in group-linked attributes (names, language, location), plus monitoring of production outcomes by segment. Removing protected attributes is not enough because proxies remain.",
+      "Fairness metrics make the comparison concrete, for example flag rates, error rates or approval rates per group. Choosing which metric matters is a policy decision to make with the business, legal and affected stakeholders.",
+      "Discretionary decisions left to the model inherit sensitivity to writing style, language and phrasing. Moving eligibility rules into deterministic, documented criteria applies them consistently.",
+      "Transparency: tell people when AI is involved in a process that affects them, and make each flag or recommendation explainable by pointing to the evidence and rule that triggered it, not by exposing raw model reasoning.",
+      "Contestability and accountability: affected people need a route to challenge an outcome and get human review, and a named human or role remains accountable for decisions the AI only assists.",
+      "Anthropic's Usage Policy sets extra requirements for some high-risk uses that affect people's rights or access to services; check it for the use case at design time."
+    ],
+    "skills": [
+      "Design a fairness evaluation with matched cases and per-group metrics, and repeat it after prompt, model or retrieval changes.",
+      "Investigate proxies that carry group information even when protected attributes are absent.",
+      "Design explanations that cite the specific evidence and rule behind each flag so a human can verify and communicate it.",
+      "Specify disclosure, appeal and human-review routes for people affected by AI-assisted decisions.",
+      "Assign accountability for outcomes to named roles and keep metrics that could harm individuals (for example usage telemetry) at the right level of aggregation."
+    ],
+    "examLens": [
+      "Prefer measured, per-group evidence over assurances, instructions to 'be fair' or overall accuracy figures.",
+      "Explainability means traceable evidence and criteria a human can check, not the model's full reasoning dump.",
+      "When AI affects people's rights or access to services, the answer keeps a human accountable and gives the person a way to contest.",
+      "Transparency labels must be accurate: a reviewed draft is not 'unreviewed AI output', and AI involvement is not hidden behind a signature."
+    ],
+    "traps": [
+      "Concluding a system is unbiased because protected attributes were removed from the input.",
+      "Adding 'do not discriminate' to the prompt as the whole fairness plan.",
+      "Hiding AI involvement to prevent gaming, or exposing internal prompts as 'transparency'.",
+      "Using individual-level AI usage metrics as a performance measure without disclosure or safeguards."
+    ],
+    "links": [
+      {
+        "label": "Evaluating and mitigating discrimination in language model decisions",
+        "url": "https://www.anthropic.com/research/evaluating-and-mitigating-discrimination-in-language-model-decisions"
+      },
+      {
+        "label": "Usage Policy",
+        "url": "https://www.anthropic.com/legal/aup"
+      },
+      {
+        "label": "Create strong empirical evaluations",
+        "url": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests"
+      }
+    ],
+    "cheat": [
+      [
+        "Need evidence the triage is fair across groups",
+        "Matched test cases varying group-linked attributes; compare per-group rates"
+      ],
+      [
+        "Discretionary waivers vary by writing style",
+        "Move eligibility to deterministic criteria; the agent explains, monitor by segment"
+      ],
+      [
+        "Citizens affected by AI-assisted flags",
+        "Disclose AI use, explain flags with evidence, offer contest and human review"
+      ]
+    ],
+    "diagrams": [
+      {
+        "kind": "flow",
+        "title": "Responsible AI for decisions about people",
+        "steps": [
+          {
+            "label": "Test outcomes across groups",
+            "note": "Matched cases plus per-group rates; look for proxies.",
+            "tone": "sky"
+          },
+          {
+            "label": "Make each flag explainable",
+            "note": "Cite the evidence and rule that triggered it."
+          },
+          {
+            "label": "Disclose AI involvement",
+            "note": "Accurate labels for affected people and staff.",
+            "tone": "accent"
+          },
+          {
+            "label": "Offer a route to contest",
+            "note": "Human review of outcomes on request."
+          },
+          {
+            "label": "Keep a named human accountable",
+            "note": "Monitor per-group outcomes in production.",
+            "tone": "good"
+          }
+        ]
+      }
+    ]
+  }
+]

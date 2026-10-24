@@ -103,7 +103,7 @@ function label(exam: ExamContent, o: StartOptions): string {
     case 'quick': return 'Quick mixed practice';
     case 'domain': return `Domain ${o.domain} drill · ${exam.domains.find((d) => d.id === o.domain)?.short ?? ''}`;
     case 'task': return `${exam.scenarios.length ? 'Task' : 'Skill'} drill · ${o.tasks?.join(', ')}`;
-    case 'scenario': return `Scenario drill · ${o.scenarios?.map((s) => exam.scenarios.find((x) => x.id === s)?.name).join(' + ')}`;
+    case 'scenario': return `${exam.caseStudies ? 'Case study' : 'Scenario'} drill · ${o.scenarios?.map((s) => exam.scenarios.find((x) => x.id === s)?.name).join(' + ')}`;
     case 'weak': return 'Weak areas review';
     case 'unseen': return 'Unseen questions';
     case 'bookmarked': return 'Bookmarked questions';

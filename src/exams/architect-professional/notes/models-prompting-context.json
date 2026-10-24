@@ -1,0 +1,468 @@
+[
+  {
+    "task": "2.1",
+    "knowledge": [
+      "The Claude family is offered in tiers: Haiku (fastest, lowest cost), Sonnet (balance of intelligence, speed and cost) and Opus (most capable, for the hardest reasoning and long-horizon agentic work). Exact versions, prices and limits change, so reason in tiers.",
+      "Model choice is a three-way trade-off between capability, latency and cost. The right answer is the smallest tier that meets the quality bar on your own eval set, not the biggest or the newest.",
+      "A system can mix models by role: a capable model plans and synthesises, while faster, cheaper models handle high-volume, well-defined subtasks such as routing, classification, extraction or worker subagents.",
+      "Two valid starting points from the docs: start with a fast, cheap model and upgrade where evals show gaps, or start with the most capable model to prove feasibility, then optimise down.",
+      "Many apparent model failures are context failures. If the right evidence never reaches the model (poor retrieval, truncated input, missing instructions), a larger model will not fix it.",
+      "Extended thinking and larger models both buy quality with latency and tokens, so they belong on the steps that need deep reasoning, not on every call."
+    ],
+    "skills": [
+      "Build a representative eval set with an agreed quality bar, then measure each candidate tier on quality, latency and cost before choosing.",
+      "Assign models per role in a multi-step or multi-agent system and justify each choice against that role's volume, latency target and difficulty.",
+      "Design a router that sends simple, high-volume requests to a fast tier and escalates complex or ambiguous cases to a more capable tier.",
+      "Separate model mismatch from context or retrieval problems before recommending an upgrade.",
+      "Re-run the eval when a new model is released instead of switching on announcements or public leaderboards."
+    ],
+    "examLens": [
+      "Prefer the answer that matches each role to a tier (mix models) over one model for everything, whether that model is the biggest or the cheapest.",
+      "\"Upgrade the model\" is wrong when the evidence shows the model never received the right context; fix context or retrieval first.",
+      "Choices must be justified by measurement on the team's own task (an eval set), not by benchmarks, newness or habit.",
+      "Latency-critical, high-volume, narrow tasks point to a fast tier; open-ended planning and synthesis point to a capable tier."
+    ],
+    "traps": [
+      "Moving everything to the smallest model to save cost without checking task fit on an eval set.",
+      "Putting the most capable model (or extended thinking) on every step \"to be safe\", which blows latency and budget.",
+      "Choosing a model from public benchmark rankings rather than the workload's own success criteria.",
+      "Treating a model upgrade as the fix for wrong answers caused by missing or stale context."
+    ],
+    "links": [
+      {
+        "label": "Choosing a model",
+        "url": "https://platform.claude.com/docs/en/about-claude/models/choosing-a-model"
+      },
+      {
+        "label": "Models overview",
+        "url": "https://platform.claude.com/docs/en/models/overview"
+      },
+      {
+        "label": "Extended thinking",
+        "url": "https://platform.claude.com/docs/en/build-with-claude/extended-thinking"
+      }
+    ],
+    "cheat": [
+      [
+        "Orchestrator plus many extraction workers, over budget",
+        "Capable tier for lead planning and synthesis, fast tier for workers, verified by evals"
+      ],
+      [
+        "Front-door routing with a tight latency target",
+        "Fast tier classifies; escalate hard cases to a more capable tier"
+      ],
+      [
+        "Team wants a bigger model because answers are wrong",
+        "Check whether the right context reached the model before upgrading"
+      ]
+    ],
+    "diagrams": [
+      {
+        "kind": "decision",
+        "title": "Pick a tier per role, then prove it",
+        "question": "What does this step of the system need?",
+        "branches": [
+          {
+            "when": "High volume, narrow, latency-critical",
+            "then": "Fast, low-cost tier (Haiku)",
+            "tone": "good"
+          },
+          {
+            "when": "Everyday reasoning, coding, most agent work",
+            "then": "Balanced tier (Sonnet)",
+            "tone": "sky"
+          },
+          {
+            "when": "Hard multi-step reasoning or synthesis",
+            "then": "Most capable tier (Opus)",
+            "tone": "accent"
+          },
+          {
+            "when": "Not sure which tier is enough",
+            "then": "Test tiers on your own eval set",
+            "tone": "amber"
+          },
+          {
+            "when": "Wrong answers but the evidence never arrived",
+            "then": "Fix context or retrieval, not the model",
+            "tone": "warn"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "task": "2.2",
+    "knowledge": [
+      "The system prompt sets role, goals, policies, tone and output expectations. Stable instructions belong there; per-request data belongs in the user turn, clearly delimited (for example in XML tags).",
+      "Good system prompts sit at the \"right altitude\": specific enough to guide behaviour, general enough to give strong heuristics. Long lists of hard-coded if-then rules are brittle; vague one-liners give no guidance.",
+      "Claude follows instructions better when told why a rule exists and what to do instead, rather than only what not to do.",
+      "A prompt template separates fixed instructions from variables. Templates kept in version control, owned by a team and changed only after an eval run give consistency and traceable change across many teams.",
+      "Prompt instructions are not a security boundary. Hard limits (authorization, money movement, data access) are enforced in code and tool configuration; the prompt explains the policy and shapes behaviour.",
+      "Guardrails are layered: input screening (a lightweight model can pre-screen for harmful content or prompt injection), delimiting untrusted content as data, constrained tools, output validation such as a JSON schema, and human review where stakes are high."
+    ],
+    "skills": [
+      "Write a system prompt in clear sections (role, context, policies with reasons, output format) with a few canonical examples instead of a rule for every edge case.",
+      "Turn copy-pasted prompts into a shared, versioned template with variables, an owner and an eval regression run on every change.",
+      "Place each control at the right layer: code for hard limits, prompt for behaviour, validators for output shape.",
+      "Wrap untrusted content (emails, documents, chat text) in labelled tags and state in the system prompt that it is data, not instructions.",
+      "Constrain output format with a schema (structured outputs or a tool definition) and validate it in code before anything downstream consumes it."
+    ],
+    "examLens": [
+      "If a rule must never be broken (moving money, deleting data), the answer enforces it outside the model; a stronger prompt alone is a distractor.",
+      "Prefer principles with reasons and a few examples over ever-growing rule lists, capital letters or repetition.",
+      "For many teams sharing a prompt, prefer one versioned template with variables and eval-gated changes over per-team copies or wikis of tips.",
+      "Untrusted content goes in the user turn as delimited data, never into the system prompt."
+    ],
+    "traps": [
+      "Adding \"MUST\" in capitals or repeating the rule as the fix for a policy the system must guarantee.",
+      "Pasting retrieved or customer-supplied text into the system prompt, which gives it more authority, not less.",
+      "Relying on \"please return valid JSON\" or a low temperature to guarantee output format.",
+      "Letting every team fork its own copy of a shared prompt, so fixes never propagate."
+    ],
+    "links": [
+      {
+        "label": "Prompting best practices",
+        "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+      },
+      {
+        "label": "Mitigate jailbreaks and prompt injections",
+        "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks"
+      },
+      {
+        "label": "Effective context engineering for AI agents",
+        "url": "https://www.anthropic.com/research/effective-context-engineering-for-ai-agents"
+      }
+    ],
+    "cheat": [
+      [
+        "Agent must never move money without step-up auth",
+        "Check it in code at the tool; the prompt only explains the policy"
+      ],
+      [
+        "30 teams copy and edit the same prompt",
+        "One versioned template with variables, an owner and eval-gated changes"
+      ],
+      [
+        "Prompt has grown to 100+ edge-case rules",
+        "Rewrite as principles with reasons plus a few canonical examples"
+      ]
+    ],
+    "diagrams": [
+      {
+        "kind": "layers",
+        "title": "Layered guardrails: put each control where it holds",
+        "layers": [
+          {
+            "label": "Code and tool configuration",
+            "note": "Hard limits: authorization, tool scope, money movement.",
+            "tone": "accent"
+          },
+          {
+            "label": "Input screening",
+            "note": "Lightweight classifier; untrusted text delimited as data.",
+            "tone": "sky"
+          },
+          {
+            "label": "System prompt and template",
+            "note": "Role, policies with reasons, tone, output expectations.",
+            "tone": "plain"
+          },
+          {
+            "label": "Output checks",
+            "note": "Schema validation, policy filters, human review for high stakes.",
+            "tone": "good"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "task": "2.3",
+    "knowledge": [
+      "Zero-shot (clear instructions, no examples) is the starting point and is often enough for well-specified tasks.",
+      "Few-shot examples are one of the most reliable ways to steer format, tone and fine distinctions. Use a few relevant, diverse examples wrapped in `<example>` tags; Claude pays close attention to examples and copies their patterns, including unintended ones.",
+      "Examples should be diverse canonical cases, not a laundry list of every edge case; a narrow set of examples teaches a narrow behaviour.",
+      "Chain-of-thought improves multi-step reasoning, analysis and calculation at the cost of more output tokens and latency. Reasoning only helps if it is actually produced; asking for silent thinking gives no thinking.",
+      "Separate reasoning from the final answer with tags (for example `<analysis>` and `<answer>`) so code can pass on only the answer and keep the reasoning for audit.",
+      "With extended thinking, high-level instructions to think thoroughly usually work better than prescriptive step-by-step scripts; the model's own approach is often better than one written in advance."
+    ],
+    "skills": [
+      "Start zero-shot, measure on an eval set, and add examples or reasoning only where the data shows a gap.",
+      "Pick few-shot examples that cover the confusable cases and vary in length and shape, and check they match the desired output exactly.",
+      "Decide per step whether reasoning is worth its latency and token cost.",
+      "Structure reasoning and answer into parseable sections and route each to the right consumer.",
+      "Replace prescriptive thinking scripts with goal-level guidance when extended thinking is enabled, then compare on evals."
+    ],
+    "examLens": [
+      "Confusion between similar categories or an inconsistent format points to a few targeted, diverse examples.",
+      "Output that copies a quirk of the examples (always one citation, always short) points to examples that are not diverse enough.",
+      "Multi-step judgement (policy plus figures, comparing evidence) justifies chain-of-thought; simple lookups and tight-latency classification do not.",
+      "If reasoning must be audited but not shown downstream, separate it with tags rather than removing it or asking for silent thinking."
+    ],
+    "traps": [
+      "Adding dozens of examples to cover every edge case, which bloats context and over-anchors the model.",
+      "Asking the model to \"think silently\" and expecting better reasoning.",
+      "Asking for the answer first and the reasoning afterwards, which yields after-the-fact justification.",
+      "Turning on chain-of-thought or extended thinking everywhere, including latency-critical simple steps."
+    ],
+    "links": [
+      {
+        "label": "Prompting best practices",
+        "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+      },
+      {
+        "label": "Prompting best practices: use examples effectively",
+        "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices#use-examples-effectively"
+      },
+      {
+        "label": "Prompting best practices: thinking",
+        "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices#leverage-thinking-and-interleaved-thinking-capabilities"
+      },
+      {
+        "label": "Extended thinking",
+        "url": "https://platform.claude.com/docs/en/build-with-claude/extended-thinking"
+      }
+    ],
+    "cheat": [
+      [
+        "Two similar categories keep getting confused",
+        "Add a few diverse examples that include the confusable pair"
+      ],
+      [
+        "Reasoning needed for audit, dashboard wants only the result",
+        "Reasoning and answer in separate tags; parse out the answer"
+      ],
+      [
+        "Prescriptive thinking steps hurt results on novel cases",
+        "Give a high-level instruction to think thoroughly and re-evaluate"
+      ]
+    ],
+    "diagrams": [
+      {
+        "kind": "compare",
+        "title": "Which technique fits the gap?",
+        "columns": [
+          {
+            "head": "Zero-shot",
+            "items": [
+              "Clear, well-specified task",
+              "Starting point for every prompt",
+              "Cheapest and fastest"
+            ],
+            "tone": "plain"
+          },
+          {
+            "head": "Few-shot",
+            "items": [
+              "Format, tone or fine distinctions",
+              "A few diverse examples in tags",
+              "Model copies example patterns"
+            ],
+            "tone": "sky"
+          },
+          {
+            "head": "Chain-of-thought",
+            "items": [
+              "Multi-step reasoning or maths",
+              "Costs output tokens and latency",
+              "Separate reasoning from answer"
+            ],
+            "tone": "accent"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "task": "2.4",
+    "knowledge": [
+      "Context is a finite resource with diminishing returns: as tokens pile up, the model's ability to use any one of them drops (often called context rot). The goal is the smallest set of high-signal tokens for the next step, not the largest window.",
+      "Just-in-time context: keep lightweight identifiers (file paths, document ids, queries) and let the agent load details through tools when needed, instead of preloading everything. Pre-retrieval is faster; just-in-time is leaner. Many systems mix both.",
+      "Tool results are a major source of bloat. Tools should return relevant fields with filtering or pagination, and stale tool results deep in history can be cleared.",
+      "Long-running agents need deliberate techniques: compaction (summarise the history, keeping decisions, open issues and key facts), structured note-taking to files outside the context, and subagents that explore in their own context and return condensed summaries.",
+      "Token counting lets you measure a request before sending it, so budgets and compaction triggers are based on data.",
+      "A larger context window raises the ceiling but does not remove the cost, latency and attention penalties of filling it."
+    ],
+    "skills": [
+      "Set a token budget per request and per session, measure it, and trigger compaction or summarisation before limits are hit.",
+      "Design subagents to return short, structured findings with source references rather than raw data.",
+      "Design tool outputs to be concise and filterable, and clear old tool results that are no longer needed.",
+      "Give long-running agents a persistent progress file or memory they re-read after compaction or a fresh start.",
+      "Choose between pre-retrieval and just-in-time loading for a workload, and justify the latency trade-off."
+    ],
+    "examLens": [
+      "\"The window is big enough\" is not a reason to fill it; prefer the answer that keeps context small and high-signal.",
+      "Quality that degrades late in a long run points to accumulated context: compaction, condensed subagent outputs, or tool-result clearing.",
+      "Agents that lose track across sessions or compaction need state persisted outside the context (notes, progress files), not a bigger window.",
+      "Blind truncation of the oldest messages is weaker than compaction that keeps decisions and verified facts."
+    ],
+    "traps": [
+      "Moving to a larger-context model as the fix for context bloat.",
+      "Passing raw tool output or full documents between agents.",
+      "Dropping the system prompt or verified facts to save tokens.",
+      "Truncating history blindly, losing the decisions the agent still depends on."
+    ],
+    "links": [
+      {
+        "label": "Effective context engineering for AI agents",
+        "url": "https://www.anthropic.com/research/effective-context-engineering-for-ai-agents"
+      },
+      {
+        "label": "Context windows",
+        "url": "https://platform.claude.com/docs/en/build-with-claude/context-windows"
+      },
+      {
+        "label": "Token counting",
+        "url": "https://platform.claude.com/docs/en/build-with-claude/token-counting"
+      },
+      {
+        "label": "Context editing",
+        "url": "https://platform.claude.com/docs/en/build-with-claude/context-editing"
+      }
+    ],
+    "cheat": [
+      [
+        "Lead agent's context fills with raw worker output",
+        "Workers return condensed findings with source references"
+      ],
+      [
+        "Multi-hour agent loses track after compaction",
+        "Persist progress and decisions to notes it re-reads"
+      ],
+      [
+        "Tool returns huge JSON on every call",
+        "Return relevant fields with filters; clear stale tool results"
+      ]
+    ],
+    "diagrams": [
+      {
+        "kind": "flow",
+        "title": "Keep a long-running agent's context lean",
+        "steps": [
+          {
+            "label": "Measure tokens and set a budget",
+            "note": "Token counting before sending; know where the budget goes.",
+            "tone": "sky"
+          },
+          {
+            "label": "Load details just in time",
+            "note": "Keep ids and paths; fetch content through tools when needed.",
+            "tone": "plain"
+          },
+          {
+            "label": "Trim tool results",
+            "note": "Relevant fields, filters, pagination; clear stale results.",
+            "tone": "plain"
+          },
+          {
+            "label": "Delegate exploration to subagents",
+            "note": "They work in their own context and return condensed findings.",
+            "tone": "good"
+          },
+          {
+            "label": "Compact and keep notes",
+            "note": "Summarise history; persist decisions and open issues outside.",
+            "tone": "accent"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "task": "2.5",
+    "knowledge": [
+      "Prompt caching reuses an identical prompt prefix. The prefix is built in order (tools, then system, then messages), so stable content must come first; any change early in the prefix invalidates everything after it.",
+      "Cache reads cost a fraction of the base input price and cut time-to-first-token for long prefixes; writing to the cache costs somewhat more than a normal input. Caching pays off when the same prefix is reused often within the cache lifetime.",
+      "In multi-turn conversations, the growing history can be cached incrementally, so each turn only pays full price for the new content.",
+      "Modular prompts: shared, versioned building blocks (policies, definitions, tone) composed with role-specific parts. One fix propagates everywhere, and each change can be eval-tested once.",
+      "Agent Skills package instructions, scripts and resources in a folder with a `SKILL.md`. They use progressive disclosure: only the name and description sit in context until a task needs the Skill, then the body and files load on demand.",
+      "Skills hold procedural know-how; tools and MCP servers give access to external systems and data. Skills can run code, so only use Skills from trusted sources and review them like software."
+    ],
+    "skills": [
+      "Order prompts stable-first (tools, system instructions, reference material) and move timestamps, user names and per-request data after the cached prefix.",
+      "Diagnose a low cache hit rate by looking for content that changes early in the prefix.",
+      "Refactor duplicated prompt text into versioned modules with an owner and an eval regression run.",
+      "Package a repeatable team procedure (with its scripts and templates) as a Skill with a clear description of when to use it.",
+      "Pick the reuse mechanism that fits: caching for a repeated prefix, modules for shared maintenance, Skills for on-demand procedures, tools or MCP for system access."
+    ],
+    "examLens": [
+      "Repeated large static content plus cost or latency concerns points to stable-first ordering and prompt caching.",
+      "Near-zero cache hits points to something dynamic early in the prefix (a timestamp, a name, a reordered tool list).",
+      "Procedures needed only sometimes belong in a Skill rather than an always-loaded system prompt or project instructions file.",
+      "Prompt text copied across teams or agents points to modular, versioned prompts, not more copies."
+    ],
+    "traps": [
+      "Putting a timestamp or user-specific data at the top of the system prompt and then wondering why caching does not help.",
+      "Loading every runbook into always-on instructions \"so the agent never misses one\".",
+      "Building an MCP server for what is really a written procedure with a few scripts.",
+      "Expecting caching to help when the prefix changes on every request."
+    ],
+    "links": [
+      {
+        "label": "Prompt caching",
+        "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+      },
+      {
+        "label": "Agent Skills overview",
+        "url": "https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview"
+      },
+      {
+        "label": "Skill authoring best practices",
+        "url": "https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices"
+      },
+      {
+        "label": "Equipping agents for the real world with Agent Skills",
+        "url": "https://www.anthropic.com/research/equipping-agents-for-the-real-world-with-agent-skills"
+      }
+    ],
+    "cheat": [
+      [
+        "Same long system prompt on every request",
+        "Stable content first, enable prompt caching"
+      ],
+      [
+        "Cache hit rate near zero",
+        "Look for dynamic content (timestamp, name) early in the prefix"
+      ],
+      [
+        "Occasional runbook with helper scripts used by many teams",
+        "Package it as a Skill; only its description stays in context"
+      ]
+    ],
+    "diagrams": [
+      {
+        "kind": "decision",
+        "title": "Choose the reuse mechanism",
+        "question": "What are you trying to reuse?",
+        "branches": [
+          {
+            "when": "Same large prefix on every request",
+            "then": "Prompt caching, stable content first",
+            "tone": "good"
+          },
+          {
+            "when": "Instructions shared by many teams or agents",
+            "then": "Modular, versioned prompt templates",
+            "tone": "sky"
+          },
+          {
+            "when": "A procedure needed only some of the time",
+            "then": "Agent Skill, loaded on demand",
+            "tone": "accent"
+          },
+          {
+            "when": "Content that changes on every request",
+            "then": "Place it after the cached prefix",
+            "tone": "amber"
+          },
+          {
+            "when": "Live access to an external system",
+            "then": "A tool or MCP server, not a Skill",
+            "tone": "plain"
+          }
+        ]
+      }
+    ]
+  }
+]

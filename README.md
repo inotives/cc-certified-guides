@@ -5,7 +5,7 @@ A local study hub for Anthropic's Claude certifications. The home page (`/`) has
 1. **Associate – Foundations (CCAO-F): study site ready** at `/associate-foundations`
 2. **Developer – Foundations (CCDV-F): study site ready** at `/developer-foundations`
 3. **Architect – Foundations (CCAR-F): study site ready** at `/architect-foundations`
-4. Architect – Professional (CCAR-P): coming soon
+4. **Architect – Professional (CCAR-P): study site ready** at `/architect-professional`
 
 A profile on the home page records your current level and target certification. The official guides list no prerequisites, so you can start with any exam.
 
@@ -29,17 +29,17 @@ npm start          # → http://localhost:4173
 
 You need Node ≥ 22.13; it was tested on Node 24. Use `npm run dev` to auto-reload while editing. Set `PORT=…` to change the port, or `CCA_DATA_DIR=…` to keep the database somewhere else.
 
-## The three exams
+## The four exams
 
-| | Associate (CCAO-F) | Developer (CCDV-F) | Architect (CCAR-F) |
-|---|---|---|---|
-| For | Business users of claude.ai | Engineers building with the API | Solution architects |
-| Format | 60 items · 120 min | 53 items · 120 min | 60 items · 120 min |
-| Blueprint | 7 domains · 30 task statements | 8 domains · 25 weighted skills | 5 domains · 30 task statements |
-| Scenarios | None | None | 4 of 6 per sitting |
-| Full-mock mix (items per domain) | 8/13/7/10/7/9/6 | 8/18/2/1/9/6/4/5 | 16/11/12/12/9 |
-| Question bank | 200 + 3 official samples | 211 + 3 official samples | 168 + 12 official samples |
-| Diagrams | 60 (2 per task) | 40 (1–2 per skill) | — |
+| | Associate (CCAO-F) | Developer (CCDV-F) | Architect (CCAR-F) | Architect Pro (CCAR-P) |
+|---|---|---|---|---|
+| For | Business users of claude.ai | Engineers building with the API | Solution architects | Senior architects owning production systems |
+| Format | 60 items · 120 min | 53 items · 120 min | 60 items · 120 min | 63 items · 120 min |
+| Blueprint | 7 domains · 30 task statements | 8 domains · 25 weighted skills | 5 domains · 30 task statements | 7 domains · 38 task statements |
+| Scenarios | None | None | 4 of 6 per sitting | None on the exam; 6 unofficial study case studies |
+| Full-mock mix (items per domain) | 8/13/7/10/7/9/6 | 8/18/2/1/9/6/4/5 | 16/11/12/12/9 | 11/8/12/10/9/9/4 |
+| Question bank | 200 + 3 official samples | 211 + 3 official samples | 168 + 12 official samples | 200 + 3 official samples |
+| Diagrams | 60 (2 per task) | 40 (1–2 per skill) | — | 38 (1 per task) |
 
 ## What's inside each study site
 
@@ -49,22 +49,23 @@ You need Node ≥ 22.13; it was tested on Node 24. Use `npm run dev` to auto-rel
 | Study plan | 21 self-paced study days with checkboxes. A "day" is one session, not a calendar date; your current day is the first with unfinished tasks. "Mark day complete" ticks a whole day |
 | Exam focus | Format, blueprint, how to reason, time strategy and the official preparation advice |
 | Domain guide | Each objective: diagrams first, then an "exam lens" (how correct answers reason) and common traps, with the full study notes one click away, links to official docs and a drill button |
-| Scenarios | Architect only: the 6 exam scenarios (4 appear per sitting), what to watch for in each, and drills |
+| Scenarios | Architect – Foundations only: the 6 exam scenarios (4 appear per sitting), what to watch for in each, and drills |
+| Case studies | Architect – Professional only: 6 enterprise case studies written for this site (the exam itself has no scenarios), what to watch for in each, and drills |
 | Cheat sheet | "If you see X → answer Y" rules for every domain |
-| Practice | Full mock, quick set, domain/task drills (and scenario drills for Architect), weak areas, unseen, bookmarked, official samples, timed custom set |
+| Practice | Full mock, quick set, domain/task drills (and scenario or case-study drills for the Architect exams), weak areas, unseen, bookmarked, official samples, timed custom set |
 | Results & history | Score trend, per-domain accuracy, a review of every question with the reasoning for each option |
 | Question bank | Browse and filter all questions with answers |
 
 **Full mock exams** follow each exam's real format:
 - item count and time limit as in the official guide
 - the domain mix follows the blueprint weights
-- Architect mocks draw 4 of the 6 scenarios at random and group questions by scenario
+- Architect – Foundations mocks draw 4 of the 6 scenarios at random and group questions by scenario; Architect – Professional mocks ignore the case studies
 - questions you haven't seen yet come first
 - answer options are shuffled on every attempt
 
 ### Diagrams
 
-The Associate and Developer domain guides open each objective with diagrams instead of long bullet lists:
+The Associate, Developer and Architect – Professional domain guides open each objective with diagrams instead of long bullet lists:
 
 - **Flow:** a process step by step.
 - **Decision:** a situation and the answer that fits it.
@@ -87,8 +88,8 @@ The server draws them as SVG, so they follow the light and dark themes and need 
 | What | Where |
 |---|---|
 | Questions | `src/exams/<exam>/questions/*.json` |
-| Study notes (Associate, Developer) | `src/exams/<exam>/notes/*.json` |
-| Diagrams | Associate: inside each notes object · Developer: `src/exams/developer-foundations/diagrams.ts` |
+| Study notes (Associate, Developer, Architect – Professional) | `src/exams/<exam>/notes/*.json` |
+| Diagrams | Associate and Architect – Professional: inside each notes object · Developer: `src/exams/developer-foundations/diagrams.ts` |
 | Domains and objectives | `src/exams/<exam>/domains.ts` |
 | Study plan | `src/exams/<exam>/plan.ts` |
 | Exam focus and cheat sheet pages | `src/exams/<exam>/pages.ts` |

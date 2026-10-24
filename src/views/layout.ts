@@ -88,7 +88,8 @@ export function layout(opts: { exam: ExamContent; title: string; active: string;
   const subtitle = exam.name.replace('Claude Certified ', '');
   const link = ([href, label, icon]: [string, string, keyof typeof icons]) =>
     `<a href="${B}${href}" class="${opts.active === href ? 'active' : ''}">${icons[icon]}<span>${label}</span></a>`;
-  const nav = NAV.filter(([href]) => href !== '/scenarios' || exam.scenarios.length);
+  const nav = NAV.filter(([href]) => href !== '/scenarios' || exam.scenarios.length)
+    .map(([href, label, icon]): [string, string, keyof typeof icons] => [href, href === '/scenarios' && exam.caseStudies ? 'Case studies' : label, icon]);
   return `${documentHead(`${opts.title} · ${exam.brand} Prep`)}
 <body data-base="${B}">
 <div class="mobile-bar"><a class="brand" href="${B}/" style="padding:0">${logo(24)}<b>${esc(exam.brand)} Prep</b></a><button class="btn sm ghost" data-nav-toggle aria-label="Menu">${icons.menu}</button></div>

@@ -30,7 +30,8 @@ function validateQuestions(exam: ExamContent, seen: Set<string>) {
       if (typeof q.id !== 'string' || !q.id) err(file, id, 'missing id');
       if (seen.has(q.id)) err(file, id, 'duplicate id (ids must be unique across all exams)');
       seen.add(q.id);
-      if (scenarioIds.size ? !scenarioIds.has(q.scenario) : q.scenario !== 0) err(file, id, scenarioIds.size ? `scenario must be one of ${[...scenarioIds]}` : 'scenario must be 0 (exam has no scenarios)');
+      const scenarioOk = scenarioIds.has(q.scenario) || (q.scenario === 0 && (!scenarioIds.size || exam.caseStudies));
+      if (!scenarioOk) err(file, id, scenarioIds.size ? `scenario must be one of ${[...scenarioIds]}${exam.caseStudies ? ' or 0' : ''}` : 'scenario must be 0 (exam has no scenarios)');
       if (tasks.get(q.task) !== q.domain) err(file, id, `task ${q.task} does not belong to domain ${q.domain}`);
       if (!['single', 'multi'].includes(q.type)) err(file, id, 'type must be single|multi');
       if (typeof q.stem !== 'string' || q.stem.length < 40) err(file, id, 'stem too short');

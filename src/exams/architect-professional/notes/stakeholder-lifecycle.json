@@ -1,0 +1,463 @@
+[
+  {
+    "task": "6.1",
+    "knowledge": [
+      "Discovery starts with everyone the system touches: end users, their managers, data owners, security, legal and compliance, operations and the executive sponsor. A missing stakeholder usually surfaces later as a blocking constraint.",
+      "Capture the current process and its baseline metrics (time per task, error rate, volume, cost per task) before designing anything. Without a baseline, no one can prove the solution helped.",
+      "Success criteria should be specific, measurable, achievable and relevant, and agreed with the business owner up front. They cover quality, latency, cost and safety, not only accuracy.",
+      "Data questions decide feasibility: where the data lives, who owns it, how fresh and complete it is, how permissions are represented, and what regulated data (PHI, PII) it contains.",
+      "Constraints are requirements too: deployment and authorization rules, data residency, retention, required human sign-off, deadlines and budget per task.",
+      "A short prototype on representative real data (handled under the approved controls) is the cheapest feasibility check. Demos on synthetic or hand-picked examples overstate what production will achieve."
+    ],
+    "skills": [
+      "Build a stakeholder map and run interviews or workshops with each group, including the people who do the work today.",
+      "Turn a vague goal (\"make clinicians faster\") into measurable success criteria with a baseline, a target and a measurement method.",
+      "Profile the real data early: sample it, check quality and freshness, and identify who must approve its use.",
+      "Run a time-boxed prototype on real data and score it against the draft success criteria before committing to scope and dates.",
+      "Record risks (data gaps, regulatory limits, LLM failure modes) with owners and mitigations in the discovery output."
+    ],
+    "examLens": [
+      "Asked for the best first step in a new engagement, pick the answer that widens discovery to missing stakeholders or establishes a baseline, not one that starts building.",
+      "Prefer measurable success criteria agreed with the business owner over subjective goals or criteria the architect sets alone.",
+      "When feasibility is uncertain, prefer a prototype on representative real data over more slideware or a full build.",
+      "If an executive target depends on data that is late, incomplete or restricted, surface it during discovery rather than designing around it silently."
+    ],
+    "traps": [
+      "Discovery limited to IT and the sponsor, skipping end users, data owners, legal or security.",
+      "Jumping to model or vendor selection before the problem, data and success criteria are understood.",
+      "Treating a polished demo on synthetic or cherry-picked data as proof of feasibility.",
+      "Accepting \"high accuracy\" or \"faster\" as success criteria with no baseline or measurement method."
+    ],
+    "links": [
+      {
+        "label": "Define success criteria and build evaluations",
+        "url": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests"
+      },
+      {
+        "label": "Building effective agents",
+        "url": "https://www.anthropic.com/research/building-effective-agents"
+      }
+    ],
+    "cheat": [
+      [
+        "Kickoff had only IT and the sponsor",
+        "Add end users, data owners, security, legal and compliance before design"
+      ],
+      [
+        "Goal is \"save time\" with no numbers",
+        "Measure today's baseline and agree a target and method with the owner"
+      ],
+      [
+        "Demo only used synthetic data",
+        "Prototype on representative real data under approved controls"
+      ],
+      [
+        "Exec target depends on late or patchy data",
+        "Raise it as a constraint in discovery, with options"
+      ]
+    ],
+    "diagrams": [
+      {
+        "kind": "flow",
+        "title": "Structured discovery",
+        "steps": [
+          {
+            "label": "Map every stakeholder",
+            "note": "End users, data owners, security, legal and compliance, executives.",
+            "tone": "sky"
+          },
+          {
+            "label": "Document process and baseline",
+            "note": "Time, error rate, volume and cost per task today."
+          },
+          {
+            "label": "Agree measurable success criteria",
+            "note": "Quality, latency, cost and safety, with the business owner.",
+            "tone": "accent"
+          },
+          {
+            "label": "Assess data and constraints",
+            "note": "Ownership, quality, freshness, permissions, regulation, deadlines."
+          },
+          {
+            "label": "Prototype on real data",
+            "note": "Score it against the draft criteria before committing.",
+            "tone": "good"
+          },
+          {
+            "label": "Record risks and decide go or no-go",
+            "tone": "warn"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "task": "6.2",
+    "knowledge": [
+      "Tailor the message to the audience. Executives need the outcome, risk, cost, timeline and the decision being asked of them; engineers need components, interfaces and design details; legal and security need data flows, controls and accountability.",
+      "An architecture decision record (ADR) captures the context, the options considered, the decision, the trade-offs accepted and the consequences, so the reasoning survives after the meeting and the people.",
+      "Quantify trade-offs with evidence from your own evaluations (quality on the eval set, latency percentiles, cost per task) rather than intuition or vendor claims.",
+      "Be candid about LLM limitations: outputs are non-deterministic, models can hallucinate, and no design guarantees zero errors. Explain the measured error rate and the mitigations instead.",
+      "Present options with a recommendation. A decision-maker should see what each option costs and risks, and what would make you revisit the choice."
+    ],
+    "skills": [
+      "Write an executive one-pager and a separate engineering design document from the same decision.",
+      "Write ADRs that list rejected options and why, with eval results attached.",
+      "Translate metrics into business terms (analyst hours saved, clinician minutes per note, error rate per thousand cases).",
+      "Answer \"will it ever be wrong?\" honestly with measured error rates, mitigations and residual risk.",
+      "Frame contested decisions (security versus productivity) as explicit options with risks, a recommendation and revisit criteria."
+    ],
+    "examLens": [
+      "For executives, pick the answer framed around outcome, risk, cost and timeline with a clear ask, not the most technically detailed one.",
+      "For a contested or consequential design choice, prefer an ADR or written decision with options considered and evidence over a verbal agreement.",
+      "Prefer answers backed by your eval results over claims about model capability or vendor benchmarks.",
+      "Reject any answer that promises zero hallucinations, identical outputs every time or guaranteed fairness."
+    ],
+    "traps": [
+      "One deck for every audience, usually too technical for executives and too vague for engineers.",
+      "Overpromising accuracy or determinism to win approval.",
+      "Recording only the chosen option, so nobody later knows why the alternatives were rejected.",
+      "Justifying a choice with a public benchmark instead of results on the client's own data."
+    ],
+    "links": [
+      {
+        "label": "Building effective agents",
+        "url": "https://www.anthropic.com/research/building-effective-agents"
+      },
+      {
+        "label": "Reduce hallucinations",
+        "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations"
+      }
+    ],
+    "cheat": [
+      [
+        "Steering committee needs a decision",
+        "Outcome, risk, cost, timeline, options and a recommendation"
+      ],
+      [
+        "Why did we pick this design?",
+        "ADR: context, options considered, eval evidence, consequences"
+      ],
+      [
+        "\"Will it ever hallucinate?\"",
+        "Honest: measured error rate, mitigations, residual risk, monitoring"
+      ],
+      [
+        "Security and teams disagree",
+        "Lay out options with risks, recommend one, record revisit criteria"
+      ]
+    ],
+    "diagrams": [
+      {
+        "kind": "compare",
+        "title": "Same decision, different audiences",
+        "columns": [
+          {
+            "head": "Executives",
+            "items": [
+              "Business outcome and value",
+              "Risk and residual risk",
+              "Cost per task and timeline",
+              "The decision you need"
+            ],
+            "tone": "accent"
+          },
+          {
+            "head": "Engineers",
+            "items": [
+              "Components and interfaces",
+              "Data flows and failure handling",
+              "Eval results and thresholds",
+              "Open technical questions"
+            ],
+            "tone": "sky"
+          },
+          {
+            "head": "Security and legal",
+            "items": [
+              "Where data goes and is kept",
+              "Controls and guardrails",
+              "Who is accountable",
+              "Audit evidence"
+            ],
+            "tone": "warn"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "task": "6.3",
+    "knowledge": [
+      "SLAs and SLOs must be measurable: latency percentiles, availability, and quality measured on an agreed eval set or sampled production review, each with a measurement method and owner.",
+      "LLM quality is statistical. Because outputs are non-deterministic, quality targets are rates over a defined test set or sample, never a promise about every single response.",
+      "The system depends on upstream services, including the model provider. Availability commitments should name those dependencies and define degraded-mode behaviour and incident communication.",
+      "Pilots need structured feedback channels inside the workflow (ratings, reason codes, edits captured), triaged regularly, with recurring issues turned into eval cases.",
+      "Scope creep is managed through the agreed success criteria and a change process: new requests are assessed for impact on quality, cost and deadlines, then scheduled or explicitly traded off.",
+      "Expectations are reset with evidence: pre-agreed thresholds and pause criteria let one anecdote be weighed against measured rates."
+    ],
+    "skills": [
+      "Turn \"always accurate and instant\" into SLOs with targets, percentiles, test sets and measurement windows.",
+      "Write availability terms that cover provider dependencies, fallbacks and degraded modes.",
+      "Design in-workflow feedback capture and a regular triage loop that feeds the eval suite.",
+      "Run new feature requests through a change process that shows their effect on agreed targets.",
+      "Agree pause and rollback criteria before a pilot starts."
+    ],
+    "examLens": [
+      "Prefer measurable SLOs defined over an eval set or sample over absolute promises such as 100% accuracy or identical outputs.",
+      "When feedback is informal or anecdotal, pick the answer that structures capture and links it to evals before changing prompts.",
+      "For a mid-pilot request, pick the change-control answer that assesses impact against agreed criteria, not silent acceptance or flat refusal.",
+      "When a stakeholder reacts to one bad case, investigate it, then weigh it against measured rates and pre-agreed thresholds."
+    ],
+    "traps": [
+      "Accepting an SLA that guarantees perfect accuracy or deterministic outputs.",
+      "Committing to availability without accounting for the model provider and other upstream dependencies.",
+      "Collecting feedback in hallway conversations and changing prompts on the loudest complaint.",
+      "Measuring only system metrics (on-time delivery) and missing whether users act on the output."
+    ],
+    "links": [
+      {
+        "label": "Define success criteria and build evaluations",
+        "url": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests"
+      },
+      {
+        "label": "Demystifying evals for AI agents",
+        "url": "https://www.anthropic.com/research/demystifying-evals-for-ai-agents"
+      }
+    ],
+    "cheat": [
+      [
+        "\"100% accurate in under a second\"",
+        "Negotiate SLOs: latency percentile, availability, quality rate on an eval set"
+      ],
+      [
+        "Provider incident slows everyone",
+        "SLA names upstream dependencies, degraded mode and comms path"
+      ],
+      [
+        "New feature asked mid-pilot",
+        "Change process: impact on criteria, cost and dates, then decide"
+      ],
+      [
+        "One bad case, sponsor wants to stop",
+        "Investigate, compare with measured rates and pre-agreed pause criteria"
+      ]
+    ],
+    "diagrams": [
+      {
+        "kind": "flow",
+        "title": "Pilot feedback loop",
+        "steps": [
+          {
+            "label": "Capture feedback in the workflow",
+            "note": "Ratings, reason codes and user edits, not hallway comments.",
+            "tone": "sky"
+          },
+          {
+            "label": "Triage on a fixed cadence",
+            "note": "Group recurring issues and check them against agreed targets."
+          },
+          {
+            "label": "Add failing cases to the eval set",
+            "tone": "accent"
+          },
+          {
+            "label": "Change and re-run the evals",
+            "note": "Ship only when quality, latency and cost targets still hold."
+          },
+          {
+            "label": "Report back with evidence",
+            "note": "Show stakeholders what changed and the measured effect.",
+            "tone": "good"
+          }
+        ],
+        "loop": "Repeat every pilot cycle"
+      }
+    ]
+  },
+  {
+    "task": "6.4",
+    "knowledge": [
+      "Core architecture documentation: context and component diagrams, data flow diagrams showing where sensitive data travels, is logged and is retained, and the trust boundaries between components.",
+      "Prompts, tool definitions and model choices are versioned artifacts. Keep them in source control with a change log and link each version to its eval results.",
+      "The eval suite is a living specification: test cases, graders and pass thresholds define what \"working\" means and guard every later change.",
+      "Runbooks cover known failure modes and operational tasks: provider errors, stale indexes, quality drift alerts, rollback and escalation contacts.",
+      "Guardrails need written rationale (the risk mitigated, the owner, the exception process), or teams remove them as friction.",
+      "A handoff package gives the receiving team what they need to own the system: architecture and data flows, versioned prompts and configs, the eval suite, runbooks, monitoring dashboards and open risks."
+    ],
+    "skills": [
+      "Draw data flow diagrams that security and compliance reviewers can approve.",
+      "Set up prompt and configuration versioning with an eval gate before promotion.",
+      "Write runbooks keyed to observable symptoms and alerts.",
+      "Document each guardrail with its rationale, owner and exception route next to the configuration.",
+      "Give implementation teams interface contracts, output schemas and eval cases rather than prose descriptions."
+    ],
+    "examLens": [
+      "For a security or compliance review, pick the data flow and trust-boundary artifact over general architecture prose.",
+      "For untracked prompt changes that broke quality, pick versioning plus an eval gate before release.",
+      "For a handoff, prefer artifacts the receiving team can operate and test with (eval suite, runbooks, configs) over meeting notes or slide decks.",
+      "When teams keep bypassing a control, pick documenting its rationale and exception process before tightening enforcement alone."
+    ],
+    "traps": [
+      "Editing prompts directly in production with no version history or eval run.",
+      "Handing over slide decks and transcripts instead of operable artifacts.",
+      "Documenting what a guardrail does but not why it exists.",
+      "Treating the eval suite as a one-off launch test instead of a living spec."
+    ],
+    "links": [
+      {
+        "label": "Create strong empirical evaluations",
+        "url": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests"
+      },
+      {
+        "label": "Building effective agents",
+        "url": "https://www.anthropic.com/research/building-effective-agents"
+      }
+    ],
+    "cheat": [
+      [
+        "Security review of a system with personal data",
+        "Data flow diagram: where data goes, is logged, retained, trust boundaries"
+      ],
+      [
+        "Prompt hotfix broke high-risk answers",
+        "Version prompts in source control; eval gate before promotion"
+      ],
+      [
+        "Platform team takes over the system",
+        "Handoff package: configs, eval suite, runbooks, dashboards, open risks"
+      ],
+      [
+        "Teams keep removing a guardrail",
+        "Document its rationale, owner and exception process"
+      ]
+    ],
+    "diagrams": [
+      {
+        "kind": "layers",
+        "title": "A handoff package",
+        "layers": [
+          {
+            "label": "Architecture and data flow diagrams",
+            "note": "Components, trust boundaries, where data is logged and retained.",
+            "tone": "sky"
+          },
+          {
+            "label": "Versioned prompts, tools and configs",
+            "note": "In source control, each version linked to eval results."
+          },
+          {
+            "label": "Eval suite as living spec",
+            "note": "Cases, graders and thresholds that gate every change.",
+            "tone": "accent"
+          },
+          {
+            "label": "Runbooks and monitoring",
+            "note": "Symptoms, alerts, rollback and escalation contacts."
+          },
+          {
+            "label": "Guardrail rationale and open risks",
+            "note": "Why each control exists, its owner, and known limits.",
+            "tone": "warn"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "task": "6.5",
+    "knowledge": [
+      "A Claude solution moves through discovery, design, build and pilot, handoff, monitoring and iteration. Each phase has exit criteria agreed with stakeholders.",
+      "Moving from pilot to wide rollout should depend on evidence: agreed quality, safety and fairness thresholds met, operating team named and trained, monitoring in place.",
+      "After handoff, a named owner is accountable for monitoring, the eval suite, incident response and the backlog. Without one, quality drift goes unnoticed.",
+      "Model upgrades and deprecations are planned events: run the existing eval suite on the new model, compare results, roll out in stages and migrate before the retirement date.",
+      "Iteration uses production evidence (telemetry, feedback, failure cases) compared against the discovery baseline, and every change is re-evaluated before release.",
+      "Retiring a data source, tool or the system itself also needs planning: inventory dependencies, test the replacement, and tell users what will change and when."
+    ],
+    "skills": [
+      "Define exit criteria for each phase, especially pilot to rollout.",
+      "Plan staged rollouts with representative pilot groups and comparison against the baseline.",
+      "Assign post-handoff ownership and the monitoring and alert thresholds that owner acts on.",
+      "Run model migration as an eval-gated change with rollback.",
+      "Plan deprecations of models, tools and data sources with dependency inventories and user communication."
+    ],
+    "examLens": [
+      "For a new model version or deprecation notice, pick re-running the eval suite and staged migration, not switching on announcement or waiting until retirement.",
+      "For pilot to rollout, pick evidence-based exit criteria plus operational readiness, not enthusiasm or feature completeness.",
+      "For silent degradation after handoff, the root cause is usually missing ownership and monitoring, not the model.",
+      "Prefer a representative pilot with a baseline comparison over a big-bang rollout."
+    ],
+    "traps": [
+      "Treating handoff as the end of the project, with no owner for monitoring or evals.",
+      "Adopting a newer model because it is newer, without running the eval suite.",
+      "Rolling out to everyone at once with no pilot or comparison group.",
+      "Gating rollout on stakeholder satisfaction or on finishing every requested feature."
+    ],
+    "links": [
+      {
+        "label": "Model deprecations",
+        "url": "https://platform.claude.com/docs/en/about-claude/model-deprecations"
+      },
+      {
+        "label": "Create strong empirical evaluations",
+        "url": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests"
+      }
+    ],
+    "cheat": [
+      [
+        "New model version or deprecation notice",
+        "Run the eval suite on it, compare, stage the rollout, migrate before retirement"
+      ],
+      [
+        "Quality drifted unnoticed after handoff",
+        "Missing owner and monitoring; assign both with alert thresholds"
+      ],
+      [
+        "Pilot looks good, ready to scale?",
+        "Check pre-agreed thresholds and operational readiness first"
+      ],
+      [
+        "A data source will be retired",
+        "Inventory dependencies, test the replacement, tell users what changes"
+      ]
+    ],
+    "diagrams": [
+      {
+        "kind": "flow",
+        "title": "Lifecycle of a Claude solution",
+        "steps": [
+          {
+            "label": "Discovery",
+            "note": "Stakeholders, baseline, success criteria, data, risks.",
+            "tone": "sky"
+          },
+          {
+            "label": "Design",
+            "note": "Architecture, ADRs, eval suite and thresholds."
+          },
+          {
+            "label": "Build and pilot",
+            "note": "Representative users, feedback channels, pause criteria.",
+            "tone": "accent"
+          },
+          {
+            "label": "Handoff",
+            "note": "Named owner, runbooks, configs, eval suite."
+          },
+          {
+            "label": "Monitoring",
+            "note": "Quality, latency, cost and drift against thresholds.",
+            "tone": "warn"
+          },
+          {
+            "label": "Iteration",
+            "note": "Eval-gated changes, model upgrades, deprecations.",
+            "tone": "good"
+          }
+        ],
+        "loop": "Iteration feeds new requirements back into design"
+      }
+    ]
+  }
+]

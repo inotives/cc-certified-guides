@@ -1,0 +1,727 @@
+[
+  {
+    "task": "3.1",
+    "knowledge": [
+      "Capability bloat is giving an agent more tools, servers or sub-agents than its job needs. Each extra capability adds selection errors, attack surface and context tokens.",
+      "Tool definitions are loaded into context. Dozens of overlapping tools (three different `search` tools, thin wrappers for every REST endpoint) make the model pick the wrong one or chain many calls.",
+      "Least privilege applies to agents as it does to service accounts: remove tools a role never needs rather than guarding them with prompts, confirmations or logging.",
+      "Fewer, task-shaped tools beat many API-shaped ones: one `get_dispute_context` that returns the relevant fields is better than five lookups the model must chain.",
+      "Clear, namespaced names (`jira_search`, `wiki_search`) and descriptions that say when to use each tool reduce confusion between similar tools.",
+      "More agents are not automatically better: each extra sub-agent adds coordination, tokens, latency and failure points, so split work only where it is genuinely independent."
+    ],
+    "skills": [
+      "Audit an agent's tool list against the workflows it actually serves and remove what is unused or out of role.",
+      "Consolidate overlapping or chained low-level tools into fewer higher-level, task-oriented tools.",
+      "Scope tool sets per agent or per workflow, so each sub-agent sees only what its job needs.",
+      "Spot high-risk general-purpose tools (raw SQL with write access, arbitrary HTTP, shell) and replace them with narrow, purpose-built ones."
+    ],
+    "examLens": [
+      "When a tool or agent is not needed for the role, the best answer removes it; monitoring, confirmations or prompt instructions are weaker compensating controls.",
+      "Wrong-tool selection among many similar tools points to consolidating, namespacing or scoping the tool set, not to a bigger model or a longer system prompt.",
+      "If the stated work splits into a few independent parts, prefer a small number of agents matching those parts over one agent per category or entity.",
+      "General-purpose tools with broad write access are a red flag even when current prompts never ask for writes."
+    ],
+    "traps": [
+      "Keeping a dangerous tool and adding logging or a confirmation step instead of removing it.",
+      "Fixing tool confusion by writing longer instructions about when to use each of 40 tools.",
+      "Adding a sub-agent per product, region or category when one parameterised worker would do.",
+      "Mirroring every API endpoint as its own tool because it is quick to generate."
+    ],
+    "links": [
+      {
+        "label": "Writing tools for agents",
+        "url": "https://www.anthropic.com/research/writing-tools-for-agents"
+      },
+      {
+        "label": "Building effective agents",
+        "url": "https://www.anthropic.com/research/building-effective-agents"
+      }
+    ],
+    "cheat": [
+      [
+        "Agent has refund/delete tools the role never uses",
+        "Remove them from the configuration"
+      ],
+      [
+        "Model keeps choosing the wrong one of several similar search tools",
+        "Consolidate, namespace and scope the tools per workflow"
+      ],
+      [
+        "One sub-agent per category, slow and inconsistent",
+        "Collapse to a few workers split by independent work type"
+      ],
+      [
+        "Thirty thin REST-wrapper tools chained per request",
+        "Replace with a few task-oriented tools returning high-signal fields"
+      ]
+    ],
+    "diagrams": [
+      {
+        "kind": "flow",
+        "title": "Trimming a bloated tool set",
+        "steps": [
+          {
+            "label": "List the workflows the agent serves",
+            "tone": "sky"
+          },
+          {
+            "label": "Remove tools no workflow needs",
+            "note": "Least privilege: removal beats guarding or logging.",
+            "tone": "accent"
+          },
+          {
+            "label": "Replace broad tools with narrow ones",
+            "note": "No raw write SQL, shell or arbitrary HTTP unless the role needs it."
+          },
+          {
+            "label": "Consolidate chained, overlapping tools",
+            "note": "Fewer task-shaped tools; namespaced names and clear descriptions."
+          },
+          {
+            "label": "Scope tool sets per agent or workflow",
+            "tone": "good"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "task": "3.2",
+    "knowledge": [
+      "Authentication proves who is calling; authorization decides what they may do. An agent acting for a user should act with that user's rights, not a broader service account's.",
+      "Authorization must be enforced in code at the tool or data layer. A system-prompt rule such as \"only show documents the user may see\" is not a control.",
+      "Confused deputy: a privileged agent or server is tricked into using its own authority for a caller who lacks it. Bind identity (customer id, user token) server-side from the session, not from model-supplied arguments.",
+      "For remote MCP servers, the MCP authorization spec builds on OAuth: each user authorizes, tokens are issued for that specific server, and servers must not pass client tokens through to upstream APIs.",
+      "Secrets (API keys, database credentials) belong in the tool execution layer or a secret manager; the model should never see them in prompts, tool descriptions or results.",
+      "Tool results, retrieved documents, emails and web pages are untrusted input and can carry injected instructions; limit what an agent can do after reading them."
+    ],
+    "skills": [
+      "Trace each tool call to the identity and permissions it runs with, and flag any that exceed the end user's rights.",
+      "Move authorization decisions (record ownership, amount limits, document ACLs) from prompts into deterministic code.",
+      "Design per-user OAuth for shared MCP servers instead of shared static keys.",
+      "Separate steps that read untrusted content from steps that hold high-impact tools, and gate irreversible actions outside the model."
+    ],
+    "examLens": [
+      "If the only thing stopping an unauthorised action is an instruction to the model, that is the security gap.",
+      "Prefer the answer that derives identity from the authenticated session and checks it in code over one that trusts parameters the model fills in.",
+      "Shared service credentials behind a per-user agent are a gap even if logs and prompts look fine.",
+      "Against prompt injection, prefer reducing what the agent can do (privilege, separation, confirmation outside the model) over better wording in the prompt."
+    ],
+    "traps": [
+      "\"Tell the model to ignore instructions in documents\" as the main defence against injection.",
+      "Putting an API key in the system prompt or a tool description so the model can pass it along.",
+      "Letting the model choose which `customer_id` or account to query.",
+      "Treating encryption at rest or extra logging as a fix for missing authorization."
+    ],
+    "links": [
+      {
+        "label": "MCP authorization specification",
+        "url": "https://modelcontextprotocol.io/specification/2025-06-18/basic/authorization"
+      },
+      {
+        "label": "MCP security best practices",
+        "url": "https://modelcontextprotocol.io/docs/2025-11-25/tutorials/security/security_best_practices"
+      },
+      {
+        "label": "Mitigate jailbreaks and prompt injections",
+        "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks"
+      }
+    ],
+    "cheat": [
+      [
+        "Retrieval runs as a service account; the prompt says respect permissions",
+        "Filter by the user's ACLs in code before content reaches the model"
+      ],
+      [
+        "Model passes `customer_id` to account tools",
+        "Bind the id from the authenticated session server-side"
+      ],
+      [
+        "Shared static key for an internal remote MCP server",
+        "Per-user OAuth with tokens issued for that server"
+      ],
+      [
+        "Agent reads customer documents and can move money",
+        "Separate untrusted reading from high-impact tools; enforce limits in code"
+      ]
+    ],
+    "diagrams": [
+      {
+        "kind": "layers",
+        "title": "Where each control belongs",
+        "layers": [
+          {
+            "label": "Prompt: tone, task, guidance",
+            "note": "Helpful, but never the security boundary.",
+            "tone": "warn"
+          },
+          {
+            "label": "Tool layer: authorization checks in code",
+            "note": "Ownership, limits and ACLs checked deterministically.",
+            "tone": "accent"
+          },
+          {
+            "label": "Identity: the end user's own rights",
+            "note": "Bound from the session, never from model arguments.",
+            "tone": "sky"
+          },
+          {
+            "label": "Secrets: secret manager, out of context",
+            "note": "The model never sees keys or credentials.",
+            "tone": "good"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "task": "3.3",
+    "knowledge": [
+      "Main levers: model tier, extended thinking or effort level, retrieval depth (how many chunks), reranking, number of agent steps, and parallel versus sequential calls.",
+      "Not every lever trades accuracy for speed: running independent calls in parallel, caching a stable prompt prefix and streaming cut latency or perceived latency without lowering accuracy.",
+      "Streaming improves perceived latency (time to first visible output), not total completion time.",
+      "The latency budget depends on the use case: an interactive chat needs seconds, an overnight batch report has hours. Do not optimise latency where it is not binding.",
+      "Routing different request types to different configurations (a faster tier for simple lookups, a capable tier with thinking for complex judgement) often beats one setting for everything.",
+      "Configuration decisions are justified with measurements on a representative eval set: accuracy and latency percentiles against an agreed SLA, not intuition or vendor benchmarks."
+    ],
+    "skills": [
+      "Measure accuracy and p50/p95 latency for candidate configurations on the same eval set and compare them with the SLA.",
+      "Find the latency-dominant stage from traces before changing the model.",
+      "Pick no-regret latency fixes first (parallelism, caching, streaming), then accuracy-affecting ones.",
+      "Present a trade-off to stakeholders as measured options with their costs, not as a single opinion."
+    ],
+    "examLens": [
+      "Prefer the change that cuts latency without touching accuracy (parallelise, cache, stream) over downgrading the model or retrieval.",
+      "When requests differ in difficulty, the best answer usually routes them to different configurations.",
+      "If the deadline is hours away (batch), the best answer spends latency on accuracy.",
+      "\"Justify\" means evidence: the answer with measured accuracy and latency on representative data wins."
+    ],
+    "traps": [
+      "Switching everything to the smallest tier to fix a latency complaint in a high-stakes flow.",
+      "Cutting retrieval to one or two chunks to save time and losing recall.",
+      "Assuming accuracy always wins or latency always wins without checking the SLA.",
+      "Using public benchmarks instead of your own eval set to justify a choice."
+    ],
+    "links": [
+      {
+        "label": "Reducing latency",
+        "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-latency"
+      },
+      {
+        "label": "Choosing a model",
+        "url": "https://platform.claude.com/docs/en/about-claude/models/choosing-a-model"
+      },
+      {
+        "label": "Extended thinking",
+        "url": "https://platform.claude.com/docs/en/build-with-claude/extended-thinking"
+      }
+    ],
+    "cheat": [
+      [
+        "Independent retrieval calls run one after another",
+        "Run them in parallel: faster with no accuracy loss"
+      ],
+      [
+        "Simple and complex requests share one slow configuration",
+        "Route by request type; justify each route with eval results"
+      ],
+      [
+        "Overnight batch uses the fastest tier and quality is poor",
+        "Latency is not binding; use a more capable configuration"
+      ],
+      [
+        "Stakeholder asks whether a reranker is worth its latency",
+        "Show measured accuracy gain and p95 latency against the SLA"
+      ]
+    ],
+    "diagrams": [
+      {
+        "kind": "decision",
+        "title": "Choosing a latency fix",
+        "question": "Where is the time going, and what must not drop?",
+        "branches": [
+          {
+            "when": "Independent calls run sequentially",
+            "then": "Parallelise them (no accuracy cost)",
+            "tone": "good"
+          },
+          {
+            "when": "Same long prefix on every request",
+            "then": "Cache the stable prefix",
+            "tone": "good"
+          },
+          {
+            "when": "Users wait on a blank screen",
+            "then": "Stream output to cut perceived latency",
+            "tone": "sky"
+          },
+          {
+            "when": "Simple requests use a heavy configuration",
+            "then": "Route them to a faster tier, measured on evals",
+            "tone": "accent"
+          },
+          {
+            "when": "Batch job with hours of budget",
+            "then": "Spend latency on accuracy",
+            "tone": "amber"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "task": "3.4",
+    "knowledge": [
+      "Agent systems fail across many steps: a bad final answer may come from a wrong tool call, an empty retrieval or a sub-agent's summary. Logging only the final output hides the cause.",
+      "Tracing ties every model call, tool call and sub-agent run in one request to a shared trace id, with inputs, outputs, tokens, latency and errors per step.",
+      "Structured logs (consistent fields such as request id, user or tenant, model, tool, tokens, latency, outcome) can be queried and aggregated; free-text logs cannot at scale.",
+      "At high volume, keep cheap metrics on all traffic and full traces on a sample, plus every error, escalation or flagged case.",
+      "Logs of prompts and responses can contain personal or health data: redact or tokenise, restrict access, set retention, and keep raw content only where it is justified.",
+      "Quality needs its own signals: retrieval hit rates, groundedness checks, automated graders on samples, user feedback and escalation rates, alongside token, latency and cost metrics."
+    ],
+    "skills": [
+      "Instrument a multi-agent run so each step can be replayed from its trace.",
+      "Choose a sampling strategy that keeps rare failures visible.",
+      "Design log redaction and access controls for regulated data.",
+      "Separate retrieval metrics from generation metrics so a quality drop can be localised."
+    ],
+    "examLens": [
+      "For intermittent multi-step failures, the best answer adds end-to-end tracing across steps, not more logging of the final answer.",
+      "At scale, prefer sampling plus always-capture rules over logging everything in full or logging nothing.",
+      "With PHI or personal data, the answer that keeps observability while redacting and restricting access beats both \"log everything\" and \"log nothing\".",
+      "Operational metrics (latency, tokens, cost) do not tell you about answer quality; pick quality signals for quality questions."
+    ],
+    "traps": [
+      "Logging full prompts and responses with personal data into a widely accessible store.",
+      "Disabling logging entirely to solve a privacy concern.",
+      "Using CPU, latency or daily users as evidence about answer correctness.",
+      "Reviewing a random sample by hand only, with no automated signals or error capture."
+    ],
+    "links": [
+      {
+        "label": "How we built our multi-agent research system",
+        "url": "https://www.anthropic.com/research/multi-agent-research-system"
+      },
+      {
+        "label": "Claude Code monitoring (OpenTelemetry)",
+        "url": "https://code.claude.com/docs/en/monitoring-usage"
+      }
+    ],
+    "cheat": [
+      [
+        "Multi-agent report sometimes misses a section; only final output logged",
+        "Trace every step under one run id"
+      ],
+      [
+        "Millions of conversations, cannot keep or review all",
+        "Metrics on all, full traces on a sample plus every error and escalation"
+      ],
+      [
+        "Debug logs contain PHI",
+        "Redact or tokenise, restrict access, set retention"
+      ],
+      [
+        "Answer quality dropped; unclear which stage",
+        "Log retrieved chunk ids and measure retrieval and groundedness separately"
+      ]
+    ],
+    "diagrams": [
+      {
+        "kind": "layers",
+        "title": "Observability for an agent system",
+        "layers": [
+          {
+            "label": "Quality signals",
+            "note": "Groundedness, graders on samples, feedback, escalations.",
+            "tone": "accent"
+          },
+          {
+            "label": "Traces per run",
+            "note": "Every model, tool and sub-agent step under one trace id.",
+            "tone": "sky"
+          },
+          {
+            "label": "Structured logs",
+            "note": "Consistent fields; redact personal data; access controls.",
+            "tone": "amber"
+          },
+          {
+            "label": "Metrics on all traffic",
+            "note": "Tokens, latency, cost, errors, tool call counts.",
+            "tone": "plain"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "task": "3.5",
+    "knowledge": [
+      "Chunk on document structure: sections for prose, whole tables or rows with their headers for tabular specs, whole threads for tickets. Fixed-size splitting breaks tables and separates facts from their subject.",
+      "Chunk size is a trade-off: large chunks dilute relevance and fill the context; small chunks lose surrounding meaning. Pick size and overlap by measuring retrieval on real queries.",
+      "Contextual retrieval prepends a short chunk-specific context (which document, which section, what it is about) to each chunk before embedding and lexical indexing, so isolated chunks stay meaningful.",
+      "A hybrid index stores both embeddings (semantic match) and a lexical index such as BM25 (exact terms, codes, ids); results are combined and can then be reranked.",
+      "Store metadata on each chunk: source, document id, section, type, language, version or effective date, and access-control groups. Metadata enables filtering, citations and permission checks.",
+      "Indexes go stale: an incremental pipeline must add, update and delete chunks by document id when sources change, or the system answers confidently from old content."
+    ],
+    "skills": [
+      "Choose a chunking strategy per content type in a mixed corpus.",
+      "Design the chunk metadata schema, including permission and version fields.",
+      "Set up contextual chunk enrichment and a hybrid index.",
+      "Design refresh and deletion so the index tracks the source of truth."
+    ],
+    "examLens": [
+      "Answers that misread tables or lose the subject of a sentence point to chunking or missing chunk context, not to the model.",
+      "Prefer structure-aware chunking with metadata over any fixed token count chosen without measurement.",
+      "Deleted or superseded documents still being cited points to the indexing pipeline (no updates or deletions).",
+      "Corpora with codes, part numbers or jargon need a lexical index alongside embeddings."
+    ],
+    "traps": [
+      "Fixing chunk-quality problems by switching to a larger model or a bigger context window.",
+      "Choosing a chunk size from a blog default rather than from retrieval evals on your own queries.",
+      "One-off bulk indexing with no update or delete path.",
+      "Indexing without permission metadata and hoping to filter later."
+    ],
+    "links": [
+      {
+        "label": "Contextual retrieval",
+        "url": "https://www.anthropic.com/research/contextual-retrieval"
+      },
+      {
+        "label": "Embeddings",
+        "url": "https://platform.claude.com/docs/en/build-with-claude/embeddings"
+      }
+    ],
+    "cheat": [
+      [
+        "Spec tables split mid-table; wrong values in answers",
+        "Structure-aware chunking: keep tables or rows with headers"
+      ],
+      [
+        "Chunk says \"reduce the dose by half\" with no drug name",
+        "Contextual retrieval: prepend document and section context"
+      ],
+      [
+        "Withdrawn policies still answered",
+        "Incremental re-indexing that updates and deletes by document id"
+      ],
+      [
+        "Exact part numbers missed",
+        "Hybrid index: embeddings plus BM25"
+      ]
+    ],
+    "diagrams": [
+      {
+        "kind": "flow",
+        "title": "Indexing pipeline",
+        "steps": [
+          {
+            "label": "Parse by structure",
+            "note": "Sections, tables, ticket threads; not fixed token windows.",
+            "tone": "sky"
+          },
+          {
+            "label": "Add chunk context",
+            "note": "Prepend document and section context to each chunk."
+          },
+          {
+            "label": "Attach metadata",
+            "note": "Source, version, language, type and ACL groups.",
+            "tone": "amber"
+          },
+          {
+            "label": "Index twice: embeddings and BM25",
+            "note": "Semantic plus exact-term matching.",
+            "tone": "accent"
+          },
+          {
+            "label": "Update and delete on source change",
+            "tone": "good"
+          }
+        ],
+        "loop": "Re-evaluate chunking with retrieval metrics"
+      }
+    ]
+  },
+  {
+    "task": "3.6",
+    "knowledge": [
+      "Lexical search (BM25, keyword) is strong for exact identifiers: part numbers, error codes, names, ticket ids. Semantic search is strong for paraphrase and concepts phrased differently from the source.",
+      "Hybrid retrieval combines both and is a safe default for mixed corpora with jargon and codes.",
+      "Metadata filters (document type, product, region, language, effective date, permissions) narrow the candidate set before ranking, so the right scope and version wins.",
+      "Reranking scores a larger candidate set more precisely and keeps only the best few, improving precision when the right chunk is retrieved but ranked too low.",
+      "Tabular and numeric questions (totals, trends, filters) need a structured query over the database, not similarity search over embedded rows.",
+      "Multi-hop questions that need one result to form the next query suit agentic, iterative retrieval: the model issues several searches and refines them."
+    ],
+    "skills": [
+      "Classify the query pattern (exact id, paraphrase, scoped, aggregate, multi-hop) and match a retrieval method to it.",
+      "Combine lexical and semantic results and add a reranker over the top candidates.",
+      "Expose structured data to the model through query tools rather than embeddings.",
+      "Use retrieval metrics such as recall at k to see which method misses."
+    ],
+    "examLens": [
+      "Exact codes or ids being missed points to lexical or hybrid retrieval, not a better embedding model alone.",
+      "The right chunk is present in the top 50 but not the top 5: add reranking, do not just raise k into the prompt.",
+      "Aggregates over tables (sum, average, by week) belong to SQL or a structured query tool.",
+      "Wrong version or scope (old policy, other region) points to metadata filtering."
+    ],
+    "traps": [
+      "Embedding spreadsheet rows to answer \"total sales last week\".",
+      "Sending the top 50 chunks to the model instead of reranking.",
+      "Using semantic search alone over part numbers and error codes.",
+      "Forcing a single retrieval pass on a question that needs a second lookup based on the first."
+    ],
+    "links": [
+      {
+        "label": "Contextual retrieval",
+        "url": "https://www.anthropic.com/research/contextual-retrieval"
+      },
+      {
+        "label": "Effective context engineering for AI agents",
+        "url": "https://www.anthropic.com/research/effective-context-engineering-for-ai-agents"
+      }
+    ],
+    "cheat": [
+      [
+        "Part number search returns similar but wrong parts",
+        "Add lexical matching (hybrid retrieval)"
+      ],
+      [
+        "Right chunk retrieved but ranked too low",
+        "Rerank a larger candidate set, pass the best few"
+      ],
+      [
+        "\"Total sales by category last week\"",
+        "Structured query tool over the warehouse"
+      ],
+      [
+        "Superseded guideline outranks the current one",
+        "Metadata filter on status or effective date"
+      ]
+    ],
+    "diagrams": [
+      {
+        "kind": "decision",
+        "title": "Match retrieval to the query",
+        "question": "What does the query look like?",
+        "branches": [
+          {
+            "when": "Exact ids, codes, names",
+            "then": "Lexical or hybrid retrieval",
+            "tone": "accent"
+          },
+          {
+            "when": "Paraphrase, concepts",
+            "then": "Semantic retrieval (embeddings)",
+            "tone": "sky"
+          },
+          {
+            "when": "Scope or version matters",
+            "then": "Metadata filters before ranking",
+            "tone": "amber"
+          },
+          {
+            "when": "Right chunk ranked too low",
+            "then": "Rerank a larger candidate set"
+          },
+          {
+            "when": "Totals, trends over tables",
+            "then": "Structured query (SQL) tool",
+            "tone": "good"
+          },
+          {
+            "when": "Answer needs several lookups",
+            "then": "Agentic, iterative search",
+            "tone": "warn"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "task": "3.7",
+    "knowledge": [
+      "MCP is an open protocol for exposing tools, resources and prompts to many AI clients through standard discovery. Build an MCP server when the same integration should serve several clients or teams.",
+      "A direct API call defined as a tool in your own application is simpler when one application needs a fixed integration; MCP adds a server and protocol layer you may not need.",
+      "Coding agents such as Claude Code can call an existing, well-documented CLI directly through the shell, governed by permission rules; wrapping it in MCP adds little.",
+      "Agent-to-agent integration fits when work is delegated to an independent agent owned by another team or organisation, with its own tools, data, policies and lifecycle; you send a task, it returns a result.",
+      "The choice weighs reuse, ownership boundaries, security (who holds credentials), discovery and operational cost."
+    ],
+    "skills": [
+      "Choose MCP, a direct API tool, a CLI or agent-to-agent delegation from the stated reuse, ownership and client requirements.",
+      "Identify when an MCP server is over-engineering for a single fixed integration.",
+      "Keep credentials and policy with the owning team by delegating to their agent instead of copying their tools.",
+      "Govern CLI and MCP use in coding agents with permissions and shared configuration."
+    ],
+    "examLens": [
+      "\"Many clients or teams should reuse it, with standard discovery\" points to MCP.",
+      "\"One application, fixed calls, our own backend\" points to a direct API tool.",
+      "\"Engineers already use a CLI and the agent runs in a terminal\" points to the CLI.",
+      "\"Another team's agent owns the data, tools and policies\" points to agent-to-agent delegation."
+    ],
+    "traps": [
+      "Building an MCP server for every integration by default.",
+      "Copying another team's tools and credentials into your agent instead of delegating to their agent.",
+      "Re-implementing a mature CLI as a new API just so an agent can call it.",
+      "Hard-coding the same integration separately into each client when several need it."
+    ],
+    "links": [
+      {
+        "label": "Model Context Protocol: introduction",
+        "url": "https://modelcontextprotocol.io/docs/getting-started/intro"
+      },
+      {
+        "label": "Connect Claude Code to tools via MCP",
+        "url": "https://code.claude.com/docs/en/mcp"
+      },
+      {
+        "label": "Tool use overview",
+        "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview"
+      }
+    ],
+    "cheat": [
+      [
+        "Ticket integration needed by Claude Code, desktop and internal agents",
+        "One MCP server"
+      ],
+      [
+        "One backend app calls one internal service in a fixed way",
+        "Direct API call defined as a tool"
+      ],
+      [
+        "Engineers already use a mature `deployctl` CLI",
+        "Let the coding agent call the CLI under permission rules"
+      ],
+      [
+        "Pricing data owned by another team's agent",
+        "Delegate agent-to-agent; keep their tools and credentials with them"
+      ]
+    ],
+    "diagrams": [
+      {
+        "kind": "compare",
+        "title": "Picking the integration mechanism",
+        "columns": [
+          {
+            "head": "MCP server",
+            "items": [
+              "Many clients or teams reuse it",
+              "Standard discovery of tools",
+              "Central auth and governance"
+            ],
+            "tone": "accent"
+          },
+          {
+            "head": "API tool or CLI",
+            "items": [
+              "One app, fixed integration",
+              "Existing mature CLI in a coding agent",
+              "Least moving parts"
+            ],
+            "tone": "sky"
+          },
+          {
+            "head": "Agent-to-agent",
+            "items": [
+              "Independent agent owned elsewhere",
+              "Its own tools, data and policies",
+              "Send a task, get a result"
+            ],
+            "tone": "good"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "task": "3.8",
+    "knowledge": [
+      "Monolithic context loads everything up front: all tool definitions, all docs, all instructions. It is simple and fine when the material is small, stable and needed on most requests.",
+      "Progressive discovery loads only lightweight pointers first and pulls in the full content when the task needs it. It keeps context lean as tools, docs and procedures grow.",
+      "Agent Skills use progressive disclosure: only each skill's name and description sit in context; the full instructions and files load when the skill is relevant.",
+      "Tool search lets an agent with very many tools find and load definitions on demand instead of carrying all of them.",
+      "Code execution with MCP lets an agent call tools from code, filter or aggregate large results in the execution environment and return only what matters to the context.",
+      "Progressive discovery costs extra steps and depends on good names and descriptions; if the agent cannot tell what to load, it will miss things."
+    ],
+    "skills": [
+      "Decide between monolithic and progressive loading from context size, stability and how often each part is needed.",
+      "Restructure a large always-loaded instruction file into Skills or on-demand references.",
+      "Use tool search or deferred tool loading for agents connected to many servers.",
+      "Move bulky intermediate data out of the context with code execution."
+    ],
+    "examLens": [
+      "Large, growing or rarely needed material points to progressive discovery; small, stable, always-needed material points to keeping it in context (and caching it).",
+      "Many connected MCP servers eating context before work starts points to tool search or on-demand tool loading.",
+      "Huge tool results flowing through the model points to code execution that filters data before it reaches context.",
+      "Long instruction files covering many separate procedures point to Skills."
+    ],
+    "traps": [
+      "Fixing context bloat with a larger context window instead of loading less.",
+      "Moving a short, always-used reference into on-demand retrieval and adding latency and misses.",
+      "Writing vague skill or tool descriptions so the agent never discovers the right one.",
+      "Passing full datasets through the model just to compute a total."
+    ],
+    "links": [
+      {
+        "label": "Agent Skills overview",
+        "url": "https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview"
+      },
+      {
+        "label": "Tool search tool",
+        "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool"
+      },
+      {
+        "label": "Code execution with MCP",
+        "url": "https://www.anthropic.com/research/code-execution-with-mcp"
+      },
+      {
+        "label": "Effective context engineering for AI agents",
+        "url": "https://www.anthropic.com/research/effective-context-engineering-for-ai-agents"
+      }
+    ],
+    "cheat": [
+      [
+        "Dozens of MCP servers fill context before the task starts",
+        "Tool search: load tool definitions on demand"
+      ],
+      [
+        "Very long instruction file covering many procedures",
+        "Package procedures as Skills"
+      ],
+      [
+        "Short, stable reference used in nearly every request",
+        "Keep it in context and cache it"
+      ],
+      [
+        "Large tool results pass through the model",
+        "Code execution filters data before it reaches context"
+      ]
+    ],
+    "diagrams": [
+      {
+        "kind": "compare",
+        "title": "Monolithic vs progressive context",
+        "columns": [
+          {
+            "head": "Monolithic",
+            "items": [
+              "Small, stable material",
+              "Needed on most requests",
+              "Simple; cache the prefix"
+            ],
+            "tone": "sky"
+          },
+          {
+            "head": "Progressive discovery",
+            "items": [
+              "Large or growing material",
+              "Each part rarely needed",
+              "Skills, tool search, code execution"
+            ],
+            "tone": "accent"
+          }
+        ]
+      }
+    ]
+  }
+]
